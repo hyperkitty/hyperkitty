@@ -1,0 +1,124 @@
+h2 {
+    margin-top: 0px;
+    padding-top: 10px;
+}
+/* Add icons to some text */
+.neutral {
+    background: url("../img/neutral.png") no-repeat scroll left;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-weight: bold;
+}
+
+.like {
+    background: url("../img/like.png") no-repeat scroll left;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-weight: bold;
+}
+
+.likealot {
+    background: url("../img/likealot.png") no-repeat scroll left;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-weight: bold;
+}
+
+/* The content section of the page */ 
+.content {
+    width: 90%;
+    margin: auto;
+}
+
+#top_discussion {
+    width: 45%;
+    margin-right: 22px;
+}
+
+#discussion_by_topic {
+    width: 45%;
+    margin-top: 20px;
+    margin-right: 22px;
+}
+
+#most_active {
+    float: right;
+    width: 45%;
+}
+
+#discussion_marker {
+    float: right;
+    width: 45%;
+    margin-top: 20px;
+}
+
+.thread {
+    white-space: nowrap;
+}
+
+.thread * {
+    white-space: normal;
+}
+
+.thread_id {
+    font-weight: bold;
+    font-size: 125%;
+    color: rgb(102, 102, 102);
+    vertical-align: top;
+    padding-right: 10px;
+}
+
+.thread_title{
+    padding-right:20px;
+    color: rgb(102, 102, 102);
+    display: inline-block;
+}
+
+.thread_stats ul li {
+    margin-right:20px;
+}
+
+.category {
+    font-variant: small-caps;
+    font-weight: bold;
+    color: white;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;
+    vertical-align: top;
+    margin-bottom: 10px;
+    padding-top: 0px;
+    padding-left: 10px;
+}
+
+.category_entry {
+    list-style-type: circle;
+    margin-top: 0px;
+    padding-bottom: 10px;
+    padding-left: 25px;
+}
+
+.category_entry li {
+    padding-bottom: 10px;
+}
+
+.maker {
+    color: rgb(102, 102, 102);
+    padding-right: 10px;
+    padding-bottom: 20px;
+}
+
+.maker_id, .marker_name{
+    font-weight: bold;
+    font-size: 125%;
+    vertical-align: top;
+    padding-right: 20px;
+}
+
+.gravatar {
+    padding-right: 20px;
+}
+
+.score{
+    font-weight: bold;
+}

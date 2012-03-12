@@ -1,0 +1,324 @@
+
+@import url(http://fonts.googleapis.com/css?family=Droid+Sans);
+
+/* Generic classes */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Droid Sans', sans-serif;
+    color: rgb(77, 77, 77);
+}
+
+a {
+    color: rgb(55, 113, 200);
+    text-decoration: none;
+}
+
+.right {
+    text-align: right;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.inline li, .inline-block li {
+    display: inline-block;
+    list-style-type: none;
+}
+
+/* Add icons to some text */
+.participant {
+    background: url("../img/participant.png") no-repeat scroll left top;
+    padding-left: 20px;
+}
+
+.discussion {
+    background: url("../img/discussion.png") no-repeat scroll left top;
+    padding-left: 20px;
+}
+
+.saved {
+    background: url("../img/saved.png") no-repeat scroll left top;
+    padding-left: 20px;
+}
+
+.notsaved {
+    background: url("../img/notsaved.png") no-repeat scroll left top;
+    padding-left: 20px;
+}
+
+.gravatar {
+    vertical-align: top;
+    width:40px;
+    font-size: 70%;
+}
+
+.gravatar img {
+    width: 40px;
+}
+
+.neutral {
+    background: url("../img/neutral.png") no-repeat scroll left;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-weight: bold;
+}
+
+.like {
+    background: url("../img/like.png") no-repeat scroll left;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-weight: bold;
+}
+
+.likealot {
+    background: url("../img/likealot.png") no-repeat scroll left;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-weight: bold;
+}
+
+.youlike {
+    background: url("../img/youlike.png") no-repeat scroll left;
+    padding-left: 15px;
+    padding-right: 5px;
+}
+
+.youdislike {
+    background: url("../img/youdislike.png") no-repeat scroll left;
+    padding-left: 15px;
+    padding-right: 5px;
+}
+
+.showdiscussion {
+    background-image: linear-gradient(bottom, rgb(204,204,204) 11%, rgb(255,255,255) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(204,204,204) 11%, rgb(255,255,255) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(204,204,204) 11%, rgb(255,255,255) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(204,204,204) 11%, rgb(255,255,255) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(204,204,204) 11%, rgb(255,255,255) 100%);
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.11, rgb(204,204,204)),
+        color-stop(1, rgb(255,255,255))
+    );
+    padding: 3px 7px 3px 7px;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(179, 179, 179);
+}
+
+.showdiscussion a {
+    color: rgb(77, 77, 77);
+}
+
+
+/* Top of the page -- header */
+.header {
+    background-color: rgb(236, 236, 236);
+    padding: 0;
+}
+
+.header ul {
+    padding: 0;
+    margin: 0;
+}
+
+.header hr{
+    color: rgb(204, 204, 204);
+    background-color: rgb(204, 204, 204);
+    border: 0 none;
+    margin-top: 0px;
+}
+
+#white {
+    color: rgb(255, 255, 255);
+    background-color: rgb(255, 255, 255);
+    margin-bottom: 0px;
+}
+
+#headline {
+    padding-left: 20px;
+    position: relative;
+}
+
+#top_right {
+    position: absolute;
+    right: 20px;
+    bottom: 0;
+    color: rgb(102, 102, 102);
+}
+
+#top_right li {
+    margin-left:10px;
+}
+
+#list_name {
+    font-size: 200%;
+    font-weight: bold;
+}
+
+#list_name a {
+ color: rgb(77, 77, 77);
+}
+
+#page_date {
+    font-size: 150%;
+}
+
+#list_email {
+    font-size:80%;
+    padding: 0 0 0 20px;
+    margin: 0;
+}
+
+#searchbox {
+    text-align:right;
+    padding-right: 20px;
+}
+
+#searchbox input {
+    width: 250px
+}
+
+#searchbox input::-webkit-input-placeholder {
+    font-style: italic;
+}
+
+#searchbox input:-moz-placeholder {
+    font-style: italic;
+}
+
+#newthread {
+    padding-left: 20px;
+}
+
+/* The content section of the page */
+.content {
+    width: 1024px;
+    margin: auto;
+}
+
+/* Thread list */
+
+.thread_title {
+    font-weight: bold;
+    font-size: 125%;
+}
+
+.thread_date {
+    font-style: italic;
+    font-size: 70%;
+    color: rgb(128, 0, 0);
+}
+
+.thread_content {
+    margin-top:10px;
+}
+
+.thread_email {
+}
+
+.thread_info {
+    text-align:right;
+    padding-right: 50px;
+}
+
+.tags {
+    text-align:left;
+    margin: 0px 0px 0px 200px;
+    padding: 0px;
+}
+
+/* Part containing the body of the mail which can be shown/hidden */
+.expander {
+    width: 768px;
+    background-image: linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
+
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.11, rgb(236,236,236)),
+        color-stop(1, rgb(255,255,255))
+    );
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(236,236,236);
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;
+    padding-left: 20px;
+    margin-left: 21px;
+    display: inline-block;
+    vertical-align: top;
+    white-space: pre;
+}
+
+.expander a {
+    float: right;
+    padding: 20px 10px 0px 0px;
+}
+
+/* Thread types */
+.type {
+    font-variant: small-caps;
+    font-weight: bold;
+    color: white;
+    padding: 3px;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;
+    vertical-align: top;
+    width: 110px;
+    text-align:center;
+}
+
+.type a {
+    color: white;
+}
+
+.type_question {
+    background-color: rgb(179, 128, 255);
+}
+
+.type_agenda {
+    background-color: rgb(42, 127, 255);
+}
+
+.type_todo {
+    background-color: rgb(200, 171, 55);
+}
+
+.type_dead {
+    background-color: rgb(0, 0, 0);
+}
+
+.type_announcement {
+    background-color: rgb(170, 212, 0);
+}
+
+.type_policy {
+    background-color: rgb(200, 55, 171);
+}
+
+.type_test {
+    background-color: rgb(200, 171, 55);
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.removed {
+    display: none;
+}[

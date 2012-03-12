@@ -1,0 +1,14 @@
+{% extends "base2.html" %}
+
+{% block title %}{{ app_name }}{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for mlist in lists %}
+        <li>{{mlist.real_name}} ({{mlist.list_name}}) --
+        <a href="/2/recent/{{mlist.fqdn_listname}}">Recent</a> --
+        <a href="/2/archives/{{mlist.fqdn_listname}}">Archives current month</a>
+        </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,44 @@
+MailMan App
+===========
+
+This application aims at providing an interface to visualize and explore
+mailman archives.
+
+This is a django project.
+
+To get it run:
+- Aggregate the static content into their rightfull place:
+python manage.py collectstatic
+- Start the server:
+python manage.py runserver
+
+To get it running under virtualenv:
+-----------------------------------
+# Create the virtualenv
+virtualenv mailman3
+# Activate the virtualenv
+cd mailman3
+source bin/activate
+# Install django and dependencies
+easy_install django
+easy_install bunch
+# Install notmuch -- these are bindings that come with the notmuch C library
+# The easiest way is probably to install them for your OS vendor and then
+# symlink them into the virtualenv similar to this:
+yum install -y python-notmuch
+# Note: on a multiarch system like Fedora, the directories may be lib64 rather
+# than lib on 64 bit systems
+cd lib/python2.7/site-packages
+ln -s /usr/lib/python2.7/site-packages/notmuch .
+# Note: this is the version of notmuch I tested with; others may work
+ln -s /usr/lib/python2.7/site-packages/notmuch-0.11-py2.7.egg-info .
+
+# put the sources there:
+git clone http://ambre.pingoured.fr/cgit/hyperkitty.git/
+# Start it
+cd hyperkitty
+## Put the static content where it should be
+python manage.py collectstatic
+## Run the server
+python manage.py runserver
+

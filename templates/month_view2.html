@@ -1,0 +1,75 @@
+{% extends "base2.html" %}
+
+{% block title %}{{ app_name }}{% endblock %}
+
+{% block additional_headers %}
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
+  <script src="{{ STATIC_URL }}jquery.expander.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('span.expander').expander({
+      userCollapseText: 'View Less',
+      expandText: 'View More'
+      });
+    });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    {% for email in threads %}
+    <!-- New thread -->
+    <div class="thread">
+      <div class="notsaved">
+        <span class="thread_title">{{email.title}}</span>
+        <span class="thread_date"> {{email.age}} ago</span>
+      </div>
+      <div class="thread_content">
+        {% if email.category_tag %}
+        <div class="inline-block type type_{{email.category_tag}}">
+            <a href="/2/tag/{{list_address}}/{{email.category_tag}}"> {{email.category}} </a>
+        </div>
+        {% else %}
+        <div class="inline-block type type_{{email.category}}">
+                <a href="/2/tag/{{list_address}}/{{email.category}}"> {{email.category}} </a>
+        </div>
+        {% endif %}
+        <div class="inline-block gravatar">
+          {% if email.avatar %}
+          <img src="{{email.avatar}}" alt="avatar" /> <br />
+          {% endif %}
+          {{email.author}}
+        </div>
+        <div class="inline-block thread_email">
+          <span class="expander">
+            {{email.body}}
+          </span>
+        </div>
+      </div>
+      <div class="thread_info">
+        <ul class="tags inline">
+          <li>Tags:</li>
+          {% for tag in email.tags %}
+          <li> <a href="/2/tag/{{list_address}}/{{tag}}">{{tag}}</a></li>
+          {% endfor %}
+        </ul>
+        <ul class="inline-block">
+          <li class="participant"> {{email.participants|length}} participants</li>
+          <li class="discussion"> {{email.answers|length}} comments</li>
+        </ul>
+        <ul class="inline-block">
+          <li class="like"> +{{email.liked}}</li>
+          <li class="youlike"> <a href="#like"> Like</a></li>
+          <li class="youdislike"> <a href="#dislike"> Dislike</a></li>
+          {% if email.answers %}
+          <li class="showdiscussion"> <a href="#show"> Show discussion</a></li>
+          {% else %}
+          <li class="showdiscussion invisible"> <a href="#show"> Show discussion</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+    <!-- End of thread -->
+    {% endfor %}
+
+{% endblock %}

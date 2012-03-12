@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %} {{ app_name }} {% endblock %}
+
+{% block additional_headers %}
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/stats.css" />
+{% endblock %}
+
+{% block content %}
+
+    <section id="most_active">
+      <h2>Recently active discussions</h2>
+      {% for email in top_threads %}
+      <!-- Start thread -->
+      <div class="thread">
+        <span class="thread_id">#{{forloop.counter}}</span>
+        <span class="thread_title">{{email.title}}</span>
+        <div class="thread_stats">
+          <ul class="inline-block">
+            {% if email.category_tag %}
+            <li class="type type_{{email.category_tag}}">
+                <a href="/tag/{{email.category_tag}}"> {{email.category}} </a>
+            </li>
+            {% else %}
+            <li class="type type_{{email.category}}">
+                 <a href="/tag/{{email.category}}"> {{email.category}} </a>
+            </li>
+            {% endif %}
+            <li class="neutral"> 0 </li>
+            <li class="participant"> {{email.participants|join:", "}} </li>
+            <li class="discussion"> {{email.answers|length}} </li>
+          </ul>
+        </div>
+      </div>
+      <!-- End thread -->
+     {% endfor %}
+    </section>
+
+    <section id="top_discussion">
+      <h2>Top discussions the last 30 days</h2>
+      {% for email in most_active_threads %}
+      <!-- Start thread -->
+      <div class="thread">
+        <span class="thread_id">#{{forloop.counter}}</span>
+        <span class="thread_title">{{email.title}}</span>
+        <div class="thread_stats">
+          <ul class="inline-block">
+            {% if email.category_tag %}
+            <li class="type type_{{email.category_tag}}">
+              <a href="/tag/{{email.category_tag}}"> {{email.category}} </a>
+            </li>
+            {% else %}
+            <li class="type type_{{email.category}}">
+              <a href="/tag/{{email.category_tag}}"> {{email.category}} </a>
+            </li>
+            {% endif %}
+            <li class="neutral"> 0 </li>
+            <li class="participant"> {{email.participants|join:", "}} </li>
+            <li class="discussion"> {{email.answers|length}} </li>
+          </ul>
+        </div>
+      </div>
+      <!-- End thread -->
+      {% endfor %}
+    </section>
+
+    <section id="discussion_marker">
+      <h2>Prominent discussion maker</h2>
+      {% for author in top_author %}
+      <!-- Start discussion maker -->
+      <div class="maker">
+        <div class="inline-block maker_id"> #{{forloop.counter}} </div>
+        <div class="inline-block gravatar">
+          {% if author.avatar %}
+          <img src="{{author.avatar}}" alt="avatar" />
+          {% endif %}
+        </div>
+        <div class="inline-block">
+          <span class="marker_name">{{author.name}}</span> <br />
+          <span class="score">+{{author.kudos}}</span> kudos
+        </div>
+      </div>
+      <!-- End discussion maker -->
+      {% endfor %}
+
+      <h2>Tag cloud</h2>
+    </section>
+  
+    <section id="discussion_by_topic">
+      <h2>Discussion by topic the last 30 days</h2>
+      {% for category, thread in threads_per_category.items %}
+      <div>
+        <h2 class="category type_{{category}}"> {{category}} </h2>
+        <ul class="category_entry">
+          {% for email in thread %}
+          <li>{{email.title}}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endfor %}
+    </section>
+{% endblock %}
