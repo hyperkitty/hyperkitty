@@ -1,0 +1,19 @@
+Design for new archiver schema
+
+ per message
+  from message body (scalar unless noted)
+   - subject
+   - to
+   - from
+   - date
+   - in-reply-to
+   - message-id
+   - references (list)
+
+  generated
+   - tags
+   - categories (perhaps, these are special tags that the sysadmin configures in the .cfg)
+   - likes/dislikes
+   - thread-id
+   - filename (for maildir, else it would be nice to have pointer offsets into a mbox)
+   - type == 'mail'
