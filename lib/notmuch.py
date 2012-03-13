@@ -10,7 +10,7 @@ import os
 import bunch
 import notmuch
 
-from mm_app.lib import gravatar_url
+from hyperkitty.lib import gravatar_url
 
 # Used to remove tags that notmuch added automatically that we don't want
 IGNORED_TAGS = (u'inbox', u'unread', u'signed')

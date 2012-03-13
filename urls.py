@@ -9,8 +9,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = patterns('',
     # Examples:
-    # url(r'^$', 'mm_app.views.home', name='home'),
-    # url(r'^mm_app/', include('mm_app.foo.urls')),
+    # url(r'^$', 'hyperkitty.views.home', name='home'),
+    # url(r'^hyperkitty/', include('hyperkitty.foo.urls')),
     # This will be the new index page
     url(r'^2$', 'views.pages.index'),
     url(r'^2/$', 'views.pages.index'),
