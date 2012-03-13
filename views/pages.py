@@ -13,7 +13,7 @@ from django.template import RequestContext, loader
 from django.conf import settings
 import urlgrabber
 
-from mm_app.lib.mockup import generate_thread_per_category, generate_top_author
+from lib.mockup import generate_thread_per_category, generate_top_author
 
 from lib.notmuch import get_thread_info, get_ro_db
 

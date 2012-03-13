@@ -16,10 +16,10 @@ from django.conf import settings
 import notmuch
 import urlgrabber
 
-from mm_app.lib.mockup import generate_random_thread, generate_top_author, \
+from lib.mockup import generate_random_thread, generate_top_author, \
     generate_thread_per_category, get_email_tag
 
-from mm_app.lib import gravatar_url
+from lib import gravatar_url
 from lib.notmuch import get_ro_db
 
 # Move this into settings.py
