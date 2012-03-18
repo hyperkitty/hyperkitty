@@ -30,11 +30,15 @@ $(function() {
               <ul class="inline-block">
                 {% if email.category_tag %}
                 <li class="type type_{{email.category_tag}}">
-                    <a href="/tag/{{email.category_tag}}"> {{email.Category}} </a>
+                  <a href="/2/tag/{{list_address}}/{{email.category_tag}}">
+                    {{email.Category}}
+                  </a>
                 </li>
                 {% else %}
                 <li class="type type_{{email.Category|lower}}">
-                     <a href="/tag/{{email.Category|lower}}"> {{email.Category}} </a>
+                  <a href="/2/tag/{{list_address}}/{{email.Category|lower}}">
+                    {{email.Category}}
+                  </a>
                 </li>
                 {% endif %}
                 <li class="neutral"> 0 </li>
@@ -59,11 +63,15 @@ $(function() {
               <ul class="inline-block">
                 {% if email.category_tag %}
                 <li class="type type_{{email.category_tag}}">
-                  <a href="/tag/{{email.category_tag}}"> {{email.category}} </a>
+                  <a href="/2/tag/{{list_address}}/{{email.category_tag}}">
+                    {{email.Category}}
+                  </a>
                 </li>
                 {% else %}
                 <li class="type type_{{email.Category|lower}}">
-                  <a href="/tag/{{email.Category|lower}}"> {{email.Category}} </a>
+                  <a href="/2/tag/{{list_address}}/{{email.Category|lower}}">
+                    {{email.Category}}
+                  </a>
                 </li>
                 {% endif %}
                 <li class="neutral"> 0 </li>
