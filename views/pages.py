@@ -11,15 +11,15 @@ from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext, loader
 from django.conf import settings
-import urlgrabber
+#import urlgrabber
 
-from hyperkitty.lib.mockup import generate_thread_per_category, generate_top_author
+from bunch import Bunch
 
-from lib.notmuch import get_thread_info, get_ro_db
+from lib.mockup import generate_thread_per_category, generate_top_author
+
+from lib import mongo
 
 # Move this into settings.py
-ARCHIVE_DIR = '/home/toshio/mm3/mailman/var/archives/hyperkitty/'
-
 MONTH_PARTICIPANTS = 284
 MONTH_DISCUSSIONS = 82
 logger = logging.getLogger(__name__)
@@ -32,14 +32,14 @@ class SearchForm(forms.Form):
                     )
                 )
 
-
 def index(request):
     t = loader.get_template('index2.html')
     search_form = SearchForm(auto_id=False)
     base_url = settings.MAILMAN_API_URL % {
         'username': settings.MAILMAN_USER, 'password': settings.MAILMAN_PASS}
-    data = json.load(urlgrabber.urlopen(urljoin(base_url, 'lists')))
-    list_data = sorted(data['entries'], key=lambda elem: (elem['mail_host'], elem['list_name']))
+    #data = json.load(urlgrabber.urlopen(urljoin(base_url, 'lists')))
+    #list_data = sorted(data['entries'], key=lambda elem: (elem['mail_host'], elem['list_name']))
+    list_data = ['devel@fp.o', 'packaging@fp.o']
     c = RequestContext(request, {
         'app_name': settings.APP_NAME,
         'lists': list_data,
@@ -54,56 +54,40 @@ def archives(request, mlist_fqdn, year=None, month=None):
     if year or month:
         try:
             begin_date = datetime(int(year), int(month), 1)
-            end_date = begin_date + timedelta(days=32)
+            end_date = datetime(int(year), int(month) +1, 1)
             month_string = begin_date.strftime('%B %Y')
         except ValueError, err:
             logger.error('Wrong format given for the date')
 
     if not end_date:
-        end_date = datetime.utcnow()
-        begin_date = end_date - timedelta(days=32)
+        today = datetime.utcnow()
+        begin_date = datetime(today.year, today.month, 1)
+        end_date = datetime(today.year, today.month+1, 1)
         month_string = 'Past thirty days'
-    begin_timestamp = timegm(begin_date.timetuple())
-    end_timestamp = timegm(end_date.timetuple())
 
     list_name = mlist_fqdn.split('@')[0]
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('month_view2.html')
 
-    try:
-        db = get_ro_db(os.path.join(ARCHIVE_DIR, mlist_fqdn))
-    except IOError:
-        logger.error('No archive for mailing list %s' % mlist_fqdn)
-        return
+    print begin_date, end_date
+    threads = mongo.get_archives(list_name, start=begin_date,
+        end=end_date)
 
-    msgs = db.create_query('%s..%s' % (begin_timestamp, end_timestamp)).search_messages()
     participants = set()
-    discussions = set()
-    for msg in msgs:
-        message = json.loads(msg.format_message_as_json())
+    cnt = 0
+    for msg in threads:
+        msg = Bunch(msg)
         # Statistics on how many participants and threads this month
-        participants.add(message['headers']['From'])
-        discussions.add(msg.get_thread_id())
+        participants.add(msg['From'])
+        msg.participants = mongo.get_thread_participants(list_name,
+            msg['Thread-ID'])
+        msg.answers = mongo.get_thread_length(list_name,
+            msg['Thread-ID'])
+        threads[cnt] = msg
+        cnt = cnt + 1
 
-    # Collect data about each thread
-    threads = []
-    for thread_id in discussions:
-        # Note: can't use tuple() due to a bug in notmuch
-        thread = [thread for thread in db.create_query('thread:%s' % thread_id).search_threads()]
-        if len(thread) != 1:
-            logger.warning('Unknown thread_id %(thread)s from %(mlist)s:'
-                    ' %(start)s-%(end)s' % {
-                        'thread': thread_id, 'mlist': mlist_fqdn,
-                        'start': begin_timestamp, 'end': end_timestamp})
-            continue
-        thread = thread[0]
-        thread_info = get_thread_info(thread)
-        threads.append(thread_info)
-
-    # For threads, we need to have threads ordered by
-    # youngest to oldest with the oldest message within thread
-    threads.sort(key=lambda entry: entry.most_recent, reverse=True)
+    archives_length = mongo.get_archives_length(list_name)
 
     c = RequestContext(request, {
         'app_name': settings.APP_NAME,
@@ -112,47 +96,49 @@ def archives(request, mlist_fqdn, year=None, month=None):
         'search_form': search_form['keyword'],
         'month': month_string,
         'month_participants': len(participants),
-        'month_discussions': len(discussions),
+        'month_discussions': len(threads),
         'threads': threads,
+        'archives_length': archives_length,
     })
     return HttpResponse(t.render(c))
 
-def recent(request, mlist_fqdn):
+def list(request, mlist_fqdn=None):
+    if not mlist_fqdn:
+        return HttpResponseRedirect('/2/')
     t = loader.get_template('recent_activities.html')
     search_form = SearchForm(auto_id=False)
     list_name = mlist_fqdn.split('@')[0]
 
     # Get stats for last 30 days
-    end_date = datetime.utcnow()
+    today = datetime.utcnow()
+    end_date = datetime(today.year, today.month, today.day)
     begin_date = end_date - timedelta(days=32)
-    begin_timestamp = timegm(begin_date.timetuple())
-    end_timestamp = timegm(end_date.timetuple())
 
-    try:
-        db = get_ro_db(os.path.join(ARCHIVE_DIR, mlist_fqdn))
-    except IOError:
-        logger.error('No archive for mailing list %s' % mlist_fqdn)
-        return
+    print begin_date, end_date
+    threads = mongo.get_archives(table=list_name,start=begin_date,
+        end=end_date)
 
-    msgs = db.create_query('%s..%s' % (begin_timestamp, end_timestamp)).search_messages()
     participants = set()
-    discussions = set()
-    for msg in msgs:
-        message = json.loads(msg.format_message_as_json())
+    cnt = 0
+    for msg in threads:
+        msg = Bunch(msg)
         # Statistics on how many participants and threads this month
-        participants.add(message['headers']['From'])
-        discussions.add(msg.get_thread_id())
+        participants.add(msg['From'])
+        msg.participants = mongo.get_thread_participants(list_name,
+            msg['Thread-ID'])
+        msg.answers = mongo.get_thread_length(list_name,
+            msg['Thread-ID'])
+        threads[cnt] = msg
+        cnt = cnt + 1
+    print len(threads)
 
-    thread_query = db.create_query('%s..%s' % (begin_timestamp, end_timestamp)).search_threads()
-    top_threads = []
-    for thread in thread_query:
-        thread_info = get_thread_info(thread)
-        top_threads.append(thread_info)
-    # top threads are the ones with the most posts
-    top_threads.sort(key=lambda entry: len(entry.answers), reverse=True)
+    # top threads are the one with the most answers
+    top_threads = sorted(threads, key=lambda entry: entry.answers, reverse=True)
 
     # active threads are the ones that have the most recent posting
-    active_threads = sorted(top_threads, key=lambda entry: entry.most_recent, reverse=True)
+    active_threads = sorted(threads, key=lambda entry: entry.Date, reverse=True)
+
+    archives_length = mongo.get_archives_length(list_name)
 
     # top authors are the ones that have the most kudos.  How do we determine
     # that?  Most likes for their post?
@@ -169,11 +155,12 @@ def recent(request, mlist_fqdn):
         'search_form': search_form['keyword'],
         'month': 'Recent activity',
         'month_participants': len(participants),
-        'month_discussions': len(discussions),
-        'top_threads': top_threads,
-        'most_active_threads': active_threads,
+        'month_discussions': len(threads),
+        'top_threads': top_threads[:5],
+        'most_active_threads': active_threads[:5],
         'top_author': authors,
         'threads_per_category': threads_per_category,
+        'archives_length': archives_length,
     })
     return HttpResponse(t.render(c))
 

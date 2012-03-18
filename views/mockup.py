@@ -13,14 +13,15 @@ from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext, loader
 from django.conf import settings
-import notmuch
-import urlgrabber
+#import notmuch
+#import urlgrabber
 
-from hyperkitty.lib.mockup import generate_random_thread, generate_top_author, \
+from lib.mockup import generate_random_thread, generate_top_author, \
     generate_thread_per_category, get_email_tag
 
-from hyperkitty.lib import gravatar_url
-from lib.notmuch import get_ro_db
+from lib import gravatar_url
+
+#from lib.notmuch import get_ro_db
 
 # Move this into settings.py
 ARCHIVE_DIR = '/home/toshio/mm3/mailman/var/archives/hyperkitty/'

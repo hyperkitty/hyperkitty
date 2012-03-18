@@ -26,29 +26,31 @@ h2 {
 
 /* The content section of the page */ 
 .content {
-    width: 90%;
+    width: 1024px;
     margin: auto;
 }
 
 #top_discussion {
-    width: 45%;
+    width: 40%;
     margin-right: 22px;
+    margin-left: 11%;
 }
 
 #discussion_by_topic {
-    width: 45%;
+    width: 40%;
     margin-top: 20px;
     margin-right: 22px;
+    margin-left: 11%;
 }
 
 #most_active {
     float: right;
-    width: 45%;
+    width: 40%;
 }
 
 #discussion_marker {
     float: right;
-    width: 45%;
+    width: 40%;
     margin-top: 20px;
 }
 
@@ -75,7 +77,7 @@ h2 {
 }
 
 .thread_stats ul li {
-    margin-right:20px;
+    margin-right:10px;
 }
 
 .category {
@@ -110,7 +112,7 @@ h2 {
 
 .maker_id, .marker_name{
     font-weight: bold;
-    font-size: 125%;
+    font-size: 115%;
     vertical-align: top;
     padding-right: 20px;
 }

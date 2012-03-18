@@ -204,6 +204,31 @@ a {
     margin: auto;
 }
 
+#recent_activities{
+    width: 90%;
+    margin-top: 20px;
+    margin-right: 20px;
+    float: right;
+}
+
+#archives{
+    width: 8%;
+    margin-top: 20px;
+    float: left;
+/*
+    margin-right: 2px;
+*/
+}
+
+#archives ul {
+    padding: 0;
+    margin: 0;
+}
+
+#archives li {
+    list-style-type: none;
+}
+
 /* Thread list */
 
 .thread_title {
@@ -237,7 +262,7 @@ a {
 
 /* Part containing the body of the mail which can be shown/hidden */
 .expander {
-    width: 768px;
+    width: 665px;
     background-image: linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
     background-image: -o-linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
     background-image: -moz-linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);

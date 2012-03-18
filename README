@@ -22,6 +22,7 @@ source bin/activate
 # Install django and dependencies
 easy_install django
 easy_install bunch
+easy_install urlgrabber
 # Install notmuch -- these are bindings that come with the notmuch C library
 # The easiest way is probably to install them for your OS vendor and then
 # symlink them into the virtualenv similar to this:
