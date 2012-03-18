@@ -114,7 +114,6 @@ def list(request, mlist_fqdn=None):
     end_date = datetime(today.year, today.month, today.day)
     begin_date = end_date - timedelta(days=32)
 
-    print begin_date, end_date
     threads = mongo.get_archives(table=list_name,start=begin_date,
         end=end_date)
 
@@ -130,7 +129,6 @@ def list(request, mlist_fqdn=None):
             msg['Thread-ID'])
         threads[cnt] = msg
         cnt = cnt + 1
-    print len(threads)
 
     # top threads are the one with the most answers
     top_threads = sorted(threads, key=lambda entry: entry.answers, reverse=True)
@@ -169,24 +167,23 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type):
     t = loader.get_template('search2.html')
 
     list_name = mlist_fqdn.split('@')[0]
+    threads_cur = mongo.search_archives(list_name, query_string)
 
-    try:
-        db = get_ro_db(os.path.join(ARCHIVE_DIR, mlist_fqdn))
-    except IOError:
-        logger.error('No archive for mailing list %s' % mlist_fqdn)
-        return
-
-    # Note, can't use tuple() because of a bug in notmuch
-    # Collect data about each thread
-    threads = []
     participants = set()
-    if query_string:
-        for thread in db.create_query(query_string).search_threads():
-            thread_info = get_thread_info(thread)
-            participants.update(thread_info.participants)
-            threads.append(thread_info)
-
-        threads.sort(key=lambda entry: entry.most_recent, reverse=True)
+    threads = []
+    for msg in threads_cur:
+        msg = Bunch(msg)
+        # Statistics on how many participants and threads this month
+        participants.add(msg['From'])
+        if 'Thread-ID' in msg:
+            msg.participants = mongo.get_thread_participants(list_name,
+                msg['Thread-ID'])
+            msg.answers = mongo.get_thread_length(list_name,
+                msg['Thread-ID'])
+        else:
+            msg.participants = 0
+            msg.answers = 0
+        threads.append(msg)
 
     c = RequestContext(request, {
         'app_name': settings.APP_NAME,
@@ -219,7 +216,7 @@ def search_keyword(request, mlist_fqdn, keyword=None):
 def search_tag(request, mlist_fqdn, tag=None):
     '''Searches both tag and topic'''
     if tag:
-        query_string = 'tag:%(tag)s or tag:=topic=%(tag)s' % {'tag': tag}
+        query_string = {'Category': tag.capitalize()}
     else:
         query_string = None
     return _search_results_page(request, mlist_fqdn, query_string, 'Tag search')
