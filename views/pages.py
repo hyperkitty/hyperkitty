@@ -82,9 +82,9 @@ def archives(request, mlist_fqdn, year=None, month=None):
         # Statistics on how many participants and threads this month
         participants.add(msg['From'])
         msg.participants = mongo.get_thread_participants(list_name,
-            msg['Thread-ID'])
+            msg['ThreadID'])
         msg.answers = mongo.get_thread_length(list_name,
-            msg['Thread-ID'])
+            msg['ThreadID'])
         threads[cnt] = msg
         cnt = cnt + 1
 
@@ -125,9 +125,9 @@ def list(request, mlist_fqdn=None):
         # Statistics on how many participants and threads this month
         participants.add(msg['From'])
         msg.participants = mongo.get_thread_participants(list_name,
-            msg['Thread-ID'])
+            msg['ThreadID'])
         msg.answers = mongo.get_thread_length(list_name,
-            msg['Thread-ID'])
+            msg['ThreadID'])
         threads[cnt] = msg
         cnt = cnt + 1
 
@@ -176,11 +176,11 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type):
         msg = Bunch(msg)
         # Statistics on how many participants and threads this month
         participants.add(msg['From'])
-        if 'Thread-ID' in msg:
+        if 'ThreadID' in msg:
             msg.participants = mongo.get_thread_participants(list_name,
-                msg['Thread-ID'])
+                msg['ThreadID'])
             msg.answers = mongo.get_thread_length(list_name,
-                msg['Thread-ID'])
+                msg['ThreadID'])
         else:
             msg.participants = 0
             msg.answers = 0

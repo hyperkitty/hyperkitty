@@ -23,7 +23,11 @@
       <!-- New thread -->
       <div class="thread">
         <div class="notsaved">
-          <span class="thread_title">{{email.Subject}}</span>
+          <span class="thread_title">
+            <a name="{{email.ThreadID}}" href="#{{email.ThreadID}}">
+              {{email.Subject}}
+            </a>
+          </span>
           <span class="thread_date"> {{email.Date}}</span>
         </div>
         <div class="thread_content">

@@ -56,17 +56,17 @@ def get_thread(table, start, end):
 
 def get_thread_length(table, thread_id):
     db = connection[table]
-    db.mails.create_index('Thread-ID')
-    db.mails.ensure_index('Thread-ID')
-    return db.mails.find({'Thread-ID': thread_id}).count()
+    db.mails.create_index('ThreadID')
+    db.mails.ensure_index('ThreadID')
+    return db.mails.find({'ThreadID': thread_id}).count()
 
 
 def get_thread_participants(table, thread_id):
     db = connection[table]
-    db.mails.create_index('Thread-ID')
-    db.mails.ensure_index('Thread-ID')
+    db.mails.create_index('ThreadID')
+    db.mails.ensure_index('ThreadID')
     authors = set()
-    for mail in db.mails.find({'Thread-ID': thread_id}):
+    for mail in db.mails.find({'ThreadID': thread_id}):
         authors.add(mail['From'])
     return len(authors)
 
