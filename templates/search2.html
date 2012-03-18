@@ -21,28 +21,28 @@
     <!-- New thread -->
     <div class="thread">
       <div class="notsaved">
-        <span class="thread_title">{{email.title}}</span>
-        <span class="thread_date">{{email.age}} ago</span>
+        <span class="thread_title">{{email.Subject}}</span>
+        <span class="thread_date">{{email.Date}}</span>
       </div>
       <div class="thread_content">
         {% if email.category_tag %}
         <div class="inline-block type type_{{email.category_tag}}"> 
-          <a href="/2/tag/{{list_address}}/{{email.category_tag}}"> {{email.category}} </a>
+          <a href="/2/tag/{{list_address}}/{{email.category_tag}}"> {{email.Category}} </a>
         </div>
         {% else %}
-        <div class="inline-block type type_{{email.category}}">
-          <a href="/2/tag/{{list_address}}/{{email.category}}"> {{email.category}} </a>
+        <div class="inline-block type type_{{email.Category|lower}}">
+          <a href="/2/tag/{{list_address}}/{{email.Category|lower}}"> {{email.Category}} </a>
         </div>
         {% endif %}
         <div class="inline-block gravatar">
           {% if email.avatar %}
           <img src="{{email.avatar}}" alt="avatar" /> <br />
           {% endif %}
-          {{email.author}}
+          {{email.From}}
         </div>
         <div class="inline-block thread_email">
           <span class="expander">
-            {{email.body}}
+            {{email.Content}}
           </span>
         </div>
       </div>
