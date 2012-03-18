@@ -68,11 +68,13 @@ def get_thread_participants(table, thread_id):
         authors.add(mail['From'])
     return len(authors)
 
+
 def get_archives_length(table):
     db = connection[table]
+    db.mails.create_index('Date')
+    db.mails.ensure_index('Date')
     archives = {}
-    for entry in db.mails.find():
-        date = entry['Date']
+    for date in db.mails.distinct('Date'):
         if date.year in archives:
             archives[date.year].add(date.month)
         else:
