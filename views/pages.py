@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import json
 import logging
 import os
+import re
 from urlparse import urljoin
 
 from django import forms
@@ -210,7 +211,9 @@ def search(request, mlist_fqdn):
 def search_keyword(request, mlist_fqdn, keyword=None):
     if not keyword:
         keyword = request.GET.get('keyword')
-    return _search_results_page(request, mlist_fqdn, keyword, 'Search')
+    regex = '.*%s.*' % keyword
+    query_string = {'Subject': re.compile(regex, re.IGNORECASE)}
+    return _search_results_page(request, mlist_fqdn, query_string, 'Search')
 
 
 def search_tag(request, mlist_fqdn, tag=None):
