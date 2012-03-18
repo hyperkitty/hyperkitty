@@ -39,7 +39,7 @@ def index(request):
         'username': settings.MAILMAN_USER, 'password': settings.MAILMAN_PASS}
     #data = json.load(urlgrabber.urlopen(urljoin(base_url, 'lists')))
     #list_data = sorted(data['entries'], key=lambda elem: (elem['mail_host'], elem['list_name']))
-    list_data = ['devel@fp.o', 'packaging@fp.o']
+    list_data = ['devel@fp.o', 'packaging@fp.o', 'fr-users@fp.o']
     c = RequestContext(request, {
         'app_name': settings.APP_NAME,
         'lists': list_data,
@@ -54,7 +54,10 @@ def archives(request, mlist_fqdn, year=None, month=None):
     if year or month:
         try:
             begin_date = datetime(int(year), int(month), 1)
-            end_date = datetime(int(year), int(month) +1, 1)
+            if int(month) == 12:
+                end_date = datetime(int(year) + 1, 1, 1)
+            else:
+                end_date = datetime(int(year), int(month) +1, 1)
             month_string = begin_date.strftime('%B %Y')
         except ValueError, err:
             logger.error('Wrong format given for the date')
@@ -64,13 +67,10 @@ def archives(request, mlist_fqdn, year=None, month=None):
         begin_date = datetime(today.year, today.month, 1)
         end_date = datetime(today.year, today.month+1, 1)
         month_string = 'Past thirty days'
-
     list_name = mlist_fqdn.split('@')[0]
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('month_view2.html')
-
-    print begin_date, end_date
     threads = mongo.get_archives(list_name, start=begin_date,
         end=end_date)
 
