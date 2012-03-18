@@ -1,6 +1,7 @@
 #-*- coding: utf-8 -*-
 
 import pymongo
+import re
 from bunch import Bunch
 
 connection = pymongo.Connection('localhost', 27017)
@@ -13,7 +14,8 @@ def get_emails_thread(table, start_email, thread):
     db.mails.ensure_index('In-Reply-To')
     db.mails.create_index('Message-ID')
     db.mails.ensure_index('Message-ID')
-    for el in db.mails.find({'In-Reply-To': start_email['Message-ID']},
+    regex = '.*%s.*' % start_email['Message-ID']
+    for el in db.mails.find({'References': re.compile(regex, re.IGNORECASE)},
         sort=[('Date', pymongo.DESCENDING)]):
         thread.append(el)
         get_emails_thread(el, thread)
@@ -24,11 +26,11 @@ def get_archives(table, start, end):
     db = connection[table]
     db.mails.create_index('Date')
     db.mails.ensure_index('Date')
-    db.mails.create_index('In-Reply-To')
-    db.mails.ensure_index('In-Reply-To')
-    # Beginning of thread == No 'In-Reply-To' header
+    db.mails.create_index('References')
+    db.mails.ensure_index('References')
+    # Beginning of thread == No 'References' header
     archives = []
-    for el in db.mails.find({'In-Reply-To': {'$exists':False},
+    for el in db.mails.find({'References': {'$exists':False},
             "Date": {"$gte": start, "$lt": end}}, 
             sort=[('Date', pymongo.DESCENDING)]):
         archives.append(el)
