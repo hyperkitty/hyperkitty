@@ -39,11 +39,11 @@ def get_thread(table, start, end):
     db = connection[table]
     db.mails.create_index('Date')
     db.mails.ensure_index('Date')
-    db.mails.create_index('In-Reply-To')
-    db.mails.ensure_index('In-Reply-To')
-    # Beginning of thread == No 'In-Reply-To' header
+    db.mails.create_index('References')
+    db.mails.ensure_index('References')
+    # Beginning of thread == No 'References' header
     archives = Bunch()
-    for el in db.mails.find({'In-Reply-To': {'$exists':False},
+    for el in db.mails.find({'References': {'$exists':False},
             "Date": {"$gte": start, "$lt": end}}, 
             sort=[('Date', pymongo.DESCENDING)]):
         thread = get_emails_thread(el, [el])
@@ -82,4 +82,14 @@ def get_archives_length(table):
     for key in archives:
         archives[key] = list(archives[key])
     return archives
-    
+
+
+def search_archives(table, query):
+    db = connection[table]
+    db.mails.create_index('Date')
+    db.mails.ensure_index('Date')
+    for el in query:
+        db.mails.create_index(str(el))
+        db.mails.ensure_index(str(el))
+    return db.mails.find(query,
+        sort=[('Date', pymongo.DESCENDING)]).limit(50)
