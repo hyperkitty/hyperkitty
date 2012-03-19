@@ -17,7 +17,7 @@
 
 {% block content %}
 
-    {% for email in threads %}
+    {% for email in threads.object_list %}
     <!-- New thread -->
     <div class="thread">
       <div class="notsaved">
@@ -54,8 +54,8 @@
           {% endfor %}
         </ul>
         <ul class="inline-block">
-          <li class="participant"> {{email.participants|length}} participants</li>
-          <li class="discussion"> {{email.answers|length}} comments</li>
+          <li class="participant"> {{email.participants}} participants</li>
+          <li class="discussion"> {{email.answers}} comments</li>
         </ul>
         <ul class="inline-block">
           <li class="like"> +{{email.liked}}</li>
