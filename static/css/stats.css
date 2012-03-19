@@ -31,26 +31,26 @@ h2 {
 }
 
 #top_discussion {
-    width: 40%;
+    width: 45%;
     margin-right: 22px;
-    margin-left: 11%;
+    margin-left: 10px;
 }
 
 #discussion_by_topic {
-    width: 40%;
+    width: 45%;
     margin-top: 20px;
     margin-right: 22px;
-    margin-left: 11%;
+    margin-left: 10px;
 }
 
 #most_active {
     float: right;
-    width: 40%;
+    width: 45%;
 }
 
 #discussion_marker {
     float: right;
-    width: 40%;
+    width: 45%;
     margin-top: 20px;
 }
 
