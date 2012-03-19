@@ -3,6 +3,7 @@
 import pymongo
 import re
 from bunch import Bunch
+from datetime import datetime
 
 connection = pymongo.Connection('localhost', 27017)
 
@@ -76,13 +77,16 @@ def get_archives_length(table):
     db.mails.create_index('Date')
     db.mails.ensure_index('Date')
     archives = {}
-    for date in db.mails.distinct('Date'):
-        if date.year in archives:
-            archives[date.year].add(date.month)
-        else:
-            archives[date.year] = set([date.month])
-    for key in archives:
-        archives[key] = list(archives[key])
+    entry = db.mails.find_one(sort=[('Date', pymongo.ASCENDING)])
+    date = entry['Date']
+    now = datetime.now()
+    year = date.year
+    month = date.month
+    while year < now.year:
+        archives[year] = range(1,13)[(month -1):]
+        year = year + 1
+        month = 1
+    archives[now.year] = range(1,13)[:now.month]
     return archives
 
 
