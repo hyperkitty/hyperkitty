@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     url(r'^2/list/(?P<mlist_fqdn>.*@.*)/$', 'views.pages.list'),
     url(r'^2/list/(?P<mlist_fqdn>.*@.*)$', 'views.pages.list'),
     # Search
-    url(r'^2/search$', 'views.pages.search'),
+    #url(r'^2/search$', 'views.pages.search'),
     url(r'^2/search/(?P<mlist_fqdn>.*@.*)$', 'views.pages.search_keyword'),
     url(r'^2/search/(?P<mlist_fqdn>.*@.*)/$', 'views.pages.search_keyword'),
     url(r'^2/search/(?P<mlist_fqdn>.*@.*)\/(?P<keyword>.*)$', 'views.pages.search_keyword'),
