@@ -27,11 +27,21 @@ logger = logging.getLogger(__name__)
 
 
 class SearchForm(forms.Form):
-    keyword = forms.CharField(max_length=100,
+    target =  forms.CharField(label='', help_text=None,
+                widget=forms.Select(
+                    choices=(('Subject', 'Subject'),
+                            ('Content', 'Content'),
+                            ('SubjectContent', 'Subject & Content'),
+                            ('From', 'From'))
+                    )
+                )
+
+    keyword = forms.CharField(max_length=100,label='', help_text=None,
                 widget=forms.TextInput(
                     attrs={'placeholder': 'Search this list.'}
                     )
                 )
+
 
 def index(request):
     t = loader.get_template('index2.html')
@@ -44,9 +54,10 @@ def index(request):
     c = RequestContext(request, {
         'app_name': settings.APP_NAME,
         'lists': list_data,
-        'search_form': search_form['keyword'],
+        'search_form': search_form,
         })
     return HttpResponse(t.render(c))
+
 
 def archives(request, mlist_fqdn, year=None, month=None):
     # No year/month: past 32 days
@@ -94,7 +105,7 @@ def archives(request, mlist_fqdn, year=None, month=None):
         'app_name': settings.APP_NAME,
         'list_name' : list_name,
         'list_address': mlist_fqdn,
-        'search_form': search_form['keyword'],
+        'search_form': search_form,
         'month': month_string,
         'month_participants': len(participants),
         'month_discussions': len(threads),
@@ -151,7 +162,7 @@ def list(request, mlist_fqdn=None):
         'app_name': settings.APP_NAME,
         'list_name' : list_name,
         'list_address': mlist_fqdn,
-        'search_form': search_form['keyword'],
+        'search_form': search_form,
         'month': 'Recent activity',
         'month_participants': len(participants),
         'month_discussions': len(threads),
@@ -190,7 +201,7 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type):
         'app_name': settings.APP_NAME,
         'list_name' : list_name,
         'list_address': mlist_fqdn,
-        'search_form': search_form['keyword'],
+        'search_form': search_form,
         'month': search_type,
         'month_participants': len(participants),
         'month_discussions': len(threads),
@@ -208,11 +219,21 @@ def search(request, mlist_fqdn):
     return HttpResponseRedirect(url)
 
 
-def search_keyword(request, mlist_fqdn, keyword=None):
+def search_keyword(request, mlist_fqdn, keyword=None, target=None):
     if not keyword:
         keyword = request.GET.get('keyword')
+    if not target:
+        target = request.GET.get('target')
+    if not target:
+        target = 'Subject'
     regex = '.*%s.*' % keyword
-    query_string = {'Subject': re.compile(regex, re.IGNORECASE)}
+    if target == 'SubjectContent':
+        query_string = {'$or' : [
+            {'Subject': re.compile(regex, re.IGNORECASE)},
+            {'Content': re.compile(regex, re.IGNORECASE)}
+            ]}
+    else:
+        query_string = {target.capitalize(): re.compile(regex, re.IGNORECASE)}
     return _search_results_page(request, mlist_fqdn, query_string, 'Search')
 
 
