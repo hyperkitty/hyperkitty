@@ -12,6 +12,7 @@ from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext, loader
 from django.conf import settings
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 #import urlgrabber
 
 from bunch import Bunch
@@ -179,11 +180,29 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type):
     t = loader.get_template('search2.html')
 
     list_name = mlist_fqdn.split('@')[0]
-    threads_cur = mongo.search_archives(list_name, query_string)
+    threads = mongo.search_archives(list_name, query_string)
+    res_num = len(threads)
 
     participants = set()
-    threads = []
-    for msg in threads_cur:
+    for msg in threads:
+        participants.add(msg['From'])
+
+    paginator = Paginator(threads, 25) # Show 25 threads per page
+
+    page = request.GET.get('page')
+    try:
+        page = int(request.GET.get('page', '1'))
+    except ValueError:
+        page = 1
+
+    # If page request (9999) is out of range, deliver last page of results.
+    try:
+        threads = paginator.page(page)
+    except (EmptyPage, InvalidPage):
+        threads = paginator.page(paginator.num_pages)
+
+    cnt = 0
+    for msg in threads.object_list:
         msg = Bunch(msg)
         # Statistics on how many participants and threads this month
         participants.add(msg['From'])
@@ -195,7 +214,8 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type):
         else:
             msg.participants = 0
             msg.answers = 0
-        threads.append(msg)
+        threads.object_list[cnt] = msg
+        cnt = cnt + 1
 
     c = RequestContext(request, {
         'app_name': settings.APP_NAME,
@@ -204,7 +224,7 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type):
         'search_form': search_form,
         'month': search_type,
         'month_participants': len(participants),
-        'month_discussions': len(threads),
+        'month_discussions': res_num,
         'threads': threads,
     })
     return HttpResponse(t.render(c))

@@ -93,5 +93,6 @@ def search_archives(table, query):
     for el in query:
         db.mails.create_index(str(el))
         db.mails.ensure_index(str(el))
-    return db.mails.find(query,
-        sort=[('Date', pymongo.DESCENDING)]).limit(50)
+    return list(db.mails.find(query, sort=[('Date',
+        pymongo.DESCENDING)]))
+    

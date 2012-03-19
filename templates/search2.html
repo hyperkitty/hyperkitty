@@ -17,6 +17,24 @@
 
 {% block content %}
 
+    {% if threads.object_list %}
+    <div class="pagination">
+      <span class="step-links">
+        {% if threads.has_previous %}
+          <a href="?page={{ threads.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+          Page {{ threads.number }} of {{ threads.paginator.num_pages }}.
+        </span>
+
+        {% if threads.has_next %}
+          <a href="?page={{ threads.next_page_number }}">next</a>
+        {% endif %}
+      </span>
+    </div>
+    {% endif %}
+    
     {% for email in threads.object_list %}
     <!-- New thread -->
     <div class="thread">
@@ -73,5 +91,23 @@
     {% empty %}
     Sorry no emails could be found for your search.
     {% endfor %}
+  
+    {% if threads.object_list %}
+    <div class="pagination">
+      <span class="step-links">
+        {% if threads.has_previous %}
+          <a href="?page={{ threads.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+          Page {{ threads.number }} of {{ threads.paginator.num_pages }}.
+        </span>
+
+        {% if threads.has_next %}
+          <a href="?page={{ threads.next_page_number }}">next</a>
+        {% endif %}
+      </span>
+    </div>
+    {% endif %}
 
 {% endblock %}
