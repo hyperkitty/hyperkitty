@@ -19,6 +19,8 @@ urlpatterns = patterns('',
     url(r'^2/archives/(?P<mlist_fqdn>.*@.*)/(?P<year>\d{4})/(?P<month>\d\d?)$', 'views.pages.archives'),
     url(r'^2/archives/(?P<mlist_fqdn>.*@.*)/$', 'views.pages.archives'),
     url(r'^2/archives/(?P<mlist_fqdn>.*@.*)$', 'views.pages.archives'),
+    # The thread view
+    url(r'^2/thread/(?P<mlist_fqdn>.*@.*)/(?P<threadid>\d+)$', 'views.pages.thread'),
     # This will be the new recent page
     url(r'^2/list$', 'views.pages.index'),
     url(r'^2/list/$', 'views.pages.index'),

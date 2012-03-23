@@ -264,3 +264,45 @@ def search_tag(request, mlist_fqdn, tag=None):
     else:
         query_string = None
     return _search_results_page(request, mlist_fqdn, query_string, 'Tag search')
+
+def thread (request, mlist_fqdn, threadid):
+    ''' Displays all the email for a given thread identifier '''
+    list_name = mlist_fqdn.split('@')[0]
+
+    search_form = SearchForm(auto_id=False)
+    t = loader.get_template('thread.html')
+    threads = mongo.get_thread_list(list_name, int(threadid))
+    prev_thread = mongo.get_thread_name(list_name, int(threadid) - 1)
+    if len(prev_thread) > 40:
+        prev_thread = '%s...' % prev_thread[:41]
+    next_thread = mongo.get_thread_name(list_name, int(threadid) + 1)
+    if len(next_thread) > 40:
+        next_thread = '%s...' % next_thread[:41]
+
+    participants = set()
+    cnt = 0
+    for msg in threads:
+        msg = Bunch(msg)
+        # Statistics on how many participants and threads this month
+        participants.add(msg.email.From)
+        cnt = cnt + 1
+
+    archives_length = mongo.get_archives_length(list_name)
+
+    c = RequestContext(request, {
+        'app_name': settings.APP_NAME,
+        'list_name' : list_name,
+        'list_address': mlist_fqdn,
+        'search_form': search_form,
+        'month': 'Thread',
+        'participants': participants,
+        'answers': cnt,
+        'first_mail': threads[0],
+        'threads': threads[1:],
+        'next_thread': next_thread,
+        'next_thread_id': int(threadid) + 1,
+        'prev_thread': prev_thread,
+        'prev_thread_id': int(threadid) - 1,
+        'archives_length': archives_length,
+    })
+    return HttpResponse(t.render(c))

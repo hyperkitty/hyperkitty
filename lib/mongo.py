@@ -7,6 +7,58 @@ from datetime import datetime
 
 connection = pymongo.Connection('localhost', 27017)
 
+def _build_thread(emails):
+    thread = {}
+    for email in emails:
+        #print email['Date'], email['From'] #, email['Message-ID']
+        email = Bunch(email)
+        ref = []
+        if 'References' in email:
+            ref.extend(email['References'].split()[-1:])
+        elif 'In-Reply-To' in email:
+            ref.append(email['In-Reply-To'])
+        if email['Message-ID'] not in thread:
+            thread[email['Message-ID']] = Bunch(
+                {'email': email, 'child': []})
+        else:
+            thread[email['Message-ID']].email = email
+        for ref in set(ref):
+            if ref in thread:
+                thread[ref].child.append(email['Message-ID'])
+            else:
+                thread[ref] = Bunch(
+                {'email': None, 'child': [email['Message-ID']]})
+    return thread
+
+def _tree_to_list(tree, mailid, level, thread_list):
+    start = tree[mailid]
+    start.level = level
+    thread_list.append(start)
+    for mail in start.child:
+        mail = tree[mail]
+        thread_list = _tree_to_list(tree, mail.email['Message-ID'],
+            level + 1, thread_list)
+    return thread_list
+
+def get_thread_list(table, threadid):
+    db = connection[table]
+    thread = list(db.mails.find({'ThreadID': threadid},
+        sort=[('Date', pymongo.ASCENDING)]))
+
+    tree = _build_thread(thread)
+    thread_list = []
+    if thread:
+        thread = _tree_to_list(tree, thread[0]['Message-ID'], 0, thread_list)
+        return thread
+    else:
+        return []
+
+def get_thread_name(table, threadid):
+    db = connection[table]
+    thread = list(db.mails.find({'ThreadID': threadid},
+        sort=[('Date', pymongo.ASCENDING)]))[0]
+    return thread['Subject']
+
 def get_emails_thread(table, start_email, thread):
     db = connection[table]
     db.mails.create_index('Date')
