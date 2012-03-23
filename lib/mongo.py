@@ -42,7 +42,7 @@ def _tree_to_list(tree, mailid, level, thread_list):
 
 def get_thread_list(table, threadid):
     db = connection[table]
-    thread = list(db.mails.find({'ThreadID': threadid},
+    thread = list(db.mails.find({'ThreadID': int(threadid)},
         sort=[('Date', pymongo.ASCENDING)]))
 
     tree = _build_thread(thread)
@@ -55,9 +55,12 @@ def get_thread_list(table, threadid):
 
 def get_thread_name(table, threadid):
     db = connection[table]
-    thread = list(db.mails.find({'ThreadID': threadid},
-        sort=[('Date', pymongo.ASCENDING)]))[0]
-    return thread['Subject']
+    thread = list(db.mails.find({'ThreadID': int(threadid)},
+        sort=[('Date', pymongo.ASCENDING)]))
+    if thread:
+        return thread[0]['Subject']
+    else:
+        return ''
 
 def get_emails_thread(table, start_email, thread):
     db = connection[table]
