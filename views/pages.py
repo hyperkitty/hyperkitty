@@ -273,11 +273,11 @@ def thread (request, mlist_fqdn, threadid):
     t = loader.get_template('thread.html')
     threads = mongo.get_thread_list(list_name, int(threadid))
     prev_thread = mongo.get_thread_name(list_name, int(threadid) - 1)
-    if len(prev_thread) > 40:
-        prev_thread = '%s...' % prev_thread[:41]
+    if len(prev_thread) > 30:
+        prev_thread = '%s...' % prev_thread[:31]
     next_thread = mongo.get_thread_name(list_name, int(threadid) + 1)
-    if len(next_thread) > 40:
-        next_thread = '%s...' % next_thread[:41]
+    if len(next_thread) > 30:
+        next_thread = '%s...' % next_thread[:31]
 
     participants = set()
     cnt = 0
