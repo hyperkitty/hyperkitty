@@ -217,7 +217,15 @@
     padding: 5px;
     min-height: 40px;
     background-color: rgb(255, 255, 255);
+    white-space: pre;
+    display: inline-block;
 }
+
+#first_email_body {
+    white-space: pre;
+    display: inline-block;
+}
+
 
 .email_body a {
     float: right;
@@ -228,3 +236,12 @@
     padding: 0px;
     margin-top: 5px;
 }
+
+.thread_email {
+    padding-left: 20px;
+    margin-left: 21px;
+    display: inline-block;
+    vertical-align: top;
+    white-space: pre;
+}
+
