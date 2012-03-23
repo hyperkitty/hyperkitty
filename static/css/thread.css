@@ -1,0 +1,230 @@
+#thread_nav{
+    margin:auto;
+    width:100%;
+    text-align:center;
+}
+
+#thread_nav * {
+    vertical-align: middle;
+}
+
+#thread_nav .thread_title{
+    margin:auto;
+    width: 600px;
+}
+
+#thread_nav br {
+    margin-top: 10px;
+}
+
+#thread_nav .thread_info {
+    margin-top:10px;
+    margin-bottom:10px;
+    font-size: 70%;
+    font-weight: normal;
+    text-align: center;
+}
+
+#thread_nav .thread_info li {
+    margin-left:3em;
+}
+
+#olderhread, #newewthread {
+    font-size: 70%;
+    color: rgb(167, 169, 172);
+}
+
+#newewthread {
+    float: left;
+    margin-top: 2em;
+    margin-left: 20px;
+}
+
+#olderhread {
+    float: right;
+    margin-top: 2em;
+    margin-right: 20px;
+}
+
+/* Content section */
+.content {
+    width: 90%;
+    margin: auto;
+}
+
+/* Define the two columns */
+#thread_content {
+    width: 70%;
+    margin-right: 22px;
+}
+
+#thread_overview_info {
+    float: right;
+    width: 20%;
+}
+
+/* Thread general information column */
+#days_old {
+    margin-left:1em;
+}
+
+.days_text {
+    font-size: 70%;
+}
+
+.days_num {
+    font-size: 200%;
+}
+
+#add_to_fav a{
+    color: rgb(167, 169, 172);
+}
+
+#grey {
+    color: rgb(167, 169, 172);
+    background-color: rgb(167, 169, 172);
+    margin: 0px;
+    border: 0 none;
+    height: 1px;
+}
+
+#tags {
+    color: rgb(167, 169, 172);
+    margin-top: 20px;
+}
+
+#tag_title {
+    color: rgb(77, 77, 77);
+    text-transform: uppercase;
+}
+
+#tags ul {
+    padding: 10px 0px 10px 0px;
+    margin: 0;
+}
+
+#add_tag_field {
+    width:70%;
+}
+
+#participants {
+    margin-top: 20px;
+    color: rgb(167, 169, 172);
+}
+
+#participants_title {
+    color: rgb(77, 77, 77);
+    text-transform: uppercase;
+}
+
+#participants ul {
+    padding: 10px 0px 10px 0px;
+    margin: 0;
+}
+
+#participants li {
+    list-style-type: none;
+}
+
+#participants img {
+    width: 20px;
+}
+
+/* Main section with the whole thread */
+
+/* First email of the thread. */
+
+.first_email {
+}
+
+.email_header {
+    position:relative;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.email_header img {
+    width: 40px;
+}
+
+.email_author .name{
+    color: rgb(55, 113, 200);
+    font-weight: bold;
+}
+
+.email_author .rank{
+    color: rgb(167, 169, 172);
+    font-size: 80%;
+    font-weight: bold;
+}
+
+.email_date {
+    position: absolute;
+    right: 20px;
+    bottom: 0px;
+}
+
+.email_date .date {
+    font-weight: bold;
+}
+
+.email_date .time {
+    color: rgb(167, 169, 172);
+}
+
+.email_info {
+    padding: 0px;
+}
+
+.add_comment {
+    float: right;
+}
+
+/* The email thread */
+.even {
+    background-color: rgb(246, 246, 246);
+    border-top: 1px solid rgb(179, 179, 179);
+}
+
+.odd {
+    background-color: rgb(238, 238, 238);
+    border-top: 1px solid rgb(179, 179, 179);
+}
+
+.email {
+}
+
+.email .email_header {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.email .email_author {
+    font-size: 90%;
+}
+
+.email .email_date, .email .email_date .date {
+    font-size: 90%;
+}
+
+.email_body{
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(179, 179, 179);
+    padding: 5px;
+    min-height: 40px;
+    background-color: rgb(255, 255, 255);
+}
+
+.email_body a {
+    float: right;
+    padding: 3px 10px 0px 0px;
+}
+
+.email_info {
+    padding: 0px;
+    margin-top: 5px;
+}
