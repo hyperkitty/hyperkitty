@@ -39,7 +39,9 @@
     <!-- New thread -->
     <div class="thread">
       <div class="notsaved">
-        <span class="thread_title">{{email.Subject}}</span>
+        <a href="/2/thread/{{list_address}}/{{email.ThreadID}}">
+          <span class="thread_title">{{email.Subject}}</span>
+        </a>
         <span class="thread_date">{{email.Date}}</span>
       </div>
       <div class="thread_content">
