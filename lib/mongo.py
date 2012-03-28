@@ -7,6 +7,7 @@ from datetime import datetime
 
 connection = pymongo.Connection('localhost', 27017)
 
+
 def _build_thread(emails):
     thread = {}
     for email in emails:
@@ -30,6 +31,7 @@ def _build_thread(emails):
                 {'email': None, 'child': [email['Message-ID']]})
     return thread
 
+
 def _tree_to_list(tree, mailid, level, thread_list):
     start = tree[mailid]
     start.level = level
@@ -39,6 +41,7 @@ def _tree_to_list(tree, mailid, level, thread_list):
         thread_list = _tree_to_list(tree, mail.email['Message-ID'],
             level + 1, thread_list)
     return thread_list
+
 
 def get_thread_list(table, threadid):
     db = connection[table]
@@ -53,6 +56,7 @@ def get_thread_list(table, threadid):
     else:
         return []
 
+
 def get_thread_name(table, threadid):
     db = connection[table]
     thread = list(db.mails.find({'ThreadID': int(threadid)},
@@ -61,6 +65,14 @@ def get_thread_name(table, threadid):
         return thread[0]['Subject']
     else:
         return ''
+
+
+def get_email(table, emailid):
+    db = connection[table]
+    db.mails.create_index('Message-ID')
+    db.mails.ensure_index('Message-ID')
+    return db.mails.find_one({'Message-ID': emailid})
+
 
 def get_emails_thread(table, start_email, thread):
     db = connection[table]
@@ -154,4 +166,4 @@ def search_archives(table, query):
         db.mails.ensure_index(str(el))
     return list(db.mails.find(query, sort=[('Date',
         pymongo.DESCENDING)]))
-    
+
