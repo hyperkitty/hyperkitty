@@ -117,7 +117,7 @@ def archives(request, mlist_fqdn, year=None, month=None):
 
 def list(request, mlist_fqdn=None):
     if not mlist_fqdn:
-        return HttpResponseRedirect('/2/')
+        return HttpResponseRedirect('/')
     t = loader.get_template('recent_activities.html')
     search_form = SearchForm(auto_id=False)
     list_name = mlist_fqdn.split('@')[0]
@@ -177,7 +177,7 @@ def list(request, mlist_fqdn=None):
 
 def _search_results_page(request, mlist_fqdn, query_string, search_type):
     search_form = SearchForm(auto_id=False)
-    t = loader.get_template('search2.html')
+    t = loader.get_template('search.html')
 
     list_name = mlist_fqdn.split('@')[0]
     threads = mongo.search_archives(list_name, query_string)
@@ -233,9 +233,9 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type):
 def search(request, mlist_fqdn):
     keyword = request.GET.get('keyword')
     if keyword:
-        url = '/2/search/%s/%s' % (mlist_fqdn, keyword)
+        url = '/search/%s/%s' % (mlist_fqdn, keyword)
     else:
-        url = '/2/search/%s' % (mlist_fqdn,)
+        url = '/search/%s' % (mlist_fqdn,)
     return HttpResponseRedirect(url)
 
 
