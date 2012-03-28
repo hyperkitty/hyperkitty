@@ -1,5 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.conf import settings
+from api import EmailResource, ThreadResource
+from tastypie.api import Api
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
@@ -41,6 +43,9 @@ urlpatterns = patterns('',
     url(r'^mockup/search\/(?P<keyword>.*)$', 'views.mockup.search_keyword'),
     url(r'^mockup/tag\/(?P<tag>.*)$', 'views.mockup.search_tag'),
 
+    # REST API
+    url(r'^api/email\/(?P<mlist_fqdn>.*@.*)\/(?P<messageid>.*)/',  EmailResource.as_view()),
+    url(r'^api/thread\/(?P<mlist_fqdn>.*@.*)\/(?P<threadid>.*)/',  ThreadResource.as_view()),
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
