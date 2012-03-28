@@ -60,6 +60,14 @@ def index(request):
     return HttpResponse(t.render(c))
 
 
+def api(request):
+    t = loader.get_template('api.html')
+    c = RequestContext(request, {
+        'app_name': settings.APP_NAME,
+        })
+    return HttpResponse(t.render(c))
+
+
 def archives(request, mlist_fqdn, year=None, month=None):
     # No year/month: past 32 days
     # year and month: find the 32 days for that month

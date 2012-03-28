@@ -44,6 +44,7 @@ urlpatterns = patterns('',
     url(r'^mockup/tag\/(?P<tag>.*)$', 'views.mockup.search_tag'),
 
     # REST API
+    url(r'^api/$', 'views.pages.api'),
     url(r'^api/email\/(?P<mlist_fqdn>.*@.*)\/(?P<messageid>.*)/',  EmailResource.as_view()),
     url(r'^api/thread\/(?P<mlist_fqdn>.*@.*)\/(?P<threadid>.*)/',  ThreadResource.as_view()),
     # Uncomment the admin/doc line below to enable admin documentation:

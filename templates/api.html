@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}{{ app_name }}{% endblock %}
+
+{% block additional_headers %}
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
+{% endblock %}
+
+{% block content %}
+    <h2>REST API</h2>
+    <p>
+      HyperKitty comes with a small REST API allowing you to programatically retrieve 
+      emails and information.
+    </p>
+    
+    <div class="odd" style="padding-left: 1em">
+        <h3>Formats</h3>
+        <p>
+            This REST API can return the information into several formats.
+            The default format is html to allow human readibility.<br />
+            To change the format, just add 
+            <span style="font-style:italic">?format=&lt;FORMAT&gt;</span> to the url
+        </p>
+        <p>The list of available formats is:</p>
+        <ul>
+            <li>json <a>(?format=json)</a></li>
+            <li>json-p <a>(?format=json-p)</a></li>
+            <li>txt <a>(?format=txt)</a></li>
+            <li>xml <a>(?format=xml)</a></li>
+            <li>html <a>(?format=html)</a></li>
+            <li>xhtml <a>(?format=xhtml)</a></li>
+        </ul>
+    </div>
+    
+    <div class="even" style="padding-left: 1em">
+        <h3>Emails <a>/api/email/&lt;list name&gt;/&lt;Message-ID&gt;</a></h3>
+        <p>
+Using the address /api/email/&lt;list name&gt;/&lt;Message-ID&gt; you will be able to
+retrieve the information known about a specific email on the specified mailing-list.
+        </p>
+        <p> For example: <a href="/api/email/devel@fp.o/<1312985457.28933.34.camel@ankur.pc>/">
+            /api/email/devel@fp.o/&lt;1312985457.28933.34.camel@ankur.pc&gt;/
+        </a>
+        </p>
+    </div>
+    <div class="odd" style="padding-left: 1em">
+        <h3>Threads <a>/api/thread/&lt;list name&gt;/&lt;ThreadID&gt;</a></h3>
+        <p>
+        </p>
+        <p>
+Using the address /api/thread/&lt;list name&gt;/&lt;Message-ID&gt; you will be able to
+retrieve the all the email for a specific thread on the specified mailing-list.
+        </p>
+        <p> For example: <a href="/api/thread/devel@fp.o/1/">
+            /api/email/devel@fp.o/1/
+        </a>
+        </p>
+    </div>
+{% endblock %}
