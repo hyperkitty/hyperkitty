@@ -13,6 +13,7 @@ Dependencies:
 * bunch
 * Django
 * djangorestframework
+* django-tastypie
 
 
 To get it run:
@@ -36,6 +37,7 @@ easy_install django
 easy_install bunch
 easy_install urlgrabber
 easy_install djangorestframework
+easy_install django-tastypie
 
 # Install pymongo and the mongodb database
 sudo yum install -y pymongo mongodb-server
