@@ -1,7 +1,6 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.conf import settings
 from api import EmailResource, ThreadResource
-from tastypie.api import Api
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
