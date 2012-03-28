@@ -17,32 +17,52 @@
 
 {% block content %}
 
-    {% for email in threads %}
+    {% if threads.object_list %}
+    <div class="pagination">
+      <span class="step-links">
+        {% if threads.has_previous %}
+          <a href="?page={{ threads.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+          Page {{ threads.number }} of {{ threads.paginator.num_pages }}.
+        </span>
+
+        {% if threads.has_next %}
+          <a href="?page={{ threads.next_page_number }}">next</a>
+        {% endif %}
+      </span>
+    </div>
+    {% endif %}
+    
+    {% for email in threads.object_list %}
     <!-- New thread -->
     <div class="thread">
       <div class="notsaved">
-        <span class="thread_title">{{email.title}}</span>
-        <span class="thread_date"> 6 hours ago</span>
+        <a href="/thread/{{list_address}}/{{email.ThreadID}}">
+          <span class="thread_title">{{email.Subject}}</span>
+        </a>
+        <span class="thread_date">{{email.Date}}</span>
       </div>
       <div class="thread_content">
         {% if email.category_tag %}
         <div class="inline-block type type_{{email.category_tag}}"> 
-            <a href="/tag/{{email.category_tag}}"> {{email.category}} </a>
+          <a href="/tag/{{list_address}}/{{email.category_tag}}"> {{email.Category}} </a>
         </div>
         {% else %}
-        <div class="inline-block type type_{{email.category}}">
-            <a href="/tag/{{email.category}}"> {{email.category}} </a>
+        <div class="inline-block type type_{{email.Category|lower}}">
+          <a href="/tag/{{list_address}}/{{email.Category|lower}}"> {{email.Category}} </a>
         </div>
         {% endif %}
         <div class="inline-block gravatar">
           {% if email.avatar %}
           <img src="{{email.avatar}}" alt="avatar" /> <br />
           {% endif %}
-          {{email.author}}
+          {{email.From}}
         </div>
         <div class="inline-block thread_email">
           <span class="expander">
-            {{email.body}}
+            {{email.Content}}
           </span>
         </div>
       </div>
@@ -50,18 +70,22 @@
         <ul class="tags inline">
           <li>Tags:</li>
           {% for tag in email.tags %}
-          <li> <a href="/tag/{{tag}}">{{tag}}</a></li>
+          <li> <a href="/tag/{{list_address}}/{{tag}}">{{tag}}</a></li>
           {% endfor %}
         </ul>
         <ul class="inline-block">
-          <li class="participant"> {{email.participants|length}} participants</li>
-          <li class="discussion"> {{email.answers|length}} comments</li>
+          <li class="participant"> {{email.participants}} participants</li>
+          <li class="discussion"> {{email.answers}} comments</li>
         </ul>
         <ul class="inline-block">
-          <li class="like"> +1</li>
+          <li class="like"> +{{email.liked}}</li>
           <li class="youlike"> <a href="#like"> Like</a></li>
           <li class="youdislike"> <a href="#dislike"> Dislike</a></li>
+          {% if email.answers %}
           <li class="showdiscussion"> <a href="#show"> Show discussion</a></li>
+          {% else %}
+          <li class="showdiscussion invisible"> <a href="#show"> Show discussion</a></li>
+          {% endif %}
         </ul>
       </div>
     </div>
@@ -69,5 +93,23 @@
     {% empty %}
     Sorry no emails could be found for your search.
     {% endfor %}
+  
+    {% if threads.object_list %}
+    <div class="pagination">
+      <span class="step-links">
+        {% if threads.has_previous %}
+          <a href="?page={{ threads.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+          Page {{ threads.number }} of {{ threads.paginator.num_pages }}.
+        </span>
+
+        {% if threads.has_next %}
+          <a href="?page={{ threads.next_page_number }}">next</a>
+        {% endif %}
+      </span>
+    </div>
+    {% endif %}
 
 {% endblock %}

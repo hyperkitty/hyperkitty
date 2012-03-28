@@ -21,7 +21,11 @@
     {% block header %}
     <div id="headline">
       <ul class="inline-block">
-        <li id="list_name"><a href="/">{{list_name}}</a></li>
+        {% if list_address  %}
+        <li id="list_name"><a href="/list/{{list_address}}">{{list_name}}</a></li>
+        {% else %}
+        <li id="list_name"><a href="/list/">{{list_name}}</a></li>
+        {% endif %}
         <li id="page_date">{{month}}</li>
       </ul>
       {% if month_participants and month_discussions %}
@@ -32,16 +36,23 @@
       </ul>
       {% endif %}
     </div>
+    {% if list_address  %}
     <p id="list_email">
       <a href="mailto:{{list_address}}">
         {{list_address}}
       </a>
     </p>
+    <p id="list_email" class='inline'>
+      <a href="/">
+        All lists
+      </a>
+    </p>
     <div id="searchbox">
-      <form action="/search" method="get">
+      <form action="/search/{{list_address}}" method="get">
         {{ search_form }}
       </form> 
     </div>
+    {% endif %}
     <div id="newthread">
       <a href="#Create_new_thread">
         <img src="{{ STATIC_URL }}img/newthread.png" alt="New thread" />

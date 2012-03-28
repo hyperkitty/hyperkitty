@@ -45,7 +45,7 @@ class SearchForm(forms.Form):
 
 
 def index(request):
-    t = loader.get_template('index2.html')
+    t = loader.get_template('index.html')
     search_form = SearchForm(auto_id=False)
     base_url = settings.MAILMAN_API_URL % {
         'username': settings.MAILMAN_USER, 'password': settings.MAILMAN_PASS}
@@ -83,7 +83,7 @@ def archives(request, mlist_fqdn, year=None, month=None):
     list_name = mlist_fqdn.split('@')[0]
 
     search_form = SearchForm(auto_id=False)
-    t = loader.get_template('month_view2.html')
+    t = loader.get_template('month_view.html')
     threads = mongo.get_archives(list_name, start=begin_date,
         end=end_date)
 

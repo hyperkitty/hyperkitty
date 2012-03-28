@@ -1,0 +1,134 @@
+{% extends "base_thread.html" %}
+
+{% block title %}{{ app_name }}{% endblock %}
+
+{% block additional_headers %}
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
+  <script src="{{ STATIC_URL }}jquery.expander.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('div.email_body').expander({
+      userCollapseText: 'View Less',
+      expandText: 'View More'
+      });
+    });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+  <div class="content">
+
+    <!-- right column -->
+    <section id="thread_overview_info">
+      <!-- Start dates -->
+      <div id="thread_date_info">
+        <div class="days_num inline-block">21</div>
+        <div class="days_text inline-block">
+          days<br /> inactive
+        </div>
+        <div id="days_old" class="days_num inline-block">24</div>
+        <div class="days_text inline-block">
+          days <br /> old
+        </div>
+      </div>
+      <p id="add_to_fav">
+        <a href="#AddFav" class="notsaved">Add to favorite discussions</a>
+      </p>
+      <!-- End dates -->
+      <hr id="grey"/>
+      <div id="tags">
+        <span id="tag_title">tags </span>({{tags|length}})
+        <ul class="inline">
+          {% for tag in tags %}
+          <li> {{ tag }} |</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div id="add_tag">
+        <form action="#add_tag" method="get" >
+          <input id="add_tag_field" type="text" name="add_tag" class="inline-block"/>
+          <input id="add_tag_button" type="submit" value="ADD" class="inline-block"/>
+        </form>
+      </div>
+      <div id="participants">
+        <span id="participants_title"> participants </span>({{participants|length}})
+        <ul>
+          {% for ppl in participants %}
+          <li>
+            <img src="http://planet.fedoraproject.org/images/heads/default.png" alt="avatar" />
+            {{ppl}}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+
+    <!-- main section, the email thread -->
+    <section id="thread_content">
+
+      <!-- Start first email -->
+      <div class="first_email">
+        <div class="email_header">
+          <img src="http://planet.fedoraproject.org/images/heads/default.png" alt="avatar" />
+          <div class="email_author inline-block">
+            <span class="name">{{first_mail.email.From}}</span> 
+            <br />
+            <span class="rank">Rank 10</span>
+          </div>
+          <div class="email_date inline-block right">
+            <span class="date">{{first_mail.email.Date}}</span>
+            <br />
+            <span class="time"></span>
+          </div>
+        </div>
+        <div id="first_email_body">
+            {{first_mail.email.Content}}
+        </div>
+        <ul class="email_info inline">
+          <li class="neutral"> 0</li>
+          <li class="youlike"> <a href="#like"> Like</a></li>
+          <li class="youdislike"> <a href="#dislike"> Dislike</a></li>
+          <li class="discussion add_comment"> <a href="#comment"> Add your own comment</a></li>
+        </ul>
+      </div>
+      <!-- End first email -->
+
+        {% for email in threads %}
+        <!-- Start email -->
+        <div class="even">
+        <!-- Start email -->
+        <div class="email" style="padding-left: {{email.level}}em">
+          <div class="email_header">
+            <img src="http://planet.fedoraproject.org/images/heads/default.png" alt="avatar" />
+            <div class="email_author inline-block">
+              <span class="name">{{email.email.From}}</span> 
+              <br />
+              <span class="rank">Rank 8</span>
+            </div>
+            <div class="email_date inline-block right">
+              <span class="date">{{email.email.Date}}</span>
+              <br />
+            </div>
+          </div>
+          <div class="email_body">
+              {{email.email.Content}}
+          </div>
+          <ul class="email_info inline">
+            <li class="neutral"> 0</li>
+            <li class="youlike"> <a href="#like"> Like</a></li>
+            <li class="youdislike"> <a href="#dislike"> Dislike</a></li>
+            <li class="discussion add_comment"> <a href="#comment">Reply</a></li>
+          </ul>
+        </div>
+        <!-- End of email -->
+        {% empty %}
+        Sorry no emails could be found for your search.
+        {% endfor %}
+
+    </section>
+
+  </div> <!-- end of content -->
+{% endblock %}

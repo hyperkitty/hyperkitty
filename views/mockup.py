@@ -45,7 +45,7 @@ class SearchForm(forms.Form):
 
 
 def index(request):
-    t = loader.get_template('index.html')
+    t = loader.get_template('mockup/index.html')
     search_form = SearchForm(auto_id=False)
     c = RequestContext(request, {
         'app_name': settings.APP_NAME,
@@ -65,7 +65,7 @@ def archives(request, year=None, month=None):
         except ValueError, err:
             logger.error('Wrong format given for the date')
     search_form = SearchForm(auto_id=False)
-    t = loader.get_template('month_view.html')
+    t = loader.get_template('mockup/month_view.html')
     c = RequestContext(request, {
         'app_name': settings.APP_NAME,
         'list_name' : MAILING_LIST,
@@ -79,7 +79,7 @@ def archives(request, year=None, month=None):
     return HttpResponse(t.render(c))
 
 def recent(request):
-    t = loader.get_template('recent_activities.html')
+    t = loader.get_template('mockup/recent_activities.html')
     threads = generate_random_thread()
     threads2 = threads[:]
     threads2.reverse()
@@ -106,12 +106,12 @@ def recent(request):
 
 def search(request):
     keyword = request.GET.get('keyword')
-    return HttpResponseRedirect('/search/%s' % keyword)
+    return HttpResponseRedirect('/mockup/search/%s' % keyword)
 
 
 def search_keyword(request, keyword):
     search_form = SearchForm(auto_id=False)
-    t = loader.get_template('search.html')
+    t = loader.get_template('mockup/search.html')
     if keyword:
         c = RequestContext(request, {
             'app_name': settings.APP_NAME,
@@ -138,7 +138,7 @@ def search_keyword(request, keyword):
 
 def search_tag(request, tag):
     search_form = SearchForm(auto_id=False)
-    t = loader.get_template('search.html')
+    t = loader.get_template('mockup/search.html')
     c = RequestContext(request, {
         'app_name': settings.APP_NAME,
         'list_name' : MAILING_LIST,
