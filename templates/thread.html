@@ -100,30 +100,31 @@
         <!-- Start email -->
         <div class="even">
         <!-- Start email -->
-        <div class="email" style="padding-left: {{email.level}}em">
-          <div class="email_header">
-            <img src="http://planet.fedoraproject.org/images/heads/default.png" alt="avatar" />
-            <div class="email_author inline-block">
-              <span class="name">{{email.email.From}}</span> 
-              <br />
-              <span class="rank">Rank 8</span>
+            <div class="email" style="padding-left: {{email.level}}em">
+              <div class="email_header">
+                <img src="http://planet.fedoraproject.org/images/heads/default.png" alt="avatar" />
+                <div class="email_author inline-block">
+                  <span class="name">{{email.email.From}}</span> 
+                  <br />
+                  <span class="rank">Rank 8</span>
+                </div>
+                <div class="email_date inline-block right">
+                  <span class="date">{{email.email.Date}}</span>
+                  <br />
+                </div>
+              </div>
+              <div class="email_body">
+                  {{email.email.Content}}
+              </div>
+              <ul class="email_info inline">
+                <li class="neutral"> 0</li>
+                <li class="youlike"> <a href="#like"> Like</a></li>
+                <li class="youdislike"> <a href="#dislike"> Dislike</a></li>
+                <li class="discussion add_comment"> <a href="#comment">Reply</a></li>
+              </ul>
             </div>
-            <div class="email_date inline-block right">
-              <span class="date">{{email.email.Date}}</span>
-              <br />
-            </div>
-          </div>
-          <div class="email_body">
-              {{email.email.Content}}
-          </div>
-          <ul class="email_info inline">
-            <li class="neutral"> 0</li>
-            <li class="youlike"> <a href="#like"> Like</a></li>
-            <li class="youdislike"> <a href="#dislike"> Dislike</a></li>
-            <li class="discussion add_comment"> <a href="#comment">Reply</a></li>
-          </ul>
-        </div>
         <!-- End of email -->
+        </div>
         {% empty %}
         Sorry no emails could be found for your search.
         {% endfor %}
