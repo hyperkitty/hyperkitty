@@ -34,16 +34,17 @@ source bin/activate
 # Install django and dependencies
 easy_install django
 easy_install bunch
+easy_install pymongo
 easy_install urlgrabber
 easy_install djangorestframework
 
 # Install pymongo and the mongodb database
-sudo yum install -y pymongo mongodb-server
+sudo yum install mongodb-server
 # Start the mongo database
 sudo service mongod start
 
 # retrieve the sources there:
-bzr branch bzr branch bzr://bzr.fedorahosted.org/bzr/hyperkitty/mongodb 
+bzr branch bzr://bzr.fedorahosted.org/bzr/hyperkitty/mongodb 
 
 # Start it
 cd mongodb
