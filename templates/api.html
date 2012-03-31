@@ -56,4 +56,24 @@ retrieve the all the email for a specific thread on the specified mailing-list.
         </a>
         </p>
     </div>
+        <div class="even" style="padding-left: 1em">
+        <h3>Search <a>/api/search/&lt;list name&gt;/&lt;field&gt;/&lt;keyword&gt;</a></h3>
+        <p>
+        </p>
+        <p>
+Using the address /api/search/&lt;list name&gt;/&lt;field&gt;/&lt;keyword&gt; you will be able to
+search for all emails of the specified mailing-list containing the provided keyword in the given field.
+        </p>
+        <p>The list of available field is:</p>
+        <ul>
+            <li>From</li>
+            <li>Subject</li>
+            <li>Content</li>
+            <li>SubjectContent</li>
+        </ul>
+        <p> For example: <a href="/api/search/devel@fp.o/From/pingoured">
+            /api/search/devel@fp.o/From/pingoured
+        </a>
+        </p>
+    </div>
 {% endblock %}
