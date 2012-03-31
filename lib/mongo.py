@@ -11,48 +11,62 @@ connection = pymongo.Connection('localhost', 27017)
 def _build_thread(emails):
     thread = {}
     for email in emails:
-        #print email['Date'], email['From'] #, email['Message-ID']
+        #print email['Date'], email['From'] , email['MessageID']
         email = Bunch(email)
         ref = []
         if 'References' in email:
-            ref.extend(email['References'].split()[-1:])
-        elif 'In-Reply-To' in email:
-            ref.append(email['In-Reply-To'])
-        if email['Message-ID'] not in thread:
-            thread[email['Message-ID']] = Bunch(
+            refs = email['References'].split()[-1:]
+            refs = [item.replace('<', '').replace('>', '') for item in refs]
+            ref.extend(refs)
+        elif 'InReplyTo' in email:
+            rep = email['InReplyTo'].replace('<', '').replace('>', '')
+            ref.append(rep)
+
+        if email['MessageID'] not in thread:
+            thread[email['MessageID']] = Bunch(
                 {'email': email, 'child': []})
         else:
-            thread[email['Message-ID']].email = email
+            thread[email['MessageID']].email = email
+
         for ref in set(ref):
             if ref in thread:
-                thread[ref].child.append(email['Message-ID'])
+                thread[ref].child.append(email['MessageID'])
             else:
                 thread[ref] = Bunch(
-                {'email': None, 'child': [email['Message-ID']]})
+                {'email': None, 'child': [email['MessageID']]})
     return thread
 
 
 def _tree_to_list(tree, mailid, level, thread_list):
     start = tree[mailid]
+    #print start.email.From, start.email.Date, start.child
     start.level = level
     thread_list.append(start)
     for mail in start.child:
         mail = tree[mail]
-        thread_list = _tree_to_list(tree, mail.email['Message-ID'],
+        thread_list = _tree_to_list(tree, mail.email['MessageID'],
             level + 1, thread_list)
     return thread_list
 
 
 def get_thread_list(table, threadid):
     db = connection[table]
-    # TODO: Find a way to order the email, ordering by date doesn't work
-    # or we should fix the way we enter the date in the database... :-/
-    thread = list(db.mails.find({'ThreadID': int(threadid)}))
+    db.mails.create_index('ThreadID')
+    db.mails.ensure_index('ThreadID')
+    db.mails.create_index('References')
+    db.mails.ensure_index('References')
+    db.mails.create_index('InReplyTo')
+    db.mails.ensure_index('InReplyTo')
+
+    thread = list(db.mails.find({'ThreadID': threadid}))
+    start = db.mails.find_one({'ThreadID': threadid,
+                            'References': {'$exists':False},
+                            'InReplyTo': {'$exists':False}})
 
     tree = _build_thread(thread)
     thread_list = []
     if thread:
-        thread = _tree_to_list(tree, thread[0]['Message-ID'], 0, thread_list)
+        thread = _tree_to_list(tree, start['MessageID'], 0, thread_list)
         return thread
     else:
         return []
@@ -60,6 +74,8 @@ def get_thread_list(table, threadid):
 
 def get_thread_name(table, threadid):
     db = connection[table]
+    db.mails.create_index('ThreadID')
+    db.mails.ensure_index('ThreadID')
     thread = list(db.mails.find({'ThreadID': int(threadid)},
         sort=[('Date', pymongo.ASCENDING)]))
     if thread:
@@ -70,20 +86,20 @@ def get_thread_name(table, threadid):
 
 def get_email(table, emailid):
     db = connection[table]
-    db.mails.create_index('Message-ID')
-    db.mails.ensure_index('Message-ID')
-    return db.mails.find_one({'Message-ID': emailid})
+    db.mails.create_index('MessageID')
+    db.mails.ensure_index('MessageID')
+    return db.mails.find_one({'MessageID': emailid})
 
 
 def get_emails_thread(table, start_email, thread):
     db = connection[table]
     db.mails.create_index('Date')
     db.mails.ensure_index('Date')
-    db.mails.create_index('In-Reply-To')
-    db.mails.ensure_index('In-Reply-To')
-    db.mails.create_index('Message-ID')
-    db.mails.ensure_index('Message-ID')
-    regex = '.*%s.*' % start_email['Message-ID']
+    db.mails.create_index('InReplyTo')
+    db.mails.ensure_index('InReplyTo')
+    db.mails.create_index('MessageID')
+    db.mails.ensure_index('MessageID')
+    regex = '.*%s.*' % start_email['MessageID']
     for el in db.mails.find({'References': re.compile(regex, re.IGNORECASE)},
         sort=[('Date', pymongo.DESCENDING)]):
         thread.append(el)
@@ -99,8 +115,10 @@ def get_archives(table, start, end):
     db.mails.ensure_index('References')
     # Beginning of thread == No 'References' header
     archives = []
-    for el in db.mails.find({'References': {'$exists':False},
-            "Date": {"$gte": start, "$lt": end}}, 
+    for el in db.mails.find(
+            {'References': {'$exists':False},
+            'InReplyTo': {'$exists':False},
+            "Date": {"$gt": start, "$lt": end}}, 
             sort=[('Date', pymongo.DESCENDING)]):
         archives.append(el)
     return archives
