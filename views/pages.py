@@ -183,6 +183,23 @@ def list(request, mlist_fqdn=None):
     })
     return HttpResponse(t.render(c))
 
+def message (request, mlist_fqdn, messageid):
+    ''' Displays a single message identified by its messageid '''
+    list_name = mlist_fqdn.split('@')[0]
+
+    search_form = SearchForm(auto_id=False)
+    t = loader.get_template('message.html')
+    message = Bunch(mongo.get_email(list_name, messageid))
+    print message
+
+    c = RequestContext(request, {
+        'app_name': settings.APP_NAME,
+        'list_name' : list_name,
+        'list_address': mlist_fqdn,
+        'message': message,
+    })
+    return HttpResponse(t.render(c))
+
 def _search_results_page(request, mlist_fqdn, query_string, search_type):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('search.html')

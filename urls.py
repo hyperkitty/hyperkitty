@@ -27,6 +27,8 @@ urlpatterns = patterns('',
     url(r'^list/$', 'views.pages.index'),
     url(r'^list/(?P<mlist_fqdn>.*@.*)/$', 'views.pages.list'),
     url(r'^list/(?P<mlist_fqdn>.*@.*)$', 'views.pages.list'),
+    # Single message view
+    url(r'^message/(?P<mlist_fqdn>.*@.*)/(?P<messageid>.+)$', 'views.pages.message'),
     # Search
     #url(r'^search$', 'views.pages.search'),
     url(r'^search/(?P<mlist_fqdn>.*@.*)$', 'views.pages.search_keyword'),
