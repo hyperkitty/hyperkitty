@@ -21,7 +21,11 @@
   <div class="header">
     <div id="headline">
       <ul class="inline-block">
-        <li id="list_name"><a href="/">{{list_name}}</a></li>
+        {% if list_address  %}
+        <li id="list_name"><a href="/list/{{list_address}}">{{list_name}}</a></li>
+        {% else %}
+        <li id="list_name"><a href="/list/">{{list_name}}</a></li>
+        {% endif %}
         <li id="page_date">{{month}}</li>
       </ul>
       <div id="top_right">
