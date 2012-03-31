@@ -24,6 +24,16 @@
         <li id="list_name"><a href="/">{{list_name}}</a></li>
         <li id="page_date">{{month}}</li>
       </ul>
+      <p id="list_email">
+        <a href="mailto:{{list_address}}">
+          {{list_address}}
+        </a>
+      </p>
+      <p id="list_email" class='inline'>
+        <a href="/">
+          All lists
+        </a>
+      </p>
       <div id="top_right">
         <form action="/search/{{list_address}}" method="get">
         {{ search_form }}
