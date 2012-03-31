@@ -25,7 +25,12 @@ $(function() {
           <!-- Start thread -->
           <div class="thread">
             <span class="thread_id">#{{forloop.counter}}</span>
-            <span class="thread_title">{{email.Subject}}</span>
+            <span class="thread_title">
+              <a name="{{email.ThreadID}}" 
+                href="/thread/{{list_address}}/{{email.ThreadID}}">
+                {{email.Subject}}
+              </a>
+            </span>
             <div class="thread_stats">
               <ul class="inline-block">
                 {% if email.category_tag %}
@@ -58,7 +63,12 @@ $(function() {
           <!-- Start thread -->
           <div class="thread">
             <span class="thread_id">#{{forloop.counter}}</span>
-            <span class="thread_title">{{email.Subject}}</span>
+            <span class="thread_title">
+              <a name="{{email.ThreadID}}" 
+                href="/thread/{{list_address}}/{{email.ThreadID}}">
+                {{email.Subject}}
+              </a>
+            </span>
             <div class="thread_stats">
               <ul class="inline-block">
                 {% if email.category_tag %}
