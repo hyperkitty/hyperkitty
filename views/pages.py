@@ -190,7 +190,6 @@ def message (request, mlist_fqdn, messageid):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('message.html')
     message = Bunch(mongo.get_email(list_name, messageid))
-    print message
 
     c = RequestContext(request, {
         'app_name': settings.APP_NAME,
