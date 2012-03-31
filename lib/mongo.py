@@ -45,8 +45,9 @@ def _tree_to_list(tree, mailid, level, thread_list):
 
 def get_thread_list(table, threadid):
     db = connection[table]
-    thread = list(db.mails.find({'ThreadID': int(threadid)},
-        sort=[('Date', pymongo.ASCENDING)]))
+    # TODO: Find a way to order the email, ordering by date doesn't work
+    # or we should fix the way we enter the date in the database... :-/
+    thread = list(db.mails.find({'ThreadID': int(threadid)}))
 
     tree = _build_thread(thread)
     thread_list = []
