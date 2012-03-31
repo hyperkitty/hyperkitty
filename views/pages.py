@@ -296,11 +296,13 @@ def thread (request, mlist_fqdn, threadid):
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('thread.html')
-    threads = mongo.get_thread_list(list_name, int(threadid))
-    prev_thread = mongo.get_thread_name(list_name, int(threadid) - 1)
+    threads = mongo.get_thread_list(list_name, threadid)
+    #prev_thread = mongo.get_thread_name(list_name, int(threadid) - 1)
+    prev_thread = []
     if len(prev_thread) > 30:
         prev_thread = '%s...' % prev_thread[:31]
-    next_thread = mongo.get_thread_name(list_name, int(threadid) + 1)
+    #next_thread = mongo.get_thread_name(list_name, int(threadid) + 1)
+    next_thread = []
     if len(next_thread) > 30:
         next_thread = '%s...' % next_thread[:31]
 
@@ -325,9 +327,9 @@ def thread (request, mlist_fqdn, threadid):
         'first_mail': threads[0],
         'threads': threads[1:],
         'next_thread': next_thread,
-        'next_thread_id': int(threadid) + 1,
+        'next_thread_id': 0,
         'prev_thread': prev_thread,
-        'prev_thread_id': int(threadid) - 1,
+        'prev_thread_id': 0,
         'archives_length': archives_length,
     })
     return HttpResponse(t.render(c))
