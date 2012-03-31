@@ -74,7 +74,9 @@
         <div class="email_header">
           <img src="http://planet.fedoraproject.org/images/heads/default.png" alt="avatar" />
           <div class="email_author inline-block">
-            <span class="name">{{first_mail.email.From}}</span> 
+            <span class="name">
+              <a href="/message/{{list_address}}/{{first_mail.email.MessageID}}">{{first_mail.email.From}}</a>
+            </span> 
             <br />
             <span class="rank">Rank 10</span>
           </div>
@@ -104,7 +106,7 @@
               <div class="email_header">
                 <img src="http://planet.fedoraproject.org/images/heads/default.png" alt="avatar" />
                 <div class="email_author inline-block">
-                  <span class="name">{{email.email.From}}</span> 
+                    <a href="/message/{{list_address}}/{{email.email.MessageId}}">{{email.email.From}}</a>
                   <br />
                   <span class="rank">Rank 8</span>
                 </div>
