@@ -41,6 +41,7 @@
       </a>
     </p>
     <div id="thread_nav">
+      {% if next_thread %}
       <div id="newewthread" class="inline-block">
         <a href="{{ next_thread_id }}">
           <img src="{{ STATIC_URL }}img/button_newer.png" alt="New thread" />
@@ -48,6 +49,7 @@
         <br />
         {{next_thread}}
       </div>
+      {% endif %}
 
       <div class="inline-block thread_title">
         <span class="type type_question">
@@ -61,6 +63,7 @@
         </ul>
       </div>
   
+      {% if prev_thread %}
       <div id="olderhread" class="inline-block right">
         <a href="{{ prev_thread_id }}">
           <img src="{{ STATIC_URL }}img/button_older.png" alt="New thread" />
@@ -68,6 +71,8 @@
         <br />
         {{prev_thread}}
       </div>
+      {% endif %}
+      
     </div>
 
     
