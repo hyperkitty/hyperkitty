@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="ROBOTS" content="INDEX, FOLLOW" />
+
+  <title>{% block title %}Mail app{% endblock %}</title>
+  <meta name="author" content="" />
+
+  <meta name="dc.language" content="en" />
+
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/style.css" />
+
+  {% block additional_headers %}
+  {% endblock %}
+</head>
+
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div id="headline">
+      <ul class="inline-block">
+        <li id="list_name"><a href="/">{{list_name}}</a></li>
+        <li id="page_date">{{month}}</li>
+      </ul>
+      <div id="top_right">
+        <form action="/search/{{list_address}}" method="get">
+        {{ search_form }}
+      </form> 
+      </div>
+    </div>
+
+    <div id="thread_nav">
+
+      <div class="inline-block thread_title">
+        <span class="type type_question">
+          <a href="/tag/question"> question </a>
+        </span>
+        <br />
+        {{message.email.Subject}}
+        <ul class="inline thread_info">
+          <li class="participant"> {{participants|length}} participants</li>
+          <li class="discussion"> {{answers}} comments</li>
+        </ul>
+      </div>
+  
+    </div>
+
+    
+    <hr id="white"/>
+    <hr />
+  </div>
+
+  <div class="content">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+</body>
+</html>

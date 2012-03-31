@@ -1,0 +1,47 @@
+{% extends "base_message.html" %}
+
+{% block title %}{{ app_name }}{% endblock %}
+
+{% block additional_headers %}
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
+
+{% endblock %}
+
+{% block content %}
+
+  <div class="content">
+
+    <!-- main section, the email thread -->
+    <section id="thread_content">
+
+      <!-- Start first email -->
+      <div class="first_email">
+        <div class="email_header">
+          <img src="http://planet.fedoraproject.org/images/heads/default.png" alt="avatar" />
+          <div class="email_author inline-block">
+            <span class="name">{{message.From}}</span> 
+            <br />
+            <span class="rank">Rank 10</span>
+          </div>
+          <div class="email_date inline-block right">
+            <span class="date">{{message.Date}}</span>
+            <br />
+            <span class="time"></span>
+          </div>
+        </div>
+        <div id="first_email_body">
+            {{message.Content}}
+        </div>
+        <ul class="email_info inline">
+          <li class="neutral"> 0</li>
+          <li class="youlike"> <a href="#like"> Like</a></li>
+          <li class="youdislike"> <a href="#dislike"> Dislike</a></li>
+          <li class="discussion add_comment"> <a href="#comment"> Add your own comment</a></li>
+        </ul>
+      </div>
+      <!-- End first email -->
+
+    </section>
+
+  </div> <!-- end of content -->
+{% endblock %}
