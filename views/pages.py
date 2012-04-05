@@ -200,7 +200,7 @@ def message (request, mlist_fqdn, messageid):
     })
     return HttpResponse(t.render(c))
 
-def _search_results_page(request, mlist_fqdn, query_string, page, search_type):
+def _search_results_page(request, mlist_fqdn, query_string, search_type, page=1):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('search.html')
 
@@ -275,7 +275,7 @@ def search_keyword(request, mlist_fqdn, target=None, keyword=None, page=1):
             ]}
     else:
         query_string = {target.capitalize(): re.compile(regex, re.IGNORECASE)}
-    return _search_results_page(request, mlist_fqdn, query_string, page, 'Search')
+    return _search_results_page(request, mlist_fqdn, query_string, 'Search', page)
 
 
 def search_tag(request, mlist_fqdn, tag=None):
