@@ -32,8 +32,8 @@ urlpatterns = patterns('',
     # Search
     #url(r'^search$', 'views.pages.search'),
     # If page number is present in URL
-    url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<target>.*)\/(?P<keyword>.*)\/(?P<page>.*)$', 'views.pages.search_keyword'),
-    url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<target>.*)\/(?P<keyword>.*)\/(?P<page>.*)/$', 'views.pages.search_keyword'),
+    url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<target>.*)\/(?P<keyword>.*)\/(?P<page>\d)$', 'views.pages.search_keyword'),
+    url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<target>.*)\/(?P<keyword>.*)\/(?P<page>\d)/$', 'views.pages.search_keyword'),
     # Show the first page as default when no page number is present in URL
     url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<target>.*)\/(?P<keyword>.*)$', 'views.pages.search_keyword'),
     url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<target>.*)\/(?P<keyword>.*)/$', 'views.pages.search_keyword'),
