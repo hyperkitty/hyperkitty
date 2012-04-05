@@ -251,7 +251,6 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type, page=1,
 def search(request, mlist_fqdn):
     keyword = request.GET.get('keyword')
     target = request.GET.get('target')
-    print request, target
     if keyword:
         url = '/search/%s/%s/%s/' % (mlist_fqdn, target, keyword)
     else:
@@ -259,8 +258,9 @@ def search(request, mlist_fqdn):
     return HttpResponseRedirect(url)
 
 
-def search_keyword(request, mlist_fqdn, target=None, keyword=None, page=1):
-    print target, keyword, page
+def search_keyword(request, mlist_fqdn, target, keyword, page=1):
+    ## Should we remove the code below? 
+    ## If urls.py does it job we should never need it
     if not keyword:
         keyword = request.GET.get('keyword')
     if not target:
