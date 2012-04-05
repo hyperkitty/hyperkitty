@@ -7,6 +7,7 @@ import logging
 import os
 import re
 from urlparse import urljoin
+import urllib
 
 from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
@@ -199,7 +200,7 @@ def message (request, mlist_fqdn, messageid):
     })
     return HttpResponse(t.render(c))
 
-def _search_results_page(request, mlist_fqdn, query_string, search_type):
+def _search_results_page(request, mlist_fqdn, query_string, query_string_variables, search_type):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('search.html')
 
@@ -250,6 +251,7 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type):
         'month_participants': len(participants),
         'month_discussions': res_num,
         'threads': threads,
+        'query_string' : query_string_variables,
     })
     return HttpResponse(t.render(c))
 
@@ -271,6 +273,11 @@ def search_keyword(request, mlist_fqdn, keyword=None, target=None):
     if not target:
         target = 'Subject'
     regex = '.*%s.*' % keyword
+    query_string_variables = request.GET.copy()
+    if query_string_variables.has_key('page'):
+        del query_string_variables['page']
+    query_string_variables = urllib.urlencode(query_string_variables)
+
     if target == 'SubjectContent':
         query_string = {'$or' : [
             {'Subject': re.compile(regex, re.IGNORECASE)},
@@ -278,7 +285,7 @@ def search_keyword(request, mlist_fqdn, keyword=None, target=None):
             ]}
     else:
         query_string = {target.capitalize(): re.compile(regex, re.IGNORECASE)}
-    return _search_results_page(request, mlist_fqdn, query_string, 'Search')
+    return _search_results_page(request, mlist_fqdn, query_string, query_string_variables, 'Search')
 
 
 def search_tag(request, mlist_fqdn, tag=None):
