@@ -203,7 +203,6 @@ def message (request, mlist_fqdn, messageid):
 def _search_results_page(request, mlist_fqdn, query_string, search_type, page=1, num_threads=25):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('search.html')
-
     list_name = mlist_fqdn.split('@')[0]
     threads = mongo.search_archives(list_name, query_string)
     res_num = len(threads)
@@ -254,13 +253,14 @@ def search(request, mlist_fqdn):
     target = request.GET.get('target')
     print request, target
     if keyword:
-        url = '/search/%s/%s/%s' % (mlist_fqdn, target, keyword)
+        url = '/search/%s/%s/%s/' % (mlist_fqdn, target, keyword)
     else:
         url = '/search/%s' % (mlist_fqdn)
     return HttpResponseRedirect(url)
 
 
 def search_keyword(request, mlist_fqdn, target=None, keyword=None, page=1):
+    print target, keyword, page
     if not keyword:
         keyword = request.GET.get('keyword')
     if not target:
