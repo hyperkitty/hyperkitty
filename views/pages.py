@@ -200,7 +200,8 @@ def message (request, mlist_fqdn, messageid):
     })
     return HttpResponse(t.render(c))
 
-def _search_results_page(request, mlist_fqdn, query_string, search_type, page=1, num_threads=25):
+def _search_results_page(request, mlist_fqdn, query_string, search_type,
+    page=1, num_threads=25):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('search.html')
     list_name = mlist_fqdn.split('@')[0]
@@ -244,6 +245,7 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type, page=1,
         'month_participants': len(participants),
         'month_discussions': res_num,
         'threads': threads,
+        'full_path': request.get_full_path(),
     })
     return HttpResponse(t.render(c))
 
@@ -251,8 +253,11 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type, page=1,
 def search(request, mlist_fqdn):
     keyword = request.GET.get('keyword')
     target = request.GET.get('target')
-    if keyword:
+    page = request.GET.get('page')
+    if keyword and target:
         url = '/search/%s/%s/%s/' % (mlist_fqdn, target, keyword)
+        if page:
+            url += '%s/' % page
     else:
         url = '/search/%s' % (mlist_fqdn)
     return HttpResponseRedirect(url)
@@ -284,7 +289,8 @@ def search_tag(request, mlist_fqdn, tag=None, page=1):
         query_string = {'Category': tag.capitalize()}
     else:
         query_string = None
-    return _search_results_page(request, mlist_fqdn, query_string, 'Tag search', page)
+    return _search_results_page(request, mlist_fqdn, query_string,
+        'Tag search', page)
 
 def thread (request, mlist_fqdn, threadid):
     ''' Displays all the email for a given thread identifier '''
