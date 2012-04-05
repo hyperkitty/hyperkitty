@@ -32,13 +32,14 @@ urlpatterns = patterns('',
     # Search
     #url(r'^search$', 'views.pages.search'),
     # If page number is present in URL
-    url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<target>.*)\/(?P<keyword>.*)\/(?P<page>\d+)$', 'views.pages.search_keyword'),
     url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<target>.*)\/(?P<keyword>.*)\/(?P<page>\d+)/$', 'views.pages.search_keyword'),
+    url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<target>.*)\/(?P<keyword>.*)\/(?P<page>\d+)$', 'views.pages.search_keyword'),
     # Show the first page as default when no page number is present in URL
-    url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<target>.*)\/(?P<keyword>.*)$', 'views.pages.search_keyword'),
     url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<target>.*)\/(?P<keyword>.*)/$', 'views.pages.search_keyword'),
-    url(r'^search/(?P<mlist_fqdn>.*@.*)$', 'views.pages.search'),
+    url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<target>.*)\/(?P<keyword>.*)$', 'views.pages.search_keyword'),
+    
     url(r'^search/(?P<mlist_fqdn>.*@.*)/$', 'views.pages.search'),
+    url(r'^search/(?P<mlist_fqdn>.*@.*)$', 'views.pages.search'),
     url(r'^tag/(?P<mlist_fqdn>.*@.*)\/(?P<tag>.*)$', 'views.pages.search_tag'),
     # mockups:
     url(r'^mockup/$', 'views.mockup.index'),
