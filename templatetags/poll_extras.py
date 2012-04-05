@@ -1,4 +1,5 @@
 from django import template
+from django.http import HttpRequest
 from django.utils.datastructures import SortedDict
 
 register = template.Library()
@@ -29,3 +30,14 @@ def to_month(value):
     months = ('January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December')
     return months[value -1]
+
+@register.filter(name="strip_page")
+def strip_page(value):
+    print repr(value)
+    if not value:
+        return value
+    if value.endswith('/'):
+        output = value.rsplit('/', 2)
+    else:
+        output = value.rsplit('/', 1)
+    return output[0]
