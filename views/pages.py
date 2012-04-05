@@ -200,7 +200,7 @@ def message (request, mlist_fqdn, messageid):
     })
     return HttpResponse(t.render(c))
 
-def _search_results_page(request, mlist_fqdn, query_string, search_type, page=1):
+def _search_results_page(request, mlist_fqdn, query_string, search_type, page=1, num_threads=25):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('search.html')
 
@@ -212,9 +212,9 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type, page=1)
     for msg in threads:
         participants.add(msg['From'])
 
-    paginator = Paginator(threads, 25) # Show 25 threads per page
+    paginator = Paginator(threads, num_threads)
 
-    # If page request (9999) is out of range, deliver last page of results.
+    #If page request is out of range, deliver last page of results.
     try:
         threads = paginator.page(page)
     except (EmptyPage, InvalidPage):
