@@ -200,7 +200,7 @@ def message (request, mlist_fqdn, messageid):
     })
     return HttpResponse(t.render(c))
 
-def _search_results_page(request, mlist_fqdn, query_string, search_type):
+def _search_results_page(request, mlist_fqdn, query_string, page, search_type):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('search.html')
 
@@ -213,12 +213,6 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type):
         participants.add(msg['From'])
 
     paginator = Paginator(threads, 25) # Show 25 threads per page
-
-    page = request.GET.get('page')
-    try:
-        page = int(request.GET.get('page', '1'))
-    except ValueError:
-        page = 1
 
     # If page request (9999) is out of range, deliver last page of results.
     try:
@@ -266,7 +260,7 @@ def search(request, mlist_fqdn):
     return HttpResponseRedirect(url)
 
 
-def search_keyword(request, mlist_fqdn, target=None, keyword=None):
+def search_keyword(request, mlist_fqdn, target=None, keyword=None, page=1):
     if not keyword:
         keyword = request.GET.get('keyword')
     if not target:
@@ -274,7 +268,6 @@ def search_keyword(request, mlist_fqdn, target=None, keyword=None):
     if not target:
         target = 'Subject'
     regex = '.*%s.*' % keyword
-
     if target == 'SubjectContent':
         query_string = {'$or' : [
             {'Subject': re.compile(regex, re.IGNORECASE)},
@@ -282,7 +275,7 @@ def search_keyword(request, mlist_fqdn, target=None, keyword=None):
             ]}
     else:
         query_string = {target.capitalize(): re.compile(regex, re.IGNORECASE)}
-    return _search_results_page(request, mlist_fqdn, query_string, 'Search')
+    return _search_results_page(request, mlist_fqdn, query_string, page, 'Search')
 
 
 def search_tag(request, mlist_fqdn, tag=None):
