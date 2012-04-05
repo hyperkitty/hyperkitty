@@ -278,13 +278,13 @@ def search_keyword(request, mlist_fqdn, target, keyword, page=1):
     return _search_results_page(request, mlist_fqdn, query_string, 'Search', page)
 
 
-def search_tag(request, mlist_fqdn, tag=None):
+def search_tag(request, mlist_fqdn, tag=None, page=1):
     '''Searches both tag and topic'''
     if tag:
         query_string = {'Category': tag.capitalize()}
     else:
         query_string = None
-    return _search_results_page(request, mlist_fqdn, query_string, 'Tag search')
+    return _search_results_page(request, mlist_fqdn, query_string, 'Tag search', page)
 
 def thread (request, mlist_fqdn, threadid):
     ''' Displays all the email for a given thread identifier '''

@@ -39,6 +39,7 @@ urlpatterns = patterns('',
 
 
     ############## TAG   ######################
+    url(r'^tag/(?P<mlist_fqdn>.*@.*)\/(?P<tag>.*)\/(?P<page>\d+)/$', 'views.pages.search_tag'),
     url(r'^tag/(?P<mlist_fqdn>.*@.*)\/(?P<tag>.*)/$', 'views.pages.search_tag'),
 
     ############## REST API #####################
