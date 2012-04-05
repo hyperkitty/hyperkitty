@@ -31,9 +31,10 @@ urlpatterns = patterns('',
     url(r'^message/(?P<mlist_fqdn>.*@.*)/(?P<messageid>.+)$', 'views.pages.message'),
     # Search
     #url(r'^search$', 'views.pages.search'),
-    url(r'^search/(?P<mlist_fqdn>.*@.*)$', 'views.pages.search_keyword'),
-    url(r'^search/(?P<mlist_fqdn>.*@.*)/$', 'views.pages.search_keyword'),
-    url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<keyword>.*)$', 'views.pages.search_keyword'),
+    url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<target>.*)\/(?P<keyword>.*)$', 'views.pages.search_keyword'),
+    url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<target>.*)\/(?P<keyword>.*)/$', 'views.pages.search_keyword'),
+    url(r'^search/(?P<mlist_fqdn>.*@.*)$', 'views.pages.search'),
+    url(r'^search/(?P<mlist_fqdn>.*@.*)/$', 'views.pages.search'),
     url(r'^tag/(?P<mlist_fqdn>.*@.*)\/(?P<tag>.*)$', 'views.pages.search_tag'),
     # mockups:
     url(r'^mockup/$', 'views.mockup.index'),

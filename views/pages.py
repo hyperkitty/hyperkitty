@@ -200,7 +200,7 @@ def message (request, mlist_fqdn, messageid):
     })
     return HttpResponse(t.render(c))
 
-def _search_results_page(request, mlist_fqdn, query_string, query_string_variables, search_type):
+def _search_results_page(request, mlist_fqdn, query_string, search_type):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('search.html')
 
@@ -251,21 +251,22 @@ def _search_results_page(request, mlist_fqdn, query_string, query_string_variabl
         'month_participants': len(participants),
         'month_discussions': res_num,
         'threads': threads,
-        'query_string' : query_string_variables,
     })
     return HttpResponse(t.render(c))
 
 
 def search(request, mlist_fqdn):
     keyword = request.GET.get('keyword')
+    target = request.GET.get('target')
+    print request, target
     if keyword:
-        url = '/search/%s/%s' % (mlist_fqdn, keyword)
+        url = '/search/%s/%s/%s' % (mlist_fqdn, target, keyword)
     else:
-        url = '/search/%s' % (mlist_fqdn,)
+        url = '/search/%s' % (mlist_fqdn)
     return HttpResponseRedirect(url)
 
 
-def search_keyword(request, mlist_fqdn, keyword=None, target=None):
+def search_keyword(request, mlist_fqdn, target=None, keyword=None):
     if not keyword:
         keyword = request.GET.get('keyword')
     if not target:
@@ -273,10 +274,6 @@ def search_keyword(request, mlist_fqdn, keyword=None, target=None):
     if not target:
         target = 'Subject'
     regex = '.*%s.*' % keyword
-    query_string_variables = request.GET.copy()
-    if query_string_variables.has_key('page'):
-        del query_string_variables['page']
-    query_string_variables = urllib.urlencode(query_string_variables)
 
     if target == 'SubjectContent':
         query_string = {'$or' : [
@@ -285,7 +282,7 @@ def search_keyword(request, mlist_fqdn, keyword=None, target=None):
             ]}
     else:
         query_string = {target.capitalize(): re.compile(regex, re.IGNORECASE)}
-    return _search_results_page(request, mlist_fqdn, query_string, query_string_variables, 'Search')
+    return _search_results_page(request, mlist_fqdn, query_string, 'Search')
 
 
 def search_tag(request, mlist_fqdn, tag=None):

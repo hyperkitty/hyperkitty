@@ -21,7 +21,7 @@
     <div class="pagination">
       <span class="step-links">
         {% if threads.has_previous %}
-        <a href="?{{ query_string }}&page={{ threads.previous_page_number }}">previous</a>
+        <a href="?page={{ threads.previous_page_number }}">previous</a>
         {% endif %}
 
         <span class="current">
@@ -29,7 +29,7 @@
         </span>
 
         {% if threads.has_next %}
-            <a href="?{{ query_string }}&page={{ threads.next_page_number }}">next</a>
+            <a href="?page={{ threads.next_page_number }}">next</a>
         {% endif %}
       </span>
     </div>
