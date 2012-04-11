@@ -176,6 +176,8 @@ def list(request, mlist_fqdn=None):
     days = dates.keys()
     days.sort()
     evolution = [dates[key] for key in days]
+    if not evolution:
+        evolution.append(0)
 
     # threads per category is the top thread titles in each category
     threads_per_category = generate_thread_per_category()
