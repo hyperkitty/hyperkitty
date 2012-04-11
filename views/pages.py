@@ -140,9 +140,15 @@ def list(request, mlist_fqdn=None):
         end=end_date)
 
     participants = set()
+    dates = {}
     cnt = 0
     for msg in threads:
         msg = Bunch(msg)
+        key = '%s%s%s' % (msg.Date.year, msg.Date.month, msg.Date.day)
+        if key in dates:
+            dates[key] = dates[key] + 1
+        else:
+            dates[key] = 1
         # Statistics on how many participants and threads this month
         participants.add(msg['From'])
         msg.participants = mongo.get_thread_participants(list_name,
@@ -166,6 +172,11 @@ def list(request, mlist_fqdn=None):
     authors = sorted(authors, key=lambda author: author.kudos)
     authors.reverse()
 
+    # Get the list activity per day
+    days = dates.keys()
+    days.sort()
+    evolution = [dates[key] for key in days]
+
     # threads per category is the top thread titles in each category
     threads_per_category = generate_thread_per_category()
     c = RequestContext(request, {
@@ -181,6 +192,7 @@ def list(request, mlist_fqdn=None):
         'top_author': authors,
         'threads_per_category': threads_per_category,
         'archives_length': archives_length,
+        'evolution' : evolution,
     })
     return HttpResponse(t.render(c))
 

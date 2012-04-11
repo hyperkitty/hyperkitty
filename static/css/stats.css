@@ -30,6 +30,17 @@ h2 {
     margin: auto;
 }
 
+#graph {
+  vertical-align: middle;
+}
+
+#fig {
+  position: relative;
+  margin: auto;
+  width: 540px;
+  height: 330px;
+}
+
 #top_discussion {
     width: 45%;
     margin-right: 22px;
