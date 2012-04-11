@@ -25,8 +25,8 @@ var data = {{evolution}},
 
 var vis = new pv.Panel()
     .width(w)
-    .height(h)
-    .bottom(20)
+    .height(250)
+    .bottom(60)
     .left(30)
     .right(5)
     .top(5);
@@ -38,6 +38,13 @@ var bar = vis.add(pv.Bar)
     .width(x.range().band)
     .bottom(0)
     .height(y);
+
+bar.anchor("bottom").add(pv.Label)
+    .textMargin(5)
+    .textAlign("right")
+    .textBaseline("middle")
+    .textAngle(-Math.PI / 2)
+    .text(function() dates[this.index]);
 
 var title = vis.add(pv.Label)
     .left(250)
