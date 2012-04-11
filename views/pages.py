@@ -156,7 +156,13 @@ def list(request, mlist_fqdn=None):
     cnt = 0
     for msg in threads:
         msg = Bunch(msg)
-        key = '%s%s%s' % (msg.Date.year, msg.Date.month, msg.Date.day)
+        month = msg.Date.month
+        if month < 10:
+            month = '0%s' % month
+        day = msg.Date.day
+        if day < 10:
+            day = '0%s' % day    
+        key = '%s%s%s' % (msg.Date.year, month, day)
         if key in dates:
             dates[key] = dates[key] + 1
         else:
@@ -187,6 +193,9 @@ def list(request, mlist_fqdn=None):
     # Get the list activity per day
     days = dates.keys()
     days.sort()
+    dates_string = ["%s/%s/%s" % (key[0:4], key[4:6], key[6:8]) for key in days]
+    #print days
+    #print dates_string
     evolution = [dates[key] for key in days]
     if not evolution:
         evolution.append(0)
@@ -206,7 +215,8 @@ def list(request, mlist_fqdn=None):
         'top_author': authors,
         'threads_per_category': threads_per_category,
         'archives_length': archives_length,
-        'evolution' : evolution,
+        'evolution': evolution,
+        'dates_string': dates_string,
     })
     return HttpResponse(t.render(c))
 

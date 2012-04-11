@@ -15,6 +15,8 @@
           <div id="fig">
             <script type="text/javascript+protovis" >
 
+var dates = ["{{dates_string|join:'","'}}"];
+
 var data = {{evolution}},
     w = 500,
     h = 300,
@@ -31,6 +33,7 @@ var vis = new pv.Panel()
 
 var bar = vis.add(pv.Bar)
     .data(data)
+    .event("click", function(n) self.location = "/archives/{{list_address}}/" + dates[this.index])
     .left(function() x(this.index))
     .width(x.range().band)
     .bottom(0)
@@ -41,20 +44,6 @@ var title = vis.add(pv.Label)
     .top(16)
     .textAlign("center")
     .text("Activities on the list over the last 30 days");
-
-/*
-bar.anchor("top").add(pv.Label)
-    .textStyle("white")
-    .text(function(d) d.toFixed(1));
-*/
-
-/*
-bar.anchor("bottom").add(pv.Label)
-    .textMargin(5)
-    .textAlign("right")
-    .textBaseline("middle")
-    .textAngle(-Math.PI / 2);
-*/
 
 vis.add(pv.Rule)
     .data(y.ticks())
