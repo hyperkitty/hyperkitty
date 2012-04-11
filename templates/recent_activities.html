@@ -35,6 +35,13 @@ var bar = vis.add(pv.Bar)
     .width(x.range().band)
     .bottom(0)
     .height(y);
+
+var title = vis.add(pv.Label)
+    .left(250)
+    .top(16)
+    .textAlign("center")
+    .text("Activities on the list over the last 30 days");
+
 /*
 bar.anchor("top").add(pv.Label)
     .textStyle("white")
