@@ -69,19 +69,31 @@ def api(request):
     return HttpResponse(t.render(c))
 
 
-def archives(request, mlist_fqdn, year=None, month=None):
+def archives(request, mlist_fqdn, year=None, month=None, day=None):
     # No year/month: past 32 days
     # year and month: find the 32 days for that month
     end_date = None
-    if year or month:
+    if year or month or day:
         try:
-            begin_date = datetime(int(year), int(month), 1)
-            if int(month) == 12:
-                end_date = datetime(int(year) + 1, 1, 1)
-            else:
-                end_date = datetime(int(year), int(month) +1, 1)
+            start_day = 1
+            end_day = 1
+            start_month = int(month)
+            end_month = int(month) + 1
+            start_year = int(year)
+            end_year = int(year)
+            if day:
+                start_day = int(day)
+                end_day = start_day + 1
+                end_month = start_month
+            if start_month == 12:
+                end_month = 1
+                end_year = start_year + 1
+
+            begin_date = datetime(start_year, start_month, start_day)
+            end_date = datetime(end_year, end_month, end_day)
             month_string = begin_date.strftime('%B %Y')
         except ValueError, err:
+            print err
             logger.error('Wrong format given for the date')
 
     if not end_date:

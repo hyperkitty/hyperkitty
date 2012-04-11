@@ -14,6 +14,8 @@ urlpatterns = patterns('',
     url(r'^$', 'views.pages.index'),
 
     ################# ARCHIVES ###################
+    url(r'^archives/(?P<mlist_fqdn>.*@.*)/(?P<year>\d{4})/(?P<month>\d\d?)/(?P<day>\d\d?)/$',
+        'views.pages.archives'),
     url(r'^archives/(?P<mlist_fqdn>.*@.*)/(?P<year>\d{4})/(?P<month>\d\d?)/$',
         'views.pages.archives'),
     url(r'^archives/(?P<mlist_fqdn>.*@.*)/$',
