@@ -17,6 +17,8 @@
 
 var dates = ["{{dates_string|join:'","'}}"];
 
+
+
 var data = {{evolution}},
     w = 500,
     h = 300,
@@ -43,8 +45,20 @@ bar.anchor("bottom").add(pv.Label)
     .textMargin(5)
     .textAlign("right")
     .textBaseline("middle")
-    .textAngle(-Math.PI / 2)
-    .text(function() dates[this.index]);
+    .textAngle(-Math.PI / 3)
+    .text(function() xlabel(this.index));
+
+function xlabel(ind){
+    if (!dates[ind -1]){
+        return dates[ind];
+    }
+    prev = dates[ind - 1];
+    cur = dates[ind];
+    if (prev.substring(0,7) == cur.substring(0,7)){
+        cur = cur.substring(8);
+    }
+    return cur;
+}
 
 var title = vis.add(pv.Label)
     .left(250)
