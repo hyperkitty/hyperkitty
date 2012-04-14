@@ -1,15 +1,11 @@
-# mongodb/api.py
-from djangorestframework.views import View
+#-*- coding: utf-8 -*-
 
+from djangorestframework.views import View
 from django.conf.urls.defaults import url
 from django.http import HttpResponseNotModified, HttpResponse
 from lib import mongo
-import pymongo
 import json
 import re
-
-connection = pymongo.Connection('localhost', 27017)
-
 
 class EmailResource(View):
     """ Resource used to retrieve emails from the archives using the
