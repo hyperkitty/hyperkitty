@@ -176,13 +176,23 @@ def get_archives_length(table):
     return archives
 
 
-def search_archives(table, query):
+def search_archives(table, query, limit=None):
     db = connection[table]
     db.mails.create_index('Date')
     db.mails.ensure_index('Date')
     for el in query:
         db.mails.create_index(str(el))
         db.mails.ensure_index(str(el))
-    return list(db.mails.find(query, sort=[('Date',
+    output = []
+    try:
+        limit = int(limit)
+    except ValueError:
+        limit = None
+    if limit:
+        output = list(db.mails.find(query, sort=[('Date',
+        pymongo.DESCENDING)]).limit(limit))
+    else:
+        output = list(db.mails.find(query, sort=[('Date',
         pymongo.DESCENDING)]))
+    return output
 

@@ -237,11 +237,11 @@ def message (request, mlist_fqdn, messageid):
     return HttpResponse(t.render(c))
 
 def _search_results_page(request, mlist_fqdn, query_string, search_type,
-    page=1, num_threads=25):
+    page=1, num_threads=25, limit=None):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('search.html')
     list_name = mlist_fqdn.split('@')[0]
-    threads = mongo.search_archives(list_name, query_string)
+    threads = mongo.search_archives(list_name, query_string, limit=limit)
     res_num = len(threads)
 
     participants = set()
@@ -326,7 +326,7 @@ def search_tag(request, mlist_fqdn, tag=None, page=1):
     else:
         query_string = None
     return _search_results_page(request, mlist_fqdn, query_string,
-        'Tag search', page)
+        'Tag search', page, limit=50)
 
 def thread (request, mlist_fqdn, threadid):
     ''' Displays all the email for a given thread identifier '''
