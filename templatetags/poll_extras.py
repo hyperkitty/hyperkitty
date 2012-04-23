@@ -36,7 +36,7 @@ def strip_page(value):
     print repr(value), repr(value)[-2]
     if not value:
         return value
-    if value.endswith('/'):
+    if value.endswith('/') and value[-3] == '/':
         end_with_number = False
         try: 
             if int(value[-2]) in range(0,10):
