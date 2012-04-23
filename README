@@ -35,7 +35,7 @@ source bin/activate
 easy_install django
 easy_install bunch
 easy_install pymongo
-easy_install urlgrabber
+# easy_install urlgrabber -- no used for the moment
 easy_install djangorestframework
 
 # Install pymongo and the mongodb database
