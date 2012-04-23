@@ -131,6 +131,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'mongodb',
     'djangorestframework',
+    'gravatar',
 )
 
 # A sample logging configuration. The only tangible logging

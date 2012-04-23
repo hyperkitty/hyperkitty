@@ -1,4 +1,5 @@
 {% extends "base_message.html" %}
+{% load gravatar %}
 
 {% block title %}{{ app_name }}{% endblock %}
 
@@ -17,7 +18,7 @@
       <!-- Start first email -->
       <div class="first_email">
         <div class="email_header">
-          <img src="http://planet.fedoraproject.org/images/heads/default.png" alt="avatar" />
+          {% gravatar_img_for_email message.Email 40 %}
           <div class="email_author inline-block">
             <span class="name">{{message.From}}</span> 
             <br />

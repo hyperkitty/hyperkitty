@@ -1,4 +1,5 @@
 {% extends "base_thread.html" %}
+{% load gravatar %}
 
 {% block title %}{{ app_name }}{% endblock %}
 
@@ -72,7 +73,7 @@
       <!-- Start first email -->
       <div class="first_email">
         <div class="email_header">
-          <img src="http://planet.fedoraproject.org/images/heads/default.png" alt="avatar" />
+          {% gravatar_img_for_email first_mail.email.Email 40 %}
           <div class="email_author inline-block">
             <span class="name">
               <a href="/message/{{list_address}}/{{first_mail.email.MessageID}}">{{first_mail.email.From}}</a>
@@ -104,7 +105,7 @@
         <!-- Start email -->
             <div class="email" style="padding-left: {{email.level}}em">
               <div class="email_header">
-                <img src="http://planet.fedoraproject.org/images/heads/default.png" alt="avatar" />
+                {% gravatar_img_for_email email.email.Email 40 %}
                 <div class="email_author inline-block">
                     <a href="/message/{{list_address}}/{{email.email.MessageID}}">{{email.email.From}}</a>
                   <br />

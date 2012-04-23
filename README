@@ -37,6 +37,7 @@ easy_install bunch
 easy_install pymongo
 # easy_install urlgrabber -- no used for the moment
 easy_install djangorestframework
+easy_install django-gravatar
 
 # Install pymongo and the mongodb database
 sudo yum install mongodb-server

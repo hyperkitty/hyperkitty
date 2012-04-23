@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load poll_extras %}
+{% load gravatar %}
 
 {% block title %}{{ app_name }}{% endblock %}
 
@@ -42,8 +43,8 @@
           </div>
           {% endif %}
           <div class="inline-block gravatar">
-            {% if email.avatar %}
-            <img src="{{email.avatar}}" alt="avatar" /> <br />
+            {% if email.Email %}
+            {% gravatar_img_for_email email.Email 40 %} <br />
             {% endif %}
             {{email.From}}
           </div>

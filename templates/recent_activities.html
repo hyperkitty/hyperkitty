@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load poll_extras %}
+{% load gravatar %}
 
 {% block title %} {{ app_name }} {% endblock %}
 
@@ -164,8 +165,8 @@ vis.render();
           <div class="maker">
             <div class="inline-block maker_id"> #{{forloop.counter}} </div>
             <div class="inline-block gravatar">
-              {% if author.avatar %}
-              <img src="{{author.avatar}}" alt="avatar" />
+              {% if author.Email %}
+              {% gravatar_img_for_email author.Email 40 %} <br />
               {% endif %}
             </div>
             <div class="inline-block">
