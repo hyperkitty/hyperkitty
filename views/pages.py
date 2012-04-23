@@ -227,6 +227,7 @@ def message (request, mlist_fqdn, messageid):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('message.html')
     message = Bunch(mongo.get_email(list_name, messageid))
+    message.Email = message.Email.strip()
 
     c = RequestContext(request, {
         'app_name': settings.APP_NAME,
@@ -259,6 +260,7 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type,
     cnt = 0
     for msg in threads.object_list:
         msg = Bunch(msg)
+        msg.Email = msg.Email.strip()
         # Statistics on how many participants and threads this month
         participants.add(msg['From'])
         if 'ThreadID' in msg:
@@ -348,6 +350,7 @@ def thread (request, mlist_fqdn, threadid):
     cnt = 0
     for msg in threads:
         msg = Bunch(msg)
+        msg.email.Email = msg.email.Email.strip()
         # Statistics on how many participants and threads this month
         participants.add(msg.email.From)
         cnt = cnt + 1
