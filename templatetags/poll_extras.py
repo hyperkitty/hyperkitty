@@ -33,11 +33,18 @@ def to_month(value):
 
 @register.filter(name="strip_page")
 def strip_page(value):
-    print repr(value)
+    print repr(value), repr(value)[-2]
     if not value:
         return value
     if value.endswith('/'):
-        output = value.rsplit('/', 2)
+        end_with_number = False
+        try: 
+            if int(value[-2]) in range(0,10):
+                end_with_number = True
+            if end_with_number:
+                output = value.rsplit('/', 2)
+        except ValueError:
+            output = value.rsplit('/', 1)
     else:
         output = value.rsplit('/', 1)
     return output[0]
