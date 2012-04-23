@@ -184,10 +184,11 @@ def search_archives(table, query, limit=None):
         db.mails.create_index(str(el))
         db.mails.ensure_index(str(el))
     output = []
-    try:
-        limit = int(limit)
-    except ValueError:
-        limit = None
+    if limit:
+        try:
+            limit = int(limit)
+        except ValueError:
+            limit = None
     if limit:
         output = list(db.mails.find(query, sort=[('Date',
         pymongo.DESCENDING)]).limit(limit))
