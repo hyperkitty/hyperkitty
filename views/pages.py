@@ -346,13 +346,13 @@ def thread (request, mlist_fqdn, threadid):
     if len(next_thread) > 30:
         next_thread = '%s...' % next_thread[:31]
 
-    participants = set()
+    participants = {}
     cnt = 0
     for msg in threads:
         msg = Bunch(msg)
         msg.email.Email = msg.email.Email.strip()
         # Statistics on how many participants and threads this month
-        participants.add(msg.email.From)
+        participants[msg.email.From] = Bunch({'Email': msg.email.Email})
         cnt = cnt + 1
 
     archives_length = mongo.get_archives_length(list_name)

@@ -57,10 +57,10 @@
       <div id="participants">
         <span id="participants_title"> participants </span>({{participants|length}})
         <ul>
-          {% for ppl in participants %}
+          {% for key,value in participants.items %}
           <li>
-            <img src="http://planet.fedoraproject.org/images/heads/default.png" alt="avatar" />
-            {{ppl}}
+            {% gravatar_img_for_email value.Email 20%}
+            {{key}}
           </li>
           {% endfor %}
         </ul>
