@@ -2,10 +2,14 @@
 
 from djangorestframework.views import View
 from django.conf.urls.defaults import url
+from django.conf import settings
 from django.http import HttpResponseNotModified, HttpResponse
-from lib import mongo
+from kittystore.kittysastore import KittySAStore
 import json
 import re
+
+STORE = KittySAStore(settings.KITTYSTORE_URL)
+
 
 class EmailResource(View):
     """ Resource used to retrieve emails from the archives using the
@@ -14,7 +18,7 @@ class EmailResource(View):
 
     def get(self, request, mlist_fqdn, messageid):
         list_name = mlist_fqdn.split('@')[0]
-        email = mongo.get_email(list_name, messageid)
+        email = STORE.get_email(list_name, messageid)
         if not email:
             return HttpResponse(status=404)
         else:
@@ -28,7 +32,7 @@ class ThreadResource(View):
 
     def get(self, request, mlist_fqdn, threadid):
         list_name = mlist_fqdn.split('@')[0]
-        thread = mongo.get_thread_list(list_name, threadid)
+        thread = STORE.get_thread(list_name, threadid)
         if not thread:
             return HttpResponse(status=404)
         else:
@@ -56,7 +60,7 @@ class SearchResource(View):
                 re.compile(regex, re.IGNORECASE)}
 
         print query_string, field, keyword
-        threads = mongo.search_archives(list_name, query_string)
+        threads = STORE.search_archives(list_name, query_string)
         if not threads:
             return HttpResponse(status=404)
         else:
