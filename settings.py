@@ -157,4 +157,5 @@ LOGGING = {
     }
 }
 
-APP_NAME = "Fedora Mailman App"
+APP_NAME = 'Fedora Mailman App'
+KITTYSTORE_URL = 'postgres://mm3:mm3@localhost/mm3'
