@@ -20,13 +20,14 @@ from bunch import Bunch
 
 from lib.mockup import generate_thread_per_category, generate_top_author
 
-from lib import mongo
+from kittystore.kittysastore import KittySAStore
 
 # Move this into settings.py
 MONTH_PARTICIPANTS = 284
 MONTH_DISCUSSIONS = 82
 logger = logging.getLogger(__name__)
 
+STORE = KittySAStore(settings.KITTYSTORE_URL)
 
 class SearchForm(forms.Form):
     target =  forms.CharField(label='', help_text=None,
@@ -105,23 +106,22 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('month_view.html')
-    threads = mongo.get_archives(list_name, start=begin_date,
+    threads = STORE.get_archives(list_name, start=begin_date,
         end=end_date)
 
     participants = set()
     cnt = 0
     for msg in threads:
-        msg = Bunch(msg)
         # Statistics on how many participants and threads this month
-        participants.add(msg['From'])
-        msg.participants = mongo.get_thread_participants(list_name,
-            msg['ThreadID'])
-        msg.answers = mongo.get_thread_length(list_name,
-            msg['ThreadID'])
+        participants.add(msg.sender)
+        msg.participants = STORE.get_thread_participants(list_name,
+            msg.thread_id)
+        msg.answers = STORE.get_thread_length(list_name,
+            msg.thread_id)
         threads[cnt] = msg
         cnt = cnt + 1
 
-    archives_length = mongo.get_archives_length(list_name)
+    archives_length = STORE.get_archives_length(list_name)
 
     c = RequestContext(request, {
         'app_name': settings.APP_NAME,
@@ -148,31 +148,30 @@ def list(request, mlist_fqdn=None):
     end_date = datetime(today.year, today.month, today.day)
     begin_date = end_date - timedelta(days=32)
 
-    threads = mongo.get_archives(table=list_name,start=begin_date,
+    threads = STORE.get_archives(list_name=list_name,start=begin_date,
         end=end_date)
 
     participants = set()
     dates = {}
     cnt = 0
     for msg in threads:
-        msg = Bunch(msg)
-        month = msg.Date.month
+        month = msg.date.month
         if month < 10:
             month = '0%s' % month
-        day = msg.Date.day
+        day = msg.date.day
         if day < 10:
             day = '0%s' % day    
-        key = '%s%s%s' % (msg.Date.year, month, day)
+        key = '%s%s%s' % (msg.date.year, month, day)
         if key in dates:
             dates[key] = dates[key] + 1
         else:
             dates[key] = 1
         # Statistics on how many participants and threads this month
-        participants.add(msg['From'])
-        msg.participants = mongo.get_thread_participants(list_name,
-            msg['ThreadID'])
-        msg.answers = mongo.get_thread_length(list_name,
-            msg['ThreadID'])
+        participants.add(msg.sender)
+        msg.participants = STORE.get_thread_participants(list_name,
+            msg.thread_id)
+        msg.answers = STORE.get_thread_length(list_name,
+            msg.thread_id)
         threads[cnt] = msg
         cnt = cnt + 1
 
@@ -180,9 +179,9 @@ def list(request, mlist_fqdn=None):
     top_threads = sorted(threads, key=lambda entry: entry.answers, reverse=True)
 
     # active threads are the ones that have the most recent posting
-    active_threads = sorted(threads, key=lambda entry: entry.Date, reverse=True)
+    active_threads = sorted(threads, key=lambda entry: entry.date, reverse=True)
 
-    archives_length = mongo.get_archives_length(list_name)
+    archives_length = STORE.get_archives_length(list_name)
 
     # top authors are the ones that have the most kudos.  How do we determine
     # that?  Most likes for their post?
@@ -226,8 +225,8 @@ def message (request, mlist_fqdn, messageid):
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('message.html')
-    message = Bunch(mongo.get_email(list_name, messageid))
-    message.Email = message.Email.strip()
+    message = Bunch(STORE.get_email(list_name, messageid))
+    message.email = message.email.strip()
 
     c = RequestContext(request, {
         'app_name': settings.APP_NAME,
@@ -242,7 +241,7 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type,
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('search.html')
     list_name = mlist_fqdn.split('@')[0]
-    threads = mongo.search_archives(list_name, query_string, limit=limit)
+    threads = STORE.search_archives(list_name, query_string, limit=limit)
     res_num = len(threads)
 
     participants = set()
@@ -259,14 +258,13 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type,
 
     cnt = 0
     for msg in threads.object_list:
-        msg = Bunch(msg)
-        msg.Email = msg.Email.strip()
+        msg.email = msg.email.strip()
         # Statistics on how many participants and threads this month
         participants.add(msg['From'])
         if 'ThreadID' in msg:
-            msg.participants = mongo.get_thread_participants(list_name,
+            msg.participants = STORE.get_thread_participants(list_name,
                 msg['ThreadID'])
-            msg.answers = mongo.get_thread_length(list_name,
+            msg.answers = STORE.get_thread_length(list_name,
                 msg['ThreadID'])
         else:
             msg.participants = 0
@@ -336,7 +334,7 @@ def thread (request, mlist_fqdn, threadid):
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('thread.html')
-    threads = mongo.get_thread_list(list_name, threadid)
+    threads = STORE.get_thread_list(list_name, threadid)
     #prev_thread = mongo.get_thread_name(list_name, int(threadid) - 1)
     prev_thread = []
     if len(prev_thread) > 30:
@@ -350,12 +348,12 @@ def thread (request, mlist_fqdn, threadid):
     cnt = 0
     for msg in threads:
         msg = Bunch(msg)
-        msg.email.Email = msg.email.Email.strip()
+        msg.email.email = msg.email.email.strip()
         # Statistics on how many participants and threads this month
-        participants[msg.email.From] = Bunch({'Email': msg.email.Email})
+        participants[msg.email.From] = Bunch({'Email': msg.email.email})
         cnt = cnt + 1
 
-    archives_length = mongo.get_archives_length(list_name)
+    archives_length = STORE.get_archives_length(list_name)
 
     c = RequestContext(request, {
         'app_name': settings.APP_NAME,
