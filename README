@@ -13,6 +13,8 @@ Dependencies:
 * bunch
 * Django
 * djangorestframework
+* psycopg2 (for postgresql)
+* sqlalchemy (tested with 0.5.5)
 
 
 To get it run:
@@ -40,15 +42,29 @@ easy_install djangorestframework
 easy_install django-gravatar
 
 # Install pymongo and the mongodb database
-sudo yum install mongodb-server
-# Start the mongo database
-sudo service mongod start
+sudo yum install postgresql
+# Start the database
+sudo service postgresql start
+# Configure your database as you wish
 
 # retrieve the sources there:
-bzr branch bzr://bzr.fedorahosted.org/bzr/hyperkitty/mongodb 
+bzr branch bzr://bzr.fedorahosted.org/bzr/hyperkitty/rdbms
 
 # Start it
-cd mongodb
+cd rdbms
+# Retrieve the sources from kittystore
+git clone https://github.com/pypingou/kittystore.git
+# clean them
+cd kittystore
+rm ./*
+mv kittystore/* .
+rmdir kittystore
+
+# You will want to configure the access to the database in the settings.py file
+# Adjust the variable: KITTYSTORE_URL
+vim settings.py
+
 ## Run the server
+cd ..
 python manage.py runserver
 
