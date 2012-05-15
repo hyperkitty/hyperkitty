@@ -225,7 +225,7 @@ def message (request, mlist_fqdn, messageid):
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('message.html')
-    message = Bunch(STORE.get_email(list_name, messageid))
+    message = STORE.get_email(list_name, messageid)
     message.email = message.email.strip()
 
     c = RequestContext(request, {
@@ -334,7 +334,7 @@ def thread (request, mlist_fqdn, threadid):
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('thread.html')
-    threads = STORE.get_thread_list(list_name, threadid)
+    threads = STORE.get_thread(list_name, threadid)
     #prev_thread = mongo.get_thread_name(list_name, int(threadid) - 1)
     prev_thread = []
     if len(prev_thread) > 30:
@@ -347,10 +347,9 @@ def thread (request, mlist_fqdn, threadid):
     participants = {}
     cnt = 0
     for msg in threads:
-        msg = Bunch(msg)
-        msg.email.email = msg.email.email.strip()
+        msg.email = msg.email.strip()
         # Statistics on how many participants and threads this month
-        participants[msg.email.From] = Bunch({'Email': msg.email.email})
+        participants[msg.sender] = {'email': msg.email}
         cnt = cnt + 1
 
     archives_length = STORE.get_archives_length(list_name)
