@@ -59,7 +59,7 @@
         <ul>
           {% for key,value in participants.items %}
           <li>
-            {% gravatar_img_for_email value.Email 20%}
+            {% gravatar_img_for_email value.email 20%}
             {{key}}
           </li>
           {% endfor %}
@@ -73,22 +73,22 @@
       <!-- Start first email -->
       <div class="first_email">
         <div class="email_header">
-          {% gravatar_img_for_email first_mail.email.Email 40 %}
+          {% gravatar_img_for_email first_mail.email 40 %}
           <div class="email_author inline-block">
             <span class="name">
-              <a href="/message/{{list_address}}/{{first_mail.email.MessageID}}">{{first_mail.email.From}}</a>
+              <a href="/message/{{list_address}}/{{first_mail.message_id}}">{{first_mail.sender}}</a>
             </span> 
             <br />
             <span class="rank">Rank 10</span>
           </div>
           <div class="email_date inline-block right">
-            <span class="date">{{first_mail.email.Date}}</span>
+            <span class="date">{{first_mail.date}}</span>
             <br />
             <span class="time"></span>
           </div>
         </div>
         <div id="first_email_body">
-            {{first_mail.email.Content}}
+            {{first_mail.content}}
         </div>
         <ul class="email_info inline">
           <li class="neutral"> 0</li>
@@ -105,19 +105,19 @@
         <!-- Start email -->
             <div class="email" style="padding-left: {{email.level}}em">
               <div class="email_header">
-                {% gravatar_img_for_email email.email.Email 40 %}
+                {% gravatar_img_for_email email.email 40 %}
                 <div class="email_author inline-block">
-                    <a href="/message/{{list_address}}/{{email.email.MessageID}}">{{email.email.From}}</a>
+                    <a href="/message/{{list_address}}/{{email.message_id}}">{{email.sender}}</a>
                   <br />
                   <span class="rank">Rank 8</span>
                 </div>
                 <div class="email_date inline-block right">
-                  <span class="date">{{email.email.Date}}</span>
+                  <span class="date">{{email.date}}</span>
                   <br />
                 </div>
               </div>
               <div class="email_body">
-                  {{email.email.Content}}
+                  {{email.content}}
               </div>
               <ul class="email_info inline">
                 <li class="neutral"> 0</li>
