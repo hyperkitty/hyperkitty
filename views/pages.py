@@ -236,17 +236,16 @@ def message (request, mlist_fqdn, messageid):
     })
     return HttpResponse(t.render(c))
 
-def _search_results_page(request, mlist_fqdn, query_string, search_type,
+def _search_results_page(request, mlist_fqdn, threads, search_type,
     page=1, num_threads=25, limit=None):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('search.html')
     list_name = mlist_fqdn.split('@')[0]
-    threads = STORE.search_archives(list_name, query_string, limit=limit)
     res_num = len(threads)
 
     participants = set()
     for msg in threads:
-        participants.add(msg['From'])
+        participants.add(msg.sender)
 
     paginator = Paginator(threads, num_threads)
 
@@ -260,12 +259,12 @@ def _search_results_page(request, mlist_fqdn, query_string, search_type,
     for msg in threads.object_list:
         msg.email = msg.email.strip()
         # Statistics on how many participants and threads this month
-        participants.add(msg['From'])
-        if 'ThreadID' in msg:
+        participants.add(msg.sender)
+        if msg.thread_id:
             msg.participants = STORE.get_thread_participants(list_name,
-                msg['ThreadID'])
+                msg.thread_id)
             msg.answers = STORE.get_thread_length(list_name,
-                msg['ThreadID'])
+                msg.thread_id)
         else:
             msg.participants = 0
             msg.answers = 0
@@ -308,15 +307,18 @@ def search_keyword(request, mlist_fqdn, target, keyword, page=1):
         target = request.GET.get('target')
     if not target:
         target = 'Subject'
-    regex = '.*%s.*' % keyword
-    if target == 'SubjectContent':
-        query_string = {'$or' : [
-            {'Subject': re.compile(regex, re.IGNORECASE)},
-            {'Content': re.compile(regex, re.IGNORECASE)}
-            ]}
-    else:
-        query_string = {target.capitalize(): re.compile(regex, re.IGNORECASE)}
-    return _search_results_page(request, mlist_fqdn, query_string, 'Search', page)
+    regex = '%%%s%%' % keyword
+    list_name = mlist_fqdn.split('@')[0]
+    if target.lower() == 'subjectcontent':
+        threads = STORE.search_content_subject(list_name, keyword)
+    elif target.lower() == 'subject':
+        threads = STORE.search_subject(list_name, keyword)
+    elif target.lower() == 'content':
+        threads = STORE.search_content(list_name, keyword)
+    elif target.lower() == 'from':
+        threads = STORE.search_sender(list_name, keyword)
+    
+    return _search_results_page(request, mlist_fqdn, threads, 'Search', page)
 
 
 def search_tag(request, mlist_fqdn, tag=None, page=1):
