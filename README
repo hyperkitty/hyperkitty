@@ -37,6 +37,8 @@ source bin/activate
 easy_install django
 easy_install bunch
 easy_install pymongo
+easy_install sqlalchemy
+easy_install psycopg2
 # easy_install urlgrabber -- no used for the moment
 easy_install djangorestframework
 easy_install django-gravatar
