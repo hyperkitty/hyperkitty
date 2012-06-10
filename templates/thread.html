@@ -4,7 +4,8 @@
 {% block title %}{{ app_name }}{% endblock %}
 
 {% block additional_headers %}
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
+  <link rel="stylesheet" type="text/css" media="all"
+    href="{{ STATIC_URL }}css/thread.css" />
 
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
   <script src="{{ STATIC_URL }}jquery.expander.js"></script>
@@ -49,9 +50,10 @@
         </ul>
       </div>
       <div id="add_tag">
-        <form action="#add_tag" method="get" >
-          <input id="add_tag_field" type="text" name="add_tag" class="inline-block"/>
-          <input id="add_tag_button" type="submit" value="ADD" class="inline-block"/>
+        <form action="/addtag/{{list_address}}/{{first_mail.message_id}}/" method="post">
+          {% csrf_token %}
+          {{ addtag_form.as_p }}
+          <button type="submit">Add a tag</button>
         </form>
       </div>
       <div id="participants">
