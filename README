@@ -41,7 +41,7 @@ easy_install pymongo
 easy_install djangorestframework
 easy_install django-gravatar
 
-# Install pymongo and the mongodb database
+# Install postgresql
 sudo yum install postgresql
 # Start the database
 sudo service postgresql start
