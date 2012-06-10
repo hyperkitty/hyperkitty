@@ -30,8 +30,10 @@
       </ul>
       <div id="top_right">
         <form action="/search/{{list_address}}" method="get">
-        {{ search_form }}
-      </form> 
+          <ul class="inline-block">
+            {{ search_form.as_ul }}
+          </ul>
+        </form> 
       </div>
     </div>
     <p id="list_email">
