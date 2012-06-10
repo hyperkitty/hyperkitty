@@ -1,0 +1,26 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="ROBOTS" content="INDEX, FOLLOW" />
+
+  <title>{% block title %}Mail app{% endblock %}</title>
+  <meta name="author" content="" />
+
+  <meta name="dc.language" content="en" />
+
+  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/style.css" />
+
+  {% block additional_headers %}
+  {% endblock %}
+</head>
+
+<body>
+
+  <div class="content">
+    {% block content %}
+    {% endblock %}
+  </div>
+
+</body>
+</html>

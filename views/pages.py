@@ -46,6 +46,24 @@ class SearchForm(forms.Form):
                 )
 
 
+class AddTagForm(forms.Form):
+    tag =  forms.CharField(label='', help_text=None,
+                widget=forms.TextInput(
+                    attrs={'placeholder': 'Add a tag...'}
+                    )
+                )
+    from_url = forms.CharField(widget=forms.HiddenInput, required=False)
+
+
+class AddCategoryForm(forms.Form):
+    category =  forms.CharField(label='', help_text=None,
+                widget=forms.TextInput(
+                    attrs={'placeholder': 'Add a category...'}
+                    )
+                )
+    from_url = forms.CharField(widget=forms.HiddenInput, required=False)
+
+
 def index(request):
     t = loader.get_template('index.html')
     search_form = SearchForm(auto_id=False)
@@ -61,6 +79,50 @@ def index(request):
         })
     return HttpResponse(t.render(c))
 
+
+def add_tag(request, mlist_fqdn, email_id):
+    """ Add a tag to a given message. """
+    t = loader.get_template('simple_form.html')
+    if request.method == 'POST':
+        form = AddTagForm(request.POST)
+        if form.is_valid():
+            print "THERE WE ARE"
+            # TODO: Add the logic to add the tag
+            if form.data['from_url']:
+                return HttpResponseRedirect(form.data['from_url'])
+            else:
+                return HttpResponseRedirect('/')
+    else:
+        form = AddTagForm()
+    c = RequestContext(request, {
+        'app_name': settings.APP_NAME,
+        'list_address': mlist_fqdn,
+        'email_id': email_id,
+        'addtag_form': form,
+        })
+    return HttpResponse(t.render(c))
+
+def add_category(request, mlist_fqdn, email_id):
+    """ Add a category to a given message. """
+    t = loader.get_template('simple_form.html')
+    if request.method == 'POST':
+        form = AddCategoryForm(request.POST)
+        if form.is_valid():
+            print "THERE WE ARE"
+            # TODO: Add the logic to add the category
+            if form.data['from_url']:
+                return HttpResponseRedirect(form.data['from_url'])
+            else:
+                return HttpResponseRedirect('/')
+    else:
+        form = AddCategoryForm()
+    c = RequestContext(request, {
+        'app_name': settings.APP_NAME,
+        'list_address': mlist_fqdn,
+        'email_id': email_id,
+        'addtag_form': form,
+        })
+    return HttpResponse(t.render(c))
 
 def api(request):
     t = loader.get_template('api.html')
@@ -355,12 +417,16 @@ def thread (request, mlist_fqdn, threadid):
         cnt = cnt + 1
 
     archives_length = STORE.get_archives_length(list_name)
+    from_url = '/thread/%s/%s/' %(mlist_fqdn, threadid)
+    tag_form = AddTagForm(initial={'from_url' : from_url})
+    print dir(search_form)
 
     c = RequestContext(request, {
         'app_name': settings.APP_NAME,
         'list_name' : list_name,
         'list_address': mlist_fqdn,
         'search_form': search_form,
+        'addtag_form': tag_form,
         'month': 'Thread',
         'participants': participants,
         'answers': cnt,

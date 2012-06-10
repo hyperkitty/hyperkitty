@@ -9,11 +9,11 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 # admin.autodiscover()
 
 urlpatterns = patterns('',
-    ################# INDEX PAGE ################
+    # Index
     url(r'^/$', 'views.pages.index'),
     url(r'^$', 'views.pages.index'),
 
-    ################# ARCHIVES ###################
+    # Archives
     url(r'^archives/(?P<mlist_fqdn>.*@.*)/(?P<year>\d{4})/(?P<month>\d\d?)/(?P<day>\d\d?)/$',
         'views.pages.archives'),
     url(r'^archives/(?P<mlist_fqdn>.*@.*)/(?P<year>\d{4})/(?P<month>\d\d?)/$',
@@ -21,23 +21,23 @@ urlpatterns = patterns('',
     url(r'^archives/(?P<mlist_fqdn>.*@.*)/$',
         'views.pages.archives'),
 
-    ############### THREAD VIEW ##################
+    # Threads
     url(r'^thread/(?P<mlist_fqdn>.*@.*)/(?P<threadid>.+)/$',
         'views.pages.thread'),
 
 
-    ############### LIST VIEW   ###################
+    # Lists
     url(r'^list/$', 'views.pages.index'),
     url(r'^list/(?P<mlist_fqdn>.*@.*)/$',
         'views.pages.list'),
 
 
-    ############### MESSAGE ########################
+    # Message
     url(r'^message/(?P<mlist_fqdn>.*@.*)/(?P<messageid>.+)/$',
         'views.pages.message'),
 
 
-    ############### SEARCH ##################
+    # Search
     # If page number is present in URL
     url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<target>.*)\/(?P<keyword>.*)\/(?P<page>\d+)/$',
         'views.pages.search_keyword'),
@@ -47,14 +47,20 @@ urlpatterns = patterns('',
     url(r'^search/(?P<mlist_fqdn>.*@.*)/$',
         'views.pages.search'),
 
+    # Category
+    url(r'^addcategory/(?P<mlist_fqdn>.*@.*)\/(?P<email_id>.*)/$',
+        'views.pages.add_category'),
 
-    ############## TAG   ######################
+
+    # Tag
     url(r'^tag/(?P<mlist_fqdn>.*@.*)\/(?P<tag>.*)\/(?P<page>\d+)/$',
         'views.pages.search_tag'),
     url(r'^tag/(?P<mlist_fqdn>.*@.*)\/(?P<tag>.*)/$',
         'views.pages.search_tag'),
+    url(r'^addtag/(?P<mlist_fqdn>.*@.*)\/(?P<email_id>.*)/$',
+        'views.pages.add_tag'),
 
-    ############## REST API #####################
+    # REST API
     url(r'^api/$', 'views.pages.api'),
     url(r'^api/email\/(?P<mlist_fqdn>.*@.*)\/(?P<messageid>.*)/',
         EmailResource.as_view()),
