@@ -15,6 +15,8 @@
   {% endblock %}
 </head>
 
+{% load i18n %}
+
 <body>
   <!-- Header -->
   <div class="header">
@@ -28,6 +30,21 @@
         {% endif %}
         <li id="page_date">{{month}}</li>
       </ul>
+	{% block usertools %}
+	{% if user.is_authenticated %}
+	<div id="user-tools">
+	    {% if user.active %}
+	    Logged in as: <a href="{% url user_profile %}">{% filter force_escape %}{% firstof user.first_name user.username %}{% endfilter %}</a>
+	    {% else %}{% trans 'Welcome,' %}
+	    <strong>{% filter force_escape %}{% firstof user.first_name user.username %}{% endfilter %}</strong>.
+	    {% endif %}
+	    <ul class="userlinks">
+	        {% block userlinks %}{% endblock %}
+	    </ul>
+	</div>
+	{% endif %}
+	{% endblock %}
+
       {% if month_participants and month_discussions %}
       <ul class="inline-block" id="top_right">
         <li class="participant"> {{month_participants}} participants</li>
