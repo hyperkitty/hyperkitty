@@ -42,6 +42,8 @@
 	        {% block userlinks %}{% endblock %}
 	    </ul>
 	</div>
+	<li><a class="mm_logout" href="{% url user_logout %}">Logout</a>
+	{% else %}<li><a class="mm_user" href="{% url user_login %}">Login</a></li>
 	{% endif %}
 	{% endblock %}
 
@@ -84,6 +86,7 @@
     {% block content %}
     {% endblock %}
   </div>
-
+    {% block additionaljs %}
+    {% endblock %}
 </body>
 </html>

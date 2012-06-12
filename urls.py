@@ -9,9 +9,14 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
+    # Account
+    url(r'^accounts/login/$', 'views.accounts.user_login', name='user_login'),
+    url(r'^accounts/logout/$', 'views.accounts.user_logout', name='user_logout'),
+    url(r'^accounts/profile/$', 'views.accounts.user_profile', name='user_profile'),
+
     # Index
-    url(r'^/$', 'views.pages.index'),
-    url(r'^$', 'views.pages.index'),
+    url(r'^/$', 'views.pages.index', name='index'),
+    url(r'^$',  'views.pages.index', name='index'),
 
     # Archives
     url(r'^archives/(?P<mlist_fqdn>.*@.*)/(?P<year>\d{4})/(?P<month>\d\d?)/(?P<day>\d\d?)/$',
@@ -74,6 +79,10 @@ urlpatterns = patterns('',
 
     # Admin  
     url(r'^admin/', include(admin.site.urls)),
+
+    # Social Auth
+    url(r'', include('social_auth.urls')),
+
 )
 #) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += staticfiles_urlpatterns()
