@@ -127,7 +127,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.admin',
     # 'django.contrib.admindocs',
-    'rdbms',
+    'gsoc',
     'social_auth',
     'djangorestframework',
     'gravatar',
