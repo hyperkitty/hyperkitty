@@ -118,6 +118,12 @@ TEMPLATE_DIRS = (
     BASE_DIR + '/templates',
 )
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'social_auth.backends.OpenIDBackend',
+    'social_auth.backends.browserid.BrowserIDBackend'
+)
+
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -132,6 +138,17 @@ INSTALLED_APPS = (
     'djangorestframework',
     'gravatar',
 )
+
+
+LOGIN_URL          = '/accounts/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_ERROR_URL    = '/accounts/login/'
+SOCIAL_AUTH_COMPLETE_URL_NAME  = 'socialauth_complete'
+SOCIAL_AUTH_ASSOCIATE_URL_NAME = 'socialauth_associate_complete'
+SOCIAL_AUTH_DEFAULT_USERNAME = 'new_social_auth_user'
+SOCIAL_AUTH_UUID_LENGTH = 16
+
+
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

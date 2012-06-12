@@ -47,7 +47,7 @@ def user_profile(request, user_email = None):
     #    the_user = User.objects.get(email=user_email)
     #except MailmanApiError:
     #    return utils.render_api_error(request)
-    return render_to_response('postorius/user_profile.html',
+    return render_to_response('user_profile.html',
     #                          {'mm_user': the_user},
                               context_instance=RequestContext(request))
 
