@@ -8,13 +8,18 @@ import os
 import re
 from urlparse import urljoin
 import urllib
-
+import django.utils.simplejson as simplejson
 from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext, loader
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
 #import urlgrabber
+from gsoc.models import Rating
+
+from django.contrib.auth.decorators import (login_required,
+                                            permission_required,
+                                            user_passes_test)
 
 from bunch import Bunch
 
@@ -79,7 +84,31 @@ def index(request):
         })
     return HttpResponse(t.render(c))
 
+@login_required
+def vote_message (request, mlist_fqdn, messageid):
+    """ Add a rating to a given message identified by messageid. """
+    if not request.user.is_authenticated():
+	return redirect('user_login')
 
+    value = request.POST['vote'] 
+    print value
+    # See if the user has already voted or not.
+    # If not create a new entry
+    try:
+	v = Rating.objects.get(user = request.user, messageid = messageid, list_address = mlist_fqdn)
+    except Rating.DoesNotExist:
+    	v = Rating ( list_address=mlist_fqdn, messageid = messageid, vote = value) 
+
+    v.user = request.user
+    v.vote = value  
+    v.save()
+    response_dict = { }
+
+
+
+    return HttpResponse(simplejson.dumps(response_dict), mimetype='application/javascript')
+
+@login_required
 def add_tag(request, mlist_fqdn, email_id):
     """ Add a tag to a given message. """
     t = loader.get_template('simple_form.html')
@@ -289,12 +318,12 @@ def message (request, mlist_fqdn, messageid):
     t = loader.get_template('message.html')
     message = STORE.get_email(list_name, messageid)
     message.email = message.email.strip()
-
     c = RequestContext(request, {
         'app_name': settings.APP_NAME,
         'list_name' : list_name,
         'list_address': mlist_fqdn,
         'message': message,
+	'messageid' : messageid,
     })
     return HttpResponse(t.render(c))
 

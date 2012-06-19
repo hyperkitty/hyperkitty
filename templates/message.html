@@ -34,9 +34,9 @@
             {{message.content}}
         </div>
         <ul class="email_info inline">
-          <li class="neutral"> 0</li>
-          <li class="youlike"> <a href="#like"> Like</a></li>
-          <li class="youdislike"> <a href="#dislike"> Dislike</a></li>
+          <li class="neutral"> 0 </li>
+          <li id="voteup"><a href="#"> Like </a></li>
+          <li id="votedown"><a href="#"> Dislike</a></li>
           <li class="discussion add_comment"> <a href="#comment"> Add your own comment</a></li>
         </ul>
       </div>
@@ -45,4 +45,39 @@
     </section>
 
   </div> <!-- end of content -->
+{% endblock %}
+
+{% block additionaljs %}
+
+<script type="text/javascript">
+
+$(document).ready(function() {
+	    $("#voteup").click(function(){  
+	    	$.ajax({
+	        	type: "POST",
+		        url: '/vote/{{list_address}}/{{message.message_id}}/',
+		        data: { vote : 1, messageid : "{{message.message_id}}" ,  list: "{{list_address}}", csrfmiddlewaretoken: '{{ csrf_token }}' },
+		        success: function(response){
+		            alert(response);
+		        }
+	        });
+	    	return false;
+	    });
+
+	    $("#votedown").click(function(){  
+	    	$.ajax({
+	        	type: "POST",
+		        url: '/vote/{{list_address}}/{{message.message_id}}/',
+		        data: { vote : -1, messageid : "{{message.message_id}}" ,  list: "{{list_address}}", csrfmiddlewaretoken: '{{ csrf_token }}' },
+		        success: function(response){
+		            alert(response);
+		        }
+	        });
+	    	return false;
+	    });
+
+});
+
+</script>
+
 {% endblock %}
