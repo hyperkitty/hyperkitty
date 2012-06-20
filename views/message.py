@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 @login_required
-def vote_message (request, mlist_fqdn, messageid):
+def vote (request, mlist_fqdn, messageid):
     """ Add a rating to a given message identified by messageid. """
     if not request.user.is_authenticated():
 	return redirect('user_login')
@@ -36,6 +36,7 @@ def vote_message (request, mlist_fqdn, messageid):
     response_dict = { }
 
     return HttpResponse(simplejson.dumps(response_dict), mimetype='application/javascript')
+
 
 @login_required
 def add_tag(request, mlist_fqdn, email_id):

@@ -59,9 +59,9 @@ urlpatterns = patterns('',
 
     # Vote a message
     url(r'^vote/(?P<mlist_fqdn>.*@.*)/(?P<messageid>.+)/$',
-        'views.pages.vote_message'),
+        'views.message.vote'),
 
-    # Tag
+    # Search Tag
     url(r'^tag/(?P<mlist_fqdn>.*@.*)\/(?P<tag>.*)\/(?P<page>\d+)/$',
         'views.pages.search_tag'),
     url(r'^tag/(?P<mlist_fqdn>.*@.*)\/(?P<tag>.*)/$',
