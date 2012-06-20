@@ -22,6 +22,8 @@ from django.contrib.auth.decorators import (login_required,
 from lib.mockup import generate_thread_per_category, generate_top_author
 from kittystore.kittysastore import KittySAStore
 
+from thread import AddTagForm
+
 logger = logging.getLogger(__name__)
 
 
@@ -74,7 +76,7 @@ def index(request):
 
 def add_category(request, mlist_fqdn, email_id):
     """ Add a category to a given message. """
-    t = loader.get_template('simple_form.html')
+    t = loader.get_template('add_tag_form.html')
     if request.method == 'POST':
         form = AddCategoryForm(request.POST)
         if form.is_valid():
