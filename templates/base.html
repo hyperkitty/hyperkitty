@@ -1,95 +1,65 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <meta name="ROBOTS" content="INDEX, FOLLOW" />
-
-  <title>{% block title %}{{ app_name }}{% endblock %}</title>
-
-  <meta name="author" content="" />
-  <meta name="dc.language" content="en" />
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/style.css" />
-
-  {% block additional_stylesheets %}
-  {% endblock %}
-
-</head>
-
-{% load i18n %}
-
-<body>
-  <!-- Header -->
-  <div class="header">
-    {% block header %}
-    <div id="headline">
-      <ul class="inline-block">
-        {% if list_address  %}
-        <li id="list_name"><a href="/list/{{list_address}}">{{list_name}}</a></li>
-        {% else %}
-        <li id="list_name"><a href="/list/">{{list_name}}</a></li>
-        {% endif %}
-        <li id="page_date">{{month}}</li>
-      </ul>
-	{% block usertools %}
-	{% if user.is_authenticated %}
-	<div id="user-tools">
-	    {% if user.active %}
-	    Logged in as: <a href="{% url user_profile %}">{% filter force_escape %}{% firstof user.first_name user.username %}{% endfilter %}</a>
-	    {% else %}{% trans 'Welcome,' %}
-	    <strong>{% filter force_escape %}{% firstof user.first_name user.username %}{% endfilter %}</strong>.
-	    {% endif %}
-	    <ul class="userlinks">
-	        {% block userlinks %}{% endblock %}
-	    </ul>
-	</div>
-	<li><a class="mm_logout" href="{% url user_logout %}">Logout</a>
-	{% else %}<li><a class="mm_user" href="{% url user_login %}">Login</a></li>
-	{% endif %}
-	{% endblock %}
-
-      {% if month_participants and month_discussions %}
-      <ul class="inline-block" id="top_right">
-        <li class="participant"> {{month_participants}} participants</li>
-        <li class="discussion"> {{month_discussions}} discussions</li>
-        <li class="saved"> 1 saved</li>
-      </ul>
-      {% endif %}
-    </div>
-    {% if list_address  %}
-    <p id="list_email">
-      <a href="mailto:{{list_address}}">
-        {{list_address}}
-      </a>
-    </p>
-    <p id="list_email" class='inline'>
-      <a href="/">
-        All lists
-      </a>
-    </p>
-    <div id="searchbox">
-      <form action="/search/{{list_address}}" method="get">
-        {{ search_form }}
-      </form> 
-    </div>
-    {% endif %}
-    <div id="newthread">
-      <a href="#Create_new_thread">
-        <img src="{{ STATIC_URL }}img/newthread.png" alt="New thread" />
-      </a>
-    </div>
-    <hr id="white"/>
-    <hr />
-  {% endblock %}
-  </div>
-  <!-- End of Header -->
-
-  {% block content %}
-  {% endblock %}
-
-  <script src="{{ STATIC_URL }}/js/libs/jquery-1.7.1.min.js"></script>
-  
-  {% block additionaljs %}
-  {% endblock %}
-
-</body>
+    
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="ROBOTS" content="INDEX, FOLLOW" />
+        <title>{% block title %}{{ app_name }}{% endblock %}</title>
+        <meta name="author" content="" />
+        <meta name="dc.language" content="en" />
+        <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/style.css" />
+	{% block additional_stylesheets %} {% endblock %}
+    </head>
+    {% load i18n %}
+    
+    <body>
+        <!-- Header -->
+        <div class="header">{% block header %}
+            <div id="headline">
+                <ul class="inline-block">{% if list_address %}
+                    <li id="list_name">
+                        <a href="/list/{{list_address}}">{{list_name}}</a>
+                    </li>{% else %}
+                    <li id="list_name">
+                        <a href="/list/">{{list_name}}</a>
+                    </li>{% endif %}
+                    <li id="page_date">{{month}}</li>
+                </ul>{% block usertools %} {% if user.is_authenticated %}
+                <div id="user-tools">{% if user.active %} Logged in as:
+                    <a href="{% url user_profile %}">{% filter force_escape %}{% firstof user.first_name user.username %}{% endfilter %}</a>{% else %}{% trans 'Welcome,' %}
+                    <strong>{% filter force_escape %}{% firstof user.first_name user.username %}{%
+                        endfilter %}</strong>. {% endif %}
+                    <ul class="userlinks">{% block userlinks %}{% endblock %}</ul>
+                </div>
+                <li>
+                    <a class="mm_logout" href="{% url user_logout %}">Logout</a>{% else %}
+                    <li>
+                        <a class="mm_user" href="{% url user_login %}">Login</a>
+                    </li>{% endif %} {% endblock %} {% if month_participants and month_discussions
+                    %}
+                    <ul class="inline-block" id="top_right">
+                        <li class="participant">{{month_participants}} participants</li>
+                        <li class="discussion">{{month_discussions}} discussions</li>
+                        <li class="saved">1 saved</li>
+                    </ul>{% endif %}</div>{% if list_address %}
+            <p id="list_email">
+                <a href="mailto:{{list_address}}">{{list_address}}</a>
+            </p>
+            <p id="list_email" class='inline'>
+                <a href="/"> All lists </a>
+            </p>
+            <div id="searchbox">
+                <form action="/search/{{list_address}}" method="get">{{ search_form }}</form>
+            </div>{% endif %}
+            <div id="newthread">
+                <a href="#Create_new_thread"> <img src="{{ STATIC_URL }}img/newthread.png" alt="New thread" /></a>
+            </div>
+            <hr id="white" />
+            <hr />{% endblock %}
+        </div>
+        <!-- End of Header -->
+        {% block content %} {% endblock %}
+    </body>
+    <script src="{{ STATIC_URL }}/js/libs/jquery-1.7.1.min.js"></script>
+    {% block additionaljs %} {% endblock %}
 </html>
