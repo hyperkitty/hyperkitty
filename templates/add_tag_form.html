@@ -1,11 +1,9 @@
-{% extends "base_simple.html" %}
-{% load gravatar %}
+{% extends "base.html" %}
 
 {% block title %}{{ app_name }}{% endblock %}
 
-
+{% block header %} {% endblock %}
 {% block content %}
-
   <div class="content">
     <form action="/addtag/{{list_address}}/{{email_id}}/" method="post">
         {% csrf_token %}
