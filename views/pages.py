@@ -90,14 +90,13 @@ def vote_message (request, mlist_fqdn, messageid):
     if not request.user.is_authenticated():
 	return redirect('user_login')
 
-    value = request.POST['vote'] 
-    print value
-    # See if the user has already voted or not.
-    # If not create a new entry
+    value = request.POST['vote']
+
+    # Checks if the user has already voted for a this message. If yes modify db entry else create a new one.
     try:
 	v = Rating.objects.get(user = request.user, messageid = messageid, list_address = mlist_fqdn)
     except Rating.DoesNotExist:
-    	v = Rating ( list_address=mlist_fqdn, messageid = messageid, vote = value) 
+    	v = Rating(list_address=mlist_fqdn, messageid = messageid, vote = value) 
 
     v.user = request.user
     v.vote = value  
