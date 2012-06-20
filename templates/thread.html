@@ -1,22 +1,10 @@
-{% extends "base_thread.html" %}
+{% extends "base.html" %}
 {% load gravatar %}
 
 {% block title %}{{ app_name }}{% endblock %}
 
-{% block additional_headers %}
-  <link rel="stylesheet" type="text/css" media="all"
-    href="{{ STATIC_URL }}css/thread.css" />
-
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
-  <script src="{{ STATIC_URL }}jquery.expander.js"></script>
-  <script>
-    $(document).ready(function() {
-      $('div.email_body').expander({
-      userCollapseText: 'View Less',
-      expandText: 'View More'
-      });
-    });
-    </script>
+{% block additional_stylesheets %}
+	<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
 {% endblock %}
 
 {% block content %}
@@ -137,4 +125,16 @@
     </section>
 
   </div> <!-- end of content -->
+{% endblock %}
+
+{% block addtionaljs %}
+<script src="{{ STATIC_URL }}jquery.expander.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('div.email_body').expander({
+      userCollapseText: 'View Less',
+      expandText: 'View More'
+      });
+    });
+    </script>
 {% endblock %}

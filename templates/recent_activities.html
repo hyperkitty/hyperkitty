@@ -4,9 +4,8 @@
 
 {% block title %} {{ app_name }} {% endblock %}
 
-{% block additional_headers %}
-<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/stats.css" />
-<script type="text/javascript" src="{{ STATIC_URL }}protovis-d3.1.js"></script>
+{% block additional_stylesheets %}
+	<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/stats.css" />
 {% endblock %}
 
 {% block content %}
@@ -211,3 +210,8 @@ vis.render();
       {% endfor %}
     </section>
 {% endblock %}
+
+{% block addtionaljs %}
+<script type="text/javascript" src="{{ STATIC_URL }}protovis-d3.1.js"></script>
+{% endblock %}
+

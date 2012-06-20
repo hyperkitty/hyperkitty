@@ -1,9 +1,9 @@
-{% extends "base_message.html" %}
+{% extends "base.html" %}
 {% load gravatar %}
 
 {% block title %}{{ app_name }}{% endblock %}
 
-{% block additional_headers %}
+{% block additional_stylesheets %}
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
 
 {% endblock %}

@@ -2,21 +2,6 @@
 {% load poll_extras %}
 {% load gravatar %}
 
-{% block title %}{{ app_name }}{% endblock %}
-
-{% block additional_headers %}
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
-  <script src="{{ STATIC_URL }}jquery.expander.js"></script>
-  <script>
-    $(document).ready(function() {
-      $('span.expander').expander({
-      userCollapseText: 'View Less',
-      expandText: 'View More'
-      });
-    });
-    </script>
-{% endblock %}
-
 {% block content %}
 
     {% if threads.object_list %}
@@ -115,3 +100,16 @@
     {% endif %}
 
 {% endblock %}
+
+{% block additionaljs %}
+  <script src="{{ STATIC_URL }}jquery.expander.js"></script>
+  <script>
+    $(document).ready(function() {
+      $('span.expander').expander({
+      userCollapseText: 'View Less',
+      expandText: 'View More'
+      });
+    });
+    </script>
+{% endblock %}
+

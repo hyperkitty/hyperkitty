@@ -4,15 +4,15 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <meta name="ROBOTS" content="INDEX, FOLLOW" />
 
-  <title>{% block title %}Mail app{% endblock %}</title>
+  <title>{% block title %}{{ app_name }}{% endblock %}</title>
+
   <meta name="author" content="" />
-
   <meta name="dc.language" content="en" />
-
   <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/style.css" />
 
-  {% block additional_headers %}
+  {% block additional_stylesheets %}
   {% endblock %}
+
 </head>
 
 {% load i18n %}
@@ -79,17 +79,17 @@
     </div>
     <hr id="white"/>
     <hr />
+  {% endblock %}
   </div>
+  <!-- End of Header -->
+
+  {% block content %}
   {% endblock %}
 
-  <div class="content">
-    {% block content %}
-    {% endblock %}
-  </div>
-
-    <script src="{{ STATIC_URL }}/js/libs/jquery-1.7.1.min.js"></script>
-    {% block additionaljs %}
-    {% endblock %}
+  <script src="{{ STATIC_URL }}/js/libs/jquery-1.7.1.min.js"></script>
+  
+  {% block additionaljs %}
+  {% endblock %}
 
 </body>
 </html>
