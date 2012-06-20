@@ -56,18 +56,21 @@ urlpatterns = patterns('',
     url(r'^addcategory/(?P<mlist_fqdn>.*@.*)\/(?P<email_id>.*)/$',
         'views.pages.add_category'),
 
-
+    ### MESSAGE LEVEL VIEWS ###
     # Vote a message
     url(r'^vote/(?P<mlist_fqdn>.*@.*)/(?P<messageid>.+)/$',
         'views.message.vote'),
+
+    ### THREAD LEVEL VIEWS ###
+    # Add Tag
+    url(r'^addtag/(?P<mlist_fqdn>.*@.*)\/(?P<email_id>.*)/$',
+        'views.thread.add_tag'),
 
     # Search Tag
     url(r'^tag/(?P<mlist_fqdn>.*@.*)\/(?P<tag>.*)\/(?P<page>\d+)/$',
         'views.pages.search_tag'),
     url(r'^tag/(?P<mlist_fqdn>.*@.*)\/(?P<tag>.*)/$',
         'views.pages.search_tag'),
-    url(r'^addtag/(?P<mlist_fqdn>.*@.*)\/(?P<email_id>.*)/$',
-        'views.pages.add_tag'),
 
     # REST API
     url(r'^api/$', 'views.pages.api'),
