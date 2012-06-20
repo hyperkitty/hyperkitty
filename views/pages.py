@@ -48,15 +48,6 @@ class SearchForm(forms.Form):
                 )
 
 
-class AddTagForm(forms.Form):
-    tag =  forms.CharField(label='', help_text=None,
-                widget=forms.TextInput(
-                    attrs={'placeholder': 'Add a tag...'}
-                    )
-                )
-    from_url = forms.CharField(widget=forms.HiddenInput, required=False)
-
-
 class AddCategoryForm(forms.Form):
     category =  forms.CharField(label='', help_text=None,
                 widget=forms.TextInput(

@@ -14,6 +14,15 @@ from gsoc.models import Rating
 logger = logging.getLogger(__name__)
 
 
+class AddTagForm(forms.Form):
+    tag =  forms.CharField(label='', help_text=None,
+                widget=forms.TextInput(
+                    attrs={'placeholder': 'Add a tag...'}
+                    )
+                )
+    from_url = forms.CharField(widget=forms.HiddenInput, required=False)
+
+
 @login_required
 def add_tag(request, mlist_fqdn, email_id):
     """ Add a tag to a given message. """
