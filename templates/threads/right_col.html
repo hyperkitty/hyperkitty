@@ -1,0 +1,48 @@
+{% load gravatar %}
+
+<!-- right column -->
+    <section id="thread_overview_info">
+      <!-- Start dates -->
+      <div id="thread_date_info">
+        <div class="days_num inline-block">21</div>
+        <div class="days_text inline-block">
+          days<br /> inactive
+        </div>
+        <div id="days_old" class="days_num inline-block">24</div>
+        <div class="days_text inline-block">
+          days <br /> old
+        </div>
+      </div>
+      <p id="add_to_fav">
+        <a href="#AddFav" class="notsaved">Add to favorite discussions</a>
+      </p>
+      <!-- End dates -->
+      <hr id="grey"/>
+      <div id="tags">
+        <span id="tag_title">tags </span>({{tags|length}})
+        <ul class="inline">
+          {% for tag in tags %}
+          <li> {{ tag }} |</li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div id="add_tag">
+        <form action="/addtag/{{list_address}}/{{first_mail.message_id}}/" method="post">
+          {% csrf_token %}
+          {{ addtag_form.as_p }}
+          <button type="submit">Add a tag</button>
+        </form>
+      </div>
+      <div id="participants">
+        <span id="participants_title"> participants </span>({{participants|length}})
+        <ul>
+          {% for key,value in participants.items %}
+          <li>
+            {% gravatar_img_for_email value.email 20%}
+            {{key}}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </section>
+

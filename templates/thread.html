@@ -1,7 +1,6 @@
 {% extends "base.html" %}
-{% load gravatar %}
 
-{% block title %}{{ app_name }}{% endblock %}
+{% load gravatar %}
 
 {% block additional_stylesheets %}
 	<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
@@ -10,114 +9,23 @@
 {% block content %}
 
   <div class="content">
-
-    <!-- right column -->
-    <section id="thread_overview_info">
-      <!-- Start dates -->
-      <div id="thread_date_info">
-        <div class="days_num inline-block">21</div>
-        <div class="days_text inline-block">
-          days<br /> inactive
-        </div>
-        <div id="days_old" class="days_num inline-block">24</div>
-        <div class="days_text inline-block">
-          days <br /> old
-        </div>
-      </div>
-      <p id="add_to_fav">
-        <a href="#AddFav" class="notsaved">Add to favorite discussions</a>
-      </p>
-      <!-- End dates -->
-      <hr id="grey"/>
-      <div id="tags">
-        <span id="tag_title">tags </span>({{tags|length}})
-        <ul class="inline">
-          {% for tag in tags %}
-          <li> {{ tag }} |</li>
-          {% endfor %}
-        </ul>
-      </div>
-      <div id="add_tag">
-        <form action="/addtag/{{list_address}}/{{first_mail.message_id}}/" method="post">
-          {% csrf_token %}
-          {{ addtag_form.as_p }}
-          <button type="submit">Add a tag</button>
-        </form>
-      </div>
-      <div id="participants">
-        <span id="participants_title"> participants </span>({{participants|length}})
-        <ul>
-          {% for key,value in participants.items %}
-          <li>
-            {% gravatar_img_for_email value.email 20%}
-            {{key}}
-          </li>
-          {% endfor %}
-        </ul>
-      </div>
-    </section>
+   
+    {% include 'threads/right_col.html' %}
 
     <!-- main section, the email thread -->
     <section id="thread_content">
 
       <!-- Start first email -->
-      <div class="first_email">
-        <div class="email_header">
-          {% gravatar_img_for_email first_mail.email 40 %}
-          <div class="email_author inline-block">
-            <span class="name">
-              <a href="/message/{{list_address}}/{{first_mail.message_id}}">{{first_mail.sender}}</a>
-            </span> 
-            <br />
-            <span class="rank">Rank 10</span>
-          </div>
-          <div class="email_date inline-block right">
-            <span class="date">{{first_mail.date}}</span>
-            <br />
-            <span class="time"></span>
-          </div>
-        </div>
-        <div id="first_email_body">
-            {{first_mail.content}}
-        </div>
-        <ul class="email_info inline">
-          <li class="neutral"> 0</li>
-          <li class="youlike"> <a href="#like"> Like</a></li>
-          <li class="youdislike"> <a href="#dislike"> Dislike</a></li>
-          <li class="discussion add_comment"> <a href="#comment"> Add your own comment</a></li>
-        </ul>
-      </div>
+	{% include 'messages/first_email.html' %}
       <!-- End first email -->
 
         {% for email in threads %}
-        <!-- Start email -->
-        <div class="even">
-        <!-- Start email -->
-            <div class="email" style="padding-left: {{email.level}}em">
-              <div class="email_header">
-                {% gravatar_img_for_email email.email 40 %}
-                <div class="email_author inline-block">
-                    <a href="/message/{{list_address}}/{{email.message_id}}">{{email.sender}}</a>
-                  <br />
-                  <span class="rank">Rank 8</span>
-                </div>
-                <div class="email_date inline-block right">
-                  <span class="date">{{email.date}}</span>
-                  <br />
-                </div>
-              </div>
-              <div class="email_body">
-                  {{email.content}}
-              </div>
-              <ul class="email_info inline">
-                <li class="neutral"> 0</li>
-                <li class="youlike"> <a href="#like"> Like</a></li>
-                <li class="youdislike"> <a href="#dislike"> Dislike</a></li>
-                <li class="discussion add_comment"> <a href="#comment">Reply</a></li>
-              </ul>
-            </div>
-        <!-- End of email -->
-        </div>
+	        <!-- Start email -->
+  	      	<div class="even">
+			{% include 'messages/message.html' %}
+		</div>
+        	<!-- End of email -->
+
         {% empty %}
         Sorry no emails could be found for your search.
         {% endfor %}
@@ -126,6 +34,8 @@
 
   </div> <!-- end of content -->
 {% endblock %}
+
+
 
 {% block addtionaljs %}
 <script src="{{ STATIC_URL }}jquery.expander.js"></script>
