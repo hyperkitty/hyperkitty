@@ -17,12 +17,13 @@ logger = logging.getLogger(__name__)
 
 
 @login_required
-def vote (request, mlist_fqdn, messageid):
+def vote (request, mlist_fqdn):
     """ Add a rating to a given message identified by messageid. """
     if not request.user.is_authenticated():
 	return redirect('user_login')
 
     value = request.POST['vote']
+    messageid = request.POST['messageid']
 
     # Checks if the user has already voted for a this message. If yes modify db entry else create a new one.
     try:

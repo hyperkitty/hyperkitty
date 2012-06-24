@@ -58,7 +58,7 @@ urlpatterns = patterns('',
 
     ### MESSAGE LEVEL VIEWS ###
     # Vote a message
-    url(r'^vote/(?P<mlist_fqdn>.*@.*)/(?P<messageid>.+)/$',
+    url(r'^vote/(?P<mlist_fqdn>.*@.*)/$',
         'views.message.vote'),
 
     ### THREAD LEVEL VIEWS ###
