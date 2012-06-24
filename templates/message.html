@@ -1,38 +1,29 @@
 {% extends "base.html" %}
 {% load gravatar %}
 
-{% block title %}{{ app_name }}{% endblock %}
-
 {% block additional_stylesheets %}
-  <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
-
+	<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
 {% endblock %}
 
 {% block content %}
 
-  <div class="content">
-
-    <!-- main section, the email thread -->
     <section id="thread_content">
-      <!-- Start first email -->
 	{% include 'messages/first_email.html' with first_mail=message %}
-      <!-- End first email -->
-
     </section>
 
-  </div> <!-- end of content -->
 {% endblock %}
 
 {% block additionaljs %}
+	<script type="text/javascript">
 
-<script type="text/javascript">
-
-$(document).ready(function() {
-	    $("#voteup").click(function(){  
+	$(document).ready(function() {
+	    $(".voteup").click(function(){
+		// @TODO: Extract the message id from the HTML DOM element instead of hard coding it in Javascript.
+		message_id = this.parentElement.getAttribute('messageid');
 	    	$.ajax({
 	        	type: "POST",
-		        url: '/vote/{{list_address}}/{{message.message_id}}/',
-		        data: { vote : 1, messageid : "{{message.message_id}}" ,  list: "{{list_address}}", csrfmiddlewaretoken: '{{ csrf_token }}' },
+		        url: '/vote/{{list_address}}/',
+		        data: { vote : 1, messageid : message_id,  list: "{{list_address}}", csrfmiddlewaretoken: '{{ csrf_token }}' },
 		        success: function(response){
 		            alert(response);
 		        }
@@ -40,11 +31,12 @@ $(document).ready(function() {
 	    	return false;
 	    });
 
-	    $("#votedown").click(function(){  
+	    $(".votedown").click(function(){
+		message_id = this.parentElement.getAttribute('messageid');
 	    	$.ajax({
 	        	type: "POST",
-		        url: '/vote/{{list_address}}/{{message.message_id}}/',
-		        data: { vote : -1, messageid : "{{message.message_id}}" ,  list: "{{list_address}}", csrfmiddlewaretoken: '{{ csrf_token }}' },
+		        url: '/vote/{{list_address}}/',
+		        data: { vote : -1, messageid : message_id ,  list: "{{list_address}}", csrfmiddlewaretoken: '{{ csrf_token }}' },
 		        success: function(response){
 		            alert(response);
 		        }
@@ -52,8 +44,7 @@ $(document).ready(function() {
 	    	return false;
 	    });
 
-});
-
-</script>
+	});
+	</script>
 
 {% endblock %}

@@ -37,14 +37,50 @@
 
 
 
-{% block addtionaljs %}
-<script src="{{ STATIC_URL }}jquery.expander.js"></script>
-  <script>
+{% block additionaljs %}
+
+  <script src="{{ STATIC_URL }}jquery.expander.js"></script>
+  <script type="text/javascript">
     $(document).ready(function() {
       $('div.email_body').expander({
       userCollapseText: 'View Less',
       expandText: 'View More'
       });
     });
-    </script>
+  </script>
+
+
+	<script type="text/javascript">
+
+	$(document).ready(function() {
+	    $(".voteup").click(function(){
+		// @TODO: Extract the message id from the HTML DOM element instead of hard coding it in Javascript.
+		message_id = this.parentElement.getAttribute('messageid');
+	    	$.ajax({
+	        	type: "POST",
+		        url: '/vote/{{list_address}}/',
+		        data: { vote : 1, messageid : message_id,  list: "{{list_address}}", csrfmiddlewaretoken: '{{ csrf_token }}' },
+		        success: function(response){
+		            alert(response);
+		        }
+	        });
+	    	return false;
+	    });
+
+	    $(".votedown").click(function(){
+		message_id = this.parentElement.getAttribute('messageid');
+	    	$.ajax({
+	        	type: "POST",
+		        url: '/vote/{{list_address}}/',
+		        data: { vote : -1, messageid : message_id ,  list: "{{list_address}}", csrfmiddlewaretoken: '{{ csrf_token }}' },
+		        success: function(response){
+		            alert(response);
+		        }
+	        });
+	    	return false;
+	    });
+
+	});
+	</script>
+
 {% endblock %}

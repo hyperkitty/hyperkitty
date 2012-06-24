@@ -1,27 +1,5 @@
 {% load gravatar %}
+
 <div class="first_email">
-        <div class="email_header">
-          {% gravatar_img_for_email first_mail.email 40 %}
-          <div class="email_author inline-block">
-            <span class="name">
-              <a href="/message/{{list_address}}/{{first_mail.message_id}}">{{first_mail.sender}}</a>
-            </span>
-            <br />
-            <span class="rank">Rank 10</span>
-          </div>
-          <div class="email_date inline-block right">
-            <span class="date">{{first_mail.date}}</span>
-            <br />
-            <span class="time"></span>
-          </div>
-        </div>
-        <div id="first_email_body">
-            {{first_mail.content}}
-        </div>
-        <ul class="email_info inline">
-          <li class="neutral"> 0</li>
-          <li id="voteup"> <a href="#like"> Like</a></li>
-          <li id="votedown"> <a href="#dislike"> Dislike</a></li>
-          <li class="discussion add_comment"> <a href="#comment"> Add your own comment</a></li>
-        </ul>
-      </div>
+	{% include 'messages/message.html' with email=first_mail %}
+</div>
