@@ -23,8 +23,28 @@ def index (request, mlist_fqdn, messageid):
     t = loader.get_template('message.html')
     message = STORE.get_email(list_name, messageid)
     message.email = message.email.strip()
+    # Extract all the votes for this message
+    try:
+	votes = Rating.objects.filter(messageid = messageid)
+    except Rating.DoesNotExist:
+	votes = {}
+
+    likes = 0
+    dislikes = 0
+
+    for vote in votes:
+	if vote.vote == 1:
+		likes = likes + 1
+	elif vote.vote == -1:
+		dislikes = dislikes + 1
+	else:
+		pass
+	
+    message.votes = votes
+    message.likes = likes
+    message.dislikes = dislikes
+
     c = RequestContext(request, {
-        'app_name': settings.APP_NAME,
         'list_name' : list_name,
         'list_address': mlist_fqdn,
         'message': message,

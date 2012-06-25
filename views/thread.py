@@ -39,7 +39,6 @@ def add_tag(request, mlist_fqdn, email_id):
     else:
         form = AddTagForm()
     c = RequestContext(request, {
-        'app_name': settings.APP_NAME,
         'list_address': mlist_fqdn,
         'email_id': email_id,
         'addtag_form': form,

@@ -21,6 +21,8 @@ from django.contrib.auth.decorators import (login_required,
                                             user_passes_test)
 from kittystore.kittysastore import KittySAStore
 
+from gsoc.models import Rating
+
 from thread import AddTagForm
 
 logger = logging.getLogger(__name__)
@@ -88,7 +90,6 @@ def add_category(request, mlist_fqdn, email_id):
     else:
         form = AddCategoryForm()
     c = RequestContext(request, {
-        'app_name': settings.APP_NAME,
         'list_address': mlist_fqdn,
         'email_id': email_id,
         'addtag_form': form,
@@ -365,10 +366,31 @@ def thread (request, mlist_fqdn, threadid):
 
     participants = {}
     cnt = 0
-    for msg in threads:
-        msg.email = msg.email.strip()
+    for message in threads:
+        message.email = message.email.strip()
+	# Extract all the votes for this message
+	try:
+		votes = Rating.objects.filter(messageid = message.message_id)
+	except Rating.DoesNotExist:
+		votes = {}
+
+	likes = 0
+    	dislikes = 0
+
+    	for vote in votes:
+		if vote.vote == 1:
+			likes = likes + 1
+		elif vote.vote == -1:
+			dislikes = dislikes + 1
+		else:
+			pass
+	
+	message.votes = votes
+	message.likes = likes
+	message.dislikes = dislikes
+
         # Statistics on how many participants and threads this month
-        participants[msg.sender] = {'email': msg.email}
+        participants[message.sender] = {'email': message.email}
         cnt = cnt + 1
 
     archives_length = STORE.get_archives_length(list_name)
@@ -377,7 +399,6 @@ def thread (request, mlist_fqdn, threadid):
     print dir(search_form)
 
     c = RequestContext(request, {
-        'app_name': settings.APP_NAME,
         'list_name' : list_name,
         'list_address': mlist_fqdn,
         'search_form': search_form,
