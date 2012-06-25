@@ -10,9 +10,27 @@ from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
 from gsoc.models import Rating
+from pages import SearchForm, STORE
 
 logger = logging.getLogger(__name__)
 
+
+def index (request, mlist_fqdn, messageid):
+    ''' Displays a single message identified by its messageid '''
+    list_name = mlist_fqdn.split('@')[0]
+
+    search_form = SearchForm(auto_id=False)
+    t = loader.get_template('message.html')
+    message = STORE.get_email(list_name, messageid)
+    message.email = message.email.strip()
+    c = RequestContext(request, {
+        'app_name': settings.APP_NAME,
+        'list_name' : list_name,
+        'list_address': mlist_fqdn,
+        'message': message,
+	'messageid' : messageid,
+    })
+    return HttpResponse(t.render(c))
 
 
 
@@ -37,28 +55,3 @@ def vote (request, mlist_fqdn):
     response_dict = { }
 
     return HttpResponse(simplejson.dumps(response_dict), mimetype='application/javascript')
-
-
-@login_required
-def add_tag(request, mlist_fqdn, email_id):
-    """ Add a tag to a given message. """
-    t = loader.get_template('add_tag_form.html')
-    if request.method == 'POST':
-        form = AddTagForm(request.POST)
-        if form.is_valid():
-            print "THERE WE ARE"
-            # TODO: Add the logic to add the tag
-            if form.data['from_url']:
-                return HttpResponseRedirect(form.data['from_url'])
-            else:
-                return HttpResponseRedirect('/')
-    else:
-        form = AddTagForm()
-    c = RequestContext(request, {
-        'app_name': settings.APP_NAME,
-        'list_address': mlist_fqdn,
-        'email_id': email_id,
-        'addtag_form': form,
-        })
-    return HttpResponse(t.render(c))
-

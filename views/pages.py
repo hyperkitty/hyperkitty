@@ -19,7 +19,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Invali
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
-from lib.mockup import generate_thread_per_category, generate_top_author
 from kittystore.kittysastore import KittySAStore
 
 from thread import AddTagForm
@@ -253,22 +252,6 @@ def list(request, mlist_fqdn=None):
     })
     return HttpResponse(t.render(c))
 
-def message (request, mlist_fqdn, messageid):
-    ''' Displays a single message identified by its messageid '''
-    list_name = mlist_fqdn.split('@')[0]
-
-    search_form = SearchForm(auto_id=False)
-    t = loader.get_template('message.html')
-    message = STORE.get_email(list_name, messageid)
-    message.email = message.email.strip()
-    c = RequestContext(request, {
-        'app_name': settings.APP_NAME,
-        'list_name' : list_name,
-        'list_address': mlist_fqdn,
-        'message': message,
-	'messageid' : messageid,
-    })
-    return HttpResponse(t.render(c))
 
 def _search_results_page(request, mlist_fqdn, threads, search_type,
     page=1, num_threads=25, limit=None):

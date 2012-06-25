@@ -39,7 +39,7 @@ urlpatterns = patterns('',
 
     # Message
     url(r'^message/(?P<mlist_fqdn>.*@.*)/(?P<messageid>.+)/$',
-        'views.pages.message'),
+        'views.message.index'),
 
 
     # Search
