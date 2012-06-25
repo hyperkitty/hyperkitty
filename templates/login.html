@@ -19,10 +19,8 @@
 <ul class="socialLogin">    								
 	<li><a title="Google" class="socialaccount_provider google" href="/login/google"><img src="{{ STATIC_URL }}img/login/google.png" alt="Google"></a></li>
 	
-	<li><a title="Twitter" class="socialaccount_provider twitter" href="/associate/twitter"><img src="{{ STATIC_URL }}img/login/twitter.png" alt="Twitter"></a></li>
+	<li><a title="Yahoo" class="socialaccount_provider yahoo" href="/login/yahoo"><img src="{{ STATIC_URL }}img/login/yahoo.png" alt="Yahoo"></a></li>
 	
-	<li><a title="Facebook" class="socialaccount_provider facebook" href="/associate/facebook"><img src="{{ STATIC_URL }}img/login/facebook.png" alt="Facebook"></a></li>
-
 	<li>
 		<form method="post" action="{% url socialauth_complete "browserid" %}">		
 			{% csrf_token %}
