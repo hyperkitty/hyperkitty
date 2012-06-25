@@ -1,25 +1,29 @@
 {% load gravatar %}
 
-     <div class="email_header">
-                {% gravatar_img_for_email email.email 40 %}
-                <div class="email_author inline-block">
-		   <span class="name">
-                    <a href="/message/{{list_address}}/{{email.message_id}}">{{email.sender}}</a>
-		  </span>
-                  <br />
-                  <span class="rank">Rank 8</span>
-                </div>
-                <div class="email_date inline-block right">
-                  <span class="date">{{email.date}}</span>
-                  <br />
-                </div>
-              </div>
-              <div class="email_body">
-                  {{email.content}}
-              </div>
-	      <ul class="email_info inline" messageid="{{email.message_id}}">
-	          <li class="neutral"> +{{email.likes}}/-{{email.dislikes}}</li>
-	          <li class="voteup"> <a href="#like"> Like</a></li>
-	          <li class="votedown"> <a href="#dislike"> Dislike</a></li>
-	      </ul>
+<div class="email_header">
+	{% gravatar_img_for_email email.email 40 %}
+	<div class="email_author inline-block">
+		<span class="name"> <a href="/message/{{list_address}}/{{email.message_id}}">{{email.sender}}</a> </span>
+		<br />
+		<span class="rank">Rank 8</span>
+	</div>
+	<div class="email_date inline-block right">
+		<span class="date">{{email.date}}</span>
+		<br />
+	</div>
+</div>
+<div class="email_body">
+	{{email.content}}
+</div>
+<ul class="email_info inline" messageid="{{email.message_id}}">
+	<li class="neutral">
+		+{{email.likes}}/-{{email.dislikes}}
+	</li>
+	<li class="voteup">
+		<a href="#like"> Like</a>
+	</li>
+	<li class="votedown">
+		<a href="#dislike"> Dislike</a>
+	</li>
+</ul>
 

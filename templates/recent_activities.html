@@ -3,210 +3,207 @@
 {% load gravatar %}
 
 {% block additional_stylesheets %}
-	<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/stats.css" />
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/stats.css" />
 {% endblock %}
 
 {% block content %}
 
-    <section id="recent_activities">
-        <section id="graph">
-          <div id="fig">
-            <script type="text/javascript+protovis" >
+<section id="recent_activities">
+	<section id="graph">
+		<div id="fig">
+			<script type="text/javascript+protovis" >
 
-var dates = ["{{dates_string|join:'","'}}"];
+								var dates = ["{{dates_string|join:'","'}}"];
 
+				var data = {{evolution}},
+				w = 500,
+				h = 300,
+				x = pv.Scale.ordinal(pv.range(32)).splitBanded(0, w, 4/5),
+				y = pv.Scale.linear(0, {{evolution|length}}).range(0, h);
 
+				var vis = new pv.Panel()
+				.width(w)
+				.height(250)
+				.bottom(60)
+				.left(30)
+				.right(5)
+				.top(5);
 
-var data = {{evolution}},
-    w = 500,
-    h = 300,
-    x = pv.Scale.ordinal(pv.range(32)).splitBanded(0, w, 4/5),
-    y = pv.Scale.linear(0, {{evolution|length}}).range(0, h);
+				var bar = vis.add(pv.Bar)
+				.data(data)
+				.event("click", function(n) self.location = "/archives/{{list_address}}/" + dates[this.index])
+				.left(function() x(this.index))
+				.width(x.range().band)
+				.bottom(0)
+				.height(y);
 
-var vis = new pv.Panel()
-    .width(w)
-    .height(250)
-    .bottom(60)
-    .left(30)
-    .right(5)
-    .top(5);
+				bar.anchor("bottom").add(pv.Label)
+				.textMargin(5)
+				.textAlign("right")
+				.textBaseline("middle")
+				.textAngle(-Math.PI / 3)
+				.text(function() xlabel(this.index));
 
-var bar = vis.add(pv.Bar)
-    .data(data)
-    .event("click", function(n) self.location = "/archives/{{list_address}}/" + dates[this.index])
-    .left(function() x(this.index))
-    .width(x.range().band)
-    .bottom(0)
-    .height(y);
+				function xlabel(ind){
+				if (!dates[ind -1]){
+				return dates[ind];
+				}
+				prev = dates[ind - 1];
+				cur = dates[ind];
+				if (prev.substring(0,7) == cur.substring(0,7)){
+				cur = cur.substring(8);
+				}
+				return cur;
+				}
 
-bar.anchor("bottom").add(pv.Label)
-    .textMargin(5)
-    .textAlign("right")
-    .textBaseline("middle")
-    .textAngle(-Math.PI / 3)
-    .text(function() xlabel(this.index));
+				var title = vis.add(pv.Label)
+				.left(250)
+				.top(16)
+				.textAlign("center")
+				.text("Activities on the list over the last 30 days");
 
-function xlabel(ind){
-    if (!dates[ind -1]){
-        return dates[ind];
-    }
-    prev = dates[ind - 1];
-    cur = dates[ind];
-    if (prev.substring(0,7) == cur.substring(0,7)){
-        cur = cur.substring(8);
-    }
-    return cur;
-}
+				vis.add(pv.Rule)
+				.data(y.ticks())
+				.bottom(function(d) Math.round(y(d)) - .5)
+				.strokeStyle(function(d) d ? "rgba(255,255,255,.3)" : "#000")
+				.add(pv.Rule)
+				.left(0)
+				.width(5)
+				.strokeStyle("#000")
+				.anchor("left").add(pv.Label)
+				.text(function(d) d.toFixed(1));
 
-var title = vis.add(pv.Label)
-    .left(250)
-    .top(16)
-    .textAlign("center")
-    .text("Activities on the list over the last 30 days");
+				vis.render();
 
-vis.add(pv.Rule)
-    .data(y.ticks())
-    .bottom(function(d) Math.round(y(d)) - .5)
-    .strokeStyle(function(d) d ? "rgba(255,255,255,.3)" : "#000")
-  .add(pv.Rule)
-    .left(0)
-    .width(5)
-    .strokeStyle("#000")
-  .anchor("left").add(pv.Label)
-    .text(function(d) d.toFixed(1));
+			</script>
+		</div>
+	</section>
+	<section id="most_active">
+		<h2>Recently active discussions</h2>
+		{% for email in most_active_threads %}
+		<!-- Start thread -->
+		<div class="thread">
+			<span class="thread_id">#{{forloop.counter}}</span>
+			<span class="thread_title"> <a name="{{email.thread_id}}"
+				href="/thread/{{list_address}}/{{email.thread_id}}"> {{email.subject}} </a> </span>
+			<div class="thread_stats">
+				<ul class="inline-block">
+					{% if email.category_tag %}
+					<li class="type type_{{email.category_tag}}">
+						<a href="/tag/{{list_address}}/{{email.category_tag}}"> {{email.category}} </a>
+					</li>
+					{% else %}
+					<li class="type type_{{email.category|lower}}">
+						<a href="/tag/{{list_address}}/{{email.category|lower}}"> {{email.category}} </a>
+					</li>
+					{% endif %}
+					<li class="neutral">
+						0
+					</li>
+					<li class="participant">
+						{{email.participants|length}}
+					</li>
+					<li class="discussion">
+						{{email.answers}}
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- End thread -->
+		{% endfor %}
+	</section>
 
-vis.render();
+	<section id="top_discussion">
+		<h2>Top discussions the last 30 days</h2>
+		{% for email in top_threads %}
+		<!-- Start thread -->
+		<div class="thread">
+			<span class="thread_id">#{{forloop.counter}}</span>
+			<span class="thread_title"> <a name="{{email.thread_id}}"
+				href="/thread/{{list_address}}/{{email.thread_id}}"> {{email.subject}} </a> </span>
+			<div class="thread_stats">
+				<ul class="inline-block">
+					{% if email.category_tag %}
+					<li class="type type_{{email.category_tag}}">
+						<a href="/tag/{{list_address}}/{{email.category_tag}}"> {{email.category}} </a>
+					</li>
+					{% else %}
+					<li class="type type_{{email.category|lower}}">
+						<a href="/tag/{{list_address}}/{{email.category|lower}}"> {{email.category}} </a>
+					</li>
+					{% endif %}
+					<li class="neutral">
+						0
+					</li>
+					<li class="participant">
+						{{email.participants|length}}
+					</li>
+					<li class="discussion">
+						{{email.answers}}
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- End thread -->
+		{% endfor %}
+	</section>
 
-            </script>
-          </div>
-        </section>
-        <section id="most_active">
-          <h2>Recently active discussions</h2>
-          {% for email in most_active_threads %}
-          <!-- Start thread -->
-          <div class="thread">
-            <span class="thread_id">#{{forloop.counter}}</span>
-            <span class="thread_title">
-              <a name="{{email.thread_id}}" 
-                href="/thread/{{list_address}}/{{email.thread_id}}">
-                {{email.subject}}
-              </a>
-            </span>
-            <div class="thread_stats">
-              <ul class="inline-block">
-                {% if email.category_tag %}
-                <li class="type type_{{email.category_tag}}">
-                  <a href="/tag/{{list_address}}/{{email.category_tag}}">
-                    {{email.category}}
-                  </a>
-                </li>
-                {% else %}
-                <li class="type type_{{email.category|lower}}">
-                  <a href="/tag/{{list_address}}/{{email.category|lower}}">
-                    {{email.category}}
-                  </a>
-                </li>
-                {% endif %}
-                <li class="neutral"> 0 </li>
-                <li class="participant"> {{email.participants|length}} </li>
-                <li class="discussion"> {{email.answers}} </li>
-              </ul>
-            </div>
-          </div>
-          <!-- End thread -->
-         {% endfor %}
-        </section>
+	<section id="discussion_marker">
+		<h2>Prominent discussion maker</h2>
+		{% for author in top_author %}
+		<!-- Start discussion maker -->
+		<div class="maker">
+			<div class="inline-block maker_id">
+				#{{forloop.counter}}
+			</div>
+			<div class="inline-block gravatar">
+				{% if author.email %}
+				{% gravatar_img_for_email author.email 40 %}
+				<br />
+				{% endif %}
+			</div>
+			<div class="inline-block">
+				<span class="marker_name">{{author.name}}</span>
+				<br />
+				<span class="score">+{{author.kudos}}</span> kudos
+			</div>
+		</div>
+		<!-- End discussion maker -->
+		{% endfor %}
 
+		<h2>Tag cloud</h2>
+	</section>
 
-        <section id="top_discussion">
-          <h2>Top discussions the last 30 days</h2>
-          {% for email in top_threads %}
-          <!-- Start thread -->
-          <div class="thread">
-            <span class="thread_id">#{{forloop.counter}}</span>
-            <span class="thread_title">
-              <a name="{{email.thread_id}}" 
-                href="/thread/{{list_address}}/{{email.thread_id}}">
-                {{email.subject}}
-              </a>
-            </span>
-            <div class="thread_stats">
-              <ul class="inline-block">
-                {% if email.category_tag %}
-                <li class="type type_{{email.category_tag}}">
-                  <a href="/tag/{{list_address}}/{{email.category_tag}}">
-                    {{email.category}}
-                  </a>
-                </li>
-                {% else %}
-                <li class="type type_{{email.category|lower}}">
-                  <a href="/tag/{{list_address}}/{{email.category|lower}}">
-                    {{email.category}}
-                  </a>
-                </li>
-                {% endif %}
-                <li class="neutral"> 0 </li>
-                <li class="participant"> {{email.participants|length}} </li>
-                <li class="discussion"> {{email.answers}} </li>
-              </ul>
-            </div>
-          </div>
-          <!-- End thread -->
-          {% endfor %}
-        </section>
-
-        <section id="discussion_marker">
-          <h2>Prominent discussion maker</h2>
-          {% for author in top_author %}
-          <!-- Start discussion maker -->
-          <div class="maker">
-            <div class="inline-block maker_id"> #{{forloop.counter}} </div>
-            <div class="inline-block gravatar">
-              {% if author.email %}
-              {% gravatar_img_for_email author.email 40 %} <br />
-              {% endif %}
-            </div>
-            <div class="inline-block">
-              <span class="marker_name">{{author.name}}</span> <br />
-              <span class="score">+{{author.kudos}}</span> kudos
-            </div>
-          </div>
-          <!-- End discussion maker -->
-          {% endfor %}
-
-          <h2>Tag cloud</h2>
-        </section>
-      
-        <section id="discussion_by_topic">
-          <h2>Discussion by topic the last 30 days</h2>
-          {% for category, thread in threads_per_category.items %}
-          <div>
-            <h2 class="category type_{{category}}"> {{category}} </h2>
-            <ul class="category_entry">
-              {% for email in thread %}
-              <li>{{email.title}}</li>
-              {% endfor %}
-            </ul>
-          </div>
-          {% endfor %}
-        </section>
-    </section>
-    <section id="archives">
-      {% for key, value in archives_length|sort %}
-      <h3>{{ key }}</h3>
-      <div>
-        <ul>
-          {% for ar_month in value %}
-          <li>
-            <a href="/archives/{{list_address}}/{{key}}/{{ar_month}}">
-              {{ ar_month|tomonth }}
-            </a>
-          </li>
-          {% endfor %}
-        </ul>
-      </div>
-      {% endfor %}
-    </section>
+	<section id="discussion_by_topic">
+		<h2>Discussion by topic the last 30 days</h2>
+		{% for category, thread in threads_per_category.items %}
+		<div>
+			<h2 class="category type_{{category}}"> {{category}} </h2>
+			<ul class="category_entry">
+				{% for email in thread %}
+				<li>
+					{{email.title}}
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		{% endfor %}
+	</section>
+</section>
+<section id="archives">
+	{% for key, value in archives_length|sort %}
+	<h3>{{ key }}</h3>
+	<div>
+		<ul>
+			{% for ar_month in value %}
+			<li>
+				<a href="/archives/{{list_address}}/{{key}}/{{ar_month}}"> {{ ar_month|tomonth }} </a>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+	{% endfor %}
+</section>
 {% endblock %}
 
 {% block addtionaljs %}

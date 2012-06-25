@@ -3,84 +3,91 @@
 {% load gravatar %}
 
 {% block additional_stylesheets %}
-	<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
 {% endblock %}
 
 {% block content %}
 
-  <div class="content">
-   
-    {% include 'threads/right_col.html' %}
+<div class="content">
 
-    <!-- main section, the email thread -->
-    <section id="thread_content">
+	{% include 'threads/right_col.html' %}
 
-      <!-- Start first email -->
-	{% include 'messages/first_email.html' %}
-      <!-- End first email -->
+	<!-- main section, the email thread -->
+	<section id="thread_content">
 
-        {% for email in threads %}
-	        <!-- Start email -->
-  	      	<div class="even">
+		<!-- Start first email -->
+		{% include 'messages/first_email.html' %}
+		<!-- End first email -->
+
+		{% for email in threads %}
+		<!-- Start email -->
+		<div class="even">
 			{% include 'messages/message.html' %}
 		</div>
-        	<!-- End of email -->
+		<!-- End of email -->
 
-        {% empty %}
-        Sorry no emails could be found for your search.
-        {% endfor %}
+		{% empty %}
+		Sorry no emails could be found for your search.
+		{% endfor %}
 
-    </section>
+	</section>
 
-  </div> <!-- end of content -->
+</div>
+<!-- end of content -->
 {% endblock %}
-
-
 
 {% block additionaljs %}
 
-  <script src="{{ STATIC_URL }}jquery.expander.js"></script>
-  <script type="text/javascript">
-    $(document).ready(function() {
-      $('div.email_body').expander({
-      userCollapseText: 'View Less',
-      expandText: 'View More'
-      });
-    });
-  </script>
-
-
-	<script type="text/javascript">
-
+<script src="{{ STATIC_URL }}jquery.expander.js"></script>
+<script type="text/javascript">
 	$(document).ready(function() {
-	    $(".voteup").click(function(){
-		// @TODO: Extract the message id from the HTML DOM element instead of hard coding it in Javascript.
-		message_id = this.parentElement.getAttribute('messageid');
-	    	$.ajax({
-	        	type: "POST",
-		        url: '/vote/{{list_address}}/',
-		        data: { vote : 1, messageid : message_id,  list: "{{list_address}}", csrfmiddlewaretoken: '{{ csrf_token }}' },
-		        success: function(response){
-		            alert(response);
-		        }
-	        });
-	    	return false;
-	    });
+		$('div.email_body').expander({
+			userCollapseText : 'View Less',
+			expandText : 'View More'
+		});
+	}); 
+</script>
 
-	    $(".votedown").click(function(){
-		message_id = this.parentElement.getAttribute('messageid');
-	    	$.ajax({
-	        	type: "POST",
-		        url: '/vote/{{list_address}}/',
-		        data: { vote : -1, messageid : message_id ,  list: "{{list_address}}", csrfmiddlewaretoken: '{{ csrf_token }}' },
-		        success: function(response){
-		            alert(response);
-		        }
-	        });
-	    	return false;
-	    });
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".voteup").click(function() {
+			// @TODO: Extract the message id from the HTML DOM element instead of hard coding it in Javascript.
+			message_id = this.parentElement.getAttribute('messageid');
+			$.ajax({
+				type : "POST",
+				url : '/vote/{{list_address}}/',
+				data : {
+					vote : 1,
+					messageid : message_id,
+					list : "{{list_address}}",
+					csrfmiddlewaretoken : '{{ csrf_token }}'
+				},
+				success : function(response) {
+					alert(response);
+				}
+			});
+			return false;
+		});
 
-	});
-	</script>
+		$(".votedown").click(function() {
+			message_id = this.parentElement.getAttribute('messageid');
+			$.ajax({
+				type : "POST",
+				url : '/vote/{{list_address}}/',
+				data : {
+					vote : -1,
+					messageid : message_id,
+					list : "{{list_address}}",
+					csrfmiddlewaretoken : '{{ csrf_token }}'
+				},
+				success : function(response) {
+					alert(response);
+				}
+			});
+			return false;
+		});
+
+	}); 
+</script>
 
 {% endblock %}

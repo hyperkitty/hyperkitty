@@ -3,9 +3,11 @@
 {% block header %} {% endblock %}
 
 {% block content %}
-    <form action="/addtag/{{list_address}}/{{email_id}}/" method="post">
-        {% csrf_token %}
-        {{ addtag_form }}
-        <button type="submit">Add</button>
-    </form>
+<form action="/addtag/{{list_address}}/{{email_id}}/" method="post">
+	{% csrf_token %}
+	{{ addtag_form }}
+	<button type="submit">
+		Add
+	</button>
+</form>
 {% endblock %}

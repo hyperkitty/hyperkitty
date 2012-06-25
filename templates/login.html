@@ -2,61 +2,61 @@
 {% load i18n %}
 
 {% block content %}
-    
-    <h2>Login with username and password</h2>
 
-    <form action="" method="post" class="login mm_clear"> {% csrf_token %}
-        {{ form.as_p }}
-        <div class="field">
-            <button class="btn btn-primary" type="submit">{% trans "Login" %}</button>
-        </div>
-    </form>
+<h2>Login with username and password</h2>
 
-    <hr />
+<form action="" method="post" class="login mm_clear">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<div class="field">
+		<button class="btn btn-primary" type="submit">
+			{% trans "Login" %}
+		</button>
+	</div>
+</form>
 
-    <!--
-    <h2>Login using OpenID</h2>
+<hr />
 
-    <form method="post" action="{% url socialauth_begin 'openid' %}"> {% csrf_token %}
-        OpenID URL: <input type="text" name="openid_identifier" /> 
-        <input type="submit" value="Login using OpenID" />
-    </form>
+<!--
+<h2>Login using OpenID</h2>
 
-    <hr />
-    -->
+<form method="post" action="{% url socialauth_begin 'openid' %}"> {% csrf_token %}
+OpenID URL: <input type="text" name="openid_identifier" />
+<input type="submit" value="Login using OpenID" />
+</form>
 
-    <h2>Login using BrowserID</h2>
+<hr />
+-->
 
-    <form method="post" action="{% url socialauth_complete "browserid" %}"> {% csrf_token %}
-        <input type="hidden" name="assertion" value="" />
-        <a rel="nofollow" id="browserid" href="#"><img src="{{ STATIC_URL }}postorius/default/img/sign_in_blue.png" alt="Login using BrowserID" /></a>
-    </form>
+<h2>Login using BrowserID</h2>
+
+<form method="post" action="{% url socialauth_complete "browserid" %}">
+	{% csrf_token %}
+	<input type="hidden" name="assertion" value="" />
+	<a rel="nofollow" id="browserid" href="#"><img src="{{ STATIC_URL }}postorius/default/img/sign_in_blue.png" alt="Login using BrowserID" /></a>
+</form>
 {% endblock %}
 
 {% block additionaljs %}
 <!-- Include BrowserID JavaScript -->
 <script src="https://browserid.org/include.js" type="text/javascript"></script>
 <!-- Setup click handler that receives BrowserID assertion code and sends
-     POST data -->
+POST data -->
 <script type="text/javascript">
-    $(function () {
-        $('#browserid').click(function (e) {
-            e.preventDefault();
-            var self = $(this);
+	$(function() {
+		$('#browserid').click(function(e) {
+			e.preventDefault();
+			var self = $(this);
 
-            navigator.id.get(function (assertion) {
-                if (assertion) {
-                    self.parent('form')
-                            .find('input[type=hidden]')
-                                .attr('value', assertion)
-                                .end()
-                            .submit();
-                } else {
-                    alert('Some error occurred');
-                }
-            });
-        });
-    });
+			navigator.id.get(function(assertion) {
+				if (assertion) {
+					self.parent('form').find('input[type=hidden]').attr('value', assertion).end().submit();
+				} else {
+					alert('Some error occurred');
+				}
+			});
+		});
+	}); 
 </script>
 <!-- end browserid stuff -->
 {% endblock additionaljs %}

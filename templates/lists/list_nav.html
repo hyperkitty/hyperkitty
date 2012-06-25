@@ -1,20 +1,28 @@
 {% if month_participants and month_discussions %}
-    <ul class="inline-block" id="top_right">
-        <li class="participant">{{month_participants}} participants</li>
-        <li class="discussion">{{month_discussions}} discussions</li>
-        <li class="saved">1 saved</li>
-    </ul>
+<ul class="inline-block" id="top_right">
+	<li class="participant">
+		{{month_participants}} participants
+	</li>
+	<li class="discussion">
+		{{month_discussions}} discussions
+	</li>
+	<li class="saved">
+		1 saved
+	</li>
+</ul>
 {% endif %}</div>
 
 {% if list_address %}
-    <p id="list_email">
-        <a href="mailto:{{list_address}}">{{list_address}}</a>
-    </p>
-    <p id="list_email" class='inline'>
+<p id="list_email">
+	<a href="mailto:{{list_address}}">{{list_address}}</a>
+</p>
+<p id="list_email" class='inline'>
 	<a href="/"> All lists </a>
-    </p>
-    <div id="searchbox">
-	<form action="/search/{{list_address}}" method="get">{{ search_form }}</form>
-    </div>
+</p>
+<div id="searchbox">
+	<form action="/search/{{list_address}}" method="get">
+		{{ search_form }}
+	</form>
+</div>
 {% endif %}
 

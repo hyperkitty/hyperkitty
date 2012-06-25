@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block content %}
-    <h1>{% trans 'Lists' %}</h1>
+<h1>{% trans 'Lists' %}</h1>
 
-    <table class="table table-bordered table-striped">
-        <tbody>
-            {% for mlist in lists %}
-                <tr>
-        	        <td>{{ mlist }}</td>
-	                <td><a href="/list/{{mlist}}"> Overview </a></td>
-	                <td><a href="/archives/{{mlist}}"> Archives </a></td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<table class="table table-bordered table-striped">
+	<tbody>
+		{% for mlist in lists %}
+		<tr>
+			<td>{{ mlist }}</td>
+			<td><a href="/list/{{mlist}}"> Overview </a></td>
+			<td><a href="/archives/{{mlist}}"> Archives </a></td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
 
 {% endblock %}

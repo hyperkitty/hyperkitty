@@ -1,51 +1,60 @@
 <!DOCTYPE HTML>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta name="ROBOTS" content="INDEX, FOLLOW" />
-        <title>{% block title %}{{ app_name }}{% endblock %}</title>
-        <meta name="author" content="" />
-        <meta name="dc.language" content="en" />
-        <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/style.css" />
-	{% block additional_stylesheets %} {% endblock %}
-    </head>
-    {% load i18n %}
-    
-    <body>
-        <!-- Header -->
-        <div class="header">
-	    {% block header %}
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="ROBOTS" content="INDEX, FOLLOW" />
+		<title>{% block title %}{{ app_name }}{% endblock %}</title>
+		<meta name="author" content="" />
+		<meta name="dc.language" content="en" />
+		<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/style.css" />
+		{% block additional_stylesheets %} {% endblock %}
+	</head>
+	{% load i18n %}
 
-	            <div id="headline">
-        	        <ul class="inline-block">{% if list_address %}
-                	    <li id="list_name">
-	                        <a href="/list/{{list_address}}">{{list_name}}</a>
-	                    </li>{% else %}
-	                    <li id="list_name">
-	                        <a href="/list/">{{list_name}}</a>
-	                    </li>{% endif %}
-	                    <li id="page_date">{{month}}</li>
-			    <li>{% if user.is_authenticated %}<a class="mm_logout" href="{% url user_logout %}">Logout</a>{% else %}<a class="mm_user" href="{% url user_login %}">Login</a>{% endif %}</li>
-	                </ul>
+	<body>
+		<!-- Header -->
+		<div class="header">
+			{% block header %}
 
-			{% if user.is_authenticated %}
-	                    <div class="mm_loginName">Logged in as: <a href="{% url user_profile %}">{{ user.username }}</a></div>
-	                {% endif %}
+			<div id="headline">
+				<ul class="inline-block">
+					{% if list_address %}
+					<li id="list_name">
+						<a href="/list/{{list_address}}">{{list_name}}</a>
+					</li>
+					{% else %}
+					<li id="list_name">
+						<a href="/list/">{{list_name}}</a>
+					</li>
+					{% endif %}
+					<li id="page_date">
+						{{month}}
+					</li>
+					<li>
+						{% if user.is_authenticated %}<a class="mm_logout" href="{% url user_logout %}">Logout</a>{% else %}<a class="mm_user" href="{% url user_login %}">Login</a>{% endif %}
+					</li>
+				</ul>
 
-        	        {% if list_address %}
+				{% if user.is_authenticated %}
+				<div class="mm_loginName">
+					Logged in as: <a href="{% url user_profile %}">{{ user.username }}</a>
+				</div>
+				{% endif %}
+
+				{% if list_address %}
 				{% include 'lists/list_nav.html' %}
-			{% endif %}
-		    </div>
+				{% endif %}
+			</div>
 
-		{% endblock %}
-	</div>
-	<!-- End of Header -->
-	<div id="content">
-	        {% block content %} {% endblock %}
-	</div>
-	{% block footer %} {% endblock %}
-    </body>
+			{% endblock %}
+		</div>
+		<!-- End of Header -->
+		<div id="content">
+			{% block content %} {% endblock %}
+		</div>
+		{% block footer %} {% endblock %}
+	</body>
 
-    <script src="{{ STATIC_URL }}/js/libs/jquery-1.7.1.min.js"></script>
-    {% block additionaljs %} {% endblock %}
+	<script src="{{ STATIC_URL }}/js/libs/jquery-1.7.1.min.js"></script>
+	{% block additionaljs %} {% endblock %}
 </html>

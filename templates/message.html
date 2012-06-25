@@ -2,49 +2,58 @@
 {% load gravatar %}
 
 {% block additional_stylesheets %}
-	<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
+<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
 {% endblock %}
 
 {% block content %}
 
-    <section id="thread_content">
+<section id="thread_content">
 	{% include 'messages/first_email.html' with first_mail=message %}
-    </section>
+</section>
 
 {% endblock %}
 
 {% block additionaljs %}
-	<script type="text/javascript">
-
+<script type="text/javascript">
 	$(document).ready(function() {
-	    $(".voteup").click(function(){
-		// @TODO: Extract the message id from the HTML DOM element instead of hard coding it in Javascript.
-		message_id = this.parentElement.getAttribute('messageid');
-	    	$.ajax({
-	        	type: "POST",
-		        url: '/vote/{{list_address}}/',
-		        data: { vote : 1, messageid : message_id,  list: "{{list_address}}", csrfmiddlewaretoken: '{{ csrf_token }}' },
-		        success: function(response){
-		            alert(response);
-		        }
-	        });
-	    	return false;
-	    });
+		$(".voteup").click(function() {
+			// @TODO: Extract the message id from the HTML DOM element instead of hard coding it in Javascript.
+			message_id = this.parentElement.getAttribute('messageid');
+			$.ajax({
+				type : "POST",
+				url : '/vote/{{list_address}}/',
+				data : {
+					vote : 1,
+					messageid : message_id,
+					list : "{{list_address}}",
+					csrfmiddlewaretoken : '{{ csrf_token }}'
+				},
+				success : function(response) {
+					alert(response);
+				}
+			});
+			return false;
+		});
 
-	    $(".votedown").click(function(){
-		message_id = this.parentElement.getAttribute('messageid');
-	    	$.ajax({
-	        	type: "POST",
-		        url: '/vote/{{list_address}}/',
-		        data: { vote : -1, messageid : message_id ,  list: "{{list_address}}", csrfmiddlewaretoken: '{{ csrf_token }}' },
-		        success: function(response){
-		            alert(response);
-		        }
-	        });
-	    	return false;
-	    });
+		$(".votedown").click(function() {
+			message_id = this.parentElement.getAttribute('messageid');
+			$.ajax({
+				type : "POST",
+				url : '/vote/{{list_address}}/',
+				data : {
+					vote : -1,
+					messageid : message_id,
+					list : "{{list_address}}",
+					csrfmiddlewaretoken : '{{ csrf_token }}'
+				},
+				success : function(response) {
+					alert(response);
+				}
+			});
+			return false;
+		});
 
-	});
-	</script>
+	}); 
+</script>
 
 {% endblock %}

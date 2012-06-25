@@ -16,7 +16,7 @@ urlpatterns = patterns('',
 
     # Index
     url(r'^/$', 'views.pages.index', name='index'),
-    url(r'^$',  'views.pages.index', name='index'),
+    url(r'^$', 'views.pages.index', name='index'),
 
     # Archives
     url(r'^archives/(?P<mlist_fqdn>.*@.*)/(?P<year>\d{4})/(?P<month>\d\d?)/(?P<day>\d\d?)/$',
