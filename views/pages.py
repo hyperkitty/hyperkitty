@@ -69,7 +69,6 @@ def index(request):
     #list_data = sorted(data['entries'], key=lambda elem: (elem['mail_host'], elem['list_name']))
     list_data = ['devel@fp.o', 'packaging@fp.o', 'fr-users@fp.o']
     c = RequestContext(request, {
-        'app_name': settings.APP_NAME,
         'lists': list_data,
         'search_form': search_form,
         })
@@ -99,7 +98,6 @@ def add_category(request, mlist_fqdn, email_id):
 def api(request):
     t = loader.get_template('api.html')
     c = RequestContext(request, {
-        'app_name': settings.APP_NAME,
         })
     return HttpResponse(t.render(c))
 
@@ -158,7 +156,6 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
     archives_length = STORE.get_archives_length(list_name)
 
     c = RequestContext(request, {
-        'app_name': settings.APP_NAME,
         'list_name' : list_name,
         'list_address': mlist_fqdn,
         'search_form': search_form,
@@ -236,7 +233,6 @@ def list(request, mlist_fqdn=None):
     # threads per category is the top thread titles in each category
     threads_per_category = generate_thread_per_category()
     c = RequestContext(request, {
-        'app_name': settings.APP_NAME,
         'list_name' : list_name,
         'list_address': mlist_fqdn,
         'search_form': search_form,
@@ -290,7 +286,6 @@ def _search_results_page(request, mlist_fqdn, threads, search_type,
         cnt = cnt + 1
 
     c = RequestContext(request, {
-        'app_name': settings.APP_NAME,
         'list_name' : list_name,
         'list_address': mlist_fqdn,
         'search_form': search_form,
