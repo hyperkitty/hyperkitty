@@ -1,15 +1,18 @@
 {% extends "base.html" %}
-
+{% load i18n %}
 {% block content %}
-    <p>
-      These are the list available on this server:
-    </p>
-    <ul>
-        {% for mlist in lists %}
-        <li>{{mlist}} ({{mlist}}) --
-        <a href="/list/{{mlist}}">Recent</a> --
-        <a href="/archives/{{mlist}}">Archives current month</a>
-        </li>
-        {% endfor %}
-    </ul>
+    <h1>{% trans 'Lists' %}</h1>
+
+    <table class="table table-bordered table-striped">
+        <tbody>
+            {% for mlist in lists %}
+                <tr>
+        	        <td>{{ mlist }}</td>
+	                <td><a href="/list/{{mlist}}"> Overview </a></td>
+	                <td><a href="/archives/{{mlist}}"> Archives </a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 {% endblock %}
