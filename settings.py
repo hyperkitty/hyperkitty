@@ -18,10 +18,10 @@ MAILMAN_PASS='88ffd62d1094a6248415c59d7538793f3df5de2f04d244087952394e689e902a'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'hyperkitty.dev.db',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'hk',                      # Or path to database file if using sqlite3.
+        'USER': 'root',                      # Not used with sqlite3.
+        'PASSWORD': 'rootroot',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
@@ -119,9 +119,11 @@ TEMPLATE_DIRS = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
+    'social_auth.backends.google.GoogleBackend',
+    'social_auth.backends.yahoo.YahooBackend',
+    'social_auth.backends.browserid.BrowserIDBackend',
     'social_auth.backends.OpenIDBackend',
-    'social_auth.backends.browserid.BrowserIDBackend'
+    'django.contrib.auth.backends.ModelBackend',
 )
 
 INSTALLED_APPS = (
@@ -148,6 +150,7 @@ SOCIAL_AUTH_ASSOCIATE_URL_NAME = 'socialauth_associate_complete'
 SOCIAL_AUTH_DEFAULT_USERNAME = 'new_social_auth_user'
 SOCIAL_AUTH_UUID_LENGTH = 16
 
+AUTH_PROFILE_MODULE = 'gsoc.UserProfile'
 
 
 # A sample logging configuration. The only tangible logging
@@ -173,5 +176,6 @@ LOGGING = {
     }
 }
 
+SOCIAL_AUTH_LAST_LOGIN = 'social_auth_last_login_backend'
 APP_NAME = 'Fedora Mailman App'
 KITTYSTORE_URL = 'postgres://mm3:mm3@localhost/mm3'

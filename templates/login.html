@@ -15,33 +15,30 @@
 	</div>
 </form>
 
-<hr />
 
-<!--
-<h2>Login using OpenID</h2>
+<ul class="socialLogin">    								
+	<li><a title="Google" class="socialaccount_provider google" href="/login/google"><img src="{{ STATIC_URL }}img/login/google.png" alt="Google"></a></li>
+	
+	<li><a title="Twitter" class="socialaccount_provider twitter" href="/associate/twitter"><img src="{{ STATIC_URL }}img/login/twitter.png" alt="Twitter"></a></li>
+	
+	<li><a title="Facebook" class="socialaccount_provider facebook" href="/associate/facebook"><img src="{{ STATIC_URL }}img/login/facebook.png" alt="Facebook"></a></li>
 
-<form method="post" action="{% url socialauth_begin 'openid' %}"> {% csrf_token %}
-OpenID URL: <input type="text" name="openid_identifier" />
-<input type="submit" value="Login using OpenID" />
-</form>
+	<li>
+		<form method="post" action="{% url socialauth_complete "browserid" %}">		
+			{% csrf_token %}
+			<input type="hidden" name="assertion" value="" />
+			<a rel="nofollow" id="browserid" href="#"><img src="{{ STATIC_URL }}img/login/browserid.png" alt="Login using BrowserID" /></a>
+		</form>
+	</li>
 
-<hr />
--->
+</ul>
 
-<h2>Login using BrowserID</h2>
-
-<form method="post" action="{% url socialauth_complete "browserid" %}">
-	{% csrf_token %}
-	<input type="hidden" name="assertion" value="" />
-	<a rel="nofollow" id="browserid" href="#"><img src="{{ STATIC_URL }}postorius/default/img/sign_in_blue.png" alt="Login using BrowserID" /></a>
-</form>
 {% endblock %}
 
 {% block additionaljs %}
 <!-- Include BrowserID JavaScript -->
 <script src="https://browserid.org/include.js" type="text/javascript"></script>
-<!-- Setup click handler that receives BrowserID assertion code and sends
-POST data -->
+<!-- Setup click handler that receives BrowserID assertion code and sends POST data -->
 <script type="text/javascript">
 	$(function() {
 		$('#browserid').click(function(e) {
