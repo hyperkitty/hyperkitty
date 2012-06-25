@@ -25,7 +25,7 @@ class AddTagForm(forms.Form):
 
 @login_required
 def add_tag(request, mlist_fqdn, email_id):
-    """ Add a tag to a given message. """
+    """ Add a tag to a given thread. """
     t = loader.get_template('threads/add_tag_form.html')
     if request.method == 'POST':
         form = AddTagForm(request.POST)

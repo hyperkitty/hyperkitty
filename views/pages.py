@@ -361,8 +361,11 @@ def thread (request, mlist_fqdn, threadid):
 
     participants = {}
     cnt = 0
+
     for message in threads:
-        message.email = message.email.strip()
+     	# @TODO: Move this logic inside KittyStore?
+	message.email = message.email.strip()
+
 	# Extract all the votes for this message
 	try:
 		votes = Rating.objects.filter(messageid = message.message_id)
