@@ -1,7 +1,31 @@
 {% extends "base.html" %}
+{% load i18n %}
 
 {% block content %}
-<p>
-	User profiles are under contruction.
-</p>
-{% endblock %} 
+    <h1>User Profile <span>- {{ user }}</span></h1>
+
+    <table class="table table-bordered table-striped mm_userData">
+    	<tbody>
+    		<tr>
+    			<th>{% trans 'User name' %}</th>
+    			<td>{{ user.username}}</td>
+    		</tr>
+    		<tr>
+    			<th>{% trans 'Firstname' %}</th>
+    			<td>{{ user.first_name }}</td>
+    		</tr>
+    		<tr>
+    			<th>{% trans 'Lastname' %}</th>
+    			<td>{{ user.last_name }}</td>
+    		</tr>
+		<tr>
+    			<th>{% trans 'Email' %}</th>
+    			<td>{{ user.email }}</td>
+    		</tr>
+		<tr>
+    			<th>{% trans 'Karma' %}</th>
+    			<td></td>
+    		</tr>
+    	</tbody>
+    </table>
+{% endblock %}
