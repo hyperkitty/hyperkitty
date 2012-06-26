@@ -15,5 +15,18 @@ class Rating(models.Model):
 class UserProfile(models.Model):
 	# User Object
 	user = models.OneToOneField(User)
-	
+
 	karma = models.IntegerField(default=1)
+
+	def _get_votes(self):
+   	    "Returns all the votes by a user"
+            # Extract all the votes by this user
+     	    try:
+	    	votes = Rating.objects.filter(user = self.user)
+            except Rating.DoesNotExist:
+		votes = {}
+
+     	    return votes
+
+
+	votes = property(_get_votes)

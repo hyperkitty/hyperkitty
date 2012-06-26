@@ -32,4 +32,12 @@
     		</tr>
     	</tbody>
     </table>
+    <h2> Votes : </h2>
+
+	<ul>
+	{% for vote in user_profile.votes %}
+		<li><a href="/message/{{vote.list_address}}/{{vote.messageid}}">{{ vote.vote }}</a></li>
+	{% endfor %}
+	</ul>
+
 {% endblock %}
