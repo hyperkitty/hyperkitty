@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
 from django.contrib.auth.forms import AuthenticationForm
+from gsoc.models import UserProfile
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
@@ -43,11 +44,19 @@ def user_login(request,template = 'login.html'):
 def user_profile(request, user_email = None):
     if not request.user.is_authenticated():
         return redirect('user_login')
-    #try:
-    #    the_user = User.objects.get(email=user_email)
-    #except MailmanApiError:
-    #    return utils.render_api_error(request)
-    return render_to_response('user_profile.html',
-    #                          {'mm_user': the_user},
-                              context_instance=RequestContext(request))
+    # try to render the user profile.
+    try:
+    	user_profile = request.user.get_profile()
+    # @TODO: Include the error name e.g, ProfileDoesNotExist?
+    except:
+	user_profile = UserProfile.objects.create(user=request.user)
 
+    print user_profile
+
+    t = loader.get_template('user_profile.html')
+
+    c = RequestContext(request, {
+        'user_profile' : user_profile,
+    })
+    
+    return HttpResponse(t.render(c))

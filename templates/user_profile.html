@@ -24,7 +24,11 @@
     		</tr>
 		<tr>
     			<th>{% trans 'Karma' %}</th>
-    			<td></td>
+    			<td>{{ user_profile.karma }}</td>
+    		</tr>
+		<tr>
+    			<th>{% trans 'Date Joined' %}</th>
+    			<td>{{ user.date_joined }}</td>
     		</tr>
     	</tbody>
     </table>

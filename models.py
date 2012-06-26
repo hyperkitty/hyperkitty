@@ -16,4 +16,4 @@ class UserProfile(models.Model):
 	# User Object
 	user = models.OneToOneField(User)
 	
-	karma = models.IntegerField()
+	karma = models.IntegerField(default=1)
