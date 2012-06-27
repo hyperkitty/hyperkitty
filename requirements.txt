@@ -15,7 +15,6 @@ djangorestframework==0.3.3
 gravatar==0.1
 httplib2==0.7.4
 kitchen==1.1.1
--e bzr+http://bazaar.launchpad.net/~mailman-coders/mailman.client/trunk/@28#egg=mailman.client-1.0.0-py2.7-dev_r28
 mocker==1.1.1
 oauth2==1.5.211
 postorius==1.0.0a1
