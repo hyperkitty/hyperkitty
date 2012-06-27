@@ -51,8 +51,6 @@ def user_profile(request, user_email = None):
     except:
 	user_profile = UserProfile.objects.create(user=request.user)
 
-    print user_profile
-
     t = loader.get_template('user_profile.html')
 
     c = RequestContext(request, {
