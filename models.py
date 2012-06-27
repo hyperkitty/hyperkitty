@@ -7,10 +7,25 @@ logger = logging.getLogger(__name__)
 
 
 class Rating(models.Model):
+	# @TODO: instead of list_address, user list model from kittystore?
 	list_address = models.CharField(max_length=50)
+
+	# @TODO: instead of messsageid, use message model from kittystore?
 	messageid = models.CharField(max_length=100)
+
 	user = models.ForeignKey(User)
+
 	vote = models.SmallIntegerField()
+
+	def __unicode__(self):
+		"""Unicode representation"""
+		if self.vote == 1:
+	  		return u'id = %s : %s voted up %s' % (self.id, unicode(self.user), self.messageid)
+		else:
+			return u'id = %s : %s voted down %s' % (self.id, unicode(self.user), self.messageid)
+
+	
+
 
 class UserProfile(models.Model):
 	# User Object
@@ -28,5 +43,8 @@ class UserProfile(models.Model):
 
      	    return votes
 
-
 	votes = property(_get_votes)
+
+	def __unicode__(self):
+		"""Unicode representation"""
+		return u'%s' % (unicode(self.user))
