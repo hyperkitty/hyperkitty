@@ -69,7 +69,6 @@ def thread_index (request, mlist_fqdn, threadid):
     archives_length = STORE.get_archives_length(list_name)
     from_url = '/thread/%s/%s/' %(mlist_fqdn, threadid)
     tag_form = AddTagForm(initial={'from_url' : from_url})
-    print dir(search_form)
 
     c = RequestContext(request, {
         'list_name' : list_name,
