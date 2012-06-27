@@ -9,20 +9,15 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Invali
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
+from kittystore.kittysastore import KittySAStore
+
 from gsoc.models import Rating
-from pages import SearchForm, STORE
+from lib.mockup import *
+from forms import *
 
 logger = logging.getLogger(__name__)
 
-
-class AddTagForm(forms.Form):
-    tag =  forms.CharField(label='', help_text=None,
-                widget=forms.TextInput(
-                    attrs={'placeholder': 'Add a tag...'}
-                    )
-                )
-    from_url = forms.CharField(widget=forms.HiddenInput, required=False)
-
+STORE = KittySAStore(settings.KITTYSTORE_URL)
 
 def thread_index (request, mlist_fqdn, threadid):
     ''' Displays all the email for a given thread identifier '''
