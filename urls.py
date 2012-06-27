@@ -28,7 +28,7 @@ urlpatterns = patterns('',
 
     # Threads
     url(r'^thread/(?P<mlist_fqdn>.*@.*)/(?P<threadid>.+)/$',
-        'views.pages.thread'),
+        'views.thread.thread_index'),
 
 
     # Lists
