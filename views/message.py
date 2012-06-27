@@ -9,11 +9,16 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Invali
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
+
+from kittystore.kittysastore import KittySAStore
+
 from gsoc.models import Rating
-from pages import SearchForm, STORE
+from lib.mockup import *
+from forms import *
 
 logger = logging.getLogger(__name__)
 
+STORE = KittySAStore(settings.KITTYSTORE_URL)
 
 def index (request, mlist_fqdn, messageid):
     ''' Displays a single message identified by its messageid '''
