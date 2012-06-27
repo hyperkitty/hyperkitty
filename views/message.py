@@ -1,7 +1,7 @@
-import logging
+import re
+import os
 import django.utils.simplejson as simplejson
 
-from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext, loader
 from django.conf import settings
@@ -15,10 +15,10 @@ from kittystore.kittysastore import KittySAStore
 from gsoc.models import Rating
 from lib.mockup import *
 from forms import *
-
-logger = logging.getLogger(__name__)
+from gsoc.utils import log
 
 STORE = KittySAStore(settings.KITTYSTORE_URL)
+
 
 def index (request, mlist_fqdn, messageid):
     ''' Displays a single message identified by its messageid '''

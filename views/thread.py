@@ -1,7 +1,5 @@
-import logging
 import django.utils.simplejson as simplejson
 
-from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext, loader
 from django.conf import settings
@@ -14,10 +12,11 @@ from kittystore.kittysastore import KittySAStore
 from gsoc.models import Rating
 from lib.mockup import *
 from forms import *
-
-logger = logging.getLogger(__name__)
+from gsoc.utils import log
 
 STORE = KittySAStore(settings.KITTYSTORE_URL)
+
+
 
 def thread_index (request, mlist_fqdn, threadid):
     ''' Displays all the email for a given thread identifier '''

@@ -1,7 +1,6 @@
 import re
 import os
 import json
-import logging
 import urllib
 import django.utils.simplejson as simplejson
 
@@ -21,8 +20,8 @@ from kittystore.kittysastore import KittySAStore
 from gsoc.models import Rating
 from lib.mockup import *
 from forms import *
+from gsoc.utils import log
 
-logger = logging.getLogger(__name__)
 
 STORE = KittySAStore(settings.KITTYSTORE_URL)
 

@@ -1,7 +1,5 @@
 import re
 import sys
-import logging
-
 
 from django.conf import settings
 from django.contrib import messages
@@ -19,7 +17,7 @@ from django.template import Context, loader, RequestContext
 from django.utils.translation import gettext as _
 from urllib2 import HTTPError
 
-logger = logging.getLogger(__name__)
+from gsoc.utils import log
 
 def user_logout(request):
     logout(request)

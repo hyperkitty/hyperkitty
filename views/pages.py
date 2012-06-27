@@ -3,7 +3,6 @@
 import re
 import os
 import json
-import logging
 import urllib
 import django.utils.simplejson as simplejson
 
@@ -21,8 +20,7 @@ from django.contrib.auth.decorators import (login_required,
 from gsoc.models import Rating
 from lib.mockup import *
 from forms import *
-
-logger = logging.getLogger(__name__)
+from gsoc.utils import log
 
 def index(request):
     t = loader.get_template('index.html')

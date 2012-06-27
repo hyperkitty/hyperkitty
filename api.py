@@ -8,6 +8,8 @@ from kittystore.kittysastore import KittySAStore
 import json
 import re
 
+from gsoc.utils import log
+
 STORE = KittySAStore(settings.KITTYSTORE_URL)
 
 

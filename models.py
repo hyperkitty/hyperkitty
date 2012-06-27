@@ -1,9 +1,6 @@
-import logging
-
 from django.db import models
 from django.contrib.auth.models import User
-
-logger = logging.getLogger(__name__)
+from gsoc.utils import log
 
 
 class Rating(models.Model):
@@ -23,8 +20,6 @@ class Rating(models.Model):
 	  		return u'id = %s : %s voted up %s' % (self.id, unicode(self.user), self.messageid)
 		else:
 			return u'id = %s : %s voted down %s' % (self.id, unicode(self.user), self.messageid)
-
-	
 
 
 class UserProfile(models.Model):
