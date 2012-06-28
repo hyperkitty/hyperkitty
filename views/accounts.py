@@ -16,6 +16,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import Context, loader, RequestContext
 from django.utils.translation import gettext as _
 from urllib2 import HTTPError
+from urlparse import urlparse
 
 from gsoc.utils import log
 
@@ -24,18 +25,26 @@ def user_logout(request):
     return redirect('user_login')
 
 def user_login(request,template = 'login.html'):
+    
+    parse_r = urlparse(request.META.get('HTTP_REFERER', 'index')) 
+    previous = '%s%s' % (parse_r.path, parse_r.query)
+
+    next_var = request.POST.get('next', request.GET.get('next', previous))
+
     if request.method == 'POST':
         form = AuthenticationForm(request.POST)
         user = authenticate(username=request.POST.get('username'),
                             password=request.POST.get('password'))
-        if user is not None:
+        
+	if user is not None:
             log('debug', user)
             if user.is_active:
                 login(request,user)
-                return redirect(request.GET.get('next', 'index'))
+	        return redirect(next_var)
+
     else:
         form = AuthenticationForm()
-    return render_to_response(template, {'form': form,},
+    return render_to_response(template, {'form': form, 'next' : next_var},
                               context_instance=RequestContext(request))
 
 @login_required
