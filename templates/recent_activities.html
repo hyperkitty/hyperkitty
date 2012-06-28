@@ -13,7 +13,7 @@
 		<div id="fig">
 			<script type="text/javascript+protovis" >
 
-								var dates = ["{{dates_string|join:'","'}}"];
+				var dates = ["{{dates_string|join:'","'}}"];
 
 				var data = {{evolution}},
 				w = 500,
@@ -206,7 +206,7 @@
 </section>
 {% endblock %}
 
-{% block addtionaljs %}
-<script type="text/javascript" src="{{ STATIC_URL }}protovis-d3.1.js"></script>
+{% block additionaljs %}
+	<script type="text/javascript" src="{{ STATIC_URL }}protovis-d3.1.js"></script>
 {% endblock %}
 
