@@ -1,0 +1,5 @@
+1. Better error handling -> log everything and handle exception gracefully.
+2. write test cases
+3. look at social-authentication application from detailed point of view.
+4. make user profile editable.
+5. setup.py to install this as a python application - code refactoring
