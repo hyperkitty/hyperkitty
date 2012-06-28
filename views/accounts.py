@@ -29,7 +29,7 @@ def user_login(request,template = 'login.html'):
         user = authenticate(username=request.POST.get('username'),
                             password=request.POST.get('password'))
         if user is not None:
-            logger.debug(user)
+            log('debug', user)
             if user.is_active:
                 login(request,user)
                 return redirect(request.GET.get('next', 'index'))
