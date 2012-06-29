@@ -53,6 +53,7 @@
 		$(".voteup").click(function() {
 			// @TODO: Extract the message id from the HTML DOM element instead of hard coding it in Javascript.
 			message_id = this.parentElement.getAttribute('messageid');
+			{% if user.is_authenticated %}
 			$.ajax({
 				type : "POST",
 				url : '/vote/{{list_address}}/',
@@ -67,10 +68,14 @@
 				}
 			});
 			return false;
+			{% else %}
+				alert('You need to login in order to vote');
+			{% endif %}
 		});
 
 		$(".votedown").click(function() {
 			message_id = this.parentElement.getAttribute('messageid');
+			{% if user.is_authenticated %}
 			$.ajax({
 				type : "POST",
 				url : '/vote/{{list_address}}/',
@@ -85,6 +90,10 @@
 				}
 			});
 			return false;
+			{% else %}
+				alert('You need to login in order to vote');
+			{% endif %}
+	
 		});
 
 	}); 
