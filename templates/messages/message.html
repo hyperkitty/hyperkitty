@@ -12,7 +12,12 @@
 		<br />
 	</div>
 </div>
-<div class="email_body">
+{% if unfolded %}
+	<div class="first_email_body">
+{% else %}
+	<div class="email_body">
+{% endif %}
+
 	{{email.content}}
 </div>
 <ul class="email_info inline" messageid="{{email.message_id}}">
