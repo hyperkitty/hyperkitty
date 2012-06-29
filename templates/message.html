@@ -30,7 +30,8 @@
 					csrfmiddlewaretoken : '{{ csrf_token }}'
 				},
 				success : function(response) {
-					alert(response);
+					console.log(response);
+					location.reload();
 				}
 			});
 			return false;
@@ -52,7 +53,9 @@
 					csrfmiddlewaretoken : '{{ csrf_token }}'
 				},
 				success : function(response) {
-					alert(response);
+					console.log(response);
+					// @TODO : Remove this reload and update count using AJAX
+					location.reload();
 				}
 			});
 			return false;
