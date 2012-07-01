@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+
+<form action="" method="post" class="login mm_clear">
+	{% csrf_token %}
+	{{ form.as_p }}
+	<input type=hidden name=next value={{ next }}>
+	<div class="field">
+		<button class="btn btn-primary" type="submit">
+			{% trans "Register" %}
+		</button>
+	</div>
+</form>
+
+{% endblock %}
