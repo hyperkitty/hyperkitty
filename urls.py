@@ -14,6 +14,8 @@ urlpatterns = patterns('',
     url(r'^accounts/login/$', 'views.accounts.user_login', name='user_login'),
     url(r'^accounts/logout/$', 'views.accounts.user_logout', name='user_logout'),
     url(r'^accounts/profile/$', 'views.accounts.user_profile', name='user_profile'),
+    url(r'^accounts/register/$', 'views.accounts.user_registration', name='user_registration'),
+
 
     # Index
     url(r'^/$', 'views.pages.index', name='index'),

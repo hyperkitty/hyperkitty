@@ -31,7 +31,7 @@
 						{{month}}
 					</li>
 					<li>
-						{% if user.is_authenticated %}<a class="mm_logout" href="{% url user_logout %}">Logout</a>{% else %}<a class="mm_user" href="{% url user_login %}">Login</a>{% endif %}
+						{% if user.is_authenticated %}<a class="mm_logout" href="{% url user_logout %}">Logout</a>{% else %}<a class="mm_user" href="{% url user_login %}">Login</a> or <a href="{% url user_registration %}"> Sign Up </a> {% endif %}
 					</li>
 				</ul>
 

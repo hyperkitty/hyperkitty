@@ -18,6 +18,7 @@ from django.utils.translation import gettext as _
 from urllib2 import HTTPError
 from urlparse import urlparse
 
+from forms import RegistrationForm
 from gsoc.utils import log
 
 def user_logout(request):
@@ -65,3 +66,28 @@ def user_profile(request, user_email = None):
     })
     
     return HttpResponse(t.render(c))
+
+
+def user_registration(request):
+    if request.user.is_authenticated():
+        # Already registed, redirect back to home page
+        return redirect('index')
+    
+    if request.POST:
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+	    # Save the user data.
+	    form.save(form.cleaned_data)
+	    user = authenticate(username=form.cleaned_data['username'], 
+				password=form.cleaned_data['password1'])
+
+            if user is not None:
+            	log('debug', user)
+            	if user.is_active:
+                	login(request,user)
+                	return redirect('index')
+    else:
+        form = RegistrationForm()
+    
+    return render_to_response('register.html', {'form': form}, context_instance=RequestContext(request))
+
