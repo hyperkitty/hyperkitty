@@ -1,5 +1,14 @@
+<ul class="list_nav">
+	{% if list_address %}
+	<li id="list_name">
+		<a href="/list/{{list_address}}">{{list_name}}</a>
+	</li>
+	<li id="page_date">
+		{{month}}
+	</li>
+	{% endif %}
+
 {% if month_participants and month_discussions %}
-<ul class="inline-block" id="top_right">
 	<li class="participant">
 		{{month_participants}} participants
 	</li>
@@ -9,20 +18,23 @@
 	<li class="saved">
 		1 saved
 	</li>
-</ul>
-{% endif %}</div>
+{% endif %}
 
 {% if list_address %}
-<p id="list_email">
-	<a href="mailto:{{list_address}}">{{list_address}}</a>
-</p>
-<p id="list_email" class='inline'>
-	<a href="/"> All lists </a>
-</p>
+<li><a href="mailto:{{list_address}}">{{list_address}}</a></li>
+
+<li><a href="/"> All lists </a></li>
+
+{% endif %}
+
+{% if search_form %}
+<li>
 <div id="searchbox">
 	<form action="/search/{{list_address}}" method="get">
 		{{ search_form }}
 	</form>
 </div>
+</li>
 {% endif %}
 
+</ul>

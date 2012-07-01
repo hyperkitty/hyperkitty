@@ -6,50 +6,43 @@
 		<title>{% block title %}{{ app_name }}{% endblock %}</title>
 		<meta name="author" content="" />
 		<meta name="dc.language" content="en" />
+		<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/normalize.css" />
+		<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/bootstrap.css" />
 		<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/style.css" />
 		{% block additional_stylesheets %} {% endblock %}
 	</head>
 	{% load i18n %}
 
 	<body>
-		<!-- Header -->
+		<header>
 		<div class="header">
+			<div class="main_canvas">
+
 			{% block header %}
 
 			<div id="headline">
-				<ul class="inline-block">
-					{% if list_address %}
-					<li id="list_name">
-						<a href="/list/{{list_address}}">{{list_name}}</a>
-					</li>
-					{% else %}
-					<li id="list_name">
-						<a href="/list/">{{list_name}}</a>
-					</li>
-					{% endif %}
-					<li id="page_date">
-						{{month}}
-					</li>
-					<li>
-						{% if user.is_authenticated %}<a class="mm_logout" href="{% url user_logout %}">Logout</a>{% else %}<a class="mm_user" href="{% url user_login %}">Login</a> or <a href="{% url user_registration %}"> Sign Up </a> {% endif %}
-					</li>
+				<ul class="user_nav">
+				{% if user.is_authenticated %}
+					 <li><a class="mm_logout" href="{% url user_logout %}">Logout</a></li>
+					 <li><a href="{% url user_profile %}">{{ user.username }}</a></li>
+				{% else %}
+					 <li><a class="mm_user" href="{% url user_login %}">Login</a></li>
+					 <li><a href="{% url user_registration %}"> Sign Up </a></li>
+				{% endif %}
 				</ul>
 
-				{% if user.is_authenticated %}
-				<div class="mm_loginName">
-					Logged in as: <a href="{% url user_profile %}">{{ user.username }}</a>
-				</div>
-				{% endif %}
-
 				{% if list_address %}
-				{% include 'lists/list_nav.html' %}
+					{% include 'lists/list_nav.html' %}
 				{% endif %}
+	
 			</div>
 
 			{% endblock %}
+			</div>
 		</div>
-		<!-- End of Header -->
-		<div id="content">
+		</header>
+
+		<div class="content main_canvas">
 			{% block content %} {% endblock %}
 		</div>
 		{% block footer %} {% endblock %}

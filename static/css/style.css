@@ -1,17 +1,11 @@
-
 @import url(http://fonts.googleapis.com/css?family=Droid+Sans);
 
 /* Generic classes */
-body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Droid Sans', sans-serif;
-    color: rgb(77, 77, 77);
-}
 
-a {
-    color: rgb(55, 113, 200);
-    text-decoration: none;
+.main_canvas {
+    position: relative;
+    width: 960px;
+    margin: 0 auto;
 }
 
 .right {
@@ -143,8 +137,39 @@ a {
 }
 
 #headline {
-    padding-left: 20px;
-    position: relative;
+    min-height: 50px;
+}
+
+.list_nav {
+    float: left;
+    list-style: none;
+    margin: 0;
+    padding: 5px 0 0 0;
+}
+
+.list_nav li {
+   float: left;
+   margin-left: 20px;
+}
+
+.user_nav {
+    float: right;
+    list-style: none;
+    margin: 0;
+    padding: 5px 0 0 0;
+}
+
+.user_nav li {
+   float: left;
+   margin-left: 20px;
+}
+
+#thread_content {
+   width: 70%;
+}
+
+.email_date .date {
+   font-weight: bold;
 }
 
 #top_right {
@@ -171,11 +196,6 @@ a {
     font-size: 150%;
 }
 
-#list_email {
-    font-size:80%;
-    padding: 0 0 0 20px;
-    margin: 0;
-}
 
 #searchbox {
     text-align:right;
@@ -194,8 +214,7 @@ a {
     font-style: italic;
 }
 
-#content {
-    width: 98%;
+.content {
     margin: 0 auto 0 auto;
 }
 

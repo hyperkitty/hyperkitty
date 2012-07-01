@@ -34,22 +34,10 @@
     color: rgb(167, 169, 172);
 }
 
-#newewthread {
-    float: left;
-    margin-top: 2em;
-    margin-left: 20px;
-}
-
 #olderhread {
     float: right;
     margin-top: 2em;
     margin-right: 20px;
-}
-
-/* Content section */
-.content {
-    width: 90%;
-    margin: auto;
 }
 
 /* Define the two columns */
