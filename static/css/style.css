@@ -2,12 +2,6 @@
 
 /* Generic classes */
 
-.main_canvas {
-    position: relative;
-    width: 960px;
-    margin: 0 auto;
-}
-
 .right {
     text-align: right;
 }
@@ -115,19 +109,7 @@
 /* Top of the page -- header */
 .header {
     background-color: rgb(236, 236, 236);
-    padding: 0;
-}
-
-.header ul {
-    padding: 0;
-    margin: 0;
-}
-
-.header hr{
-    color: rgb(204, 204, 204);
-    background-color: rgb(204, 204, 204);
-    border: 0 none;
-    margin-top: 0px;
+	min-height : 100px;
 }
 
 #white {
@@ -159,6 +141,16 @@
     padding: 5px 0 0 0;
 }
 
+.user_nav a {
+	float: none;
+	padding: 10px 10px 11px;
+	line-height: 19px;
+	color: #999;
+	text-decoration: none;
+	text-shadow: 0 -1px 0 
+	rgba(0, 0, 0, 0.25);
+}
+
 .user_nav li {
    float: left;
    margin-left: 20px;
@@ -184,12 +176,7 @@
 }
 
 #list_name {
-    font-size: 200%;
     font-weight: bold;
-}
-
-#list_name a {
- color: rgb(77, 77, 77);
 }
 
 #page_date {
@@ -212,10 +199,6 @@
 
 #searchbox input:-moz-placeholder {
     font-style: italic;
-}
-
-.content {
-    margin: 0 auto 0 auto;
 }
 
 #recent_activities{

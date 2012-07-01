@@ -70,7 +70,7 @@ def user_profile(request, user_email = None):
 
 def user_registration(request):
     if request.user.is_authenticated():
-        # Already registed, redirect back to home page
+        # Already registered, redirect back to index page
         return redirect('index')
     
     if request.POST:
