@@ -194,14 +194,9 @@ a {
     font-style: italic;
 }
 
-#newthread {
-    padding-left: 20px;
-}
-
-/* The content section of the page */
-.content {
-    width: 1000px;
-    margin: auto;
+#content {
+    width: 98%;
+    margin: 0 auto 0 auto;
 }
 
 #recent_activities{

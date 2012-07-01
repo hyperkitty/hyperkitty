@@ -82,9 +82,11 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
             msg.thread_id)
         threads[cnt] = msg
         cnt = cnt + 1
+	print msg
+
 
     archives_length = STORE.get_archives_length(list_name)
-
+   
     c = RequestContext(request, {
         'list_name' : list_name,
         'list_address': mlist_fqdn,

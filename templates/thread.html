@@ -8,8 +8,6 @@
 
 {% block content %}
 
-<div class="content">
-
 	{% include 'threads/right_col.html' %}
 
 	<!-- main section, the email thread -->
@@ -20,11 +18,11 @@
 		<!-- End first email -->
 
 		{% for email in threads %}
-		<!-- Start email -->
 		<div class="even">
+			<!-- Start email -->
 			{% include 'messages/message.html' %}
+			<!-- End of email -->
 		</div>
-		<!-- End of email -->
 
 		{% empty %}
 		Sorry no emails could be found for your search.
@@ -32,7 +30,6 @@
 
 	</section>
 
-</div>
 <!-- end of content -->
 {% endblock %}
 
