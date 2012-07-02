@@ -8,6 +8,32 @@ body {
 	background-color: white;
 }
 
+.Sb {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	background-color: white;
+	clear: both;
+	font-size: 13px;
+	line-height: 1.4;
+	margin: 20px 0 20px 68px;
+	outline: none;
+	position: relative;
+	width: 497px;
+	word-wrap: break-word;
+}
+
+.ZX {
+	color: #999;
+	height: 40px;
+	margin: 0 2px;
+	position: relative;
+	bottom: -3px;
+	background-color: #F8F8F8;
+	border: 1px solid #CCC;
+
+}
+
 .right {
     text-align: right;
 }

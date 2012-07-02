@@ -172,11 +172,15 @@
 .even {
     background-color: rgb(246, 246, 246);
     border-top: 1px solid rgb(179, 179, 179);
+	padding-left: 20px;
+	margin: 20px 0px 20px 0px;
 }
 
 .odd {
     background-color: rgb(238, 238, 238);
     border-top: 1px solid rgb(179, 179, 179);
+	padding-left: 20px;
+	margin: 20px 0px 20px 0px;
 }
 
 .email {

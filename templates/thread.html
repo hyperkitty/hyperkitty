@@ -18,7 +18,7 @@
 		<!-- End first email -->
 
 		{% for email in threads %}
-		<div class="even">
+		<div class="{% cycle 'even' 'odd' %}">
 			<!-- Start email -->
 			{% include 'messages/message.html' %}
 			<!-- End of email -->
