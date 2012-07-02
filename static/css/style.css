@@ -2,6 +2,12 @@
 
 /* Generic classes */
 
+body {
+	position: relative;
+	padding-top: 90px;
+	background-color: white;
+}
+
 .right {
     text-align: right;
 }
