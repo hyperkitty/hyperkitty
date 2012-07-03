@@ -32,9 +32,11 @@ MONTH_DISCUSSIONS = 82
 
 
 
-def archives(request, mlist_fqdn, year=None, month=None, day=None):
+def archives(request, mlist_fqdn, year=None, month=None, day=None, pageNo=None):
     # No year/month: past 32 days
     # year and month: find the 32 days for that month
+    # @TODO : modify url.py to account for page number
+    
     end_date = None
     if year or month or day:
         try:
@@ -82,7 +84,18 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
             msg.thread_id)
         threads[cnt] = msg
         cnt = cnt + 1
-	print msg
+	#print msg
+    
+    paginator = Paginator(threads, 10)
+    
+    try:
+        threads = paginator.page(pageNo)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        threads = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        threads = paginator.page(paginator.num_pages)
 
 
     archives_length = STORE.get_archives_length(list_name)
