@@ -32,7 +32,7 @@ MONTH_DISCUSSIONS = 82
 
 
 
-def archives(request, mlist_fqdn, year=None, month=None, day=None, pageNo=None):
+def archives(request, mlist_fqdn, year=None, month=None, day=None):
     # No year/month: past 32 days
     # year and month: find the 32 days for that month
     # @TODO : modify url.py to account for page number
@@ -87,6 +87,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None, pageNo=None):
 	#print msg
     
     paginator = Paginator(threads, 10)
+    pageNo = request.GET.get('page')
     
     try:
         threads = paginator.page(pageNo)
