@@ -1,6 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
+
+from kittystore.kittysastore import KittySAStore
+
 from gsoc.utils import log
+
+STORE = KittySAStore(settings.KITTYSTORE_URL)
 
 
 class Rating(models.Model):
@@ -35,6 +41,11 @@ class UserProfile(models.Model):
 	    	votes = Rating.objects.filter(user = self.user)
             except Rating.DoesNotExist:
 		votes = {}
+
+	    for vote in votes:
+		list_name = vote.list_address.split('@')[0]
+	        message = STORE.get_email(list_name, vote.messageid)
+		vote.message = message
 
      	    return votes
 

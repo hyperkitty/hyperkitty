@@ -1,8 +1,13 @@
 from django import template
 from django.http import HttpRequest
 from django.utils.datastructures import SortedDict
+import re
 
 register = template.Library()
+
+@register.filter(name="trimString")
+def trimString(str):
+    return re.sub('\s+', ' ', str)
 
 @register.filter(name='sort')
 def listsort(value):

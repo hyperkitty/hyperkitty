@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load poll_extras %}
 
 {% block content %}
     <h1>User Profile <span>- {{ user }}</span></h1>
@@ -32,12 +33,37 @@
     		</tr>
     	</tbody>
     </table>
-    <h2> Votes : </h2>
+    <h3> Up Votes : </h3>
 
 	<ul>
 	{% for vote in user_profile.votes %}
-		<li><a href="/message/{{vote.list_address}}/{{vote.messageid}}">{{ vote.vote }}</a></li>
+		{% if vote.vote == 1 %}
+		<li>
+		{% if vote.message.content|trimString|length > 0 %}
+			<a href="/message/{{vote.list_address}}/{{vote.messageid}}">{{ vote.message.content|truncatechars:20 }}</a>
+		{% else %}
+			<a href="/message/{{vote.list_address}}/{{vote.messageid}}">Message is empty</a>
+		{% endif %}
+		</li>
+		{% endif %}
 	{% endfor %}
 	</ul>
+
+	<h3> Down Votes : </h3>
+
+	<ul>
+	{% for vote in user_profile.votes %}
+		{% if vote.vote == -1 %}
+		<li>
+		{% if vote.message.content|trimString|length > 0 %}
+			<a href="/message/{{vote.list_address}}/{{vote.messageid}}">{{ vote.message.content|truncatechars:20 }}</a>
+		{% else %}
+			<a href="/message/{{vote.list_address}}/{{vote.messageid}}">Message is empty</a>
+		{% endif %}
+		</li>
+		{% endif %}
+	{% endfor %}
+	</ul>
+
 
 {% endblock %}
