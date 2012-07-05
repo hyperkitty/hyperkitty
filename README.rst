@@ -2,10 +2,25 @@
 HyperKitty - Archiver for for GNU Mailman v3
 ===================================
 
-Copyright (C) 1998-2012 by the Free Software Foundation, Inc.
+HyperKitty is an open source Django application under development. It aims to provide web interface to access GNU Mailman archives.
 
-The HyperKitty Django app provides a web interface to
-access GNU Mailman archives.
+
+Dependencies
+============
+Latest version of Django >= 1.4
+django-social-auth application
+
+
+Installation
+============
+1. Clone the repository
+2. Load some data into postgresql database using kittystore
+
+
+License 
+========
+
+Copyright (C) 1998-2012 by the Free Software Foundation, Inc.
 
 HyperKitty is free software: you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License as
@@ -18,12 +33,3 @@ General Public License for more details.
 
 You should have received a copy of the GNU Lesser General Public License
 along with mailman.client. If not, see <http://www.gnu.org/licenses/>.
-
-
-Requirements
-============
-
-
-Installation
-============
-
