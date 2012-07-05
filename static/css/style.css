@@ -34,6 +34,16 @@ body {
 
 }
 
+.socialLogin {
+	list-style: none;
+	margin: 0px;
+}
+
+.socialLogin li {
+	float: left;
+	padding: 5px;
+}
+
 .right {
     text-align: right;
 }
