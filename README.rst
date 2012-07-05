@@ -33,7 +33,7 @@ kittystore dependencies
 Installation
 ============
 1. Clone the repository
-2. Install all the dependencies using pip install -r requirements.txt
+2. Install all the dependencies using **pip install -r requirements.txt**
 3. Load data into postgresql using kittystore (https://github.com/pypingou/kittystore)
 4. python manage.py syncdb
 5. python manage.py runserver
