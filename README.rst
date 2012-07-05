@@ -7,14 +7,14 @@ HyperKitty is an open source Django application under development. It aims to pr
 
 Dependencies
 ============
-Latest version of Django >= 1.4
-django-social-auth application
+1. Latest version of Django >= 1.4
+2. django-social-auth application (https://github.com/omab/django-social-auth/)
 
 
 Installation
 ============
 1. Clone the repository
-2. Load some data into postgresql database using kittystore
+2. Load some data into postgresql database using kittystore (https://github.com/pypingou/kittystore)
 
 
 License 
