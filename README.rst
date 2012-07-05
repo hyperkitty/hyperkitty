@@ -35,8 +35,9 @@ Installation
 1. Clone the repository
 2. Install all the dependencies using **pip install -r requirements.txt**
 3. Load data into postgresql using kittystore (https://github.com/pypingou/kittystore)
-4. python manage.py syncdb
-5. python manage.py runserver
+4. Create symlink kittystore using **ln -s {path-to-kittystore}/kittystore/ kittystore**
+5. python manage.py syncdb
+6. python manage.py runserver
 
 
 License 
