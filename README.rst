@@ -10,22 +10,22 @@ Dependencies
 
 Hyperkitty dependencies
 -----------------------
--Django==1.4
--URLObject==2.0.2
--django-gravatar==0.1.0
--django-social-auth==0.7.0
--djangorestframework==0.3.3
--httplib2==0.7.4
--oauth2==1.5.211
--psycopg2==2.4.5
--python-openid==2.2.5
--wsgiref==0.1.2
--yolk==0.4.3
+* Django==1.4 
+* URLObject==2.0.2 
+* django-gravatar==0.1.0
+* django-social-auth==0.7.0
+* djangorestframework==0.3.3
+* httplib2==0.7.4
+* oauth2==1.5.211
+* psycopg2==2.4.5
+* python-openid==2.2.5
+* wsgiref==0.1.2
+* yolk==0.4.3
 
 
 kittystore dependencies
 -----------------------
--SQLAlchemy==0.7.8
+* SQLAlchemy==0.7.8
 
 
 
