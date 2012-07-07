@@ -1,0 +1,3 @@
+Add the following line in your httpd.conf (generally present at /etc/apache2/httpd.conf)
+
+Include "/home/akhan/gsoc/apache/apache_django_wsgi.conf"
