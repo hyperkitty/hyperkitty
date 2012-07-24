@@ -32,27 +32,17 @@ kittystore dependencies
 
 Installation
 ============
-1. Clone the repository
-2. Install all the dependencies using **pip install -r requirements.txt**
-3. Load data into postgresql using kittystore (https://github.com/pypingou/kittystore)
-4. Create symlink kittystore using **ln -s {path-to-kittystore}/kittystore/ kittystore**
-5. python manage.py syncdb
-6. python manage.py runserver
+
+1. pip install git+https://github.com/syst3mw0rm/hyperkitty
+2. Load data into postgresql using kittystore (https://github.com/pypingou/kittystore)
+3. Create symlink kittystore using **ln -s {path-to-kittystore}/kittystore/ kittystore**
+4. python manage.py syncdb
+5. python manage.py runserver
 
 
 License 
 ========
 
-Copyright (C) 1998-2012 by the Free Software Foundation, Inc.
+.. _GPL v3.0: http://www.gnu.org/licenses/gpl-3.0.html
 
-HyperKitty is free software: you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public License as
-published by the Free Software Foundation, version 3 of the License.
-
-HyperKitty is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
-General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public License
-along with mailman.client. If not, see <http://www.gnu.org/licenses/>.
+HyperKitty is licensed under the `GPL v3.0`_
