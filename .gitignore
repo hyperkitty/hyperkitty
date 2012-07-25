@@ -5,3 +5,4 @@
 kittystore
 .*
 logs
+*.egg-info
