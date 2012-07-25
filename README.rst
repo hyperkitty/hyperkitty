@@ -30,7 +30,6 @@ Hyperkitty dependencies
 * psycopg2==2.4.5
 * python-openid==2.2.5
 * wsgiref==0.1.2
-* yolk==0.4.3
 
 
 kittystore dependencies
