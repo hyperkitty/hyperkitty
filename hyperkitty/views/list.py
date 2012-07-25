@@ -17,10 +17,10 @@ from django.contrib.auth.decorators import (login_required,
                                             user_passes_test)
 from kittystore.kittysastore import KittySAStore
 
-from gsoc.models import Rating
-from lib.mockup import *
+from hyperkitty.models import Rating
+from hyperkitty.lib.mockup import *
 from forms import *
-from gsoc.utils import log
+from hyperkitty.utils import log
 
 
 STORE = KittySAStore(settings.KITTYSTORE_URL)

@@ -25,7 +25,7 @@ from django.conf import settings
 
 from kittystore.kittysastore import KittySAStore
 
-from gsoc.utils import log
+from hyperkitty.utils import log
 
 STORE = KittySAStore(settings.KITTYSTORE_URL)
 

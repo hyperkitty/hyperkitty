@@ -29,7 +29,7 @@ from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
 from django.contrib.auth.forms import AuthenticationForm
-from gsoc.models import UserProfile
+from hyperkitty.models import UserProfile
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
@@ -40,7 +40,7 @@ from urllib2 import HTTPError
 from urlparse import urlparse
 
 from forms import RegistrationForm
-from gsoc.utils import log
+from hyperkitty.utils import log
 
 def user_logout(request):
     logout(request)
