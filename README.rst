@@ -33,11 +33,13 @@ kittystore dependencies
 Installation
 ============
 
-1. pip install git+https://github.com/syst3mw0rm/hyperkitty
-2. Load data into postgresql using kittystore (https://github.com/pypingou/kittystore)
-3. Create symlink kittystore using **ln -s {path-to-kittystore}/kittystore/ kittystore**
-4. python manage.py syncdb
-5. python manage.py runserver
+1. git clone https://github.com/syst3mw0rm/hyperkitty
+2. cd hyperkitty
+3. python setup.py develop
+4. Clone KittyStore and Load archive data into postgresql using kittystore (https://github.com/pypingou/kittystore)
+5. Create symlink kittystore using **ln -s {path-to-kittystore}/kittystore/ kittystore**
+6. python manage.py syncdb
+7. python manage.py runserver
 
 
 License 
