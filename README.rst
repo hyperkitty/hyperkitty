@@ -38,8 +38,8 @@ Installation
 3. python setup.py develop
 4. Clone KittyStore and Load archive data into postgresql using kittystore (https://github.com/pypingou/kittystore)
 5. Create symlink kittystore using **ln -s {path-to-kittystore}/kittystore/ kittystore**
-6. python manage.py syncdb
-7. python manage.py runserver
+6. Install hk-app (https://github.com/syst3mw0rm/hk-app)
+
 
 
 License 
