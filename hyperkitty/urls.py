@@ -27,7 +27,7 @@ urlpatterns = patterns('hyperkitty.views',
     url(r'^archives/(?P<mlist_fqdn>.*@.*)/(?P<year>\d{4})/(?P<month>\d\d?)/$',
         'list.archives'),
     url(r'^archives/(?P<mlist_fqdn>.*@.*)/$',
-        'list.archives'),
+        'list.archives', name='archives'),
 
     # Threads
     url(r'^thread/(?P<mlist_fqdn>.*@.*)/(?P<threadid>.+)/$',
@@ -37,7 +37,7 @@ urlpatterns = patterns('hyperkitty.views',
     # Lists
     url(r'^list/$', 'pages.index'), # Can I remove this URL?
     url(r'^list/(?P<mlist_fqdn>.*@.*)/$',
-        'list.list'),
+        'list.list', name='list_overview'),
 
     # Search Tag
     url(r'^tag/(?P<mlist_fqdn>.*@.*)\/(?P<tag>.*)\/(?P<page>\d+)/$',

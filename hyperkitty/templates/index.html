@@ -8,8 +8,8 @@
 		{% for mlist in lists %}
 		<tr>
 			<td>{{ mlist }}</td>
-			<td><a href="/list/{{mlist}}"> Overview </a></td>
-			<td><a href="/archives/{{mlist}}"> Archives </a></td>
+			<td><a href="{% url list_overview mlist_fqdn=mlist %}"> Overview </a></td>
+			<td><a href="{% url archives mlist_fqdn=mlist %}"> Archives </a></td>
 		</tr>
 		{% endfor %}
 	</tbody>
