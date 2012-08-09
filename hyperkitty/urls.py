@@ -23,9 +23,9 @@ urlpatterns = patterns('hyperkitty.views',
 
     # Archives
     url(r'^archives/(?P<mlist_fqdn>.*@.*)/(?P<year>\d{4})/(?P<month>\d\d?)/(?P<day>\d\d?)/$',
-        'list.archives'),
+        'list.archives', name='archives_with_day'),
     url(r'^archives/(?P<mlist_fqdn>.*@.*)/(?P<year>\d{4})/(?P<month>\d\d?)/$',
-        'list.archives'),
+        'list.archives', name='archives_with_month'),
     url(r'^archives/(?P<mlist_fqdn>.*@.*)/$',
         'list.archives', name='archives'),
 

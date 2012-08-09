@@ -87,7 +87,7 @@
 		<ul>
 			{% for ar_month in value %}
 			<li>
-				<a href="/archives/{{list_address}}/{{key}}/{{ar_month}}"> {{ ar_month|tomonth }} </a>
+				<a href="{% url archives_with_month year=key, mlist_fqdn=list_address, month=ar_month %}"> {{ ar_month|tomonth }} </a>
 			</li>
 			{% endfor %}
 		</ul>
