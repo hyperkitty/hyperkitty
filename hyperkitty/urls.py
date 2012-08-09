@@ -31,7 +31,7 @@ urlpatterns = patterns('hyperkitty.views',
 
     # Threads
     url(r'^thread/(?P<mlist_fqdn>.*@.*)/(?P<threadid>.+)/$',
-        'thread.thread_index'),
+        'thread.thread_index', name='thread'),
 
 
     # Lists

@@ -10,7 +10,7 @@
 	<div class="thread">
 		<div class="notsaved">
 			<span class="thread_title"> <a name="{{email.thread_id}}"
-				href="/thread/{{list_address}}/{{email.thread_id}}"> {{email.subject}} </a> </span>
+				href="{% url thread threadid=email.thread_id, mlist_fqdn=list_address %}"> {{email.subject}} </a> </span>
 			<span class="thread_date"> {{email.date}}</span>
 		</div>
 		<div class="thread_content">
