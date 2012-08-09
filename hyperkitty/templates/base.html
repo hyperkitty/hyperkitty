@@ -40,7 +40,7 @@
 
 				{% if list_address %}
 					<li id="list_name">
-						<a href="/list/{{list_address}}">{{list_address}}</a>
+						<a href="{% url list_overview mlist_fqdn=list_address %}">{{list_address}}</a>
 					</li>
 				{% endif %}
 
@@ -51,8 +51,6 @@
 	      </div>
 	</div>
 
-
-	
 
 		<div class="container">
 			{% block content %} {% endblock %}

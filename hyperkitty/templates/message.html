@@ -22,7 +22,7 @@
 			{% if user.is_authenticated %}
 			$.ajax({
 				type : "POST",
-				url : '/vote/{{list_address}}/',
+				url : "{% url message_vote mlist_fqdn=list_address %}",
 				data : {
 					vote : 1,
 					messageid : message_id,
@@ -45,7 +45,7 @@
 			{% if user.is_authenticated %}
 			$.ajax({
 				type : "POST",
-				url : '/vote/{{list_address}}/',
+				url : '{% url message_vote mlist_fqdn=list_address %}',
 				data : {
 					vote : -1,
 					messageid : message_id,
