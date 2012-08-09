@@ -19,7 +19,7 @@ urlpatterns = patterns('hyperkitty.views',
 
     # Index
     url(r'^/$', 'pages.index', name='index'),
-    url(r'^$', 'pages.index', name='index'),
+    url(r'^$', 'pages.index'),
 
     # Archives
     url(r'^archives/(?P<mlist_fqdn>.*@.*)/(?P<year>\d{4})/(?P<month>\d\d?)/(?P<day>\d\d?)/$',
@@ -62,7 +62,7 @@ urlpatterns = patterns('hyperkitty.views',
         'message.index'),
 
     url(r'^vote/(?P<mlist_fqdn>.*@.*)/$',
-        'message.vote'),
+        'message.vote', name='message_vote'),
     ### MESSAGE LEVEL VIEW ENDS ###
 
  
@@ -70,7 +70,7 @@ urlpatterns = patterns('hyperkitty.views',
     ### THREAD LEVEL VIEWS ###
     # Thread view page
     url(r'^thread/(?P<mlist_fqdn>.*@.*)/(?P<threadid>.+)/$',
-        'thread.thread_index'),
+        'thread.thread_index', name='thread_index'),
 
     # Add Tag to a thread
     url(r'^addtag/(?P<mlist_fqdn>.*@.*)\/(?P<email_id>.*)/$',
