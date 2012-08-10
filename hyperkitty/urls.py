@@ -43,7 +43,7 @@ urlpatterns = patterns('hyperkitty.views',
     url(r'^tag/(?P<mlist_fqdn>.*@.*)\/(?P<tag>.*)\/(?P<page>\d+)/$',
         'list.search_tag'),
     url(r'^tag/(?P<mlist_fqdn>.*@.*)\/(?P<tag>.*)/$',
-        'list.search_tag'),
+        'list.search_tag', name='search_tag'),
 
     # Search
     # If page number is present in URL

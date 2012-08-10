@@ -14,7 +14,7 @@
 <!-- New thread -->
 <div class="thread">
 	<div class="notsaved">
-		<a href="/thread/{{list_address}}/{{email.thread_id}}"> <span class="thread_title">{{email.subject}}</span> </a>
+		<a href="{% url thread threadid=email.thread_id, mlist_fqdn=list_address %}"> <span class="thread_title">{{email.subject}}</span> </a>
 		<span class="thread_date">{{email.date}}</span>
 	</div>
 	<div class="thread_content">
@@ -24,7 +24,7 @@
 		</div>
 		{% else %}
 		<div class="inline-block type type_{{email.category|lower}}">
-			<a href="/tag/{{list_address}}/{{email.category|lower}}"> {{email.category}} </a>
+			<a href="{% url search_tag mlist_fqdn=list_address, tag=email.category|lower %}"> {{email.category}} </a>
 		</div>
 		{% endif %}
 		<div class="inline-block gravatar">

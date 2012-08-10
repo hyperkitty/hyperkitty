@@ -31,7 +31,7 @@
 		<ul class="inline">
 			{% for tag in tags %}
 			<li>
-				{{ tag }} |
+				<a href="{% url search_tag mlist_fqdn=list_address, tag=tag.tag %}" > {{ tag.tag }} </a>|
 			</li>
 			{% endfor %}
 		</ul>

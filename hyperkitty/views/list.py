@@ -290,11 +290,12 @@ def search_tag(request, mlist_fqdn, tag=None, page=1):
         thread_ids = Tag.objects.filter(tag=tag)
     except Tag.DoesNotExist:
         thread_ids = {}
-        
+    
+    threads = []
     for thread in thread_ids:
         threads = STORE.get_thread(list_name, thread.threadid)
-     
-     
+    threads = threads[0:1] 
+    
     return _search_results_page(request, mlist_fqdn, threads,
         'Tag search', page, limit=50)
 
