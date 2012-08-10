@@ -293,9 +293,9 @@ def search_tag(request, mlist_fqdn, tag=None, page=1):
     
     threads = []
     for thread in thread_ids:
-        threads = STORE.get_thread(list_name, thread.threadid)
-    threads = threads[0:1] 
-    
+        threads_tmp = STORE.get_thread(list_name, thread.threadid)
+        threads.append(threads_tmp[0])
+
     return _search_results_page(request, mlist_fqdn, threads,
         'Tag search', page, limit=50)
 
