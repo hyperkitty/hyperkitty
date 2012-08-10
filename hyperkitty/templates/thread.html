@@ -93,7 +93,24 @@
 	
 		});
 
+		$("#add_tag_form").submit( function () {
+		       		   
+			   {% if user.is_authenticated %}
+		        $.ajax({   
+		            type: "POST",
+		            data : $(this).serialize(), 
+		            url: "{% url add_tag mlist_fqdn=list_address, email_id=first_mail.message_id %}",   
+		            success: function(data){
+		                console.log('Tag is added successfully');                       
+		            }   
+		        });   
+		        return false;
+				{% else %}
+					alert('You need to login in order to add tag');
+				{% endif %}
+		 });
+	
+		
 	}); 
 </script>
-
 {% endblock %}

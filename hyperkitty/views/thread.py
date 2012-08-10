@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import (login_required,
                                             user_passes_test)
 from kittystore.kittysastore import KittySAStore
 
-from hyperkitty.models import Rating
+from hyperkitty.models import Rating, Tag
 from hyperkitty.lib.mockup import *
 from forms import *
 from hyperkitty.utils import log
@@ -43,7 +43,7 @@ def thread_index (request, mlist_fqdn, threadid):
 
 	# Extract all the votes for this message
 	try:
-		votes = Rating.objects.filter(messageid = message.message_id)
+		votes = Rating.objects.filter(messageid=message.message_id)
 	except Rating.DoesNotExist:
 		votes = {}
 
@@ -67,7 +67,7 @@ def thread_index (request, mlist_fqdn, threadid):
         cnt = cnt + 1
 
     archives_length = STORE.get_archives_length(list_name)
-    from_url = '/thread/%s/%s/' %(mlist_fqdn, threadid)
+    from_url = '/thread/%s/%s/' % (mlist_fqdn, threadid)
     tag_form = AddTagForm(initial={'from_url' : from_url})
 
     c = RequestContext(request, {
@@ -92,22 +92,23 @@ def thread_index (request, mlist_fqdn, threadid):
 @login_required
 def add_tag(request, mlist_fqdn, email_id):
     """ Add a tag to a given thread. """
-    t = loader.get_template('threads/add_tag_form.html')
+
     if request.method == 'POST':
         form = AddTagForm(request.POST)
         if form.is_valid():
-            print "THERE WE ARE"
-            # TODO: Add the logic to add the tag
-            if form.data['from_url']:
-                return HttpResponseRedirect(form.data['from_url'])
-            else:
-                return HttpResponseRedirect('/')
-    else:
-        form = AddTagForm()
-    c = RequestContext(request, {
-        'list_address': mlist_fqdn,
-        'email_id': email_id,
-        'addtag_form': form,
-        })
-    return HttpResponse(t.render(c))
+            print "Adding tag..."
+            
+            tag = form.data['tag']
+            
+            try:
+                tag_obj = Tag.objects.get(threadid=email_id, list_address=mlist_fqdn, tag=tag)
+            except Tag.DoesNotExist:
+                tag_obj = Tag(list_address=mlist_fqdn, threadid=email_id, tag=tag) 
+        
+            tag_obj.save()
+            response_dict = { }
+        else:
+            response_dict = {'error' : 'Error adding tag, enter valid data' }
+            
+    return HttpResponse(simplejson.dumps(response_dict), mimetype='application/javascript')
 

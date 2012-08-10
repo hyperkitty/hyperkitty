@@ -59,7 +59,7 @@ urlpatterns = patterns('hyperkitty.views',
     ### MESSAGE LEVEL VIEWS ###
     # Vote a message
     url(r'^message/(?P<mlist_fqdn>.*@.*)/(?P<messageid>.+)/$',
-        'message.index'),
+        'message.index', name='message_index'),
 
     url(r'^vote/(?P<mlist_fqdn>.*@.*)/$',
         'message.vote', name='message_vote'),
@@ -74,7 +74,7 @@ urlpatterns = patterns('hyperkitty.views',
 
     # Add Tag to a thread
     url(r'^addtag/(?P<mlist_fqdn>.*@.*)\/(?P<email_id>.*)/$',
-        'thread.add_tag'),
+        'thread.add_tag', name='add_tag'),
     ### THREAD LEVEL VIEW ENDS ###
 
  

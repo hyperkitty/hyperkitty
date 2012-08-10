@@ -59,7 +59,7 @@ class UserProfile(models.Model):
    	    "Returns all the votes by a user"
             # Extract all the votes by this user
      	    try:
-	    	votes = Rating.objects.filter(user = self.user)
+	    	votes = Rating.objects.filter(user=self.user)
             except Rating.DoesNotExist:
 		votes = {}
 
@@ -75,3 +75,16 @@ class UserProfile(models.Model):
 	def __unicode__(self):
 		"""Unicode representation"""
 		return u'%s' % (unicode(self.user))
+
+class Tag(models.Model):
+	# @TODO: instead of list_address, user list model from kittystore?
+	list_address = models.CharField(max_length=50)
+
+	# @TODO: instead of threadid, use thread model from kittystore?
+	threadid = models.CharField(max_length=100)
+	
+	tag = models.CharField(max_length=255)
+	
+	def __unicode__(self):
+		"""Unicode representation"""
+		return u'threadid = %s , tag = %s ' % (unicode(self.list_address), unicode(self.threadid))

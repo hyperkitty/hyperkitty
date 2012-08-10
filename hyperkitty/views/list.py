@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 import os
 import json
@@ -17,7 +18,7 @@ from django.contrib.auth.decorators import (login_required,
                                             user_passes_test)
 from kittystore.kittysastore import KittySAStore
 
-from hyperkitty.models import Rating
+from hyperkitty.models import Rating, Tag
 from hyperkitty.lib.mockup import *
 from forms import *
 from hyperkitty.utils import log
@@ -64,7 +65,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
     if not end_date:
         today = datetime.utcnow()
         begin_date = datetime(today.year, today.month, 1)
-        end_date = datetime(today.year, today.month+1, 1)
+        end_date = datetime(today.year, today.month + 1, 1)
         month_string = 'Past thirty days'
     list_name = mlist_fqdn.split('@')[0]
 
@@ -125,7 +126,7 @@ def list(request, mlist_fqdn=None):
     end_date = datetime(today.year, today.month, today.day)
     begin_date = end_date - timedelta(days=32)
 
-    threads = STORE.get_archives(list_name=list_name,start=begin_date,
+    threads = STORE.get_archives(list_name=list_name, start=begin_date,
         end=end_date)
 
     participants = set()
@@ -281,11 +282,19 @@ def search_keyword(request, mlist_fqdn, target, keyword, page=1):
 
 
 def search_tag(request, mlist_fqdn, tag=None, page=1):
-    '''Searches both tag and topic'''
-    if tag:
-        query_string = {'Category': tag.capitalize()}
-    else:
-        query_string = None
-    return _search_results_page(request, mlist_fqdn, query_string,
+    '''Returns emails having a particular tag'''
+    
+    list_name = mlist_fqdn.split('@')[0]
+    
+    try:
+        thread_ids = Tag.objects.filter(tag=tag)
+    except Tag.DoesNotExist:
+        thread_ids = {}
+        
+    for thread in thread_ids:
+        threads = STORE.get_thread(list_name, thread.threadid)
+     
+     
+    return _search_results_page(request, mlist_fqdn, threads,
         'Tag search', page, limit=50)
 
