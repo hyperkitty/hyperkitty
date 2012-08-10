@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 setup(
     name="HyperKitty",
     version="0.1",
-    description="A web interface to access GNU Mailman archives", 
+    description="A web interface to access GNU Mailman v3 archives",
     long_description=open('README.rst').read(),
     url="https://fedorahosted.org/hyperkitty/",
     packages=find_packages(exclude=["*.test", "test", "*.test.*"]),

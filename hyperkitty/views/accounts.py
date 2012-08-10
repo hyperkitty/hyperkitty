@@ -46,7 +46,7 @@ def user_logout(request):
     logout(request)
     return redirect('user_login')
 
-def user_login(request,template = 'login.html'):
+def user_login(request, template='login.html'):
     
     parse_r = urlparse(request.META.get('HTTP_REFERER', 'index')) 
     previous = '%s%s' % (parse_r.path, parse_r.query)
@@ -61,7 +61,7 @@ def user_login(request,template = 'login.html'):
 	if user is not None:
             log('debug', user)
             if user.is_active:
-                login(request,user)
+                login(request, user)
 	        return redirect(next_var)
 
     else:
@@ -70,9 +70,10 @@ def user_login(request,template = 'login.html'):
                               context_instance=RequestContext(request))
 
 @login_required
-def user_profile(request, user_email = None):
+def user_profile(request, user_email=None):
     if not request.user.is_authenticated():
         return redirect('user_login')
+    
     # try to render the user profile.
     try:
     	user_profile = request.user.get_profile()
@@ -99,13 +100,13 @@ def user_registration(request):
         if form.is_valid():
 	    # Save the user data.
 	    form.save(form.cleaned_data)
-	    user = authenticate(username=form.cleaned_data['username'], 
+	    user = authenticate(username=form.cleaned_data['username'],
 				password=form.cleaned_data['password1'])
 
             if user is not None:
             	log('debug', user)
             	if user.is_active:
-                	login(request,user)
+                	login(request, user)
                 	return redirect('index')
     else:
         form = RegistrationForm()

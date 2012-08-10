@@ -32,7 +32,7 @@ class AccountViewsTestCase(TestCase):
     def test_login(self):
         # Try to access user profile (private data) without logging in
         response = self.client.get(reverse('user_profile'))
-        self.assertRedirects(response, "%s?next=%s" % (reverse('user_login'),reverse('user_profile')))
+        self.assertRedirects(response, "%s?next=%s" % (reverse('user_login'), reverse('user_profile')))
     
     def test_profile(self):
         User.objects.create_user('testuser', 'syst3m.w0rm+test@gmail.com', 'testPass')
@@ -63,10 +63,4 @@ class AccountViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         
         # @TODO: Try to register a user and verify its working
-        
-        
-        
-        
-        
-        
         

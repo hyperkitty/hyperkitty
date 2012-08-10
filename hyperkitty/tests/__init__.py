@@ -19,6 +19,6 @@
 # Author: Aamir Khan <syst3m.w0rm@gmail.com>
 # 
 
-from gsoc.tests.test_views import *
-from gsoc.tests.test_models import *
-from gsoc.tests.test_forms import *
+from hyperkitty.tests.test_views import *
+from hyperkitty.tests.test_models import *
+from hyperkitty.tests.test_forms import *
