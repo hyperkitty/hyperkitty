@@ -37,7 +37,7 @@
 		</ul>
 	</div>
 	<div id="add_tag">
-		<form id="add_tag_form" name="addtag" action="{% url add_tag mlist_fqdn=list_address, email_id=first_mail.message_id %}" method="post">
+		<form id="add_tag_form" name="addtag" action="{% url add_tag mlist_fqdn=list_address, email_id=threadid %}" method="post">
 			{% csrf_token %}
 			{{ addtag_form.as_p }}
 			<button type="submit">

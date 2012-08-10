@@ -99,7 +99,7 @@
 		        $.ajax({   
 		            type: "POST",
 		            data : $(this).serialize(), 
-		            url: "{% url add_tag mlist_fqdn=list_address, email_id=first_mail.message_id %}",   
+		            url: "{% url add_tag mlist_fqdn=list_address, email_id=threadid %}",   
 		            success: function(data){
 		                console.log('Tag is added successfully');                       
 		            }   

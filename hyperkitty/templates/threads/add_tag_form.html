@@ -3,7 +3,7 @@
 {% block header %} {% endblock %}
 
 {% block content %}
-<form id="addtag" action="{% url add_tag mlist_fqdn=list_address, email_id=first_mail.message_id %}" method="post">
+<form id="addtag" action="{% url add_tag mlist_fqdn=list_address, email_id=threadid %}" method="post">
 	{% csrf_token %}
 	{{ addtag_form }}
 	<button type="submit">
