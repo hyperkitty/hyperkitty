@@ -101,7 +101,8 @@
 		            data : $(this).serialize(), 
 		            url: "{% url add_tag mlist_fqdn=list_address, email_id=threadid %}",   
 		            success: function(data){
-		                console.log('Tag is added successfully');                       
+		                console.log('Tag is added successfully');
+		                location.reload();                     
 		            }   
 		        });   
 		        return false;
