@@ -18,3 +18,27 @@
 #
 # Author: Aamir Khan <syst3m.w0rm@gmail.com>
 # 
+
+import datetime
+from django.test import TestCase
+from hyperkitty.models import Rating, Tag
+
+class RatingTestCase(TestCase):
+    fixtures = ['rating_testdata.json']
+
+    def setUp(self):
+        super(RatingTestCase, self).setUp()
+        self.rating_1 = Rating.objects.get(pk=1)
+        self.rating_2 = Rating.objects.get(pk=2)
+
+    def test_was_published_today(self):
+        # Test the value of Poll should be +1/-1 only.
+        self.assertTrue((self.rating_1.vote == 1) | (self.rating_1.vote == -1))
+        self.assertTrue((self.rating_2.vote == 1) | (self.rating_2.vote == -1))
+
+class TagTestCase(TestCase):
+    fixtures = ['tag_testdata.json']
+
+    def setUp(self):
+        super(TagTestCase, self).setUp()
+        self.tag_1 = Tag.objects.get(pk=1)
