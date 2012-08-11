@@ -104,12 +104,21 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
    
     c = RequestContext(request, {
         'list_name' : list_name,
+        'objects': threads.object_list,
+        'page': pageNo,
+        'has_previous': threads.has_previous(),
+        'has_next': threads.has_next(),
+        'previous': threads.previous_page_number(),
+        'next': threads.next_page_number(),
+        'is_first': pageNo == 1,
+        'is_last': pageNo == paginator.num_pages,
         'list_address': mlist_fqdn,
         'search_form': search_form,
         'month': month_string,
         'month_participants': len(participants),
         'month_discussions': len(threads),
         'threads': threads,
+        'pages' : paginator.object_list,
         'archives_length': archives_length,
     })
     return HttpResponse(t.render(c))

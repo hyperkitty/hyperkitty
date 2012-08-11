@@ -77,9 +77,12 @@
 	</div>
 	<!-- End of thread -->
 	{% empty %}
-	Sorry no emails could be found for your search.
+		Sorry no emails could be found for your search.
 	{% endfor %}
+	
+	{% include "paginator.html" %}
 </div>
+
 <div id="archives">
 	{% for key, value in archives_length|sort %}
 	<h3>{{ key }}</h3>
