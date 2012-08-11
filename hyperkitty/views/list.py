@@ -78,14 +78,55 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
     cnt = 0
     for thread in threads:
         # Statistics on how many participants and threads this month
-        participants.add(msg.sender)
+        participants.add(thread.sender)
         thread.participants = STORE.get_thread_participants(list_name,
             thread.thread_id)
         thread.answers = STORE.get_thread_length(list_name,
             thread.thread_id)
+
+        highestlike = 0
+        highestdislike = 0
+
+        totalvotes = 0
+        totallikes = 0
+        totaldislikes = 0
+        messages = STORE.get_thread(list_name, thread.thread_id)
+        
+        for message in messages:
+            # Extract all the votes for this message
+            try:
+                votes = Rating.objects.filter(messageid=message.message_id)
+            except Rating.DoesNotExist:
+                votes = {}
+
+            likes = 0
+            dislikes = 0
+
+            for vote in votes:
+                if vote.vote == 1:
+                    likes = likes + 1
+                elif vote.vote == -1:
+                    dislikes = dislikes + 1
+                else:
+                    pass
+                
+            totallikes = totallikes + likes
+            totalvotes = totalvotes + likes + dislikes
+            totaldislikes = totaldislikes + dislikes
+        
+        try:
+            thread.avglike = totallikes / totalvotes
+        except:
+            thread.avglike = 0
+            
+        try:    
+            thread.avgdislike = totaldislikes / totalvotes
+        except:
+            thread.avgdislike = 0
+            
         threads[cnt] = thread
-        cnt = cnt + 1
-    
+        cnt = cnt + 1        
+
     paginator = Paginator(threads, 10)
     pageNo = request.GET.get('page')
     
