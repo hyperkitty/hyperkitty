@@ -1,0 +1,68 @@
+[{
+    "pk": 1,
+    "model": "hyperkitty.rating",
+    "fields": {
+        "vote": 1,
+        "user": 1,
+        "list_address": "devel@fp.o",
+        "messageid": "20120807173237.GA7638@nostromo.devel.redhat.com"
+    }
+}, {
+    "pk": 2,
+    "model": "hyperkitty.rating",
+    "fields": {
+        "vote": 1,
+        "user": 1,
+        "list_address": "devel@fp.o",
+        "messageid": "20120717073931.2b3ccfad@pegasus.ausil.us"
+    }
+}, {
+    "pk": 3,
+    "model": "hyperkitty.rating",
+    "fields": {
+        "vote": 1,
+        "user": 1,
+        "list_address": "devel@fp.o",
+        "messageid": "CAMqY-FeSSALDs0N5gyPNqM4ydOHOKFp==wmy9ihVAGKhoPk=Tg@mail.gmail.com"
+    }
+}, {
+    "pk": 4,
+    "model": "hyperkitty.rating",
+    "fields": {
+        "vote": 1,
+        "user": 1,
+        "list_address": "devel@fp.o",
+        "messageid": "cone.1342275563.803007.2493.1000@monster.email-scan.com"
+    }
+}, {
+    "pk": 1,
+    "model": "hyperkitty.userprofile",
+    "fields": {
+        "user": 1,
+        "karma": 1
+    }
+}, {
+    "pk": 1,
+    "model": "hyperkitty.tag",
+    "fields": {
+        "tag": "aamir",
+        "list_address": "devel@fp.o",
+        "threadid": "MEESBVZAM3QKAZSTSQCEF65PS2434NYG"
+    }
+}, {
+    "pk": 2,
+    "model": "hyperkitty.tag",
+    "fields": {
+        "tag": "aamir",
+        "list_address": "devel@fp.o",
+        "threadid": "SOSFEEJJNEI47PDNIPZMYQAPBAGNCUII"
+    }
+}, {
+    "pk": 3,
+    "model": "hyperkitty.tag",
+    "fields": {
+        "tag": "packaging",
+        "list_address": "devel@fp.o",
+        "threadid": "MEESBVZAM3QKAZSTSQCEF65PS2434NYG"
+    }
+}]
