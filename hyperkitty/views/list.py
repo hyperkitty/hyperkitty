@@ -76,16 +76,15 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
 
     participants = set()
     cnt = 0
-    for msg in threads:
+    for thread in threads:
         # Statistics on how many participants and threads this month
         participants.add(msg.sender)
-        msg.participants = STORE.get_thread_participants(list_name,
-            msg.thread_id)
-        msg.answers = STORE.get_thread_length(list_name,
-            msg.thread_id)
-        threads[cnt] = msg
+        thread.participants = STORE.get_thread_participants(list_name,
+            thread.thread_id)
+        thread.answers = STORE.get_thread_length(list_name,
+            thread.thread_id)
+        threads[cnt] = thread
         cnt = cnt + 1
-	#print msg
     
     paginator = Paginator(threads, 10)
     pageNo = request.GET.get('page')
