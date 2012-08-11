@@ -117,33 +117,6 @@ body {
     padding-right: 5px;
 }
 
-.showdiscussion {
-    background-image: linear-gradient(bottom, rgb(204,204,204) 11%, rgb(255,255,255) 100%);
-    background-image: -o-linear-gradient(bottom, rgb(204,204,204) 11%, rgb(255,255,255) 100%);
-    background-image: -moz-linear-gradient(bottom, rgb(204,204,204) 11%, rgb(255,255,255) 100%);
-    background-image: -webkit-linear-gradient(bottom, rgb(204,204,204) 11%, rgb(255,255,255) 100%);
-    background-image: -ms-linear-gradient(bottom, rgb(204,204,204) 11%, rgb(255,255,255) 100%);
-    background-image: -webkit-gradient(
-        linear,
-        left bottom,
-        left top,
-        color-stop(0.11, rgb(204,204,204)),
-        color-stop(1, rgb(255,255,255))
-    );
-    padding: 3px 7px 3px 7px;
-    -webkit-border-radius: 5px 5px 5px 5px;
-    -moz-border-radius: 5px 5px 5px 5px;
-    border-radius: 5px 5px 5px 5px;
-    border-style: solid;
-    border-width: 1px;
-    border-color: rgb(179, 179, 179);
-}
-
-.showdiscussion a {
-    color: rgb(77, 77, 77);
-}
-
-
 /* Top of the page -- header */
 .header {
     background-color: rgb(236, 236, 236);
