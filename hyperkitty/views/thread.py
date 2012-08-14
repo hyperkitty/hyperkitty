@@ -7,14 +7,14 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Invali
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
-from kittystore.kittysastore import KittySAStore
 
 from hyperkitty.models import Rating, Tag
 from hyperkitty.lib.mockup import *
 from forms import *
 from hyperkitty.utils import log
 
-STORE = KittySAStore(settings.KITTYSTORE_URL)
+import kittystore
+STORE = kittystore.get_store(settings.KITTYSTORE_URL)
 
 
 

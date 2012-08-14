@@ -4,13 +4,13 @@ from djangorestframework.views import View
 from django.conf.urls.defaults import url
 from django.conf import settings
 from django.http import HttpResponseNotModified, HttpResponse
-from kittystore.kittysastore import KittySAStore
 import json
 import re
 
 from hyperkitty.utils import log
 
-STORE = KittySAStore(settings.KITTYSTORE_URL)
+import kittystore
+STORE = kittystore.get_store(settings.KITTYSTORE_URL)
 
 
 class EmailResource(View):

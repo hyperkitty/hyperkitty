@@ -23,11 +23,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 
-from kittystore.kittysastore import KittySAStore
 
 from hyperkitty.utils import log
 
-STORE = KittySAStore(settings.KITTYSTORE_URL)
+import kittystore
+STORE = kittystore.get_store(settings.KITTYSTORE_URL)
 
 
 class Rating(models.Model):
