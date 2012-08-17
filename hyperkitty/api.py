@@ -20,7 +20,7 @@ class EmailResource(View):
 
     def get(self, request, mlist_fqdn, messageid):
         list_name = mlist_fqdn.split('@')[0]
-        email = STORE.get_email(list_name, messageid)
+        email = STORE.get_message_by_id_from_list(list_name, messageid)
         if not email:
             return HttpResponse(status=404)
         else:

@@ -65,7 +65,7 @@ class UserProfile(models.Model):
 
 	    for vote in votes:
 		list_name = vote.list_address.split('@')[0]
-	        message = STORE.get_email(list_name, vote.messageid)
+	        message = STORE.get_message_by_id_from_list(list_name, vote.messageid)
 		vote.message = message
 
      	    return votes
