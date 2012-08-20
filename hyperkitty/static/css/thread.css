@@ -213,7 +213,7 @@
     display: inline-block;
 }
 
-#first_email_body {
+.first_email_body {
     white-space: pre;
     display: inline-block;
 }
