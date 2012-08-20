@@ -25,7 +25,7 @@ def index (request, mlist_fqdn, messageid):
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('message.html')
-    message = STORE.get_message_by_id_from_list(list_name, messageid)
+    message = STORE.get_message_by_hash_from_list(list_name, messageid)
     message.email = message.email.strip()
     # Extract all the votes for this message
     try:

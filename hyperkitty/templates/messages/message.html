@@ -3,7 +3,7 @@
 <div class="email_header">
 	{% gravatar_img_for_email email.email 40 %}
 	<div class="email_author inline-block">
-		<span class="name"> <a href="{% url message_index mlist_fqdn=list_address, messageid=email.message_id %}">{{email.sender}}</a> </span>
+		<span class="name"> <a href="{% url message_index mlist_fqdn=list_address, messageid=email.stable_url_id %}">{{email.sender}}</a> </span>
 		<br />
 		<span class="rank">Rank 8</span>
 	</div>
@@ -20,7 +20,7 @@
 
 	{{email.content}}
 </div>
-<ul class="email_info inline" messageid="{{email.message_id}}">
+<ul class="email_info inline" messageid="{{email.stable_url_id}}">
 	<li class="neutral">
 		+{{email.likes}}/-{{email.dislikes}}
 	</li>
