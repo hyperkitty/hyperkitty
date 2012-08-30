@@ -12,16 +12,19 @@ import kittystore
 
 
 class ThreadSafeStorePool(object):
+    """
+    http://unpythonic.blogspot.fr/2007/11/using-storm-and-sqlite-in-multithreaded.html
+    """
 
- def __init__(self):
-     self._local = threading.local()
+    def __init__(self):
+        self._local = threading.local()
 
- def get(self):
-     try:
-         return self._local.store
-     except AttributeError:
-         self._local.store = kittystore.get_store(settings.KITTYSTORE_URL, debug=False)
-         return self._local.store
+    def get(self):
+        try:
+            return self._local.store
+        except AttributeError:
+            self._local.store = kittystore.get_store(settings.KITTYSTORE_URL, debug=False)
+            return self._local.store
 
 
 def gravatar_url(email):

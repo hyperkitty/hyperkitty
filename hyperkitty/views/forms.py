@@ -8,7 +8,7 @@ def isValidUsername(username):
         except User.DoesNotExist:
             return
         raise validators.ValidationError('The username "%s" is already taken.' % username)
- 
+
 class RegistrationForm(forms.Form):
 
     username =  forms.CharField(label='username', help_text=None,
@@ -18,11 +18,11 @@ class RegistrationForm(forms.Form):
                 )
 
     email     = forms.EmailField(required=True)
-    
+
     password1 = forms.CharField(widget=forms.PasswordInput)
- 
+
     password2 = forms.CharField(widget=forms.PasswordInput)
-       
+
     def save(self, new_user_data):
         u = User.objects.create_user(new_user_data['username'],
                                      new_user_data['email'],

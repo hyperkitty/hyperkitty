@@ -48,7 +48,7 @@ class HyperKittyLogHandler(logging.Handler):
     def __init__(self, log_to_file=True, email_admins=True):
         logging.Handler.__init__(self)
         self.log_to_file = log_to_file
-	self.email_admins = email_admins
+        self.email_admins = email_admins
 
     def emit(self, record):
         try:
@@ -81,13 +81,13 @@ class HyperKittyLogHandler(logging.Handler):
         reporter = ExceptionReporter(request, is_email=True, *exc_info)
         html_message = reporter.get_traceback_html()
 
-	if self.email_admins:
-		mail.mail_admins(subject, message, fail_silently=True, html_message=html_message)	
+        if self.email_admins:
+            mail.mail_admins(subject, message, fail_silently=True, html_message=html_message)
 
-	if self.log_to_file:
-		log_file = open(LOG_FILE, 'a')
-		log_file.write(message)
-		log_file.close()
+        if self.log_to_file:
+            log_file = open(LOG_FILE, 'a')
+            log_file.write(message)
+            log_file.close()
 
     def format_subject(self, subject):
         """

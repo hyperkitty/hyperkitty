@@ -37,29 +37,29 @@ def thread_index (request, mlist_fqdn, threadid):
     cnt = 0
 
     for message in threads:
-     	# @TODO: Move this logic inside KittyStore?
-	message.sender_email = message.sender_email.strip()
+        # @TODO: Move this logic inside KittyStore?
+        message.sender_email = message.sender_email.strip()
 
-	# Extract all the votes for this message
-	try:
-		votes = Rating.objects.filter(messageid=message.message_id)
-	except Rating.DoesNotExist:
-		votes = {}
+        # Extract all the votes for this message
+        try:
+            votes = Rating.objects.filter(messageid=message.message_id)
+        except Rating.DoesNotExist:
+            votes = {}
 
-	likes = 0
-    	dislikes = 0
+        likes = 0
+        dislikes = 0
 
-    	for vote in votes:
-		if vote.vote == 1:
-			likes = likes + 1
-		elif vote.vote == -1:
-			dislikes = dislikes + 1
-		else:
-			pass
-	
-	message.votes = votes
-	message.likes = likes
-	message.dislikes = dislikes
+        for vote in votes:
+            if vote.vote == 1:
+                likes = likes + 1
+            elif vote.vote == -1:
+                dislikes = dislikes + 1
+            else:
+                pass
+
+        message.votes = votes
+        message.likes = likes
+        message.dislikes = dislikes
 
         # Statistics on how many participants and threads this month
         participants[message.sender_name] = {'email': message.sender_email}
@@ -68,7 +68,7 @@ def thread_index (request, mlist_fqdn, threadid):
     archives_length = STORE.get_archives_length(mlist_fqdn)
     from_url = '/thread/%s/%s/' % (mlist_fqdn, threadid)
     tag_form = AddTagForm(initial={'from_url' : from_url})
-    
+
     try:
         tags = Tag.objects.filter(threadid=threadid)
     except Tag.DoesNotExist:
@@ -103,18 +103,18 @@ def add_tag(request, mlist_fqdn, email_id):
         form = AddTagForm(request.POST)
         if form.is_valid():
             print "Adding tag..."
-            
+
             tag = form.data['tag']
-            
+
             try:
                 tag_obj = Tag.objects.get(threadid=email_id, list_address=mlist_fqdn, tag=tag)
             except Tag.DoesNotExist:
                 tag_obj = Tag(list_address=mlist_fqdn, threadid=email_id, tag=tag) 
-        
+
             tag_obj.save()
             response_dict = { }
         else:
             response_dict = {'error' : 'Error adding tag, enter valid data' }
-            
+
     return HttpResponse(simplejson.dumps(response_dict), mimetype='application/javascript')
 

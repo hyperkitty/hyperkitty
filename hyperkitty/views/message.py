@@ -28,21 +28,21 @@ def index (request, mlist_fqdn, hashid):
     message.sender_email = message.sender_email.strip()
     # Extract all the votes for this message
     try:
-	votes = Rating.objects.filter(messageid = hashid)
+        votes = Rating.objects.filter(messageid = hashid)
     except Rating.DoesNotExist:
-	votes = {}
+        votes = {}
 
     likes = 0
     dislikes = 0
 
     for vote in votes:
-	if vote.vote == 1:
-		likes = likes + 1
-	elif vote.vote == -1:
-		dislikes = dislikes + 1
-	else:
-		pass
-	
+        if vote.vote == 1:
+            likes = likes + 1
+        elif vote.vote == -1:
+            dislikes = dislikes + 1
+        else:
+            pass
+
     message.votes = votes
     message.likes = likes
     message.dislikes = dislikes
@@ -51,7 +51,7 @@ def index (request, mlist_fqdn, hashid):
         'list_name' : list_name,
         'list_address': mlist_fqdn,
         'message': message,
-	'hashid' : hashid,
+        'hashid' : hashid,
     })
     return HttpResponse(t.render(c))
 
@@ -61,19 +61,19 @@ def index (request, mlist_fqdn, hashid):
 def vote (request, mlist_fqdn):
     """ Add a rating to a given message identified by messageid. """
     if not request.user.is_authenticated():
-	return redirect('user_login')
+        return redirect('user_login')
 
     value = request.POST['vote']
     hashid = request.POST['hashid']
 
     # Checks if the user has already voted for a this message. If yes modify db entry else create a new one.
     try:
-	v = Rating.objects.get(user = request.user, messageid = hashid, list_address = mlist_fqdn)
+        v = Rating.objects.get(user = request.user, messageid = hashid, list_address = mlist_fqdn)
     except Rating.DoesNotExist:
-    	v = Rating(list_address=mlist_fqdn, messageid = hashid, vote = value) 
+        v = Rating(list_address=mlist_fqdn, messageid = hashid, vote = value)
 
     v.user = request.user
-    v.vote = value  
+    v.vote = value
     v.save()
     response_dict = { }
 

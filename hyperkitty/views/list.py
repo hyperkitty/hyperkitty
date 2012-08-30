@@ -34,7 +34,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
     # No year/month: past 32 days
     # year and month: find the 32 days for that month
     # @TODO : modify url.py to account for page number
-    
+
     end_date = None
     if year or month or day:
         try:
@@ -89,7 +89,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         totallikes = 0
         totaldislikes = 0
         messages = STORE.get_thread(mlist_fqdn, thread.thread_id)
-        
+
         for message in messages:
             # Extract all the votes for this message
             try:
@@ -107,27 +107,27 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
                     dislikes = dislikes + 1
                 else:
                     pass
-                
+
             totallikes = totallikes + likes
             totalvotes = totalvotes + likes + dislikes
             totaldislikes = totaldislikes + dislikes
-        
+
         try:
             thread.avglike = totallikes / totalvotes
         except:
             thread.avglike = 0
-            
-        try:    
+
+        try:
             thread.avgdislike = totaldislikes / totalvotes
         except:
             thread.avgdislike = 0
-            
+
         threads[cnt] = thread
-        cnt = cnt + 1        
+        cnt = cnt + 1
 
     paginator = Paginator(threads, 10)
     pageNo = request.GET.get('page')
-    
+
     try:
         threads = paginator.page(pageNo)
     except PageNotAnInteger:
@@ -139,7 +139,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
 
 
     archives_length = STORE.get_archives_length(mlist_fqdn)
-   
+
     c = RequestContext(request, {
         'list_name' : list_name,
         'objects': threads.object_list,
