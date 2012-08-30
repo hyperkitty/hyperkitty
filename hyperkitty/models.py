@@ -25,9 +25,7 @@ from django.conf import settings
 
 
 from hyperkitty.utils import log
-
-import kittystore
-STORE = kittystore.get_store(settings.KITTYSTORE_URL)
+from hyperkitty.lib import ThreadSafeStorePool
 
 
 class Rating(models.Model):
@@ -65,7 +63,8 @@ class UserProfile(models.Model):
 
 	    for vote in votes:
 		list_name = vote.list_address.split('@')[0]
-	        message = STORE.get_message_by_id_from_list(list_name, vote.messageid)
+		STORE = ThreadSafeStorePool().get()
+	        message = STORE.get_message_by_id_from_list(vote.list_address, vote.messageid)
 		vote.message = message
 
      	    return votes

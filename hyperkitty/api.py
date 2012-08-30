@@ -8,9 +8,7 @@ import json
 import re
 
 from hyperkitty.utils import log
-
-import kittystore
-STORE = kittystore.get_store(settings.KITTYSTORE_URL)
+from hyperkitty.lib import ThreadSafeStorePool
 
 
 class EmailResource(View):
@@ -20,6 +18,7 @@ class EmailResource(View):
 
     def get(self, request, mlist_fqdn, messageid):
         list_name = mlist_fqdn.split('@')[0]
+        STORE = ThreadSafeStorePool().get()
         email = STORE.get_message_by_hash_from_list(list_name, messageid)
         if not email:
             return HttpResponse(status=404)
@@ -34,6 +33,7 @@ class ThreadResource(View):
 
     def get(self, request, mlist_fqdn, threadid):
         list_name = mlist_fqdn.split('@')[0]
+        STORE = ThreadSafeStorePool().get()
         thread = STORE.get_thread(list_name, threadid)
         if not thread:
             return HttpResponse(status=404)
@@ -61,7 +61,8 @@ class SearchResource(View):
             query_string = {field.capitalize(): 
                 re.compile(regex, re.IGNORECASE)}
 
-        print query_string, field, keyword
+        #print query_string, field, keyword
+        STORE = ThreadSafeStorePool().get()
         threads = STORE.search_archives(list_name, query_string)
         if not threads:
             return HttpResponse(status=404)

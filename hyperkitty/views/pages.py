@@ -19,6 +19,7 @@ from django.contrib.auth.decorators import (login_required,
                                             user_passes_test)
 from hyperkitty.models import Rating
 from hyperkitty.lib.mockup import *
+from hyperkitty.lib import ThreadSafeStorePool
 from forms import *
 from hyperkitty.utils import log
 
@@ -29,7 +30,10 @@ def index(request):
     base_url = settings.MAILMAN_API_URL % {
         'username': settings.MAILMAN_USER, 'password': settings.MAILMAN_PASS}
 
-    list_data = ['devel@fp.o', 'packaging@fp.o', 'fr-users@fp.o']
+    store = ThreadSafeStorePool().get()
+    list_data = store.get_list_names()
+    print list_data
+    log("warn", repr(list_data))
 
     c = RequestContext(request, {
         'lists': list_data,

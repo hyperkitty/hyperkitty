@@ -58,7 +58,7 @@ urlpatterns = patterns('hyperkitty.views',
 
     ### MESSAGE LEVEL VIEWS ###
     # Vote a message
-    url(r'^message/(?P<mlist_fqdn>.*@.*)/(?P<messageid>.+)/$',
+    url(r'^message/(?P<mlist_fqdn>.*@.*)/(?P<hashid>.+)/$',
         'message.index', name='message_index'),
 
     url(r'^vote/(?P<mlist_fqdn>.*@.*)/$',
@@ -80,7 +80,7 @@ urlpatterns = patterns('hyperkitty.views',
  
     # REST API
     url(r'^api/$', 'api.api'),
-    url(r'^api/email\/(?P<mlist_fqdn>.*@.*)\/(?P<messageid>.*)/',
+    url(r'^api/email\/(?P<mlist_fqdn>.*@.*)\/(?P<hashid>.*)/',
         EmailResource.as_view()),
     url(r'^api/thread\/(?P<mlist_fqdn>.*@.*)\/(?P<threadid>.*)/',
         ThreadResource.as_view()),

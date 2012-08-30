@@ -11,25 +11,24 @@ from django.contrib.auth.decorators import (login_required,
                                             user_passes_test)
 
 from hyperkitty.models import Rating
+from hyperkitty.lib import ThreadSafeStorePool
 from hyperkitty.lib.mockup import *
 from forms import *
 from hyperkitty.utils import log
 
-import kittystore
-STORE = kittystore.get_store(settings.KITTYSTORE_URL)
 
-
-def index (request, mlist_fqdn, messageid):
-    ''' Displays a single message identified by its messageid '''
+def index (request, mlist_fqdn, hashid):
+    ''' Displays a single message identified by its hash_id (derived from message_id) '''
     list_name = mlist_fqdn.split('@')[0]
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('message.html')
-    message = STORE.get_message_by_hash_from_list(list_name, messageid)
-    message.email = message.email.strip()
+    STORE = ThreadSafeStorePool().get()
+    message = STORE.get_message_by_hash_from_list(mlist_fqdn, hashid)
+    message.sender_email = message.sender_email.strip()
     # Extract all the votes for this message
     try:
-	votes = Rating.objects.filter(messageid = messageid)
+	votes = Rating.objects.filter(messageid = hashid)
     except Rating.DoesNotExist:
 	votes = {}
 
@@ -52,7 +51,7 @@ def index (request, mlist_fqdn, messageid):
         'list_name' : list_name,
         'list_address': mlist_fqdn,
         'message': message,
-	'messageid' : messageid,
+	'hashid' : hashid,
     })
     return HttpResponse(t.render(c))
 
@@ -65,13 +64,13 @@ def vote (request, mlist_fqdn):
 	return redirect('user_login')
 
     value = request.POST['vote']
-    messageid = request.POST['messageid']
+    hashid = request.POST['hashid']
 
     # Checks if the user has already voted for a this message. If yes modify db entry else create a new one.
     try:
-	v = Rating.objects.get(user = request.user, messageid = messageid, list_address = mlist_fqdn)
+	v = Rating.objects.get(user = request.user, messageid = hashid, list_address = mlist_fqdn)
     except Rating.DoesNotExist:
-    	v = Rating(list_address=mlist_fqdn, messageid = messageid, vote = value) 
+    	v = Rating(list_address=mlist_fqdn, messageid = hashid, vote = value) 
 
     v.user = request.user
     v.vote = value  

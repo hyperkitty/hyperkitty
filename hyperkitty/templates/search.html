@@ -28,11 +28,11 @@
 		</div>
 		{% endif %}
 		<div class="inline-block gravatar">
-			{% if email.email %}
-			{% gravatar_img_for_email email.email 40 %}
+			{% if email.sender_email %}
+			{% gravatar_img_for_email email.sender_email 40 %}
 			<br />
 			{% endif %}
-			{{email.sender}}
+			{{email.sender_name}}
 		</div>
 		<div class="inline-block thread_email">
 			<span class="expander"> {{email.content}} </span>

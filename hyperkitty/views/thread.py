@@ -13,9 +13,7 @@ from hyperkitty.lib.mockup import *
 from forms import *
 from hyperkitty.utils import log
 
-import kittystore
-STORE = kittystore.get_store(settings.KITTYSTORE_URL)
-
+from hyperkitty.lib import ThreadSafeStorePool
 
 
 def thread_index (request, mlist_fqdn, threadid):
@@ -24,7 +22,8 @@ def thread_index (request, mlist_fqdn, threadid):
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('thread.html')
-    threads = STORE.get_thread(list_name, threadid)
+    STORE = ThreadSafeStorePool().get()
+    threads = STORE.get_thread(mlist_fqdn, threadid)
     #prev_thread = mongo.get_thread_name(list_name, int(threadid) - 1)
     prev_thread = []
     if len(prev_thread) > 30:
@@ -39,7 +38,7 @@ def thread_index (request, mlist_fqdn, threadid):
 
     for message in threads:
      	# @TODO: Move this logic inside KittyStore?
-	message.email = message.email.strip()
+	message.sender_email = message.sender_email.strip()
 
 	# Extract all the votes for this message
 	try:
@@ -63,10 +62,10 @@ def thread_index (request, mlist_fqdn, threadid):
 	message.dislikes = dislikes
 
         # Statistics on how many participants and threads this month
-        participants[message.sender] = {'email': message.email}
+        participants[message.sender_name] = {'email': message.sender_email}
         cnt = cnt + 1
 
-    archives_length = STORE.get_archives_length(list_name)
+    archives_length = STORE.get_archives_length(mlist_fqdn)
     from_url = '/thread/%s/%s/' % (mlist_fqdn, threadid)
     tag_form = AddTagForm(initial={'from_url' : from_url})
     

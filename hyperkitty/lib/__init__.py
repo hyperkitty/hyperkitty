@@ -1,7 +1,27 @@
 #-*- coding: utf-8 -*-
 
-from hashlib import md5
 import urllib
+from hashlib import md5
+import threading
+
+from django.conf import settings
+
+from hyperkitty.utils import log
+
+import kittystore
+
+
+class ThreadSafeStorePool(object):
+
+ def __init__(self):
+     self._local = threading.local()
+
+ def get(self):
+     try:
+         return self._local.store
+     except AttributeError:
+         self._local.store = kittystore.get_store(settings.KITTYSTORE_URL, debug=False)
+         return self._local.store
 
 
 def gravatar_url(email):
