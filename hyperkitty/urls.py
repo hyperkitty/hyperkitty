@@ -19,7 +19,7 @@ urlpatterns = patterns('hyperkitty.views',
 
     # Index
     url(r'^/$', 'pages.index', name='index'),
-    url(r'^$', 'pages.index'),
+    url(r'^$', 'pages.index', name='root'),
 
     # Archives
     url(r'^archives/(?P<mlist_fqdn>.*@.*)/(?P<year>\d{4})/(?P<month>\d\d?)/(?P<day>\d\d?)/$',

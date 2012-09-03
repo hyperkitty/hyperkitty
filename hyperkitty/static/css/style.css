@@ -53,6 +53,7 @@ body {
     list-style-type: none;
 }
 
+
 /* Add icons to some text */
 .participant {
     background: url("../img/participant.png") no-repeat scroll left top;
@@ -167,6 +168,10 @@ body {
    margin-left: 20px;
 }
 
+.nav .root {
+    font-weight: bold;
+}
+
 #thread_content {
    width: 70%;
 }
@@ -184,10 +189,6 @@ body {
 
 #top_right li {
     margin-left:10px;
-}
-
-#list_name {
-    font-weight: bold;
 }
 
 #page_date {

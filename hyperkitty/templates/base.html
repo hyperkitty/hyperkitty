@@ -38,8 +38,12 @@
 
 	            <ul class="nav">
 
+                    <li class="root{% if not list_address %} active{% endif %}">
+                        <a href="{% url root %}">{{ app_name|title }}</a>
+                    </li>
+
 				{% if list_address %}
-					<li id="list_name">
+					<li id="list_name" class="active">
 						<a href="{% url list_overview mlist_fqdn=list_address %}">{{list_address}}</a>
 					</li>
 				{% endif %}
