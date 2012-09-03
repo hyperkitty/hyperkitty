@@ -18,7 +18,10 @@ from hyperkitty.utils import log
 
 
 def index (request, mlist_fqdn, hashid):
-    ''' Displays a single message identified by its hash_id (derived from message_id) '''
+    '''
+    Displays a single message identified by its message_id_hash (derived from
+    message_id)
+    '''
     list_name = mlist_fqdn.split('@')[0]
 
     search_form = SearchForm(auto_id=False)
