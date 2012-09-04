@@ -18,7 +18,7 @@ from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
 from hyperkitty.models import Rating
-from hyperkitty.lib.mockup import *
+#from hyperkitty.lib.mockup import *
 from hyperkitty.lib import ThreadSafeStorePool
 from forms import *
 from hyperkitty.utils import log
@@ -32,7 +32,6 @@ def index(request):
 
     store = ThreadSafeStorePool().get()
     list_data = store.get_list_names()
-    print list_data
     log("warn", repr(list_data))
 
     c = RequestContext(request, {

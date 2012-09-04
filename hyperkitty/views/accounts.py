@@ -48,6 +48,7 @@ def user_logout(request):
 
 def user_login(request, template='login.html'):
 
+    user = None
     parse_r = urlparse(request.META.get('HTTP_REFERER', 'index'))
     previous = '%s%s' % (parse_r.path, parse_r.query)
 

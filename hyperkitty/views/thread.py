@@ -9,7 +9,7 @@ from django.contrib.auth.decorators import (login_required,
                                             user_passes_test)
 
 from hyperkitty.models import Rating, Tag
-from hyperkitty.lib.mockup import *
+#from hyperkitty.lib.mockup import *
 from forms import *
 from hyperkitty.utils import log
 

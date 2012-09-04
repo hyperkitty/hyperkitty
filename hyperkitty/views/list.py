@@ -18,7 +18,7 @@ from django.contrib.auth.decorators import (login_required,
                                             user_passes_test)
 
 from hyperkitty.models import Rating, Tag
-from hyperkitty.lib.mockup import *
+#from hyperkitty.lib.mockup import *
 from hyperkitty.lib import ThreadSafeStorePool
 from forms import *
 from hyperkitty.utils import log
@@ -211,9 +211,12 @@ def list(request, mlist_fqdn=None):
 
     # top authors are the ones that have the most kudos.  How do we determine
     # that?  Most likes for their post?
-    authors = generate_top_author()
-    authors = sorted(authors, key=lambda author: author.kudos)
-    authors.reverse()
+    if settings.USE_MOCKUPS:
+        authors = generate_top_author()
+        authors = sorted(authors, key=lambda author: author.kudos)
+        authors.reverse()
+    else:
+        authors = []
 
     # Get the list activity per day
     days = dates.keys()
@@ -226,7 +229,11 @@ def list(request, mlist_fqdn=None):
         evolution.append(0)
 
     # threads per category is the top thread titles in each category
-    threads_per_category = generate_thread_per_category()
+    if settings.USE_MOCKUPS:
+        threads_per_category = generate_thread_per_category()
+    else:
+        threads_per_category = {}
+
     c = RequestContext(request, {
         'list_name' : list_name,
         'list_address': mlist_fqdn,

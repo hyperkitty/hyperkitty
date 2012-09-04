@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import (login_required,
 
 from hyperkitty.models import Rating
 from hyperkitty.lib import ThreadSafeStorePool
-from hyperkitty.lib.mockup import *
+#from hyperkitty.lib.mockup import *
 from forms import *
 from hyperkitty.utils import log
 

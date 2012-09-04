@@ -97,9 +97,11 @@
 						<a href="/tag/{{list_address}}/{{email.category|lower}}"> {{email.category}} </a>
 					</li>
 					{% endif %}
+                    {% if settings.USE_MOCKUPS %}
 					<li class="neutral">
 						0
 					</li>
+					{% endif %}
 					<li class="participant">
 						{{email.participants|length}}
 					</li>
@@ -132,9 +134,11 @@
 						<a href="/tag/{{list_address}}/{{email.category|lower}}"> {{email.category}} </a>
 					</li>
 					{% endif %}
+                    {% if settings.USE_MOCKUPS %}
 					<li class="neutral">
 						0
 					</li>
+                    {% endif %}
 					<li class="participant">
 						{{email.participants|length}}
 					</li>
@@ -148,6 +152,7 @@
 		{% endfor %}
 	</section>
 
+    {% if top_author %}
 	<section id="discussion_marker">
 		<h2>Prominent discussion maker</h2>
 		{% for author in top_author %}
@@ -173,7 +178,9 @@
 
 		<h2>Tag cloud</h2>
 	</section>
+    {% endif %}
 
+    {% if threads_per_category %}
 	<section id="discussion_by_topic">
 		<h2>Discussion by topic the last 30 days</h2>
 		{% for category, thread in threads_per_category.items %}
@@ -189,6 +196,8 @@
 		</div>
 		{% endfor %}
 	</section>
+    {% endif %}
+
 </section>
 <section id="archives">
 	{% for key, value in archives_length|sort %}
