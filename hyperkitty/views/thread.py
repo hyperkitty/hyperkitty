@@ -13,7 +13,7 @@ from hyperkitty.models import Rating, Tag
 from forms import *
 from hyperkitty.utils import log
 
-from hyperkitty.lib import ThreadSafeStorePool
+from hyperkitty.lib import ThreadSafeStorePool, get_months
 
 
 def thread_index (request, mlist_fqdn, threadid):
@@ -23,7 +23,7 @@ def thread_index (request, mlist_fqdn, threadid):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('thread.html')
     STORE = ThreadSafeStorePool().get()
-    threads = STORE.get_thread(mlist_fqdn, threadid)
+    threads = STORE.get_messages_in_thread(mlist_fqdn, threadid)
     #prev_thread = mongo.get_thread_name(list_name, int(threadid) - 1)
     prev_thread = []
     if len(prev_thread) > 30:
@@ -65,7 +65,7 @@ def thread_index (request, mlist_fqdn, threadid):
         participants[message.sender_name] = {'email': message.sender_email}
         cnt = cnt + 1
 
-    archives_length = STORE.get_archives_length(mlist_fqdn)
+    archives_length = get_months(STORE, mlist_fqdn)
     from_url = '/thread/%s/%s/' % (mlist_fqdn, threadid)
     tag_form = AddTagForm(initial={'from_url' : from_url})
 

@@ -36,6 +36,7 @@
 		</div>
 		<div class="thread_info">
 			<ul class="tags inline">
+                {% if email.tags|length %}
 				<li>
 					Tags:
 				</li>
@@ -44,6 +45,7 @@
 					<a href="/tag/{{list_address}}/{{tag}}">{{tag}}</a>
 				</li>
 				{% endfor %}
+				{% endif %}
 			</ul>
 			<ul class="inline-block">
 				<li class="participant">
@@ -53,11 +55,13 @@
 					{{email.answers}} comments
 				</li>
 			</ul>
+            {% if settings.USE_MOCKUPS %}
 			<ul class="inline-block">
 				<li class="like">
 					+{{email.avglike}} / - {{email.avgdislike}}
 				</li>
 			</ul>
+            {% endif %}
 		</div>
 	</div>
 	<!-- End of thread -->

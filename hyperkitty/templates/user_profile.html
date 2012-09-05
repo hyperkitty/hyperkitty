@@ -33,6 +33,7 @@
     		</tr>
     	</tbody>
     </table>
+    {% if settings.USE_MOCKUPS %}
     <h3> Up Votes : </h3>
 
 	<ul>
@@ -64,6 +65,7 @@
 		{% endif %}
 	{% endfor %}
 	</ul>
+    {% endif %}
 
 
 {% endblock %}

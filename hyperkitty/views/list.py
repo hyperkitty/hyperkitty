@@ -19,7 +19,7 @@ from django.contrib.auth.decorators import (login_required,
 
 from hyperkitty.models import Rating, Tag
 #from hyperkitty.lib.mockup import *
-from hyperkitty.lib import ThreadSafeStorePool
+from hyperkitty.lib import ThreadSafeStorePool, get_months
 from forms import *
 from hyperkitty.utils import log
 
@@ -69,7 +69,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('month_view.html')
     STORE = ThreadSafeStorePool().get()
-    threads = STORE.get_archives(mlist_fqdn, start=begin_date,
+    threads = STORE.get_threads(mlist_fqdn, start=begin_date,
         end=end_date)
 
     participants = set()
@@ -88,7 +88,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         totalvotes = 0
         totallikes = 0
         totaldislikes = 0
-        messages = STORE.get_thread(mlist_fqdn, thread.thread_id)
+        messages = STORE.get_messages_in_thread(mlist_fqdn, thread.thread_id)
 
         for message in messages:
             # Extract all the votes for this message
@@ -138,7 +138,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         threads = paginator.page(paginator.num_pages)
 
 
-    archives_length = STORE.get_archives_length(mlist_fqdn)
+    archives_length = get_months(STORE, mlist_fqdn)
 
     c = RequestContext(request, {
         'list_name' : list_name,
@@ -174,7 +174,7 @@ def list(request, mlist_fqdn=None):
     begin_date = end_date - timedelta(days=32)
 
     STORE = ThreadSafeStorePool().get()
-    threads = STORE.get_archives(list_name=mlist_fqdn, start=begin_date,
+    threads = STORE.get_threads(list_name=mlist_fqdn, start=begin_date,
         end=end_date)
 
     participants = set()
@@ -207,7 +207,7 @@ def list(request, mlist_fqdn=None):
     # active threads are the ones that have the most recent posting
     active_threads = sorted(threads, key=lambda entry: entry.date, reverse=True)
 
-    archives_length = STORE.get_archives_length(mlist_fqdn)
+    archives_length = get_months(STORE, mlist_fqdn)
 
     # top authors are the ones that have the most kudos.  How do we determine
     # that?  Most likes for their post?
@@ -351,7 +351,7 @@ def search_tag(request, mlist_fqdn, tag=None, page=1):
     
     threads = []
     for thread in thread_ids:
-        threads_tmp = STORE.get_thread(mlist_fqdn, thread.threadid)
+        threads_tmp = STORE.get_messages_in_thread(mlist_fqdn, thread.threadid)
         threads.append(threads_tmp[0])
 
     return _search_results_page(request, mlist_fqdn, threads,

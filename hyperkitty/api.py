@@ -34,7 +34,7 @@ class ThreadResource(View):
     def get(self, request, mlist_fqdn, threadid):
         list_name = mlist_fqdn.split('@')[0]
         STORE = ThreadSafeStorePool().get()
-        thread = STORE.get_thread(list_name, threadid)
+        thread = STORE.get_messages_in_thread(list_name, threadid)
         if not thread:
             return HttpResponse(status=404)
         else:
