@@ -81,11 +81,11 @@ urlpatterns = patterns('hyperkitty.views',
     # REST API
     url(r'^api/$', 'api.api'),
     url(r'^api/email\/(?P<mlist_fqdn>.*@.*)\/(?P<hashid>.*)/',
-        EmailResource.as_view()),
+        EmailResource.as_view(), name="api_email"),
     url(r'^api/thread\/(?P<mlist_fqdn>.*@.*)\/(?P<threadid>.*)/',
-        ThreadResource.as_view()),
+        ThreadResource.as_view(), name="api_thread"),
     url(r'^api/search\/(?P<mlist_fqdn>.*@.*)\/(?P<field>.*)\/(?P<keyword>.*)/',
-        SearchResource.as_view()),
+        SearchResource.as_view(), name="api_search"),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

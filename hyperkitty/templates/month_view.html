@@ -16,11 +16,12 @@
 		<div class="thread_content">
 			{% if email.category_tag %}
 			<div class="inline-block type type_{{email.category_tag}}">
-				<a href="/tag/{{list_address}}/{{email.category_tag}}"> {{email.category}} </a>
+				<a href="{% url search_tag mlist_fqdn=list_address, tag=email.category_tag %}">{{email.category}}</a>
 			</div>
-			{% else %}
+			{% endif %}
+			{% if email.category %}
 			<div class="inline-block type type_{{email.category|lower}}">
-				<a href="/tag/{{list_address}}/{{email.category|lower}}"> {{email.category}} </a>
+				<a href="{% url search_tag mlist_fqdn=list_address, tag=email.category|lower %}">{{email.category}}</a>
 			</div>
 			{% endif %}
 			<div class="inline-block gravatar">
@@ -42,7 +43,7 @@
 				</li>
 				{% for tag in email.tags %}
 				<li>
-					<a href="/tag/{{list_address}}/{{tag}}">{{tag}}</a>
+					<a href="{% url search_tag mlist_fqdn=list_address, tag=tag %}">{{tag}}</a>
 				</li>
 				{% endfor %}
 				{% endif %}

@@ -41,9 +41,9 @@
 		{% if vote.vote == 1 %}
 		<li>
 		{% if vote.message.content|trimString|length > 0 %}
-			<a href="/message/{{vote.list_address}}/{{vote.messageid}}">{{ vote.message.content|truncatechars:20 }}</a>
+			<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}">{{ vote.message.content|truncatechars:20 }}</a>
 		{% else %}
-			<a href="/message/{{vote.list_address}}/{{vote.messageid}}">Message is empty</a>
+			<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}">Message is empty</a>
 		{% endif %}
 		</li>
 		{% endif %}
@@ -57,9 +57,9 @@
 		{% if vote.vote == -1 %}
 		<li>
 		{% if vote.message.content|trimString|length > 0 %}
-			<a href="/message/{{vote.list_address}}/{{vote.messageid}}">{{ vote.message.content|truncatechars:20 }}</a>
+			<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}">{{ vote.message.content|truncatechars:20 }}</a>
 		{% else %}
-			<a href="/message/{{vote.list_address}}/{{vote.messageid}}">Message is empty</a>
+			<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}">Message is empty</a>
 		{% endif %}
 		</li>
 		{% endif %}

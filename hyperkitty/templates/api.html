@@ -36,8 +36,8 @@
 Using the address /api/email/&lt;list name&gt;/&lt;Message-ID&gt; you will be able to
 retrieve the information known about a specific email on the specified mailing-list.
         </p>
-        <p> For example: <a href="/api/email/devel@fp.o/<1312985457.28933.34.camel@ankur.pc>/">
-            /api/email/devel@fp.o/&lt;1312985457.28933.34.camel@ankur.pc&gt;/
+        <p> For example: <a href="{% url api_email mlist_fqdn='devel@fp.o', hashid='13129854572893334' %}">
+            {% url api_email mlist_fqdn='devel@fp.o', hashid='13129854572893334' %}
         </a>
         </p>
     </div>
@@ -49,8 +49,8 @@ retrieve the information known about a specific email on the specified mailing-l
 Using the address /api/thread/&lt;list name&gt;/&lt;Message-ID&gt; you will be able to
 retrieve the all the email for a specific thread on the specified mailing-list.
         </p>
-        <p> For example: <a href="/api/thread/devel@fp.o/1/">
-            /api/email/devel@fp.o/1/
+        <p> For example: <a href="{% url api_thread mlist_fqdn='devel@fp.o', threadid='13129854572893334' %}">
+            {% url api_thread mlist_fqdn='devel@fp.o', threadid='13129854572893334' %}
         </a>
         </p>
     </div>
@@ -69,8 +69,8 @@ search for all emails of the specified mailing-list containing the provided keyw
             <li>Content</li>
             <li>SubjectContent</li>
         </ul>
-        <p> For example: <a href="/api/search/devel@fp.o/From/pingoured">
-            /api/search/devel@fp.o/From/pingoured
+        <p> For example: <a href="{% url api_search mlist_fqdn='devel@fp.o', field='From', keyword='pingoured' %}">
+            {% url api_search mlist_fqdn='devel@fp.o', field='From', keyword='pingoured' %}
         </a>
         </p>
     </div>
