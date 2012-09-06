@@ -23,9 +23,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
 
+from kittystore import get_store
 
 from hyperkitty.utils import log
-from hyperkitty.lib import ThreadSafeStorePool
 
 
 class Rating(models.Model):
@@ -61,10 +61,10 @@ class UserProfile(models.Model):
         except Rating.DoesNotExist:
             votes = {}
 
-        STORE = ThreadSafeStorePool().get()
+        store = get_store(settings.KITTYSTORE_URL)
         for vote in votes:
             list_name = vote.list_address.split('@')[0]
-            message = STORE.get_message_by_id_from_list(vote.list_address, vote.messageid)
+            message = store.get_message_by_id_from_list(vote.list_address, vote.messageid)
             vote.message = message
 
         return votes

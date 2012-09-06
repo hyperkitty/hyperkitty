@@ -6,7 +6,8 @@ Class implementation of Mailman's IArchiver interface
 
 from mailman.interfaces.archiver import IArchiver
 from django.core.urlresolvers import reverse
-from hyperkitty.lib import ThreadSafeStorePool
+from django.conf import settings
+from kittystore import get_store
 
 
 class Archiver(object):
@@ -48,6 +49,6 @@ class Archiver(object):
             be calculated.
         """
         if self.store is None:
-            self.store = ThreadSafeStorePool().get()
+            self.store = get_store(settings.KITTYSTORE_URL)
         msg.message_id_hash = self.store.add_to_list(mlist.list_name, msg)
         # Update karma

@@ -16,10 +16,11 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Invali
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
+from kittystore import get_store
 
 from hyperkitty.models import Rating, Tag
 #from hyperkitty.lib.mockup import *
-from hyperkitty.lib import ThreadSafeStorePool, get_months
+from hyperkitty.lib import get_months
 from forms import *
 from hyperkitty.utils import log
 
@@ -68,8 +69,8 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('month_view.html')
-    STORE = ThreadSafeStorePool().get()
-    threads = STORE.get_threads(mlist_fqdn, start=begin_date,
+    store = get_store(settings.KITTYSTORE_URL)
+    threads = store.get_threads(mlist_fqdn, start=begin_date,
         end=end_date)
 
     participants = set()
@@ -77,9 +78,9 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
     for thread in threads:
         # Statistics on how many participants and threads this month
         participants.add(thread.sender_name)
-        thread.participants = STORE.get_thread_participants(mlist_fqdn,
+        thread.participants = store.get_thread_participants(mlist_fqdn,
             thread.thread_id)
-        thread.answers = STORE.get_thread_length(mlist_fqdn,
+        thread.answers = store.get_thread_length(mlist_fqdn,
             thread.thread_id)
 
         highestlike = 0
@@ -88,7 +89,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         totalvotes = 0
         totallikes = 0
         totaldislikes = 0
-        messages = STORE.get_messages_in_thread(mlist_fqdn, thread.thread_id)
+        messages = store.get_messages_in_thread(mlist_fqdn, thread.thread_id)
 
         for message in messages:
             # Extract all the votes for this message
@@ -138,7 +139,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         threads = paginator.page(paginator.num_pages)
 
 
-    archives_length = get_months(STORE, mlist_fqdn)
+    archives_length = get_months(store, mlist_fqdn)
 
     c = RequestContext(request, {
         'list_name' : list_name,
@@ -173,8 +174,8 @@ def list(request, mlist_fqdn=None):
     end_date = datetime(today.year, today.month, today.day)
     begin_date = end_date - timedelta(days=32)
 
-    STORE = ThreadSafeStorePool().get()
-    threads = STORE.get_threads(list_name=mlist_fqdn, start=begin_date,
+    store = get_store(settings.KITTYSTORE_URL)
+    threads = store.get_threads(list_name=mlist_fqdn, start=begin_date,
         end=end_date)
 
     participants = set()
@@ -194,9 +195,9 @@ def list(request, mlist_fqdn=None):
             dates[key] = 1
         # Statistics on how many participants and threads this month
         participants.add(msg.sender_name)
-        msg.participants = STORE.get_thread_participants(mlist_fqdn,
+        msg.participants = store.get_thread_participants(mlist_fqdn,
             msg.thread_id)
-        msg.answers = STORE.get_thread_length(mlist_fqdn,
+        msg.answers = store.get_thread_length(mlist_fqdn,
             msg.thread_id)
         threads[cnt] = msg
         cnt = cnt + 1
@@ -207,7 +208,7 @@ def list(request, mlist_fqdn=None):
     # active threads are the ones that have the most recent posting
     active_threads = sorted(threads, key=lambda entry: entry.date, reverse=True)
 
-    archives_length = get_months(STORE, mlist_fqdn)
+    archives_length = get_months(store, mlist_fqdn)
 
     # top authors are the ones that have the most kudos.  How do we determine
     # that?  Most likes for their post?
@@ -271,16 +272,16 @@ def _search_results_page(request, mlist_fqdn, threads, search_type,
     except (EmptyPage, InvalidPage):
         threads = paginator.page(paginator.num_pages)
 
-    STORE = ThreadSafeStorePool().get()
+    store = get_store(settings.KITTYSTORE_URL)
     cnt = 0
     for msg in threads.object_list:
         msg.email = msg.sender_email.strip()
         # Statistics on how many participants and threads this month
         participants.add(msg.sender_name)
         if msg.thread_id:
-            msg.participants = STORE.get_thread_participants(mlist_fqdn,
+            msg.participants = store.get_thread_participants(mlist_fqdn,
                 msg.thread_id)
-            msg.answers = STORE.get_thread_length(mlist_fqdn,
+            msg.answers = store.get_thread_length(mlist_fqdn,
                 msg.thread_id)
         else:
             msg.participants = 0
@@ -317,7 +318,7 @@ def search(request, mlist_fqdn):
 def search_keyword(request, mlist_fqdn, target, keyword, page=1):
     ## Should we remove the code below? 
     ## If urls.py does it job we should never need it
-    STORE = ThreadSafeStorePool().get()
+    store = get_store(settings.KITTYSTORE_URL)
     if not keyword:
         keyword = request.GET.get('keyword')
     if not target:
@@ -327,13 +328,13 @@ def search_keyword(request, mlist_fqdn, target, keyword, page=1):
     regex = '%%%s%%' % keyword
     list_name = mlist_fqdn.split('@')[0]
     if target.lower() == 'subjectcontent':
-        threads = STORE.search_content_subject(mlist_fqdn, keyword)
+        threads = store.search_content_subject(mlist_fqdn, keyword)
     elif target.lower() == 'subject':
-        threads = STORE.search_subject(mlist_fqdn, keyword)
+        threads = store.search_subject(mlist_fqdn, keyword)
     elif target.lower() == 'content':
-        threads = STORE.search_content(mlist_fqdn, keyword)
+        threads = store.search_content(mlist_fqdn, keyword)
     elif target.lower() == 'from':
-        threads = STORE.search_sender(mlist_fqdn, keyword)
+        threads = store.search_sender(mlist_fqdn, keyword)
     
     return _search_results_page(request, mlist_fqdn, threads, 'Search', page)
 
@@ -341,7 +342,7 @@ def search_keyword(request, mlist_fqdn, target, keyword, page=1):
 def search_tag(request, mlist_fqdn, tag=None, page=1):
     '''Returns emails having a particular tag'''
     
-    STORE = ThreadSafeStorePool().get()
+    store = get_store(settings.KITTYSTORE_URL)
     list_name = mlist_fqdn.split('@')[0]
     
     try:
@@ -351,7 +352,7 @@ def search_tag(request, mlist_fqdn, tag=None, page=1):
     
     threads = []
     for thread in thread_ids:
-        threads_tmp = STORE.get_messages_in_thread(mlist_fqdn, thread.threadid)
+        threads_tmp = store.get_messages_in_thread(mlist_fqdn, thread.threadid)
         threads.append(threads_tmp[0])
 
     return _search_results_page(request, mlist_fqdn, threads,

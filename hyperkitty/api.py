@@ -7,8 +7,9 @@ from django.http import HttpResponseNotModified, HttpResponse
 import json
 import re
 
+from kittystore import get_store
+
 from hyperkitty.utils import log
-from hyperkitty.lib import ThreadSafeStorePool
 
 
 class EmailResource(View):
@@ -18,8 +19,8 @@ class EmailResource(View):
 
     def get(self, request, mlist_fqdn, messageid):
         list_name = mlist_fqdn.split('@')[0]
-        STORE = ThreadSafeStorePool().get()
-        email = STORE.get_message_by_hash_from_list(list_name, messageid)
+        store = get_store(settings.KITTYSTORE_URL)
+        email = store.get_message_by_hash_from_list(list_name, messageid)
         if not email:
             return HttpResponse(status=404)
         else:
@@ -33,8 +34,8 @@ class ThreadResource(View):
 
     def get(self, request, mlist_fqdn, threadid):
         list_name = mlist_fqdn.split('@')[0]
-        STORE = ThreadSafeStorePool().get()
-        thread = STORE.get_messages_in_thread(list_name, threadid)
+        store = get_store(settings.KITTYSTORE_URL)
+        thread = store.get_messages_in_thread(list_name, threadid)
         if not thread:
             return HttpResponse(status=404)
         else:
@@ -62,8 +63,8 @@ class SearchResource(View):
                 re.compile(regex, re.IGNORECASE)}
 
         #print query_string, field, keyword
-        STORE = ThreadSafeStorePool().get()
-        threads = STORE.search_archives(list_name, query_string)
+        store = get_store(settings.KITTYSTORE_URL)
+        threads = store.search_archives(list_name, query_string)
         if not threads:
             return HttpResponse(status=404)
         else:
