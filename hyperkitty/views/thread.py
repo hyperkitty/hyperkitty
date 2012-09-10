@@ -1,3 +1,5 @@
+import datetime
+
 import django.utils.simplejson as simplejson
 
 from django.http import HttpResponse, HttpResponseRedirect
@@ -24,7 +26,7 @@ def thread_index (request, mlist_fqdn, threadid):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('thread.html')
     store = get_store(settings.KITTYSTORE_URL)
-    threads = store.get_messages_in_thread(mlist_fqdn, threadid)
+    messages = store.get_messages_in_thread(mlist_fqdn, threadid)
     #prev_thread = mongo.get_thread_name(list_name, int(threadid) - 1)
     prev_thread = []
     if len(prev_thread) > 30:
@@ -37,7 +39,7 @@ def thread_index (request, mlist_fqdn, threadid):
     participants = {}
     cnt = 0
 
-    for message in threads:
+    for message in messages:
         # @TODO: Move this logic inside KittyStore?
         message.sender_email = message.sender_email.strip()
 
@@ -62,7 +64,7 @@ def thread_index (request, mlist_fqdn, threadid):
         message.likes = likes
         message.dislikes = dislikes
 
-        # Statistics on how many participants and threads this month
+        # Statistics on how many participants and messages this month
         participants[message.sender_name] = {'email': message.sender_email}
         cnt = cnt + 1
 
@@ -75,6 +77,11 @@ def thread_index (request, mlist_fqdn, threadid):
     except Tag.DoesNotExist:
         tags = {}
 
+    # Extract relative dates
+    today = datetime.date.today()
+    days_old = today - messages[0].date.date()
+    days_inactive = today - messages[-1].date.date()
+
     c = RequestContext(request, {
         'list_name' : list_name,
         'threadid' : threadid,
@@ -85,13 +92,15 @@ def thread_index (request, mlist_fqdn, threadid):
         'month': 'Thread',
         'participants': participants,
         'answers': cnt,
-        'first_mail': threads[0],
-        'threads': threads[1:],
+        'first_mail': messages[0],
+        'replies': messages[1:],
         'next_thread': next_thread,
         'next_thread_id': 0,
         'prev_thread': prev_thread,
         'prev_thread_id': 0,
         'archives_length': archives_length,
+        'days_inactive': days_inactive.days,
+        'days_old': days_old.days,
     })
     return HttpResponse(t.render(c))
 
