@@ -3,6 +3,5 @@
 *~
 .bzr
 kittystore
-.*
 logs
 *.egg-info
