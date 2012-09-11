@@ -17,10 +17,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Invali
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
-from kittystore import get_store
 
 from hyperkitty.models import Rating
 #from hyperkitty.lib.mockup import *
+from hyperkitty.lib import get_store
 from forms import *
 from hyperkitty.utils import log
 
@@ -31,7 +31,7 @@ def index(request):
     base_url = settings.MAILMAN_API_URL % {
         'username': settings.MAILMAN_USER, 'password': settings.MAILMAN_PASS}
 
-    store = get_store(settings.KITTYSTORE_URL)
+    store = get_store(request)
     list_data = store.get_list_names()
     log("warn", repr(list_data))
 

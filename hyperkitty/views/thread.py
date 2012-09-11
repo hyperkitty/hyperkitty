@@ -9,13 +9,12 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Invali
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
-from kittystore import get_store
 
 from hyperkitty.models import Rating, Tag
 #from hyperkitty.lib.mockup import *
 from forms import *
 from hyperkitty.utils import log
-from hyperkitty.lib import get_months
+from hyperkitty.lib import get_months, get_store
 
 
 
@@ -25,7 +24,7 @@ def thread_index (request, mlist_fqdn, threadid):
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('thread.html')
-    store = get_store(settings.KITTYSTORE_URL)
+    store = get_store(request)
     messages = store.get_messages_in_thread(mlist_fqdn, threadid)
     #prev_thread = mongo.get_thread_name(list_name, int(threadid) - 1)
     prev_thread = []

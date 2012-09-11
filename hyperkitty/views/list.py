@@ -16,11 +16,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Invali
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
-from kittystore import get_store
 
 from hyperkitty.models import Rating, Tag
 #from hyperkitty.lib.mockup import *
-from hyperkitty.lib import get_months
+from hyperkitty.lib import get_months, get_store
 from forms import *
 from hyperkitty.utils import log
 
@@ -69,7 +68,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('month_view.html')
-    store = get_store(settings.KITTYSTORE_URL)
+    store = get_store(request)
     threads = store.get_threads(mlist_fqdn, start=begin_date,
         end=end_date)
 
@@ -174,7 +173,7 @@ def list(request, mlist_fqdn=None):
     end_date = datetime(today.year, today.month, today.day)
     begin_date = end_date - timedelta(days=32)
 
-    store = get_store(settings.KITTYSTORE_URL)
+    store = get_store(request)
     threads = store.get_threads(list_name=mlist_fqdn, start=begin_date,
         end=end_date)
 
@@ -272,7 +271,7 @@ def _search_results_page(request, mlist_fqdn, threads, search_type,
     except (EmptyPage, InvalidPage):
         threads = paginator.page(paginator.num_pages)
 
-    store = get_store(settings.KITTYSTORE_URL)
+    store = get_store(request)
     cnt = 0
     for msg in threads.object_list:
         msg.email = msg.sender_email.strip()
@@ -318,7 +317,7 @@ def search(request, mlist_fqdn):
 def search_keyword(request, mlist_fqdn, target, keyword, page=1):
     ## Should we remove the code below? 
     ## If urls.py does it job we should never need it
-    store = get_store(settings.KITTYSTORE_URL)
+    store = get_store(request)
     if not keyword:
         keyword = request.GET.get('keyword')
     if not target:

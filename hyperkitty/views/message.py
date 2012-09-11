@@ -9,10 +9,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Invali
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
-from kittystore import get_store
 
 from hyperkitty.models import Rating
 #from hyperkitty.lib.mockup import *
+from hyperkitty.lib import get_store
 from forms import *
 from hyperkitty.utils import log
 
@@ -26,7 +26,7 @@ def index (request, mlist_fqdn, hashid):
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('message.html')
-    store = get_store(settings.KITTYSTORE_URL)
+    store = get_store(request)
     message = store.get_message_by_hash_from_list(mlist_fqdn, hashid)
     message.sender_email = message.sender_email.strip()
     # Extract all the votes for this message
