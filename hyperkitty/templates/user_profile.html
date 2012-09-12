@@ -33,12 +33,12 @@
     		</tr>
     	</tbody>
     </table>
-    {% if settings.USE_MOCKUPS %}
-    <h3> Up Votes : </h3>
 
+    {% if settings.USE_MOCKUPS %}
+
+    <h3> Up Votes : </h3>
 	<ul>
-	{% for vote in user_profile.votes %}
-		{% if vote.vote == 1 %}
+	{% for vote in votes_up %}
 		<li>
 		{% if vote.message.content|trimString|length > 0 %}
 			<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}">{{ vote.message.content|truncatechars:20 }}</a>
@@ -46,15 +46,12 @@
 			<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}">Message is empty</a>
 		{% endif %}
 		</li>
-		{% endif %}
 	{% endfor %}
 	</ul>
 
 	<h3> Down Votes : </h3>
-
 	<ul>
-	{% for vote in user_profile.votes %}
-		{% if vote.vote == -1 %}
+	{% for vote in votes_down %}
 		<li>
 		{% if vote.message.content|trimString|length > 0 %}
 			<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}">{{ vote.message.content|truncatechars:20 }}</a>
@@ -62,9 +59,9 @@
 			<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}">Message is empty</a>
 		{% endif %}
 		</li>
-		{% endif %}
 	{% endfor %}
 	</ul>
+
     {% endif %}
 
 

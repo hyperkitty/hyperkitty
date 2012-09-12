@@ -53,26 +53,6 @@ class UserProfile(models.Model):
 
     karma = models.IntegerField(default=1)
 
-    def _get_votes(self):
-        "Returns all the votes by a user"
-        # Extract all the votes by this user
-        try:
-            votes = Rating.objects.filter(user=self.user)
-        except Rating.DoesNotExist:
-            votes = {}
-
-        # TODO: warning, not thread-safe, should get the cached connection from
-        # the WSGI environment
-        store = get_store(settings.KITTYSTORE_URL)
-        for vote in votes:
-            list_name = vote.list_address.split('@')[0]
-            message = store.get_message_by_id_from_list(vote.list_address, vote.messageid)
-            vote.message = message
-
-        return votes
-
-    votes = property(_get_votes)
-
     def __unicode__(self):
         """Unicode representation"""
         return u'%s' % (unicode(self.user))

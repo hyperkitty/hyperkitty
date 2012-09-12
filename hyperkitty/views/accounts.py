@@ -29,7 +29,7 @@ from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
 from django.contrib.auth.forms import AuthenticationForm
-from hyperkitty.models import UserProfile
+from hyperkitty.models import UserProfile, Rating
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
@@ -41,6 +41,8 @@ from urlparse import urlparse
 
 from forms import RegistrationForm
 from hyperkitty.utils import log
+from hyperkitty.lib import get_store
+
 
 def user_logout(request):
     logout(request)
@@ -74,6 +76,7 @@ def user_login(request, template='login.html'):
 def user_profile(request, user_email=None):
     if not request.user.is_authenticated():
         return redirect('user_login')
+    t = loader.get_template('user_profile.html')
 
     # try to render the user profile.
     try:
@@ -82,10 +85,29 @@ def user_profile(request, user_email=None):
     except:
         user_profile = UserProfile.objects.create(user=request.user)
 
-    t = loader.get_template('user_profile.html')
+    try:
+        votes = Rating.objects.filter(user=request.user)
+    except Rating.DoesNotExist:
+        votes = {}
+    store = get_store(request)
+    votes_up = []
+    votes_down = []
+    for vote in votes:
+        message = store.get_message_by_id_from_list(
+                vote.list_address, vote.message_id)
+        vote_data = {"list_address": vote.list_address,
+                     "message_id": vote.message_id,
+                     "message": message,
+                    }
+        if vote.vote == 1:
+            votes_up.append(vote_data)
+        elif vote.vote == -1:
+            votes_down.append(vote_data)
 
     c = RequestContext(request, {
         'user_profile' : user_profile,
+        'votes_up': votes_up,
+        'votes_down': votes_down,
     })
 
     return HttpResponse(t.render(c))
