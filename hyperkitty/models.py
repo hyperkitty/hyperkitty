@@ -61,6 +61,8 @@ class UserProfile(models.Model):
         except Rating.DoesNotExist:
             votes = {}
 
+        # TODO: warning, not thread-safe, should get the cached connection from
+        # the WSGI environment
         store = get_store(settings.KITTYSTORE_URL)
         for vote in votes:
             list_name = vote.list_address.split('@')[0]

@@ -5,6 +5,7 @@ from hashlib import md5
 import datetime
 
 from django.conf import settings
+import kittystore
 
 from hyperkitty.utils import log
 
@@ -41,3 +42,6 @@ def get_months(store, list_name):
     archives[now.year] = range(1, 13)[:now.month]
     return archives
 
+
+def get_store(request):
+    return request.environ["kittystore.store"]
