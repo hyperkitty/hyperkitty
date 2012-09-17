@@ -3,11 +3,15 @@
 Class implementation of Mailman's IArchiver interface
 """
 
+import os
+import sys
+from urlparse import urljoin
 
+from zope.interface import implements
 from mailman.interfaces.archiver import IArchiver
 from django.core.urlresolvers import reverse
-from django.conf import settings
 from kittystore import get_store
+from kittystore.utils import get_message_id_hash
 
 
 class Archiver(object):
@@ -18,6 +22,34 @@ class Archiver(object):
 
     def __init__(self):
         self.store = None
+        self.store_url = None
+        self._load_conf()
+
+    def _load_conf(self):
+        """
+        Find the location of the Django settings module from Mailman's
+        configuration file, and load it to get the store's URL.
+        """
+        # Read our specific configuration file
+        self.config = config.archiver_config("hyperkitty")
+        settings_path = self.config.get("general", "django_settings")
+        if settings_path.endswith("/settings.py"):
+            # we want the directory
+            settings_path = os.path.dirname(settings_path)
+        settings_path = "/srv/dev/mailman/hk-app"
+        #path_added = False
+        if settings_path not in sys.path:
+            #path_added = True
+            sys.path.append(settings_path)
+        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
+        try:
+            from django.conf import settings
+        except ImportError:
+            raise ImportError("Could not import Django's settings from %s"
+                              % settings_path)
+        self.store_url = settings.KITTYSTORE_URL
+        #if path_added:
+        #    sys.path.remove(settings_path)
 
     def list_url(self, mlist):
         """Return the url to the top of the list's archive.
@@ -25,7 +57,8 @@ class Archiver(object):
         :param mlist: The IMailingList object.
         :returns: The url string.
         """
-        return reverse('archives', mlist_fqdn=mlist)
+        return urljoin(self.base_url,
+                       reverse('archives', args=[mlist.fqdn_listname]))
 
     def permalink(self, mlist, msg):
         """Return the url to the message in the archive.
@@ -38,7 +71,11 @@ class Archiver(object):
         :returns: The url string or None if the message's archive url cannot
             be calculated.
         """
-        return reverse('message_index', mlist_fqdn=mlist, hashid=msg.message_id_hash)
+        msg_id = msg['Message-Id'].strip().strip("<>")
+        msg_hash = get_message_id_hash(msg_id)
+        return urljoin(self.base_url, reverse('message_index',
+                    kwargs={"mlist_fqdn": mlist.fqdn_listname,
+                            "hashid": msg_hash}))
 
     def archive_message(self, mlist, msg):
         """Send the message to the archiver.
@@ -49,6 +86,8 @@ class Archiver(object):
             be calculated.
         """
         if self.store is None:
-            self.store = get_store(settings.KITTYSTORE_URL)
-        msg.message_id_hash = self.store.add_to_list(mlist.list_name, msg)
-        # Update karma
+            self.store = get_store(self.store_url)
+        msg.message_id_hash = self.store.add_to_list(mlist.fqdn_listname, msg)
+        self.store.commit()
+        # TODO: Update karma
+        return msg.message_id_hash
