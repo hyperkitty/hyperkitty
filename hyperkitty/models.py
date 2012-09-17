@@ -25,8 +25,6 @@ from django.conf import settings
 
 from kittystore import get_store
 
-from hyperkitty.utils import log
-
 
 class Rating(models.Model):
     # @TODO: instead of list_address, user list model from kittystore?

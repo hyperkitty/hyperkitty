@@ -1,14 +1,31 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 1998-2012 by the Free Software Foundation, Inc.
+#
+# This file is part of HyperKitty.
+#
+# HyperKitty is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free
+# Software Foundation, either version 3 of the License, or (at your option)
+# any later version.
+#
+# HyperKitty is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
+#
+
 import re
 import os
 import json
 import urllib
-import django.utils.simplejson as simplejson
-
 from calendar import timegm
 from datetime import datetime, timedelta
-
 from urlparse import urljoin
+
+import django.utils.simplejson as simplejson
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext, loader
 from django.conf import settings
@@ -18,10 +35,8 @@ from django.contrib.auth.decorators import (login_required,
                                             user_passes_test)
 
 from hyperkitty.models import Rating, Tag
-#from hyperkitty.lib.mockup import *
 from hyperkitty.lib import get_months, get_store
 from forms import *
-from hyperkitty.utils import log
 
 
 # @TODO : Move this into settings.py
@@ -186,7 +201,7 @@ def list(request, mlist_fqdn=None):
             month = '0%s' % month
         day = msg.date.day
         if day < 10:
-            day = '0%s' % day    
+            day = '0%s' % day
         key = '%s%s%s' % (msg.date.year, month, day)
         if key in dates:
             dates[key] = dates[key] + 1
@@ -334,21 +349,21 @@ def search_keyword(request, mlist_fqdn, target, keyword, page=1):
         threads = store.search_content(mlist_fqdn, keyword)
     elif target.lower() == 'from':
         threads = store.search_sender(mlist_fqdn, keyword)
-    
+
     return _search_results_page(request, mlist_fqdn, threads, 'Search', page)
 
 
 def search_tag(request, mlist_fqdn, tag=None, page=1):
     '''Returns emails having a particular tag'''
-    
+
     store = get_store(settings.KITTYSTORE_URL)
     list_name = mlist_fqdn.split('@')[0]
-    
+
     try:
         thread_ids = Tag.objects.filter(tag=tag)
     except Tag.DoesNotExist:
         thread_ids = {}
-    
+
     threads = []
     for thread in thread_ids:
         threads_tmp = store.get_messages_in_thread(mlist_fqdn, thread.threadid)
