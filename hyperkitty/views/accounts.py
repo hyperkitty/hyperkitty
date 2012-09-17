@@ -21,6 +21,7 @@
 
 import re
 import sys
+import logging
 
 from django.conf import settings
 from django.contrib import messages
@@ -40,8 +41,10 @@ from urllib2 import HTTPError
 from urlparse import urlparse
 
 from forms import RegistrationForm
-from hyperkitty.utils import log
 from hyperkitty.lib import get_store
+
+
+logger = logging.getLogger(__name__)
 
 
 def user_logout(request):
@@ -62,7 +65,7 @@ def user_login(request, template='login.html'):
                             password=request.POST.get('password'))
 
     if user is not None:
-        log('debug', user)
+        logger.debug(user)
         if user.is_active:
             login(request, user)
             return redirect(next_var)
@@ -127,7 +130,7 @@ def user_registration(request):
                                 password=form.cleaned_data['password1'])
 
             if user is not None:
-                log('debug', user)
+                logger.debug(user)
                 if user.is_active:
                     login(request, user)
                     return redirect('index')
