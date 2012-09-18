@@ -21,7 +21,7 @@ import re
 import os
 
 import django.utils.simplejson as simplejson
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import RequestContext, loader
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
@@ -45,6 +45,8 @@ def index (request, mlist_fqdn, hashid):
     t = loader.get_template('message.html')
     store = get_store(request)
     message = store.get_message_by_hash_from_list(mlist_fqdn, hashid)
+    if message is None:
+        raise Http404
     message.sender_email = message.sender_email.strip()
     # Extract all the votes for this message
     try:

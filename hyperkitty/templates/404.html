@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% block content %}		
+{% block content %}
 		<style>
 			#contentBox
 			{
@@ -8,7 +8,7 @@
 				font-family: 'Times New Roman';
 				font-size:20px;
 				color:#444;
-				margin-left:300px;	
+				margin-left:300px;
 				margin-top:100px;
 			}
 			.hello
@@ -27,11 +27,11 @@
 			<div id="contentBox" style="width:50%; ">
 				<span class="hello"> 404 </span>
 				<br/><br/>
- 				<span style="font-size:60px; color:#444;font-family: 'Times New Roman';"> Oh! Snap </span> 
+				<span style="font-size:60px; color:#444;font-family: 'Times New Roman';"> Oh! Snap </span> 
 				<br/><br/>
-				This is not the page you were looking for right!
-				<a href ="/">Fix This </a>
+				I can't find this page.
+				<a href ="{% url root %}">Back home</a>
 			</div>
 		</div>
-		
+
 {% endblock %}
