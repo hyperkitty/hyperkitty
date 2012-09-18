@@ -21,7 +21,7 @@ import datetime
 
 import django.utils.simplejson as simplejson
 
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import RequestContext, loader
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
@@ -43,6 +43,8 @@ def thread_index (request, mlist_fqdn, threadid):
     t = loader.get_template('thread.html')
     store = get_store(request)
     messages = store.get_messages_in_thread(mlist_fqdn, threadid)
+    if not messages:
+        raise Http404
     #prev_thread = mongo.get_thread_name(list_name, int(threadid) - 1)
     prev_thread = []
     if len(prev_thread) > 30:
