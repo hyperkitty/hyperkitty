@@ -9,6 +9,15 @@
 
 <section id="thread_content">
 	{% include 'messages/first_email.html' with first_mail=message %}
+
+    {% if attachments|length %}
+    <h2>Attachments</h2>
+    <ul>
+    {% for attachment in attachments %}
+        <li>{{attachment.name}} ({{attachment.content_type}}, {{attachment.size}} octets)</li>
+    {% endfor %}
+    </ul>
+    {% endif %}
 </section>
 
 {% endblock %}
