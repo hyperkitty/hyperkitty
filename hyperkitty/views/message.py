@@ -48,6 +48,8 @@ def index (request, mlist_fqdn, hashid):
     if message is None:
         raise Http404
     message.sender_email = message.sender_email.strip()
+    attachments = store.get_attachments(mlist_fqdn, message.message_id)
+
     # Extract all the votes for this message
     try:
         votes = Rating.objects.filter(messageid = hashid)
@@ -74,6 +76,7 @@ def index (request, mlist_fqdn, hashid):
         'list_address': mlist_fqdn,
         'message': message,
         'hashid' : hashid,
+        'attachments': attachments,
     })
     return HttpResponse(t.render(c))
 
