@@ -14,7 +14,9 @@
     <h2>Attachments</h2>
     <ul>
     {% for attachment in attachments %}
-        <li>{{attachment.name}} ({{attachment.content_type}}, {{attachment.size}} octets)</li>
+        <li><a href="{% url message_attachment mlist_fqdn=list_address, hashid=hashid, counter=attachment.counter, filename=attachment.name %}">{{attachment.name}}</a>
+            ({{attachment.content_type}}, {{attachment.size}} octets)
+        </li>
     {% endfor %}
     </ul>
     {% endif %}
