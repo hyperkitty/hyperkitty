@@ -58,8 +58,11 @@ urlpatterns = patterns('hyperkitty.views',
 
     ### MESSAGE LEVEL VIEWS ###
     # Vote a message
-    url(r'^message/(?P<mlist_fqdn>.*@.*)/(?P<hashid>.+)/$',
+    url(r'^message/(?P<mlist_fqdn>.*@.*)/(?P<hashid>\w+)/$',
         'message.index', name='message_index'),
+
+    url(r'^message/(?P<mlist_fqdn>.*@.*)/(?P<hashid>\w+)/attachment/(?P<counter>\d+)/(?P<filename>.+)$',
+        'message.attachment', name='message_attachment'),
 
     url(r'^vote/(?P<mlist_fqdn>.*@.*)/$',
         'message.vote', name='message_vote'),

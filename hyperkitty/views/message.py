@@ -19,6 +19,7 @@
 
 import re
 import os
+import urllib
 
 import django.utils.simplejson as simplejson
 from django.http import HttpResponse, HttpResponseRedirect, Http404
@@ -34,7 +35,7 @@ from hyperkitty.lib import get_store
 from forms import *
 
 
-def index (request, mlist_fqdn, hashid):
+def index(request, mlist_fqdn, hashid):
     '''
     Displays a single message identified by its message_id_hash (derived from
     message_id)
@@ -81,9 +82,32 @@ def index (request, mlist_fqdn, hashid):
     return HttpResponse(t.render(c))
 
 
+def attachment(request, mlist_fqdn, hashid, counter, filename):
+    """
+    Sends the numbered attachment for download. The filename is not used for
+    lookup, but validated nonetheless for security reasons.
+    """
+    store = get_store(request)
+    message = store.get_message_by_hash_from_list(mlist_fqdn, hashid)
+    if message is None:
+        raise Http404
+    attachment = store.get_attachment_by_counter(mlist_fqdn, message.message_id, int(counter))
+    if attachment is None or attachment.name != filename:
+        raise Http404
+    # http://djangosnippets.org/snippets/1710/
+    response = HttpResponse(attachment.content)
+    response['Content-Type'] = attachment.content_type
+    response['Content-Length'] = attachment.size
+    if attachment.encoding is not None:
+        response['Content-Encoding'] = attachment.encoding
+    # Follow RFC2231, browser support is sufficient nowadays (2012-09)
+    response['Content-Disposition'] = 'attachment; filename*=UTF-8\'\'%s' \
+            % urllib.quote(attachment.name.encode('utf-8'))
+    return response
+
 
 @login_required
-def vote (request, mlist_fqdn):
+def vote(request, mlist_fqdn):
     """ Add a rating to a given message identified by messageid. """
     if not request.user.is_authenticated():
         return redirect('user_login')
