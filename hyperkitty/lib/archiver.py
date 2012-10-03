@@ -9,6 +9,7 @@ from urlparse import urljoin
 
 from zope.interface import implements
 from mailman.interfaces.archiver import IArchiver
+from mailman.config import config
 from django.core.urlresolvers import reverse
 from kittystore import get_store
 from kittystore.utils import get_message_id_hash
@@ -57,7 +58,7 @@ class Archiver(object):
         :param mlist: The IMailingList object.
         :returns: The url string.
         """
-        return urljoin(self.base_url,
+        return urljoin(self.store_url,
                        reverse('archives', args=[mlist.fqdn_listname]))
 
     def permalink(self, mlist, msg):
@@ -73,7 +74,7 @@ class Archiver(object):
         """
         msg_id = msg['Message-Id'].strip().strip("<>")
         msg_hash = get_message_id_hash(msg_id)
-        return urljoin(self.base_url, reverse('message_index',
+        return urljoin(self.store_url, reverse('message_index',
                     kwargs={"mlist_fqdn": mlist.fqdn_listname,
                             "hashid": msg_hash}))
 
