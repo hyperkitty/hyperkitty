@@ -1,3 +1,4 @@
+{% load storm %}
 {% load gravatar %}
 
 <div class="email_header">
@@ -14,18 +15,17 @@
 		<br />
 	</div>
 </div>
+
 {% if unfolded %}
-	<div class="first_email_body">
+<div class="first_email_body">
 {% else %}
-	<div class="email_body">
+<div class="email_body">
 {% endif %}
-
-	{{email.content}}
-
+{{email.content}}
 </div>
 
-{% if settings.USE_MOCKUPS %}
 <ul class="email_info inline" messageid="{{email.message_id_hash}}">
+{% if settings.USE_MOCKUPS %}
 	<li class="neutral">
 		+{{email.likes}}/-{{email.dislikes}}
 	</li>
@@ -35,5 +35,23 @@
 	<li class="votedown">
 		<a href="#dislike"> Dislike</a>
 	</li>
-</ul>
 {% endif %}
+{% if email.attachments|count %}
+    {% if not unfolded %}
+    <li class="attachments">
+        <a href="#attachments">{{ email.attachments|count }} attachments</a>
+    {% endif %}
+        <ul class="attachments-list">
+        {% for attachment in email.attachments %}
+            <li><a href="{% url message_attachment mlist_fqdn=list_address, hashid=email.message_id_hash, counter=attachment.counter, filename=attachment.name %}">{{attachment.name}}</a>
+                ({{attachment.content_type}} &mdash; {{attachment.size|filesizeformat}})
+            </li>
+        {% endfor %}
+        </ul>
+    {% if not unfolded %}
+    </li>
+    {% endif %}
+{% endif %}
+</ul>
+
+
