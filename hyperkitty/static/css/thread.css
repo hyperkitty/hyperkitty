@@ -160,10 +160,6 @@
     color: rgb(167, 169, 172);
 }
 
-.email_info {
-    padding: 0px;
-}
-
 .add_comment {
     float: right;
 }
@@ -235,5 +231,10 @@
     display: inline-block;
     vertical-align: top;
     white-space: pre;
+}
+
+ul.attachments-list li {
+    display: list-item;
+    list-style-type: disc;
 }
 

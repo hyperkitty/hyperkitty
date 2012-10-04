@@ -110,7 +110,11 @@
 					alert('You need to login in order to add tag');
 				{% endif %}
 		 });
-	
+
+        $("ul.email_info li.attachments ul.attachments-list").hide();
+        $("ul.email_info li.attachments > a").click(function() {
+            $(this).next("ul").fadeToggle('fast');
+        });
 		
 	}); 
 </script>
