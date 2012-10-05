@@ -59,3 +59,12 @@ def get_months(store, list_name):
 
 def get_store(request):
     return request.environ["kittystore.store"]
+
+
+def stripped_subject(mlist, subject):
+    if mlist is None:
+        return subject
+    list_name = mlist.display_name or mlist.name[:mlist.name.index("@")]
+    if subject.lower().startswith("[%s] " % list_name.lower()):
+        subject = subject[len(list_name)+3 : ]
+    return subject
