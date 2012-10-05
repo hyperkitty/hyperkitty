@@ -8,6 +8,10 @@
 
 {% block content %}
 
+    <header>
+        <h1>{{ subject }}</h1>
+    </header>
+
 	{% include 'threads/right_col.html' %}
 
 	<!-- main section, the email thread -->
@@ -39,7 +43,7 @@
 			userCollapseText : 'View Less',
 			expandText : 'View More'
 		});
-	}); 
+	});
 </script>
 
 <script type="text/javascript">
@@ -90,21 +94,21 @@
 			{% else %}
 				alert('You need to login in order to vote');
 			{% endif %}
-	
+
 		});
 
 		$("#add_tag_form").submit( function () {
-		       		   
+
 			   {% if user.is_authenticated %}
-		        $.ajax({   
+		        $.ajax({
 		            type: "POST",
-		            data : $(this).serialize(), 
-		            url: "{% url add_tag mlist_fqdn=list_address, email_id=threadid %}",   
+		            data : $(this).serialize(),
+		            url: "{% url add_tag mlist_fqdn=list_address, email_id=threadid %}",
 		            success: function(data){
 		                console.log('Tag is added successfully');
-		                location.reload();                     
-		            }   
-		        });   
+		                location.reload();
+		            }
+		        });
 		        return false;
 				{% else %}
 					alert('You need to login in order to add tag');
@@ -115,7 +119,7 @@
         $("ul.email_info li.attachments > a").click(function() {
             $(this).next("ul").fadeToggle('fast');
         });
-		
-	}); 
+
+	});
 </script>
 {% endblock %}

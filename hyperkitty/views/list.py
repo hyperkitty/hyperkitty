@@ -82,11 +82,11 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         begin_date = datetime(today.year, today.month, 1)
         end_date = datetime(today.year, today.month + 1, 1)
         month_string = 'Past thirty days'
-    list_name = mlist_fqdn.split('@')[0]
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('month_view.html')
     store = get_store(request)
+    mlist = store.get_list(mlist_fqdn)
     threads = store.get_threads(mlist_fqdn, start=begin_date,
         end=end_date)
 
@@ -159,7 +159,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
     archives_length = get_months(store, mlist_fqdn)
 
     c = RequestContext(request, {
-        'list_name' : list_name,
+        'mlist' : mlist,
         'objects': threads.object_list,
         'page': pageNo,
         'has_previous': threads.has_previous(),
@@ -184,7 +184,6 @@ def list(request, mlist_fqdn=None):
         return HttpResponseRedirect('/')
     t = loader.get_template('recent_activities.html')
     search_form = SearchForm(auto_id=False)
-    list_name = mlist_fqdn.split('@')[0]
 
     # Get stats for last 30 days
     today = datetime.utcnow()
@@ -192,6 +191,7 @@ def list(request, mlist_fqdn=None):
     begin_date = end_date - timedelta(days=32)
 
     store = get_store(request)
+    mlist = store.get_list(mlist_fqdn)
     threads = store.get_threads(list_name=mlist_fqdn, start=begin_date,
         end=end_date)
 
@@ -253,7 +253,7 @@ def list(request, mlist_fqdn=None):
         threads_per_category = {}
 
     c = RequestContext(request, {
-        'list_name' : list_name,
+        'mlist' : mlist,
         'list_address': mlist_fqdn,
         'search_form': search_form,
         'month': 'Recent activity',

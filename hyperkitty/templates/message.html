@@ -7,6 +7,10 @@
 
 {% block content %}
 
+<header>
+    <h1>{{ message.subject }}</h1>
+</header>
+
 <section id="thread_content">
 	{% include 'messages/first_email.html' with first_mail=message %}
 </section>

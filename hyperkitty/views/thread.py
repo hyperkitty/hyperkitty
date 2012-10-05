@@ -32,24 +32,20 @@ from django.contrib.auth.decorators import (login_required,
 from hyperkitty.models import Rating, Tag
 #from hyperkitty.lib.mockup import *
 from forms import *
-from hyperkitty.lib import get_months, get_store
+from hyperkitty.lib import get_months, get_store, stripped_subject
 
 
 def thread_index (request, mlist_fqdn, threadid):
     ''' Displays all the email for a given thread identifier '''
-    list_name = mlist_fqdn.split('@')[0]
-
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('thread.html')
     store = get_store(request)
     messages = store.get_messages_in_thread(mlist_fqdn, threadid)
     if not messages:
         raise Http404
-    #prev_thread = mongo.get_thread_name(list_name, int(threadid) - 1)
     prev_thread = []
     if len(prev_thread) > 30:
         prev_thread = '%s...' % prev_thread[:31]
-    #next_thread = mongo.get_thread_name(list_name, int(threadid) + 1)
     next_thread = []
     if len(next_thread) > 30:
         next_thread = '%s...' % next_thread[:31]
@@ -100,9 +96,13 @@ def thread_index (request, mlist_fqdn, threadid):
     days_old = today - messages[0].date.date()
     days_inactive = today - messages[-1].date.date()
 
+    mlist = store.get_list(mlist_fqdn)
+    subject = stripped_subject(mlist, messages[0].subject)
+
     c = RequestContext(request, {
-        'list_name' : list_name,
+        'mlist' : mlist,
         'threadid' : threadid,
+        'subject': subject,
         'tags' : tags,
         'list_address': mlist_fqdn,
         'search_form': search_form,
@@ -137,7 +137,7 @@ def add_tag(request, mlist_fqdn, email_id):
             try:
                 tag_obj = Tag.objects.get(threadid=email_id, list_address=mlist_fqdn, tag=tag)
             except Tag.DoesNotExist:
-                tag_obj = Tag(list_address=mlist_fqdn, threadid=email_id, tag=tag) 
+                tag_obj = Tag(list_address=mlist_fqdn, threadid=email_id, tag=tag)
 
             tag_obj.save()
             response_dict = { }

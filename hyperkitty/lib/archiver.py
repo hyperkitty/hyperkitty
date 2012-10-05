@@ -88,7 +88,7 @@ class Archiver(object):
         """
         if self.store is None:
             self.store = get_store(self.store_url)
-        msg.message_id_hash = self.store.add_to_list(mlist.fqdn_listname, msg)
+        msg.message_id_hash = self.store.add_to_list(mlist, msg)
         self.store.commit()
         # TODO: Update karma
         return msg.message_id_hash

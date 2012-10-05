@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load poll_extras %}
 {% load gravatar %}
+{% load storm %}
 
 {% block content %}
 
@@ -10,7 +11,7 @@
 	<div class="thread">
 		<div class="notsaved">
 			<span class="thread_title"> <a name="{{email.thread_id}}"
-				href="{% url thread threadid=email.thread_id, mlist_fqdn=list_address %}"> {{email.subject}} </a> </span>
+				href="{% url thread threadid=email.thread_id, mlist_fqdn=list_address %}">{{ email.subject|strip_subject:mlist }}</a> </span>
 			<span class="thread_date"> {{email.date}}</span>
 		</div>
 		<div class="thread_content">

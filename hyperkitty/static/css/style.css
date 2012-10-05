@@ -1,6 +1,6 @@
 body {
 	position: relative;
-	padding-top: 90px;
+	padding-top: 55px;
 	background-color: white;
 }
 
@@ -353,4 +353,9 @@ body {
 
 .removed {
     display: none;
-}[
+}
+
+p.attachments {
+    margin-bottom: 0;
+    font-weight: bold;
+}

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load poll_extras %}
 {% load gravatar %}
+{% load storm %}
 
 {% block additional_stylesheets %}
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/stats.css" />
@@ -85,7 +86,7 @@
 		<div class="thread">
 			<span class="thread_id">#{{forloop.counter}}</span>
 			<span class="thread_title"> <a name="{{email.thread_id}}"
-				href="{% url thread threadid=email.thread_id, mlist_fqdn=list_address %}"> {{email.subject}} </a> </span>
+				href="{% url thread threadid=email.thread_id, mlist_fqdn=list_address %}">{{ email.subject|strip_subject:mlist }}</a> </span>
 			<div class="thread_stats">
 				<ul class="inline-block">
 					{% if email.category_tag %}
@@ -123,7 +124,7 @@
 		<div class="thread">
 			<span class="thread_id">#{{forloop.counter}}</span>
 			<span class="thread_title"> <a name="{{email.thread_id}}"
-				href="{% url thread threadid=email.thread_id, mlist_fqdn=list_address %}"> {{email.subject}} </a> </span>
+				href="{% url thread threadid=email.thread_id, mlist_fqdn=list_address %}">{{ email.subject|strip_subject:mlist }}</a> </span>
 			<div class="thread_stats">
 				<ul class="inline-block">
 					{% if email.category_tag %}
