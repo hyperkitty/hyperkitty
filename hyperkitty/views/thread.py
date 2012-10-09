@@ -43,12 +43,7 @@ def thread_index (request, mlist_fqdn, threadid):
     messages = store.get_messages_in_thread(mlist_fqdn, threadid)
     if not messages:
         raise Http404
-    prev_thread = []
-    if len(prev_thread) > 30:
-        prev_thread = '%s...' % prev_thread[:31]
-    next_thread = []
-    if len(next_thread) > 30:
-        next_thread = '%s...' % next_thread[:31]
+    prev_thread, next_thread = store.get_thread_neighbors(mlist_fqdn, threadid)
 
     participants = {}
     cnt = 0
@@ -112,10 +107,7 @@ def thread_index (request, mlist_fqdn, threadid):
         'answers': cnt,
         'first_mail': messages[0],
         'replies': messages[1:],
-        'next_thread': next_thread,
-        'next_thread_id': 0,
-        'prev_thread': prev_thread,
-        'prev_thread_id': 0,
+        'neighbors': (prev_thread, next_thread),
         'archives_length': archives_length,
         'days_inactive': days_inactive.days,
         'days_old': days_old.days,
