@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load gravatar %}
+{% load storm %}
 
 {% block additional_stylesheets %}
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
@@ -9,6 +10,13 @@
 {% block content %}
 
     <header>
+        {% for thread in neighbors %}
+            {% if thread %}
+            <a class="thread-{% ifequal forloop.counter 1 %}older{% else %}newer{% endifequal %}"
+               href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
+               >{{ thread.subject|strip_subject:mlist|truncatesmart:"25" }}</a>
+            {% endif %}
+        {% endfor %}
         <h1>{{ subject }}</h1>
     </header>
 
