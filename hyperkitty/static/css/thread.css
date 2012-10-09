@@ -220,6 +220,14 @@ header .thread-newer {
     font-size: 90%;
 }
 
+.first_email_body, .email_body {
+    white-space: pre;
+    display: inline-block;
+}
+.first_email_body {
+    width: 100%;
+    overflow: auto;
+}
 .email_body{
     -webkit-border-radius: 5px 5px 5px 5px;
     -moz-border-radius: 5px 5px 5px 5px;
@@ -230,14 +238,7 @@ header .thread-newer {
     padding: 5px;
     min-height: 40px;
     background-color: rgb(255, 255, 255);
-    white-space: pre;
-    display: inline-block;
     width: 95%;
-}
-
-.first_email_body {
-    white-space: pre;
-    display: inline-block;
 }
 
 
