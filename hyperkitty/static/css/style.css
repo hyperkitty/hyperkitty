@@ -85,25 +85,22 @@ body {
     width: 40px;
 }
 
+/* Like / dislike */
+.likestatus {
+    padding-left: 20px;
+    margin-right: 3em;
+    font-weight: bold;
+}
 .neutral {
     background: url("../img/neutral.png") no-repeat scroll left;
-    padding-left: 20px;
-    padding-right: 20px;
-    font-weight: bold;
 }
 
 .like {
     background: url("../img/like.png") no-repeat scroll left;
-    padding-left: 20px;
-    padding-right: 20px;
-    font-weight: bold;
 }
 
 .likealot {
     background: url("../img/likealot.png") no-repeat scroll left;
-    padding-left: 20px;
-    padding-right: 20px;
-    font-weight: bold;
 }
 
 .youlike {
@@ -111,7 +108,6 @@ body {
     padding-left: 15px;
     padding-right: 5px;
 }
-
 .youdislike {
     background: url("../img/youdislike.png") no-repeat scroll left;
     padding-left: 15px;

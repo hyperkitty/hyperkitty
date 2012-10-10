@@ -2,7 +2,7 @@
 header {
     /*background-color: #f6f6f6;*/
     /*border-bottom: 1px solid #b3b3b3;*/
-    margin-bottom: 5em;
+    margin-bottom: 6em;
     padding: 1em 0;
 }
 
@@ -76,8 +76,7 @@ header .thread-newer {
 
 /* Define the two columns */
 #thread_content {
-    width: 70%;
-    margin-right: 22px;
+    width: 74%;
 }
 
 #thread_overview_info {
@@ -146,10 +145,12 @@ header .thread-newer {
 
 #participants li {
     list-style-type: none;
+    margin: 1em 0;
 }
 
 #participants img {
     width: 20px;
+    vertical-align: middle;
 }
 
 /* Main section with the whole thread */
@@ -166,25 +167,36 @@ header .thread-newer {
 
 .email_header img {
     width: 40px;
+    float: left;
+    margin-right: 10px;
 }
 
+.email_author {
+    height: 40px;
+}
 .email_author .name{
     color: rgb(55, 113, 200);
     font-weight: bold;
 }
-
 .email_author .rank{
     color: rgb(167, 169, 172);
     font-size: 80%;
     font-weight: bold;
 }
 
+.email .email_date {
+    font-size: 90%;
+}
+.first_email .email_date span {
+    display: block;
+    text-align: right;
+}
 .email_date .date {
     font-weight: bold;
 }
-
 .email_date .time {
     color: rgb(167, 169, 172);
+    margin-left: 0.5em;
 }
 
 .add_comment {
@@ -213,10 +225,6 @@ header .thread-newer {
 }
 
 .email .email_author {
-    font-size: 90%;
-}
-
-.email .email_date, .email .email_date .date {
     font-size: 90%;
 }
 

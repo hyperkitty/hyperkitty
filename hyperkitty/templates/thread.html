@@ -14,7 +14,7 @@
             {% if thread %}
             <a class="thread-{% ifequal forloop.counter 1 %}older{% else %}newer{% endifequal %}"
                href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
-               >{{ thread.subject|strip_subject:mlist|truncatesmart:"25" }}</a>
+               >{{ thread.subject|strip_subject:mlist|truncatesmart:"22" }}</a>
             {% endif %}
         {% endfor %}
         <h1>{{ subject }}</h1>
