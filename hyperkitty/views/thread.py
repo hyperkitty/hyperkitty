@@ -75,7 +75,7 @@ def thread_index (request, mlist_fqdn, threadid):
         message.likestatus = "neutral"
         if message.likes - message.dislikes >= 10:
             message.likestatus = "likealot"
-        elif thread.likes - message.dislikes > 0:
+        elif message.likes - message.dislikes > 0:
             message.likestatus = "like"
         #elif message.likes - message.dislikes < 0:
         #    message.likestatus = "dislike"
