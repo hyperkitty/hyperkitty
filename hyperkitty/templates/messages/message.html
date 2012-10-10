@@ -3,7 +3,15 @@
 
 <div class="email_header">
 	<div class="email_date inline-block pull-right">
-		<span class="date">{{email.date}}</span>
+		{% ifchanged %}
+		<span class="date">
+			{{email.date|date:"l, j F"}}
+			{% if unfolded %}
+			{{email.date|date:"Y"}}
+			{% endif %}
+		</span>
+		{% endifchanged %}
+		<span class="time">{{email.date|date:"H:i:s e"}}</span>
 		<br />
 	</div>
 	{% gravatar_img_for_email email.email 40 %}
@@ -41,7 +49,7 @@
 
 <ul class="email_info inline" messageid="{{email.message_id_hash}}">
 {% if settings.USE_MOCKUPS == True %}
-	<li class="neutral">
+	<li class="likestatus neutral">
 		+{{email.likes}}/-{{email.dislikes}}
 	</li>
 	<li class="voteup">

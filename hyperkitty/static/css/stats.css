@@ -2,26 +2,22 @@ h2 {
     margin-top: 0px;
     padding-top: 10px;
 }
+.likestatus {
+    padding-left: 20px;
+    margin-right: 4em;
+    font-weight: bold;
+}
 /* Add icons to some text */
 .neutral {
     background: url("../img/neutral.png") no-repeat scroll left;
-    padding-left: 20px;
-    padding-right: 20px;
-    font-weight: bold;
 }
 
 .like {
     background: url("../img/like.png") no-repeat scroll left;
-    padding-left: 20px;
-    padding-right: 20px;
-    font-weight: bold;
 }
 
 .likealot {
     background: url("../img/likealot.png") no-repeat scroll left;
-    padding-left: 20px;
-    padding-right: 20px;
-    font-weight: bold;
 }
 
 /* The content section of the page */ 
