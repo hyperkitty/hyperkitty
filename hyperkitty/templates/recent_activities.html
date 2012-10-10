@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load poll_extras %}
+{% load hk_generic %}
 {% load gravatar %}
 {% load storm %}
 
@@ -202,20 +202,9 @@
     {% endif %}
 
 </section>
-<section id="archives">
-	{% for key, value in archives_length|sort %}
-	<h3>{{ key }}</h3>
-	<div>
-		<ul>
-			{% for ar_month in value %}
-			<li>
-				<a href="{% url archives_with_month year=key, mlist_fqdn=list_address, month=ar_month %}">{{ ar_month|tomonth }}</a>
-			</li>
-			{% endfor %}
-		</ul>
-	</div>
-	{% endfor %}
-</section>
+
+{% include 'threads/month_list.html' %}
+
 {% endblock %}
 
 {% block additionaljs %}

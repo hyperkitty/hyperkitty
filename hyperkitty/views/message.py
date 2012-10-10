@@ -70,6 +70,13 @@ def index(request, mlist_fqdn, hashid):
     message.votes = votes
     message.likes = likes
     message.dislikes = dislikes
+    message.likestatus = "neutral"
+    if message.likes - message.dislikes >= 10:
+        message.likestatus = "likealot"
+    elif thread.likes - message.dislikes > 0:
+        message.likestatus = "like"
+    #elif message.likes - message.dislikes < 0:
+    #    message.likestatus = "dislike"
 
     c = RequestContext(request, {
         'list_name' : list_name,

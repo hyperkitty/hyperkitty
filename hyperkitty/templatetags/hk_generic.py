@@ -1,13 +1,16 @@
-from django import template
-from django.http import HttpRequest
-from django.utils.datastructures import SortedDict
+import datetime
 import re
+
+from django import template
+from django.utils.datastructures import SortedDict
 
 register = template.Library()
 
-@register.filter(name="trimString")
+
+@register.filter
 def trimString(str):
     return re.sub('\s+', ' ', str)
+
 
 @register.filter(name='sort')
 def listsort(value):
@@ -30,13 +33,13 @@ def listsort(value):
         return value
     listsort.is_safe = True
 
-@register.filter(name="tomonth")
-def to_month(value):
-    months = ('January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December')
-    return months[value -1]
 
-@register.filter(name="strip_page")
+@register.filter(name="monthtodate")
+def to_date(month, year):
+    return datetime.date(year, month, 1)
+
+
+@register.filter
 def strip_page(value):
     print repr(value), repr(value)[-2]
     if not value:
@@ -53,3 +56,37 @@ def strip_page(value):
     else:
         output = value.rsplit('/', 1)
     return output[0]
+
+
+# From http://djangosnippets.org/snippets/1259/
+@register.filter
+def truncatesmart(value, limit=80):
+    """
+    Truncates a string after a given number of chars keeping whole words.
+
+    Usage:
+        {{ string|truncatesmart }}
+        {{ string|truncatesmart:50 }}
+    """
+    try:
+        limit = int(limit)
+    # invalid literal for int()
+    except ValueError:
+        # Fail silently.
+        return value
+
+    # Make sure it's unicode
+    value = unicode(value)
+
+    # Return the string itself if length is smaller or equal to the limit
+    if len(value) <= limit:
+        return value
+
+    # Cut the string
+    value = value[:limit]
+
+    # Break into words and remove the last
+    words = value.split(' ')[:-1]
+
+    # Join the words and return
+    return ' '.join(words) + '...'

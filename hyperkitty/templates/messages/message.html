@@ -33,7 +33,7 @@
 {% else %}
 <div class="email_body">
 {% endif %}
-{{email.content}}
+{{email.content|urlizetrunc:76}}
 </div>
 
 {% if unfolded and email.attachments|count %}
@@ -49,7 +49,7 @@
 
 <ul class="email_info inline" messageid="{{email.message_id_hash}}">
 {% if settings.USE_MOCKUPS == True %}
-	<li class="likestatus neutral">
+	<li class="likestatus {{email.likestatus}}">
 		+{{email.likes}}/-{{email.dislikes}}
 	</li>
 	<li class="voteup">

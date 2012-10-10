@@ -55,24 +55,27 @@ body {
 
 
 /* Add icons to some text */
-.participant {
-    background: url("../img/participant.png") no-repeat scroll left top;
+.participant, .discussion, .saved, .notsaved {
     padding-left: 20px;
+    padding-right: 10px;
+    background: no-repeat scroll left center;
+}
+
+.participant {
+    background-image: url("../img/participant.png");
+    padding-left: 16px;
 }
 
 .discussion {
-    background: url("../img/discussion.png") no-repeat scroll left top;
-    padding-left: 20px;
+    background-image: url("../img/discussion.png");
 }
 
 .saved {
-    background: url("../img/saved.png") no-repeat scroll left top;
-    padding-left: 20px;
+    background-image: url("../img/saved.png");
 }
 
 .notsaved {
-    background: url("../img/notsaved.png") no-repeat scroll left top;
-    padding-left: 20px;
+    background-image: url("../img/notsaved.png");
 }
 
 .gravatar {
@@ -209,7 +212,7 @@ body {
     font-style: italic;
 }
 
-#recent_activities{
+#recent_activities, #month-view {
     width: 88%;
     margin-top: 20px;
     margin-right: 10px;
@@ -234,8 +237,42 @@ body {
 #archives li {
     list-style-type: none;
 }
+#archives li.current {
+    font-weight: bold;
+}
+
+/* Month view header */
+
+#month-view header {
+    margin-bottom: 4em;
+}
+
+#month-view header .list-name {
+    display: inline;
+    font-size: 190%;
+    font-weight: bold;
+    padding-right: 0.5em;
+}
+
+#month-view header .month-name {
+    display: inline;
+    font-size: 190%;
+    padding-right: 1em;
+}
+
+#month-view header .month-info {
+    display: inline;
+    list-style-type: none;
+}
+#month-view header .month-info li {
+    display: inline;
+}
 
 /* Thread list */
+
+.thread {
+    margin-bottom: 3em;
+}
 
 .thread_title {
     font-weight: bold;
@@ -249,12 +286,20 @@ body {
 }
 
 .thread_content {
-    margin-top:10px;
+    margin-top: 0.5em;
 }
 
 .thread_info {
     text-align:right;
-    padding-right: 50px;
+}
+.thread_info .btn {
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.thread_content .thread_email {
+    display: inline-block;
+    margin-bottom: 5px;
 }
 
 .tags {
@@ -265,7 +310,7 @@ body {
 
 /* Part containing the body of the mail which can be shown/hidden */
 .expander {
-    width: 665px;
+    width: 740px;
     background-image: linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
     background-image: -o-linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
     background-image: -moz-linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);

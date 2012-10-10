@@ -1,18 +1,37 @@
 {% extends "base.html" %}
-{% load poll_extras %}
 {% load gravatar %}
+{% load hk_generic %}
 {% load storm %}
 
 {% block content %}
 
-<div id="recent_activities">
+<div id="month-view">
+
+    <header>
+        <div class="list-name">{{ mlist.display_name|default:mlist.name }}</div>
+        <div class="month-name">{{ month|date:"F Y"|capfirst }}</div>
+        <ul class="month-info">
+            <li class="participant">
+                {{ month_participants }} participants
+            </li>
+            <li class="discussion">
+                {{ month_discussions }} discussions
+            </li>
+        </ul>
+        {% if mlist.display_name %}
+        <p class="list-address">
+            <a href="mailto:{{ list_address }}">{{ list_address }}</a>
+        </p>
+        {% endif %}
+    </header>
+
 	{% for email in threads %}
 	<!-- New thread -->
 	<div class="thread">
 		<div class="notsaved">
-			<span class="thread_title"> <a name="{{email.thread_id}}"
-				href="{% url thread threadid=email.thread_id, mlist_fqdn=list_address %}">{{ email.subject|strip_subject:mlist }}</a> </span>
-			<span class="thread_date"> {{email.date}}</span>
+			<span class="thread_title"><a name="{{email.thread_id}}"
+				href="{% url thread threadid=email.thread_id, mlist_fqdn=list_address %}">{{ email.subject|strip_subject:mlist }}</a></span>
+			<span class="thread_date">{{email.date|timesince }}</span>
 		</div>
 		<div class="thread_content">
 			{% if email.category_tag %}
@@ -32,7 +51,7 @@
 				{% endif %}
 				{{email.sender_name}}
 			</div>
-			<div class="inline-block thread_email">
+			<div class="thread_email">
 				<span class="expander"> {{email.content}} </span>
 			</div>
 		</div>
@@ -58,11 +77,19 @@
 				</li>
 			</ul>
             {% if settings.USE_MOCKUPS == True %}
-			<ul class="inline-block">
-				<li class="like">
-					+{{email.avglike}} / - {{email.avgdislike}}
+			<ul class="inline-block" messageid="{{email.message_id_hash}}">
+				<li class="likestatus {{email.likestatus}}">
+					+{{email.avglike}}/-{{email.avgdislike}}
+				</li>
+				<li class="voteup">
+					<a class="youlike" href="#like">Like</a>
+				</li>
+				<li class="votedown">
+					<a class="youdislike" href="#dislike">Dislike</a>
 				</li>
 			</ul>
+            <a href="{% url thread threadid=email.thread_id, mlist_fqdn=list_address %}"
+               class="btn">Show discussion</a>
             {% endif %}
 		</div>
 	</div>
@@ -70,24 +97,11 @@
 	{% empty %}
 		Sorry no emails could be found for your search.
 	{% endfor %}
-	
+
 	{% include "paginator.html" %}
 </div>
 
-<div id="archives">
-	{% for key, value in archives_length|sort %}
-	<h3>{{ key }}</h3>
-	<div>
-		<ul>
-			{% for ar_month in value %}
-			<li>
-				<a href="{% url archives_with_month year=key, mlist_fqdn=list_address, month=ar_month %}"> {{ ar_month|tomonth }} </a>
-			</li>
-			{% endfor %}
-		</ul>
-	</div>
-	{% endfor %}
-</div>
+{% include 'threads/month_list.html' %}
 
 {% endblock %}
 
