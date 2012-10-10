@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load poll_extras %}
+{% load hk_generic %}
 {% load gravatar %}
 
 {% block content %}
@@ -59,14 +59,14 @@
 			</li>
 		</ul>
 		<ul class="inline-block">
-			<li class="like">
+			<li class="likestatus {{email.likestatus}}">
 				+{{email.liked}}
 			</li>
-			<li class="youlike">
-				<a href="#like"> Like</a>
+			<li class="voteup">
+				<a class="youlike" href="#like">Like</a>
 			</li>
-			<li class="youdislike">
-				<a href="#dislike"> Dislike</a>
+			<li class="votedown">
+				<a class="youdislike" href="#dislike">Dislike</a>
 			</li>
 		</ul>
 	</div>

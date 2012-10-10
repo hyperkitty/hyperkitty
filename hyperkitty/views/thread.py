@@ -72,6 +72,14 @@ def thread_index (request, mlist_fqdn, threadid):
         message.votes = votes
         message.likes = likes
         message.dislikes = dislikes
+        message.likestatus = "neutral"
+        if message.likes - message.dislikes >= 10:
+            message.likestatus = "likealot"
+        elif thread.likes - message.dislikes > 0:
+            message.likestatus = "like"
+        #elif message.likes - message.dislikes < 0:
+        #    message.likestatus = "dislike"
+
 
         # Statistics on how many participants and messages this month
         participants[message.sender_name] = {'email': message.sender_email}

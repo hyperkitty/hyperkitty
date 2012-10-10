@@ -140,6 +140,14 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         except:
             thread.avgdislike = 0
 
+        thread.likestatus = "neutral"
+        if thread.avglike - thread.avgdislike >= 10:
+            thread.likestatus = "likealot"
+        elif thread.avglike - thread.avgdislike > 0:
+            thread.likestatus = "like"
+        #elif thread.avglike - thread.avgdislike < 0:
+        #    thread.likestatus = "dislike"
+
         threads[cnt] = thread
         cnt = cnt + 1
 
@@ -170,7 +178,8 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         'is_last': pageNo == paginator.num_pages,
         'list_address': mlist_fqdn,
         'search_form': search_form,
-        'month': month_string,
+        'month': begin_date,
+        'month_num': begin_date.month,
         'month_participants': len(participants),
         'month_discussions': len(threads),
         'threads': threads,
@@ -256,7 +265,7 @@ def list(request, mlist_fqdn=None):
         'mlist' : mlist,
         'list_address': mlist_fqdn,
         'search_form': search_form,
-        'month': 'Recent activity',
+        'month': None,
         'month_participants': len(participants),
         'month_discussions': len(threads),
         'top_threads': top_threads[:5],

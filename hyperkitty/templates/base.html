@@ -18,22 +18,22 @@
 	      <div class="navbar-inner">
 	        <div class="container">
 	          <div class="nav-collapse collapse">
-	          	
-	           	{% if user.is_authenticated %}
+
+				{% if user.is_authenticated %}
 					 <li class="user_nav">
-					 	<a class="mm_logout" style="float:right;" href="{% url user_logout %}">Logout</a>
+						<a class="mm_logout" style="float:right;" href="{% url user_logout %}">Logout</a>
 					 </li>
 					 <li class="user_nav" style="float:right;">
-					 	<a style="float:right;" href="{% url user_profile %}">{{ user.username }}</a>
+						<a style="float:right;" href="{% url user_profile %}">{{ user.username }}</a>
 					</li>
 				{% else %}
 					 <li class="user_nav" style="float:right;">
-					 	<a class="mm_user" style="float:right;" href="{% url user_login %}">Login</a>
+						<a class="mm_user" style="float:right;" href="{% url user_login %}">Login</a>
 					 </li>
 					 <li class="user_nav" style="float:right;">
-					 	<a style="float:right;" href="{% url user_registration %}"> Sign Up </a>
+						<a style="float:right;" href="{% url user_registration %}"> Sign Up </a>
 					</li>
-				{% endif %}		  
+				{% endif %}
 
 
 	            <ul class="nav">
