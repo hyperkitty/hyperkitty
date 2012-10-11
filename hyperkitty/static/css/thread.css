@@ -111,7 +111,7 @@ header .thread-newer {
 
 #tags {
     color: rgb(167, 169, 172);
-    margin-top: 20px;
+    margin-top: 2em;
 }
 
 #tag_title {
@@ -120,16 +120,16 @@ header .thread-newer {
 }
 
 #tags ul {
-    padding: 10px 0px 10px 0px;
+    padding: 10px 0;
     margin: 0;
 }
 
-#add_tag_field {
-    width:70%;
+#add_tag {
+    margin-top: 0.3em;
 }
 
 #participants {
-    margin-top: 20px;
+    margin-top: 2em;
     color: rgb(167, 169, 172);
 }
 
@@ -139,7 +139,7 @@ header .thread-newer {
 }
 
 #participants ul {
-    padding: 10px 0px 10px 0px;
+    padding: 0;
     margin: 0;
 }
 

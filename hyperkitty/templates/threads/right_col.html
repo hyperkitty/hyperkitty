@@ -30,6 +30,7 @@
 	<hr id="grey"/>
 	<div id="tags">
 		<span id="tag_title">tags </span>({{tags|length}})
+		{% if tags|length %}
 		<ul class="inline">
 			{% for tag in tags %}
 			<li>
@@ -37,14 +38,12 @@
 			</li>
 			{% endfor %}
 		</ul>
+		{% endif %}
 	</div>
 	<div id="add_tag">
 		<form id="add_tag_form" name="addtag" action="{% url add_tag mlist_fqdn=list_address, email_id=threadid %}" method="post">
 			{% csrf_token %}
 			{{ addtag_form.as_p }}
-			<button type="submit">
-				Add a tag
-			</button>
 		</form>
 	</div>
 	<div id="participants">
