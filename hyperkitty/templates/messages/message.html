@@ -61,7 +61,7 @@
 {% endif %}
 {% if not unfolded and email.attachments|count %}
     <li class="attachments">
-        <a href="#attachments">{{ email.attachments|count }} attachment(s)</a>
+        <a class="attachments" href="#attachments">{{ email.attachments|count }} attachment(s)</a>
         <ul class="attachments-list">
         {% for attachment in email.attachments %}
             <li><a href="{% url message_attachment mlist_fqdn=list_address, hashid=email.message_id_hash, counter=attachment.counter, filename=attachment.name %}">{{attachment.name}}</a>
