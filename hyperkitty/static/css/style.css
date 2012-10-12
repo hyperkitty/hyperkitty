@@ -400,3 +400,17 @@ p.attachments {
     margin-bottom: 0;
     font-weight: bold;
 }
+li.attachments a.attachments {
+    padding-left: 20px;
+    margin-left: 1em;
+    background: url("../img/mail-attachment.png") no-repeat scroll left;
+}
+li.attachments ul {
+    position: absolute;
+    background-color: #F6F6F6;
+    margin-left: 0;
+}
+li.attachments ul li {
+    list-style-position: inside;
+    padding-left: 0.5em;
+}

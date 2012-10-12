@@ -37,7 +37,6 @@ class Archiver(object):
         if settings_path.endswith("/settings.py"):
             # we want the directory
             settings_path = os.path.dirname(settings_path)
-        settings_path = "/srv/dev/mailman/hk-app"
         #path_added = False
         if settings_path not in sys.path:
             #path_added = True
