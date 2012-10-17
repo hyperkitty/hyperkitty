@@ -83,6 +83,7 @@ def index(request, mlist_fqdn, hashid):
         'list_address': mlist_fqdn,
         'message': message,
         'hashid' : hashid,
+        'use_mockups': settings.USE_MOCKUPS,
     })
     return HttpResponse(t.render(c))
 

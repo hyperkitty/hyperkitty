@@ -19,7 +19,7 @@
 		<span class="name"> <a href="{% url message_index mlist_fqdn=list_address, hashid=email.message_id_hash %}">{{email.sender_name}}</a> </span>
 		<br />
 		<span class="rank">
-        {% if settings.USE_MOCKUPS == True %}
+        {% if use_mockups %}
             Rank 8
         {% else %}
             &nbsp;
@@ -48,7 +48,7 @@
 {% endif %}
 
 <ul class="email_info inline" messageid="{{email.message_id_hash}}">
-{% if settings.USE_MOCKUPS == True %}
+{% if use_mockups %}
 	<li class="likestatus {{email.likestatus}}">
 		+{{email.likes}}/-{{email.dislikes}}
 	</li>

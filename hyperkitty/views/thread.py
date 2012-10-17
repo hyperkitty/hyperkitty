@@ -119,6 +119,7 @@ def thread_index (request, mlist_fqdn, threadid):
         'archives_length': archives_length,
         'days_inactive': days_inactive.days,
         'days_old': days_old.days,
+        'use_mockups': settings.USE_MOCKUPS,
     })
     return HttpResponse(t.render(c))
 
