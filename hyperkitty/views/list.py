@@ -185,6 +185,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         'threads': threads,
         'pages' : paginator.object_list,
         'archives_length': archives_length,
+        'use_mockups': settings.USE_MOCKUPS,
     })
     return HttpResponse(t.render(c))
 
@@ -275,6 +276,7 @@ def list(request, mlist_fqdn=None):
         'archives_length': archives_length,
         'evolution': evolution,
         'dates_string': dates_string,
+        'use_mockups': settings.USE_MOCKUPS,
     })
     return HttpResponse(t.render(c))
 

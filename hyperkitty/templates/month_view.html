@@ -76,7 +76,7 @@
 					{{email.answers}} comments
 				</li>
 			</ul>
-            {% if settings.USE_MOCKUPS == True %}
+            {% if use_mockups %}
 			<ul class="inline-block" messageid="{{email.message_id_hash}}">
 				<li class="likestatus {{email.likestatus}}">
 					+{{email.avglike}}/-{{email.avgdislike}}

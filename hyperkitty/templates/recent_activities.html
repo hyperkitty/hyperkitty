@@ -99,7 +99,7 @@
 						<a href="{% url search_tag mlist_fqdn=list_address, tag=email.category|lower %}">{{email.category}}</a>
 					</li>
 					{% endif %}
-                    {% if settings.USE_MOCKUPS == True %}
+                    {% if use_mockups %}
 					<li class="likestatus neutral">
 						+0/-0
 					</li>
@@ -137,7 +137,7 @@
 						<a href="{% url search_tag mlist_fqdn=list_address, tag=email.category|lower %}">{{email.category}}</a>
 					</li>
 					{% endif %}
-                    {% if settings.USE_MOCKUPS == True %}
+                    {% if use_mockups %}
 					<li class="likestatus neutral">
 						+0/-0
 					</li>

@@ -111,6 +111,7 @@ def user_profile(request, user_email=None):
         'user_profile' : user_profile,
         'votes_up': votes_up,
         'votes_down': votes_down,
+        'use_mockups': settings.USE_MOCKUPS,
     })
 
     return HttpResponse(t.render(c))
