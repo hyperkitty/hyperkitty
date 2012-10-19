@@ -57,7 +57,6 @@ urlpatterns = patterns('hyperkitty.views',
 
 
     ### MESSAGE LEVEL VIEWS ###
-    # Vote a message
     url(r'^message/(?P<mlist_fqdn>.*@.*)/(?P<hashid>\w+)/$',
         'message.index', name='message_index'),
 
@@ -68,7 +67,7 @@ urlpatterns = patterns('hyperkitty.views',
         'message.vote', name='message_vote'),
     ### MESSAGE LEVEL VIEW ENDS ###
 
- 
+
 
     ### THREAD LEVEL VIEWS ###
     # Thread view page
@@ -80,7 +79,7 @@ urlpatterns = patterns('hyperkitty.views',
         'thread.add_tag', name='add_tag'),
     ### THREAD LEVEL VIEW ENDS ###
 
- 
+
     # REST API
     url(r'^api/$', 'api.api'),
     url(r'^api/email\/(?P<mlist_fqdn>.*@.*)\/(?P<hashid>.*)/',
@@ -93,7 +92,7 @@ urlpatterns = patterns('hyperkitty.views',
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
-    # Admin  
+    # Admin
     url(r'^admin/', include(admin.site.urls)),
 
     # Robots.txt
@@ -102,6 +101,15 @@ urlpatterns = patterns('hyperkitty.views',
 
     # Social Auth
     url(r'', include('social_auth.urls')),
+
+    # Mailman 2.X compatibility
+    url(r'^listinfo/?$', 'compat.summary'),
+    url(r'^listinfo/(?P<list_name>[^/]+)/?$', 'compat.summary'),
+    url(r'^pipermail/(?P<list_name>[^/]+)/?$', 'compat.summary'),
+    url(r'^pipermail/(?P<list_name>[^/]+)/(?P<year>\d\d\d\d)-(?P<month_name>\w+)/?$', 'compat.arch_month'),
+    url(r'^pipermail/(?P<list_name>[^/]+)/(?P<year>\d\d\d\d)-(?P<month_name>\w+)/(?P<summary_type>[a-z]+)\.html$', 'compat.arch_month'),
+    url(r'^pipermail/(?P<list_name>[^/]+)/(?P<year>\d\d\d\d)-(?P<month_name>\w+)\.txt.gz', 'compat.arch_month_mbox'),
+    url(r'^pipermail/(?P<list_name>[^/]+)/(?P<year>\d\d\d\d)-(?P<month_name>\w+)/(?P<msg_num>\d+)\.html$', 'compat.message'),
 
 )
 #) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
