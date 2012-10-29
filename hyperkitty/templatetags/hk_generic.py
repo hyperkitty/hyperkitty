@@ -90,3 +90,10 @@ def truncatesmart(value, limit=80):
 
     # Join the words and return
     return ' '.join(words) + '...'
+
+
+@register.filter(is_safe=True)
+def escapeatsign(text):
+    """To escape email addresses"""
+    return text.replace("@", u"\uff20")
+
