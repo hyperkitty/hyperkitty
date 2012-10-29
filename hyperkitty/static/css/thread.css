@@ -13,7 +13,8 @@ h1 {
 }
 
 header .thread-older,
-header .thread-newer {
+header .thread-newer,
+header .thread-back {
     display: block;
     padding-top: 38px;
     width: 160px;
@@ -30,6 +31,10 @@ header .thread-older {
 header .thread-newer {
     float: left;
     background-image: url('../img/button_newer.png');
+}
+header .thread-back {
+    background-image: url('../img/button_back.png');
+    margin-bottom: 2em;
 }
 
 #thread_nav{
