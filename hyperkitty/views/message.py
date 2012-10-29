@@ -78,7 +78,10 @@ def index(request, mlist_fqdn, hashid):
     #elif message.likes - message.dislikes < 0:
     #    message.likestatus = "dislike"
 
+    mlist = store.get_list(mlist_fqdn)
+
     c = RequestContext(request, {
+        'mlist' : mlist,
         'list_name' : list_name,
         'list_address': mlist_fqdn,
         'message': message,

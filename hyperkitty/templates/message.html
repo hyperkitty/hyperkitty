@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load gravatar %}
+{% load hk_generic %}
+{% load storm %}
 
 {% block additional_stylesheets %}
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
@@ -8,6 +10,9 @@
 {% block content %}
 
 <header>
+    <a class="thread-back"
+       href="{% url thread threadid=message.thread_id, mlist_fqdn=list_address %}">
+    </a>
     <h1>{{ message.subject }}</h1>
 </header>
 
