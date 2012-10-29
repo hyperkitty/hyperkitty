@@ -21,6 +21,7 @@ import re
 import os
 import json
 import urllib
+import logging
 from calendar import timegm
 from datetime import datetime, timedelta
 from urlparse import urljoin
@@ -38,9 +39,11 @@ from hyperkitty.models import Rating, Tag
 from hyperkitty.lib import get_months, get_store
 from forms import *
 
+
+logger = logging.getLogger(__name__)
+
 if settings.USE_MOCKUPS:
     from hyperkitty.lib.mockup import generate_top_author, generate_thread_per_category
-
 
 # @TODO : Move this into settings.py
 MONTH_PARTICIPANTS = 284
