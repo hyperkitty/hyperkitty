@@ -23,6 +23,7 @@ import urllib
 
 import django.utils.simplejson as simplejson
 from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.shortcuts import redirect
 from django.template import RequestContext, loader
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage

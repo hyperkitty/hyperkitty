@@ -9,5 +9,5 @@ def count(expr):
     return expr.count()
 
 @register.filter(name="strip_subject")
-def count(subject, mlist):
+def strip_subject(subject, mlist):
     return stripped_subject(mlist, subject)
