@@ -14,47 +14,40 @@
 	{% load i18n %}
 
 	<body>
-	<div class="navbar navbar-fixed-top">
-	      <div class="navbar-inner">
-	        <div class="container">
-	          <div class="nav-collapse collapse">
+		<header>
+			<div class="navbar navbar-fixed-top">
+				  <div class="navbar-inner">
+					<div class="container">
 
-				{% if user.is_authenticated %}
-					 <li class="user_nav">
-						<a class="mm_logout" style="float:right;" href="{% url user_logout %}">Logout</a>
-					 </li>
-					 <li class="user_nav" style="float:right;">
-						<a style="float:right;" href="{% url user_profile %}">{{ user.username }}</a>
-					</li>
-				{% else %}
-					 <li class="user_nav" style="float:right;">
-						<a class="mm_user" style="float:right;" href="{% url user_login %}">Login</a>
-					 </li>
-					 <li class="user_nav" style="float:right;">
-						<a style="float:right;" href="{% url user_registration %}"> Sign Up </a>
-					</li>
-				{% endif %}
+                        <ul class="nav auth">
+						{% if user.is_authenticated %}
+							 <li><a class="mm_logout" href="{% url user_logout %}">Logout</a></li>
+							 <li><a href="{% url user_profile %}">{{ user.username }}</a></li>
+						{% else %}
+							 <li><a class="mm_user" href="{% url user_login %}">Login</a></li>
+							 <li><a href="{% url user_registration %}"> Sign Up </a></li>
+						{% endif %}
+                        </ul>
 
 
-	            <ul class="nav">
+						<ul class="nav">
 
-                    <li class="root{% if not list_address %} active{% endif %}">
-                        <a href="{% url root %}">{{ app_name|title }}</a>
-                    </li>
+							<li class="root{% if not list_address %} active{% endif %}">
+								<a href="{% url root %}">{{ app_name|title }}</a>
+							</li>
 
-				{% if list_address %}
-					<li id="list_name" class="active">
-						<a href="{% url list_overview mlist_fqdn=list_address %}">{{list_address}}</a>
-					</li>
-				{% endif %}
+						{% if list_address %}
+							<li id="list_name" class="active">
+								<a href="{% url list_overview mlist_fqdn=list_address %}">{{list_address}}</a>
+							</li>
+						{% endif %}
 
 
-		        </ul>
-	          </div>
-	        </div>
-	      </div>
-	</div>
-
+						</ul>
+					</div>
+				  </div>
+			</div>
+		</header>
 
 		<div class="container">
 			{% block content %} {% endblock %}

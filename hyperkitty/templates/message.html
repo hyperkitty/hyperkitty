@@ -3,18 +3,14 @@
 {% load hk_generic %}
 {% load storm %}
 
-{% block additional_stylesheets %}
-<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
-{% endblock %}
-
 {% block content %}
 
-<header>
+<div class="message-header">
     <a class="thread-back"
        href="{% url thread threadid=message.thread_id, mlist_fqdn=list_address %}">
     </a>
     <h1>{{ message.subject }}</h1>
-</header>
+</div>
 
 <section id="thread_content">
 	{% include 'messages/first_email.html' with first_mail=message %}
