@@ -7,7 +7,7 @@
 
 <div id="month-view">
 
-    <header>
+    <div class="month-header">
         <div class="list-name">{{ mlist.display_name|default:mlist.name|escapeatsign }}</div>
         <div class="month-name">{{ month|date:"F Y"|capfirst }}</div>
         <ul class="month-info">
@@ -23,7 +23,7 @@
             <a href="mailto:{{ list_address|escapeatsign }}">{{ list_address|escapeatsign }}</a>
         </p>
         {% endif %}
-    </header>
+    </div>
 
 	{% for email in threads %}
 	<!-- New thread -->
@@ -95,7 +95,7 @@
 	</div>
 	<!-- End of thread -->
 	{% empty %}
-		Sorry no emails could be found for your search.
+		Sorry no emails could be found for this month.
 	{% endfor %}
 
 	{% include "paginator.html" %}

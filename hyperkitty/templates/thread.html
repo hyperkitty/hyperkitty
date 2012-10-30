@@ -4,13 +4,9 @@
 {% load hk_generic %}
 {% load storm %}
 
-{% block additional_stylesheets %}
-<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/thread.css" />
-{% endblock %}
-
 {% block content %}
 
-    <header>
+    <div class="thread-header">
         {% for thread in neighbors %}
             {% if thread %}
             <a class="thread-{% ifequal forloop.counter 1 %}older{% else %}newer{% endifequal %}"
@@ -19,7 +15,7 @@
             {% endif %}
         {% endfor %}
         <h1>{{ subject }}</h1>
-    </header>
+    </div>
 
 	{% include 'threads/right_col.html' %}
 
