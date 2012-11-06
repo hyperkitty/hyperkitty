@@ -674,7 +674,8 @@ ul.attachments-list li {
 }
 
 
-.email_body a {
+.email_body span.read-more a,
+.email_body span.read-less a {
     float: right;
     padding: 3px 10px 0px 0px;
 }
