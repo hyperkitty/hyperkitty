@@ -10,6 +10,7 @@ from urlparse import urljoin
 from zope.interface import implements
 from mailman.interfaces.archiver import IArchiver
 from mailman.config import config
+from mailman.config.config import external_configuration
 from django.core.urlresolvers import reverse
 from kittystore import get_store
 from kittystore.utils import get_message_id_hash
@@ -32,8 +33,9 @@ class Archiver(object):
         configuration file, and load it to get the store's URL.
         """
         # Read our specific configuration file
-        self.config = config.archiver_config("hyperkitty")
-        settings_path = self.config.get("general", "django_settings")
+        archiver_config = external_configuration(
+                config.archiver.hyperkitty.configuration)
+        settings_path = archiver_config.get("general", "django_settings")
         if settings_path.endswith("/settings.py"):
             # we want the directory
             settings_path = os.path.dirname(settings_path)
