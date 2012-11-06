@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="154.5"
+   height="36"
+   id="svg4928"
+   version="1.1"
+   inkscape:version="0.48.3.1 r9886"
+   sodipodi:docname="button-back.svg"
+   inkscape:export-filename="/home/gauret/fedora/hk/button_back.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs4930">
+    <linearGradient
+       y2="432.55502"
+       x2="339"
+       y1="471.36218"
+       x1="339"
+       gradientTransform="matrix(0.98518515,0,0,1,-26.59448,-516.3622)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient18287"
+       xlink:href="#linearGradient3917"
+       inkscape:collect="always" />
+    <linearGradient
+       id="linearGradient3917"
+       inkscape:collect="always">
+      <stop
+         id="stop3919"
+         offset="0"
+         style="stop-color:#cccccc;stop-opacity:1;" />
+      <stop
+         id="stop3921"
+         offset="1"
+         style="stop-color:#cccccc;stop-opacity:0;" />
+    </linearGradient>
+    <linearGradient
+       y2="432.55502"
+       x2="339"
+       y1="471.36218"
+       x1="339"
+       gradientTransform="matrix(0.98518515,0,0,1,181.69124,97.357125)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient4926"
+       xlink:href="#linearGradient3917"
+       inkscape:collect="always" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3917-1"
+       id="linearGradient9757"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.98518515,0,0,1,-214.59448,-374.3622)"
+       x1="339"
+       y1="471.36218"
+       x2="339"
+       y2="432.55502" />
+    <linearGradient
+       id="linearGradient3917-1"
+       inkscape:collect="always">
+      <stop
+         id="stop3919-3"
+         offset="0"
+         style="stop-color:#cccccc;stop-opacity:1;" />
+      <stop
+         id="stop3921-5"
+         offset="1"
+         style="stop-color:#cccccc;stop-opacity:0;" />
+    </linearGradient>
+    <linearGradient
+       y2="432.55502"
+       x2="339"
+       y1="471.36218"
+       x1="339"
+       gradientTransform="matrix(0.98518515,0,0,1,176.19748,32.286828)"
+       gradientUnits="userSpaceOnUse"
+       id="linearGradient5006"
+       xlink:href="#linearGradient3917-1"
+       inkscape:collect="always" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.979899"
+     inkscape:cx="-8.3892355"
+     inkscape:cy="64.073895"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:window-width="1920"
+     inkscape:window-height="1028"
+     inkscape:window-x="-2"
+     inkscape:window-y="-3"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata4933">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Calque 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-437.03125,-537.21875)">
+    <path
+       inkscape:connector-curvature="0"
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/gauret/fedora/hk/button_back.png"
+       id="path18262"
+       d="m 454.03572,537.71933 c -9.1127,0 -16.5,7.835 -16.5,17.5 0,9.665 7.3873,17.5 16.5,17.5 5.1796,0 9.78746,-2.5402 12.8125,-6.5 l 120.59374,0 c 1.9956,0 3.59375,-1.415 3.59375,-3.1562 l 0,-16.6875 c 0,-1.7412 -1.59815,-3.1563 -3.59375,-3.1563 l -121.43749,0 c -3.00807,-3.3768 -7.24294,-5.5 -11.96875,-5.5 z"
+       style="fill:url(#linearGradient4926);fill-opacity:1;stroke:#b3b3b3;stroke-width:1" />
+    <text
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/gauret/fedora/hk/button_back.png"
+       id="text18264"
+       y="558.70978"
+       x="474.21783"
+       style="font-size:11.11530685px;font-style:normal;font-weight:normal;fill:#4d4d4d;fill-opacity:1;stroke:#ffffff;font-family:Bitstream Vera Sans"
+       xml:space="preserve"><tspan
+         style="font-size:12px;font-weight:bold;fill:#4d4d4d;stroke:#ffffff;font-family:Droid Sans;-inkscape-font-specification:Droid Sans Bold"
+         y="558.70978"
+         x="474.21783"
+         sodipodi:role="line"
+         id="tspan18266">Back to the thread</tspan></text>
+    <text
+       inkscape:export-ydpi="90"
+       inkscape:export-xdpi="90"
+       inkscape:export-filename="/home/gauret/fedora/hk/button_back.png"
+       xml:space="preserve"
+       style="font-size:11.11530685px;font-style:normal;font-weight:normal;fill:#4d4d4d;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
+       x="474.21783"
+       y="558.70978"
+       id="text18268"><tspan
+         id="tspan18270"
+         sodipodi:role="line"
+         x="474.21783"
+         y="558.70978"
+         style="font-size:12px;font-weight:bold;fill:#4d4d4d;font-family:Droid Sans;-inkscape-font-specification:Droid Sans Bold">Back to the thread</tspan></text>
+    <g
+       id="g10418"
+       transform="matrix(0,1.545443,-1.545443,0,465.88417,540.56018)"
+       style="fill:#ffffff"
+       inkscape:export-filename="/home/gauret/fedora/hk/button_back.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         style="fill:#ffffff;display:inline"
+         id="layer9"
+         transform="translate(-300,-626)"
+         inkscape:label="status" />
+      <g
+         id="layer10"
+         transform="translate(-300,-626)"
+         inkscape:label="devices"
+         style="fill:#ffffff" />
+      <g
+         id="layer11"
+         transform="translate(-300,-626)"
+         inkscape:label="apps"
+         style="fill:#ffffff" />
+      <g
+         id="layer13"
+         transform="translate(-300,-626)"
+         inkscape:label="places"
+         style="fill:#ffffff" />
+      <g
+         id="layer14"
+         transform="translate(-300,-626)"
+         inkscape:label="mimetypes"
+         style="fill:#ffffff" />
+      <g
+         style="fill:#ffffff;display:inline"
+         id="layer15"
+         transform="translate(-300,-626)"
+         inkscape:label="emblems" />
+      <g
+         style="fill:#ffffff;display:inline"
+         id="g4953"
+         transform="translate(-300,-626)"
+         inkscape:label="categories" />
+      <g
+         style="fill:#ffffff;display:inline"
+         id="layer12"
+         transform="translate(-300,-626)"
+         inkscape:label="actions">
+        <g
+           id="use43051"
+           transform="translate(200,108)"
+           inkscape:label="go-previous"
+           style="fill:#ffffff">
+          <path
+             style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;color:#bebebe;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.78124988;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new;font-family:Andale Mono;-inkscape-font-specification:Andale Mono"
+             sodipodi:nodetypes="ccsccccccccccc"
+             id="path4443"
+             d="m 110.99705,520 -1,0 c -0.0104,-1.2e-4 -0.0208,-4.6e-4 -0.0313,0 -0.25495,0.0112 -0.50987,0.12858 -0.6875,0.3125 l -5.2812,5.21875 5.28125,5.1875 c 0.18816,0.18819 0.45346,0.28125 0.71875,0.28125 l 1,0 0,-1 c 0,-0.26529 -0.0931,-0.53058 -0.28125,-0.71875 l -3.8125,-3.75 3.8125,-3.78125 c 0.21074,-0.19463 0.30316,-0.46925 0.28125,-0.75 l 0,-1 z"
+             inkscape:connector-curvature="0" />
+        </g>
+      </g>
+    </g>
+    <g
+       style="fill:#60605b"
+       transform="matrix(0,1.545443,-1.545443,0,465.88417,541.56018)"
+       id="g10430"
+       inkscape:export-filename="/home/gauret/fedora/hk/button_back.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
+      <g
+         inkscape:label="status"
+         transform="translate(-300,-626)"
+         id="g10432"
+         style="fill:#60605b;display:inline" />
+      <g
+         style="fill:#60605b"
+         inkscape:label="devices"
+         transform="translate(-300,-626)"
+         id="g10434" />
+      <g
+         style="fill:#60605b"
+         inkscape:label="apps"
+         transform="translate(-300,-626)"
+         id="g10436" />
+      <g
+         style="fill:#60605b"
+         inkscape:label="places"
+         transform="translate(-300,-626)"
+         id="g10438" />
+      <g
+         style="fill:#60605b"
+         inkscape:label="mimetypes"
+         transform="translate(-300,-626)"
+         id="g10440" />
+      <g
+         inkscape:label="emblems"
+         transform="translate(-300,-626)"
+         id="g10442"
+         style="fill:#60605b;display:inline" />
+      <g
+         inkscape:label="categories"
+         transform="translate(-300,-626)"
+         id="g10444"
+         style="fill:#60605b;display:inline" />
+      <g
+         inkscape:label="actions"
+         transform="translate(-300,-626)"
+         id="g10446"
+         style="fill:#60605b;display:inline">
+        <g
+           style="fill:#60605b"
+           inkscape:label="go-previous"
+           transform="translate(200,108)"
+           id="g10448">
+          <path
+             inkscape:connector-curvature="0"
+             d="m 110.99705,520 -1,0 c -0.0104,-1.2e-4 -0.0208,-4.6e-4 -0.0313,0 -0.25495,0.0112 -0.50987,0.12858 -0.6875,0.3125 l -5.2812,5.21875 5.28125,5.1875 c 0.18816,0.18819 0.45346,0.28125 0.71875,0.28125 l 1,0 0,-1 c 0,-0.26529 -0.0931,-0.53058 -0.28125,-0.71875 l -3.8125,-3.75 3.8125,-3.78125 c 0.21074,-0.19463 0.30316,-0.46925 0.28125,-0.75 l 0,-1 z"
+             id="path10450"
+             sodipodi:nodetypes="ccsccccccccccc"
+             style="font-size:medium;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:start;text-decoration:none;line-height:normal;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:start;color:#bebebe;fill:#60605b;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1.78124988;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:new;font-family:Andale Mono;-inkscape-font-specification:Andale Mono" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
