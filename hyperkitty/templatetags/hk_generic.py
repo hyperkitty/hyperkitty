@@ -92,8 +92,11 @@ def truncatesmart(value, limit=80):
     return ' '.join(words) + '...'
 
 
+MAILTO_RE = re.compile("<a href=['\"]mailto:([^'\"]+)@([^'\"]+)['\"]>[^<]+</a>")
 @register.filter(is_safe=True)
-def escapeatsign(text):
+def escapeemail(text):
     """To escape email addresses"""
+    # reverse the effect of urlize() on email addresses
+    text = MAILTO_RE.sub(r"\1(a)\2", text)
     return text.replace("@", u"\uff20")
 

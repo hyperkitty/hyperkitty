@@ -1,5 +1,6 @@
 {% load storm %}
 {% load gravatar %}
+{% load hk_generic %}
 
 <div class="email_header">
 	<div class="email_date inline-block pull-right">
@@ -32,7 +33,7 @@
 {% else %}
 <div class="email_body">
 {% endif %}
-{{email.content|urlizetrunc:76}}
+{{email.content|urlizetrunc:76|escapeemail}}
 </div>
 
 {% if unfolded and email.attachments|count %}

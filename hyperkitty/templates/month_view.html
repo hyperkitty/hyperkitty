@@ -8,7 +8,7 @@
 <div id="month-view">
 
     <div class="month-header">
-        <div class="list-name">{{ mlist.display_name|default:mlist.name|escapeatsign }}</div>
+        <div class="list-name">{{ mlist.display_name|default:mlist.name|escapeemail }}</div>
         <div class="month-name">{{ month|date:"F Y"|capfirst }}</div>
         <ul class="month-info">
             <li class="participant">
@@ -20,7 +20,7 @@
         </ul>
         {% if mlist.display_name %}
         <p class="list-address">
-            <a href="mailto:{{ list_address|escapeatsign }}">{{ list_address|escapeatsign }}</a>
+            {{ list_address|escapeemail }}
         </p>
         {% endif %}
     </div>
