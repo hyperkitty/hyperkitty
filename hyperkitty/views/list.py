@@ -45,10 +45,6 @@ logger = logging.getLogger(__name__)
 if settings.USE_MOCKUPS:
     from hyperkitty.lib.mockup import generate_top_author, generate_thread_per_category
 
-# @TODO : Move this into settings.py
-MONTH_PARTICIPANTS = 284
-MONTH_DISCUSSIONS = 82
-
 
 
 def archives(request, mlist_fqdn, year=None, month=None, day=None):
@@ -96,12 +92,8 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
     participants = set()
     cnt = 0
     for thread in threads:
-        # Statistics on how many participants and threads this month
-        participants.add(thread.sender_name)
-        thread.participants = store.get_thread_participants(mlist_fqdn,
-            thread.thread_id)
-        thread.answers = store.get_thread_length(mlist_fqdn,
-            thread.thread_id)
+        print "*"*10, len(thread), thread.thread_id, thread.starting_email is None
+        participants.update(thread.participants)
 
         highestlike = 0
         highestdislike = 0
@@ -109,12 +101,11 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         totalvotes = 0
         totallikes = 0
         totaldislikes = 0
-        messages = store.get_messages_in_thread(mlist_fqdn, thread.thread_id)
 
-        for message in messages:
+        for message_id in thread.email_ids:
             # Extract all the votes for this message
             try:
-                votes = Rating.objects.filter(messageid=message.message_id)
+                votes = Rating.objects.filter(messageid=message_id)
             except Rating.DoesNotExist:
                 votes = {}
 
@@ -210,33 +201,26 @@ def list(request, mlist_fqdn=None):
 
     participants = set()
     dates = {}
-    cnt = 0
-    for msg in threads:
-        month = msg.date.month
+    for thread in threads:
+        month = thread.date_active.month
         if month < 10:
             month = '0%s' % month
-        day = msg.date.day
+        day = thread.date_active.day
         if day < 10:
             day = '0%s' % day
-        key = '%s%s%s' % (msg.date.year, month, day)
+        key = '%s%s%s' % (thread.date_active.year, month, day)
         if key in dates:
             dates[key] = dates[key] + 1
         else:
             dates[key] = 1
         # Statistics on how many participants and threads this month
-        participants.add(msg.sender_name)
-        msg.participants = store.get_thread_participants(mlist_fqdn,
-            msg.thread_id)
-        msg.answers = store.get_thread_length(mlist_fqdn,
-            msg.thread_id)
-        threads[cnt] = msg
-        cnt = cnt + 1
+        participants.update(thread.participants)
 
     # top threads are the one with the most answers
-    top_threads = sorted(threads, key=lambda entry: entry.answers, reverse=True)
+    top_threads = sorted(threads, key=lambda entry: len(entry), reverse=True)
 
     # active threads are the ones that have the most recent posting
-    active_threads = sorted(threads, key=lambda entry: entry.date, reverse=True)
+    active_threads = sorted(threads, key=lambda entry: entry.date_active, reverse=True)
 
     archives_length = get_months(store, mlist_fqdn)
 
@@ -253,8 +237,6 @@ def list(request, mlist_fqdn=None):
     days = dates.keys()
     days.sort()
     dates_string = ["%s/%s/%s" % (key[0:4], key[4:6], key[6:8]) for key in days]
-    #print days
-    #print dates_string
     evolution = [dates[key] for key in days]
     if not evolution:
         evolution.append(0)
@@ -285,7 +267,7 @@ def list(request, mlist_fqdn=None):
 
 
 def _search_results_page(request, mlist_fqdn, threads, search_type,
-    page=1, num_threads=25, limit=None):
+                         page=1, num_threads=25, limit=None):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('search.html')
     list_name = mlist_fqdn.split('@')[0]
@@ -305,19 +287,11 @@ def _search_results_page(request, mlist_fqdn, threads, search_type,
 
     store = get_store(request)
     cnt = 0
-    for msg in threads.object_list:
-        msg.email = msg.sender_email.strip()
+    for thread in threads.object_list:
+        #msg.email = msg.sender_email.strip()
         # Statistics on how many participants and threads this month
-        participants.add(msg.sender_name)
-        if msg.thread_id:
-            msg.participants = store.get_thread_participants(mlist_fqdn,
-                msg.thread_id)
-            msg.answers = store.get_thread_length(mlist_fqdn,
-                msg.thread_id)
-        else:
-            msg.participants = 0
-            msg.answers = 0
-        threads.object_list[cnt] = msg
+        participants.update(thread.participants)
+        threads.object_list[cnt] = thread
         cnt = cnt + 1
 
     c = RequestContext(request, {
@@ -347,7 +321,7 @@ def search(request, mlist_fqdn):
 
 
 def search_keyword(request, mlist_fqdn, target, keyword, page=1):
-    ## Should we remove the code below? 
+    ## Should we remove the code below?
     ## If urls.py does it job we should never need it
     store = get_store(request)
     if not keyword:
@@ -371,7 +345,7 @@ def search_keyword(request, mlist_fqdn, target, keyword, page=1):
 
 
 def search_tag(request, mlist_fqdn, tag=None, page=1):
-    '''Returns emails having a particular tag'''
+    '''Returns threads having a particular tag'''
 
     store = get_store(settings.KITTYSTORE_URL)
     list_name = mlist_fqdn.split('@')[0]
@@ -382,9 +356,8 @@ def search_tag(request, mlist_fqdn, tag=None, page=1):
         thread_ids = {}
 
     threads = []
-    for thread in thread_ids:
-        threads_tmp = store.get_messages_in_thread(mlist_fqdn, thread.threadid)
-        threads.append(threads_tmp[0])
+    for thread_id in thread_ids:
+        threads.append(store.get_thread(mlist_fqdn, thread_id))
 
     return _search_results_page(request, mlist_fqdn, threads,
         'Tag search', page, limit=50)
