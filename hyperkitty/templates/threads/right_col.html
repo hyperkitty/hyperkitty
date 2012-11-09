@@ -1,4 +1,5 @@
 {% load gravatar %}
+{% load hk_generic %}
 
 <!-- right column -->
 <section id="thread_overview_info">
@@ -47,12 +48,12 @@
 		</form>
 	</div>
 	<div id="participants">
-		<span id="participants_title"> participants </span>({{participants|length}})
+		<span id="participants_title">participants</span> ({{participants|length}})
 		<ul>
-			{% for key,value in participants.items %}
+			{% for name, email in participants.items|sort %}
 			<li>
-				{% gravatar_img_for_email value.email 20%}
-				{{key}}
+				{% gravatar_img_for_email email 20 %}
+				{{ name }}
 			</li>
 			{% endfor %}
 		</ul>

@@ -25,6 +25,8 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template import RequestContext, loader
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
+from django.core.urlresolvers import reverse
+from django.utils.datastructures import SortedDict
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
@@ -35,23 +37,20 @@ from forms import *
 from hyperkitty.lib import get_months, get_store, stripped_subject
 
 
-def thread_index (request, mlist_fqdn, threadid):
+def thread_index(request, mlist_fqdn, threadid):
     ''' Displays all the email for a given thread identifier '''
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('thread.html')
     store = get_store(request)
-    messages = store.get_messages_in_thread(mlist_fqdn, threadid)
-    if not messages:
+    thread = store.get_thread(mlist_fqdn, threadid)
+    if not thread:
         raise Http404
     prev_thread, next_thread = store.get_thread_neighbors(mlist_fqdn, threadid)
 
     participants = {}
     cnt = 0
 
-    for message in messages:
-        # @TODO: Move this logic inside KittyStore?
-        message.sender_email = message.sender_email.strip()
-
+    for message in thread.emails:
         # Extract all the votes for this message
         try:
             votes = Rating.objects.filter(messageid=message.message_id)
@@ -82,11 +81,12 @@ def thread_index (request, mlist_fqdn, threadid):
 
 
         # Statistics on how many participants and messages this month
-        participants[message.sender_name] = {'email': message.sender_email}
+        participants[message.sender_name] = message.sender_email
         cnt = cnt + 1
 
     archives_length = get_months(store, mlist_fqdn)
-    from_url = '/thread/%s/%s/' % (mlist_fqdn, threadid)
+    from_url = reverse("thread", kwargs={"mlist_fqdn":mlist_fqdn,
+                                         "threadid":threadid})
     tag_form = AddTagForm(initial={'from_url' : from_url})
 
     try:
@@ -96,11 +96,11 @@ def thread_index (request, mlist_fqdn, threadid):
 
     # Extract relative dates
     today = datetime.date.today()
-    days_old = today - messages[0].date.date()
-    days_inactive = today - messages[-1].date.date()
+    days_old = today - thread.starting_email.date.date()
+    days_inactive = today - thread.last_email.date.date()
 
     mlist = store.get_list(mlist_fqdn)
-    subject = stripped_subject(mlist, messages[0].subject)
+    subject = stripped_subject(mlist, thread.starting_email.subject)
 
     c = RequestContext(request, {
         'mlist' : mlist,
@@ -113,8 +113,8 @@ def thread_index (request, mlist_fqdn, threadid):
         'month': 'Thread',
         'participants': participants,
         'answers': cnt,
-        'first_mail': messages[0],
-        'replies': messages[1:],
+        'first_mail': thread.starting_email,
+        'replies': list(thread.emails)[1:],
         'neighbors': (prev_thread, next_thread),
         'archives_length': archives_length,
         'days_inactive': days_inactive.days,

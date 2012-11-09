@@ -25,43 +25,46 @@
         {% endif %}
     </div>
 
-	{% for email in threads %}
+	{% for thread in threads %}
 	<!-- New thread -->
 	<div class="thread">
 		<div class="notsaved">
-			<span class="thread_title"><a name="{{email.thread_id}}"
-				href="{% url thread threadid=email.thread_id, mlist_fqdn=list_address %}">{{ email.subject|strip_subject:mlist }}</a></span>
-			<span class="thread_date">{{email.date|timesince }}</span>
+			<span class="thread_title"><a name="{{thread.thread_id}}"
+				href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
+				>{{ thread.starting_email.subject|strip_subject:mlist }}</a></span>
+			<span class="thread_date">{{thread.date_active|timesince }}</span>
 		</div>
 		<div class="thread_content">
-			{% if email.category_tag %}
-			<div class="inline-block type type_{{email.category_tag}}">
-				<a href="{% url search_tag mlist_fqdn=list_address, tag=email.category_tag %}">{{email.category}}</a>
+			{% if thread.category_tag %}
+			<div class="inline-block type type_{{thread.category_tag}}">
+				<a href="{% url search_tag mlist_fqdn=list_address, tag=thread.category_tag %}"
+					>{{thread.category}}</a>
 			</div>
 			{% endif %}
-			{% if email.category %}
-			<div class="inline-block type type_{{email.category|lower}}">
-				<a href="{% url search_tag mlist_fqdn=list_address, tag=email.category|lower %}">{{email.category}}</a>
+			{% if thread.category %}
+			<div class="inline-block type type_{{thread.category|lower}}">
+				<a href="{% url search_tag mlist_fqdn=list_address, tag=thread.category|lower %}"
+					>{{thread.category}}</a>
 			</div>
 			{% endif %}
 			<div class="inline-block gravatar">
-				{% if email.sender_email %}
-				{% gravatar_img_for_email email.sender_email 40 %}
+				{% if thread.starting_email.sender_email %}
+				{% gravatar_img_for_email thread.starting_email.sender_email 40 %}
 				<br />
 				{% endif %}
-				{{email.sender_name}}
+				{{ thread.starting_email.sender_name }}
 			</div>
 			<div class="thread_email">
-				<span class="expander"> {{email.content}} </span>
+				<span class="expander">{{ thread.starting_email.content }}</span>
 			</div>
 		</div>
 		<div class="thread_info">
 			<ul class="tags inline">
-                {% if email.tags|length %}
+				{% if thread.tags|length %}
 				<li>
 					Tags:
 				</li>
-				{% for tag in email.tags %}
+				{% for tag in thread.tags %}
 				<li>
 					<a href="{% url search_tag mlist_fqdn=list_address, tag=tag %}">{{tag}}</a>
 				</li>
@@ -70,16 +73,16 @@
 			</ul>
 			<ul class="inline-block">
 				<li class="participant">
-					{{email.participants|length}} participants
+					{{ thread.participants|length }} participants
 				</li>
 				<li class="discussion">
-					{{email.answers}} comments
+					{{ thread|length }} comments
 				</li>
 			</ul>
-            {% if use_mockups %}
-			<ul class="inline-block" messageid="{{email.message_id_hash}}">
-				<li class="likestatus {{email.likestatus}}">
-					+{{email.avglike}}/-{{email.avgdislike}}
+			{% if use_mockups %}
+			<ul class="inline-block" messageid="{{ thread.thread_id }}">
+				<li class="likestatus {{ thread.likestatus }}">
+					+{{ thread.avglike }}/-{{ thread.avgdislike }}
 				</li>
 				<li class="voteup">
 					<a class="youlike" href="#like">Like</a>
@@ -88,9 +91,9 @@
 					<a class="youdislike" href="#dislike">Dislike</a>
 				</li>
 			</ul>
-            <a href="{% url thread threadid=email.thread_id, mlist_fqdn=list_address %}"
-               class="btn">Show discussion</a>
-            {% endif %}
+			<a href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
+			   class="btn">Show discussion</a>
+			{% endif %}
 		</div>
 	</div>
 	<!-- End of thread -->
@@ -113,7 +116,7 @@
 			userCollapseText : 'View Less',
 			expandText : 'View More'
 		});
-	}); 
+	});
 </script>
 {% endblock %}
 

@@ -81,34 +81,37 @@
 	</section>
 	<section id="most_active">
 		<h2>Recently active discussions</h2>
-		{% for email in most_active_threads %}
+		{% for thread in most_active_threads %}
 		<!-- Start thread -->
 		<div class="thread">
 			<span class="thread_id">#{{forloop.counter}}</span>
-			<span class="thread_title"> <a name="{{email.thread_id}}"
-				href="{% url thread threadid=email.thread_id, mlist_fqdn=list_address %}">{{ email.subject|strip_subject:mlist }}</a> </span>
+			<span class="thread_title"><a name="{{thread.thread_id}}"
+				href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
+				>{{ thread.starting_email.subject|strip_subject:mlist }}</a></span>
 			<div class="thread_stats">
 				<ul class="inline-block">
-					{% if email.category_tag %}
-					<li class="type type_{{email.category_tag}}">
-						<a href="{% url search_tag mlist_fqdn=list_address, tag=email.category_tag %}">{{email.category}}</a>
+					{% if thread.category_tag %}
+					<li class="type type_{{thread.category_tag}}">
+						<a href="{% url search_tag mlist_fqdn=list_address, tag=thread.category_tag %}"
+							>{{thread.category}}</a>
 					</li>
 					{% endif %}
-					{% if email.category %}
-					<li class="type type_{{email.category|lower}}">
-						<a href="{% url search_tag mlist_fqdn=list_address, tag=email.category|lower %}">{{email.category}}</a>
+					{% if thread.category %}
+					<li class="type type_{{thread.category|lower}}">
+						<a href="{% url search_tag mlist_fqdn=list_address, tag=thread.category|lower %}"
+							>{{thread.category}}</a>
 					</li>
 					{% endif %}
-                    {% if use_mockups %}
+					{% if use_mockups %}
 					<li class="likestatus neutral">
 						+0/-0
 					</li>
 					{% endif %}
 					<li class="participant">
-						{{email.participants|length}}
+						{{ thread.participants|length }}
 					</li>
 					<li class="discussion">
-						{{email.answers}}
+						{{ thread|length }}
 					</li>
 				</ul>
 			</div>
@@ -119,34 +122,37 @@
 
 	<section id="top_discussion">
 		<h2>Top discussions the last 30 days</h2>
-		{% for email in top_threads %}
+		{% for thread in top_threads %}
 		<!-- Start thread -->
 		<div class="thread">
 			<span class="thread_id">#{{forloop.counter}}</span>
-			<span class="thread_title"> <a name="{{email.thread_id}}"
-				href="{% url thread threadid=email.thread_id, mlist_fqdn=list_address %}">{{ email.subject|strip_subject:mlist }}</a> </span>
+			<span class="thread_title"> <a name="{{thread.thread_id}}"
+				href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
+					>{{ thread.starting_email.subject|strip_subject:mlist }}</a> </span>
 			<div class="thread_stats">
 				<ul class="inline-block">
-					{% if email.category_tag %}
-					<li class="type type_{{email.category_tag}}">
-						<a href="{% url search_tag mlist_fqdn=list_address, tag=email.category_tag %}">{{email.category}}</a>
+					{% if thread.category_tag %}
+					<li class="type type_{{thread.category_tag}}">
+						<a href="{% url search_tag mlist_fqdn=list_address, tag=thread.category_tag %}"
+							>{{ thread.category }}</a>
 					</li>
 					{% endif %}
-					{% if email.category %}
-					<li class="type type_{{email.category|lower}}">
-						<a href="{% url search_tag mlist_fqdn=list_address, tag=email.category|lower %}">{{email.category}}</a>
+					{% if thread.category %}
+					<li class="type type_{{thread.category|lower}}">
+						<a href="{% url search_tag mlist_fqdn=list_address, tag=thread.category|lower %}"
+							>{{ thread.category }}</a>
 					</li>
 					{% endif %}
-                    {% if use_mockups %}
+					{% if use_mockups %}
 					<li class="likestatus neutral">
 						+0/-0
 					</li>
-                    {% endif %}
+					{% endif %}
 					<li class="participant">
-						{{email.participants|length}}
+						{{ thread.participants|length }}
 					</li>
 					<li class="discussion">
-						{{email.answers}}
+						{{ thread|length }}
 					</li>
 				</ul>
 			</div>
@@ -155,7 +161,7 @@
 		{% endfor %}
 	</section>
 
-    {% if top_author %}
+	{% if top_author %}
 	<section id="discussion_marker">
 		<h2>Prominent discussion maker</h2>
 		{% for author in top_author %}
@@ -181,9 +187,9 @@
 
 		<h2>Tag cloud</h2>
 	</section>
-    {% endif %}
+	{% endif %}
 
-    {% if threads_per_category %}
+	{% if threads_per_category %}
 	<section id="discussion_by_topic">
 		<h2>Discussion by topic the last 30 days</h2>
 		{% for category, thread in threads_per_category.items %}
@@ -199,7 +205,7 @@
 		</div>
 		{% endfor %}
 	</section>
-    {% endif %}
+	{% endif %}
 
 </section>
 
