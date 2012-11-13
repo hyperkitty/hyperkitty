@@ -92,7 +92,6 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
     participants = set()
     cnt = 0
     for thread in threads:
-        print "*"*10, len(thread), thread.thread_id, thread.starting_email is None
         participants.update(thread.participants)
 
         highestlike = 0

@@ -1,8 +1,10 @@
 import datetime
 import re
 
+from dateutil.tz import tzutc, tzoffset
 from django import template
 from django.utils.datastructures import SortedDict
+from django.templatetags.tz import localtime
 
 register = template.Library()
 
@@ -100,3 +102,15 @@ def escapeemail(text):
     text = MAILTO_RE.sub(r"\1(a)\2", text)
     return text.replace("@", u"\uff20")
 
+
+@register.filter()
+def sender_date(email):
+    tz = tzoffset(None, email.timezone * 60)
+    email_date = email.date.replace(tzinfo=tzutc())
+    return email_date.astimezone(tz)
+
+
+@register.filter()
+def viewer_date(email):
+    email_date = email.date.replace(tzinfo=tzutc())
+    return localtime(email_date)
