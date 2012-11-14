@@ -161,10 +161,6 @@ ul.nav.auth {
    width: 70%;
 }
 
-.email_date .date {
-   font-weight: bold;
-}
-
 #top_right {
     position: absolute;
     right: 20px;
@@ -611,8 +607,7 @@ ul.attachments-list li {
 .email .email_date {
     font-size: 90%;
 }
-.first_email .email_date span {
-    display: block;
+.first_email .email_date {
     text-align: right;
 }
 .email_date .date {
@@ -621,6 +616,8 @@ ul.attachments-list li {
 .email_date .time {
     color: rgb(167, 169, 172);
     margin-left: 0.5em;
+    border-bottom: 1px dashed rgb(167, 169, 172);
+    cursor: help;
 }
 
 .add_comment {

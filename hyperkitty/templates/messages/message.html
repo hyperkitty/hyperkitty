@@ -6,13 +6,14 @@
 	<div class="email_date inline-block pull-right">
 		{% ifchanged %}
 		<span class="date">
-			{{email.date|date:"l, j F"}}
+			{{email|viewer_date|date:"l, j F"}}
 			{% if unfolded %}
-			{{email.date|date:"Y"}}
+			{{email|viewer_date|date:"Y"}}
 			{% endif %}
 		</span>
 		{% endifchanged %}
-		<span class="time">{{email.date|date:"H:i:s e"}}</span>
+		{% if unfolded %}<br />{% endif %}
+		<span class="time" title="Sender's time: {{email|sender_date|date:"l, j F H:i:s"}}">{{email|viewer_date|date:"H:i:s"}}</span>
 	</div>
     <div class="gravatar{% if use_mockups %} pull-left{% endif %}">
         {% gravatar_img_for_email email.email 40 %}
