@@ -19,7 +19,7 @@
         {% gravatar_img_for_email email.email 40 %}
     </div>
 	<div class="email_author inline-block">
-		<span class="name"><a href="{% url message_index mlist_fqdn=list_address, hashid=email.message_id_hash %}">{{email.sender_name}}</a></span>
+		<span class="name"><a href="{% url message_index mlist_fqdn=list_address, hashid=email.message_id_hash %}">{{email.sender_name|escapeemail}}</a></span>
         {% if use_mockups %}
 		<br />
 		<span class="rank">

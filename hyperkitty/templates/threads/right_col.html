@@ -53,7 +53,7 @@
 			{% for name, email in participants.items|sort %}
 			<li>
 				{% gravatar_img_for_email email 20 %}
-				{{ name }}
+				{{ name|escapeemail }}
 			</li>
 			{% endfor %}
 		</ul>
