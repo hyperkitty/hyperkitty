@@ -52,7 +52,7 @@
 				{% gravatar_img_for_email thread.starting_email.sender_email 40 %}
 				<br />
 				{% endif %}
-				{{ thread.starting_email.sender_name }}
+				{{ thread.starting_email.sender_name|escapeemail }}
 			</div>
 			<div class="thread_email">
 				<span class="expander">{{ thread.starting_email.content }}</span>
