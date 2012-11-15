@@ -110,12 +110,15 @@
 
 {% block additionaljs %}
 <script src="{{ STATIC_URL }}js/libs/jquery.expander.js"></script>
+<script src="{{ STATIC_URL }}js/libs/jquery-ui-1.9.1.custom.min.js"></script>
 <script>
 	$(document).ready(function() {
 		$('span.expander').expander({
 			userCollapseText : 'View Less',
 			expandText : 'View More'
 		});
+
+		$("#archives").accordion({navigation: true});
 	});
 </script>
 {% endblock %}

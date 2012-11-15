@@ -205,6 +205,16 @@ ul.nav.auth {
     float: left;
 }
 
+#archives h3.ui-state-hover {
+    cursor: pointer;
+    text-decoration: underline;
+}
+#archives h3.ui-state-active.ui-state-hover {
+    cursor: text;
+    color: inherit;
+    text-decoration: none;
+}
+
 #archives ul {
     padding: 0;
     margin: 0;
