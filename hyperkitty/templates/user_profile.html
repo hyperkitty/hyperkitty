@@ -46,6 +46,8 @@
 			<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}">Message is empty</a>
 		{% endif %}
 		</li>
+	{% empty %}
+		<p>No up vote yet.</p>
 	{% endfor %}
 	</ul>
 
@@ -59,6 +61,8 @@
 			<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}">Message is empty</a>
 		{% endif %}
 		</li>
+	{% empty %}
+		<p>No down vote yet.</p>
 	{% endfor %}
 	</ul>
 

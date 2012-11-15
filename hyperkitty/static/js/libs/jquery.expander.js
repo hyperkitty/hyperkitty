@@ -9,7 +9,7 @@
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl.html
  *
- *
+ * https://github.com/kswedberg/jquery-expander/blob/a3393d68e28cde673a53cabba2cd49dc8d980f7f/jquery.expander.js
  *
  *
 */
