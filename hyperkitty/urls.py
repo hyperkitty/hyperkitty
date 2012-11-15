@@ -51,9 +51,9 @@ urlpatterns = patterns('hyperkitty.views',
         'list.search_keyword'),
     # Show the first page as default when no page number is present in URL
     url(r'^search/(?P<mlist_fqdn>.*@.*)\/(?P<target>.*)\/(?P<keyword>.*)/$',
-        'list.search_keyword'),
+        'list.search_keyword', name="search_keyword"),
     url(r'^search/(?P<mlist_fqdn>.*@.*)/$',
-        'list.search'),
+        'list.search', name="search_list"),
 
 
     ### MESSAGE LEVEL VIEWS ###
