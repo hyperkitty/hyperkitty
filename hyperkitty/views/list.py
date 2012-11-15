@@ -30,6 +30,7 @@ import django.utils.simplejson as simplejson
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext, loader
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
@@ -311,11 +312,14 @@ def search(request, mlist_fqdn):
     target = request.GET.get('target')
     page = request.GET.get('page')
     if keyword and target:
-        url = '/search/%s/%s/%s/' % (mlist_fqdn, target, keyword)
+        url = reverse('search_keyword',
+                      kwargs={'mlist_fqdn': mlist_fqdn,
+                              'target': target,
+                              'keyword': keyword})
         if page:
             url += '%s/' % page
     else:
-        url = '/search/%s' % (mlist_fqdn)
+        url = reverse('search_list', kwargs={"mlist_fqdn": mlist_fqdn})
     return HttpResponseRedirect(url)
 
 
