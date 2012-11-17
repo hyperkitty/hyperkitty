@@ -87,12 +87,12 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
     t = loader.get_template('month_view.html')
     store = get_store(request)
     mlist = store.get_list(mlist_fqdn)
-    threads = store.get_threads(mlist_fqdn, start=begin_date,
-        end=end_date)
+    all_threads = store.get_threads(mlist_fqdn, start=begin_date,
+                                    end=end_date)
 
     participants = set()
-    cnt = 0
-    for thread in threads:
+    #cnt = 0
+    for thread in all_threads:
         participants.update(thread.participants)
 
         highestlike = 0
@@ -142,10 +142,10 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         #elif thread.avglike - thread.avgdislike < 0:
         #    thread.likestatus = "dislike"
 
-        threads[cnt] = thread
-        cnt = cnt + 1
+        #threads[cnt] = thread
+        #cnt = cnt + 1
 
-    paginator = Paginator(threads, 10)
+    paginator = Paginator(all_threads, 10)
     pageNo = request.GET.get('page')
 
     try:
@@ -175,7 +175,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         'month': begin_date,
         'month_num': begin_date.month,
         'month_participants': len(participants),
-        'month_discussions': len(threads),
+        'month_discussions': len(all_threads),
         'threads': threads,
         'pages' : paginator.object_list,
         'archives_length': archives_length,
