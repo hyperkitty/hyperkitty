@@ -1,0 +1,5 @@
+include AUTHORS.txt COPYING.txt pylintrc distribute_setup.py
+# http://bruno.im/2010/may/05/packaging-django-reusable-app/
+recursive-include hyperkitty *.py *.html *.js
+graft hyperkitty/static
+include doc/conf.py doc/Makefile doc/*.rst

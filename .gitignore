@@ -5,3 +5,6 @@
 kittystore
 logs
 *.egg-info
+doc/_build
+doc/_static
+/dist
