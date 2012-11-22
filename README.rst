@@ -15,6 +15,9 @@ the following command::
 
 The HTML files will be available in the ``doc/_build/html`` directory.
 
+The documentation can also be browsed online at:
+https://hyperkitty.readthedocs.org.
+
 .. _Sphinx: http://sphinx-doc.org
 
 
