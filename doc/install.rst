@@ -40,9 +40,6 @@ file) and ``KITTYSTORE_URL`` (at the bottom).
 
 .. _Django documentation: https://docs.djangoproject.com/en/1.4/ref/settings/#databases
 
-Third, you must setup the database tables, and the admin account (you will be
-prompted for it).
-
 
 .. Setting up the databases
 
@@ -66,13 +63,13 @@ Add following line to your apache/httpd configuration file::
 
 And reload Apache. We're almost ready. But you need to collect the static files
 from HyperKitty (which resides somewhere on your pythonpath) to be able to
-serve them from the site directory. All you have to do is to change into the
-``hyperkitty_standalone`` directory and run::
+serve them from the site directory. All you have to do is run::
 
-    python manage.py collectstatic
+    python hyperkitty_standalone/manage.py collectstatic
 
-These static files will be served by Apache. You should now be all set. Try
-accessing HyperKitty in your web browser.
+These static files will be collected in the ``hyperkitty_standalone/static``
+directory and served by Apache. You should now be all set. Try accessing
+HyperKitty in your web browser.
 
 
 Connecting to Mailman

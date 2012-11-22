@@ -11,6 +11,8 @@
 			<td><a href="{% url list_overview mlist_fqdn=mlist %}"> Overview </a></td>
 			<td><a href="{% url archives mlist_fqdn=mlist %}"> Archives </a></td>
 		</tr>
+		{% empty %}
+		<tr><td>No archived list yet.</td></tr>
 		{% endfor %}
 	</tbody>
 </table>
