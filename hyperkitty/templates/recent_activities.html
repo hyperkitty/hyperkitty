@@ -82,7 +82,7 @@
 			<span class="thread_id">#{{forloop.counter}}</span>
 			<span class="thread_title"><a name="{{thread.thread_id}}"
 				href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
-				>{{ thread.starting_email.subject|strip_subject:mlist }}</a></span>
+				>{{ thread.subject|strip_subject:mlist }}</a></span>
 			<div class="thread_stats">
 				<ul class="inline-block">
 					{% if thread.category_tag %}
@@ -106,7 +106,7 @@
 						{{ thread.participants|length }}
 					</li>
 					<li class="discussion">
-						{{ thread|length }}
+						{{ thread.length }}
 					</li>
 				</ul>
 			</div>
@@ -123,7 +123,7 @@
 			<span class="thread_id">#{{forloop.counter}}</span>
 			<span class="thread_title"> <a name="{{thread.thread_id}}"
 				href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
-					>{{ thread.starting_email.subject|strip_subject:mlist }}</a> </span>
+					>{{ thread.subject|strip_subject:mlist }}</a> </span>
 			<div class="thread_stats">
 				<ul class="inline-block">
 					{% if thread.category_tag %}
@@ -147,7 +147,7 @@
 						{{ thread.participants|length }}
 					</li>
 					<li class="discussion">
-						{{ thread|length }}
+						{{ thread.length }}
 					</li>
 				</ul>
 			</div>

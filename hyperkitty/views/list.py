@@ -25,6 +25,7 @@ import logging
 from calendar import timegm
 from datetime import datetime, timedelta
 from urlparse import urljoin
+from collections import namedtuple
 
 import django.utils.simplejson as simplejson
 from django.http import HttpResponse, HttpResponseRedirect
@@ -196,12 +197,20 @@ def list(request, mlist_fqdn=None):
 
     store = get_store(request)
     mlist = store.get_list(mlist_fqdn)
-    threads = store.get_threads(list_name=mlist_fqdn, start=begin_date,
+    threads_result = store.get_threads(list_name=mlist_fqdn, start=begin_date,
         end=end_date)
 
+    threads = []
+    Thread = namedtuple('Thread', ["thread_id", "subject", "participants",
+                                   "length", "date_active"])
     participants = set()
     dates = {}
-    for thread in threads:
+    for thread_obj in threads_result:
+        thread = Thread(thread_obj.thread_id, thread_obj.subject,
+                        thread_obj.participants, len(thread_obj),
+                        thread_obj.date_active)
+        threads.append(thread)
+
         month = thread.date_active.month
         if month < 10:
             month = '0%s' % month
@@ -217,10 +226,10 @@ def list(request, mlist_fqdn=None):
         participants.update(thread.participants)
 
     # top threads are the one with the most answers
-    top_threads = sorted(threads, key=lambda entry: len(entry), reverse=True)
+    top_threads = sorted(threads, key=lambda t: t.length, reverse=True)
 
     # active threads are the ones that have the most recent posting
-    active_threads = sorted(threads, key=lambda entry: entry.date_active, reverse=True)
+    active_threads = sorted(threads, key=lambda t: t.date_active, reverse=True)
 
     archives_length = get_months(store, mlist_fqdn)
 
