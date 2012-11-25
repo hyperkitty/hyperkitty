@@ -11,6 +11,7 @@
 
 <section id="recent_activities">
 	<section id="graph">
+		<h2>Activities on the list over the last 30 days</h2>
 		<div id="fig">
 			<script type="text/javascript+protovis" >
 
@@ -56,12 +57,6 @@
 				}
 				return cur;
 				}
-
-				var title = vis.add(pv.Label)
-				.left(250)
-				.top(16)
-				.textAlign("center")
-				.text("Activities on the list over the last 30 days");
 
 				vis.add(pv.Rule)
 				.data(y.ticks())

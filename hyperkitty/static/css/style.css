@@ -228,6 +228,11 @@ ul.nav.auth {
     font-weight: bold;
 }
 
+#graph h2 {
+    text-align: center;
+}
+
+
 /* Month view header */
 
 #month-view .month-header {
