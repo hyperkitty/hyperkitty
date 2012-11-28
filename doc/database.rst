@@ -11,13 +11,12 @@ created using the following command::
 KittyStore's database will be created automatically on first access.
 
 Then, you can run ``kittystore-import`` to import existing archives into the
-mailman database. Thoses archives can be downloaded by a script similar to the
-``get_mbox.py`` script provided in the ``kittystore`` module. If you're
-installing hyperkitty on the machine which hosted the previous version of
-mailman, the archived are already available locally and you can use them
-directly.
+mailman database. Thoses archives can be downloaded by calling
+``kittystore-download21``. If you're installing hyperkitty on the machine which
+hosted the previous version of mailman, the archives are already available
+locally and you can use them directly.
 
-.. warning::
+.. note::
     If you're using SQLite and you're getting "Database is locked" errors, stop
     your webserver during the import.
 
