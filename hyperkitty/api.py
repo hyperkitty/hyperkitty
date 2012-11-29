@@ -20,7 +20,7 @@
 import json
 import re
 
-from djangorestframework.views import View
+from rest_framework.views import View
 from django.conf.urls.defaults import url
 from django.conf import settings
 from django.http import HttpResponseNotModified, HttpResponse
