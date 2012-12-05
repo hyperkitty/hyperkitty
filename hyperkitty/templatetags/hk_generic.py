@@ -5,6 +5,8 @@ from dateutil.tz import tzutc, tzoffset
 from django import template
 from django.utils.datastructures import SortedDict
 from django.templatetags.tz import localtime
+from django.utils.html import conditional_escape
+from django.utils.safestring import mark_safe
 
 register = template.Library()
 
@@ -114,3 +116,35 @@ def sender_date(email):
 def viewer_date(email):
     email_date = email.date.replace(tzinfo=tzutc())
     return localtime(email_date)
+
+
+SNIPPED_RE = re.compile("^\s*&gt;.*$", re.M)
+@register.filter(needs_autoescape=True)
+def snip_quoted(content, quotemsg="[...]", autoescape=None):
+    """Snip quoted text in messages"""
+    if autoescape:
+        content = conditional_escape(content)
+    quoted = []
+    current_quote = []
+    quoting = False
+    lastline = None
+    for line in content.split("\n"):
+        if SNIPPED_RE.match(line):
+            quoting = True
+            if lastline == "":
+                current_quote.append(lastline)
+        else:
+            quoting = False
+            if current_quote:
+                quoted.append(current_quote[:])
+                current_quote = []
+        if quoting:
+            current_quote.append(line)
+        lastline = line
+    for quote in quoted:
+        replaced = ('<a href="#" class="quoted-switch">%s</a>' % quotemsg
+                   +'<span class="quoted-text">\n'
+                   +"\n".join([q for q in quote if q != ""])
+                   +'</span>')
+        content = content.replace("\n".join(quote), replaced)
+    return mark_safe(content)

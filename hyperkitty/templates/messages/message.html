@@ -29,13 +29,8 @@
 	</div>
 </div>
 
-{% if unfolded %}
-<div class="first_email_body">
-{% else %}
-<div class="email_body">
-{% endif %}
-{{email.content|urlizetrunc:76|escapeemail}}
-</div>
+<div class="{% if unfolded %}first_{% endif %}email_body"
+ >{{ email.content|urlizetrunc:76|escapeemail|snip_quoted }}</div>
 
 {% if unfolded and email.attachments|count %}
 <p class="attachments">Attachments:</p>

@@ -697,3 +697,7 @@ ul.attachments-list li {
     margin-top: 5px;
 }
 
+.email_body .quoted-text {
+    display: none;
+}
+

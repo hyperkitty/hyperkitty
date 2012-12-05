@@ -22,3 +22,4 @@
 from hyperkitty.tests.test_views import *
 from hyperkitty.tests.test_models import *
 from hyperkitty.tests.test_forms import *
+from hyperkitty.tests.test_templatetags import *
