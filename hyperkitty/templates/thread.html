@@ -44,9 +44,9 @@
 <script src="{{ STATIC_URL }}js/libs/jquery.expander.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('div.email_body').expander({
-			userCollapseText : 'View Less',
-			expandText : 'View More'
+		$('div.email_body a.quoted-switch').click(function() {
+			$(this).next(".quoted-text").toggle();
+			return false;
 		});
 	});
 </script>
