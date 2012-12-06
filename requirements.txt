@@ -1,5 +1,5 @@
 Django>=1.4
-django-gravatar>=0.1.0
+django-gravatar2
 django-social-auth>=0.7.0
 djangorestframework>=0.3.3
 mailman>=3.0.0b2

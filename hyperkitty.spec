@@ -19,7 +19,7 @@ BuildRequires:  django-rest-framework >= 0.3.3
 BuildRequires:  django-social-auth >= 0.7.0
 
 Requires:       Django >= 1.4
-Requires:       django-gravatar >= 0.1.0
+Requires:       django-gravatar2
 Requires:       django-social-auth >= 0.7.0
 Requires:       django-rest-framework >= 0.3.3
 Requires:       mailman >= 3.0.0b2

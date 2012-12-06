@@ -49,7 +49,7 @@
 			{% endif %}
 			<div class="inline-block gravatar">
 				{% if thread.starting_email.sender_email %}
-				{% gravatar_img_for_email thread.starting_email.sender_email 40 %}
+				{% gravatar thread.starting_email.sender_email 40 %}
 				<br />
 				{% endif %}
 				{{ thread.starting_email.sender_name|escapeemail }}
