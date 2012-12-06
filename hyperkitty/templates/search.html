@@ -30,7 +30,7 @@
 		{% endif %}
 		<div class="inline-block gravatar">
 			{% if email.sender_email %}
-			{% gravatar_img_for_email email.sender_email 40 %}
+			{% gravatar email.sender_email 40 %}
 			<br />
 			{% endif %}
 			{{email.sender_name}}
