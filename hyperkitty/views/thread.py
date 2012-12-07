@@ -124,9 +124,11 @@ def thread_index(request, mlist_fqdn, threadid):
     return HttpResponse(t.render(c))
 
 
-@login_required
 def add_tag(request, mlist_fqdn, email_id):
     """ Add a tag to a given thread. """
+    if not request.user.is_authenticated():
+        return HttpResponse('You must be logged in to add a tag',
+                            content_type="text/plain", status=403)
 
     if request.method == 'POST':
         form = AddTagForm(request.POST)

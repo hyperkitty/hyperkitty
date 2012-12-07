@@ -116,11 +116,11 @@ def attachment(request, mlist_fqdn, hashid, counter, filename):
     return response
 
 
-@login_required
 def vote(request, mlist_fqdn):
     """ Add a rating to a given message identified by messageid. """
     if not request.user.is_authenticated():
-        return redirect('user_login')
+        return HttpResponse('You must be logged in to vote',
+                            content_type="text/plain", status=403)
 
     value = request.POST['vote']
     hashid = request.POST['hashid']

@@ -43,8 +43,11 @@
 </ul>
 {% endif %}
 
-<ul class="email_info inline" messageid="{{email.message_id_hash}}">
+<ul class="email_info inline">
 {% if use_mockups %}
+	<form method="post" action="{% url message_vote mlist_fqdn=list_address %}">
+	<input type="hidden" name="messageid" value="{{email.message_id_hash}}" />
+	{% csrf_token %}
 	<li class="likestatus {{email.likestatus}}">
 		+{{email.likes}}/-{{email.dislikes}}
 	</li>
@@ -54,6 +57,7 @@
 	<li class="votedown">
 		<a class="youdislike" href="#dislike">Dislike</a>
 	</li>
+	</form>
 {% endif %}
 {% if not unfolded and email.attachments|count %}
     <li class="attachments">
