@@ -36,13 +36,15 @@ function vote(elem, value) {
     $.ajax({
         type: "POST",
         url: $(elem).parent("form").attr("action"),
+        dataType: "json",
         data: data,
         success: function(response) {
-            // @TODO : Remove this reload and update the count using the AJAX response
-            location.reload();
+            var likestatus = $(elem).parent("form").find(".likestatus");
+            likestatus.find(".likecount").html(response.like);
+            likestatus.find(".dislikecount").html(response.dislike);
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            // You must be authenticated to do that
+            // authentication or double-vote
             if (jqXHR.status === 403) {
                 alert(jqXHR.responseText);
             }
@@ -65,17 +67,15 @@ function setup_add_tag() {
     $("#add_tag_form").submit( function () {
         $.ajax({
             type: "POST",
+            dataType: "json",
             data : $(this).serialize(),
             url: $(this).attr("action"),
-            success: function(data){
-                // @TODO : Remove this reload and update the tag list using the AJAX response
-                //location.reload();
+            success: function(data) {
+                $("#tags").html(data.html);
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                // You must be authenticated to do that
-                if (jqXHR.status === 403) {
-                    alert(jqXHR.responseText);
-                }
+                // authentication and invalid data
+                alert(jqXHR.responseText);
             }
         });
         return false;

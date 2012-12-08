@@ -90,7 +90,7 @@ def thread_index(request, mlist_fqdn, threadid):
     tag_form = AddTagForm(initial={'from_url' : from_url})
 
     try:
-        tags = Tag.objects.filter(threadid=threadid)
+        tags = Tag.objects.filter(threadid=threadid, list_address=mlist_fqdn)
     except Tag.DoesNotExist:
         tags = {}
 
@@ -124,28 +124,36 @@ def thread_index(request, mlist_fqdn, threadid):
     return HttpResponse(t.render(c))
 
 
-def add_tag(request, mlist_fqdn, email_id):
+def add_tag(request, mlist_fqdn, hashid):
     """ Add a tag to a given thread. """
     if not request.user.is_authenticated():
         return HttpResponse('You must be logged in to add a tag',
                             content_type="text/plain", status=403)
 
-    if request.method == 'POST':
-        form = AddTagForm(request.POST)
-        if form.is_valid():
-            print "Adding tag..."
+    if request.method != 'POST':
+        return HttpResponse("Something went wrong here",
+                            content_type="text/plain", status=500)
 
-            tag = form.data['tag']
+    form = AddTagForm(request.POST)
+    if not form.is_valid():
+        return HttpResponse("Error adding tag: invalid data",
+                            content_type="text/plain", status=500)
+    tag = form.data['tag']
+    try:
+        tag_obj = Tag.objects.get(threadid=hashid,
+                                  list_address=mlist_fqdn, tag=tag)
+    except Tag.DoesNotExist:
+        tag_obj = Tag(list_address=mlist_fqdn, threadid=hashid, tag=tag)
+        tag_obj.save()
 
-            try:
-                tag_obj = Tag.objects.get(threadid=email_id, list_address=mlist_fqdn, tag=tag)
-            except Tag.DoesNotExist:
-                tag_obj = Tag(list_address=mlist_fqdn, threadid=email_id, tag=tag)
+    # Now refresh the tag list
+    tags = Tag.objects.filter(threadid=hashid, list_address=mlist_fqdn)
+    t = loader.get_template('threads/tags.html')
+    html = t.render(RequestContext(request, {
+            "tags": tags,
+            "list_address": mlist_fqdn}))
 
-            tag_obj.save()
-            response_dict = { }
-        else:
-            response_dict = {'error' : 'Error adding tag, enter valid data' }
-
-    return HttpResponse(simplejson.dumps(response_dict), mimetype='application/javascript')
+    response = {"tags": [ t.tag for t in tags ], "html": html}
+    return HttpResponse(simplejson.dumps(response),
+                        mimetype='application/javascript')
 

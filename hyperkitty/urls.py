@@ -75,7 +75,7 @@ urlpatterns = patterns('hyperkitty.views',
         'thread.thread_index', name='thread_index'),
 
     # Add Tag to a thread
-    url(r'^addtag/(?P<mlist_fqdn>.*@.*)\/(?P<email_id>.*)/$',
+    url(r'^addtag/(?P<mlist_fqdn>.*@.*)\/(?P<hashid>.*)/$',
         'thread.add_tag', name='add_tag'),
     ### THREAD LEVEL VIEW ENDS ###
 
