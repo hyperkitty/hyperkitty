@@ -17,7 +17,7 @@
 # HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Author: Aamir Khan <syst3m.w0rm@gmail.com>
-# 
+#
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -40,7 +40,7 @@ class Rating(models.Model):
     def __unicode__(self):
         """Unicode representation"""
         if self.vote == 1:
-              return u'id = %s : %s voted up %s' % (self.id, unicode(self.user), self.messageid)
+            return u'id = %s : %s voted up %s' % (self.id, unicode(self.user), self.messageid)
         else:
             return u'id = %s : %s voted down %s' % (self.id, unicode(self.user), self.messageid)
 

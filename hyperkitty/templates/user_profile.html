@@ -3,40 +3,40 @@
 {% load hk_generic %}
 
 {% block content %}
-    <h1>User Profile <span>- {{ user }}</span></h1>
+	<h1>User Profile <span>- {{ user }}</span></h1>
 
-    <table class="table table-bordered table-striped mm_userData">
-    	<tbody>
-    		<tr>
-    			<th>{% trans 'User name' %}</th>
-    			<td>{{ user.username}}</td>
-    		</tr>
-    		<tr>
-    			<th>{% trans 'Firstname' %}</th>
-    			<td>{{ user.first_name }}</td>
-    		</tr>
-    		<tr>
-    			<th>{% trans 'Lastname' %}</th>
-    			<td>{{ user.last_name }}</td>
-    		</tr>
+	<table class="table table-bordered table-striped mm_userData">
+		<tbody>
+			<tr>
+				<th>{% trans 'User name' %}</th>
+				<td>{{ user.username}}</td>
+			</tr>
+			<tr>
+				<th>{% trans 'Firstname' %}</th>
+				<td>{{ user.first_name }}</td>
+			</tr>
+			<tr>
+				<th>{% trans 'Lastname' %}</th>
+				<td>{{ user.last_name }}</td>
+			</tr>
 		<tr>
-    			<th>{% trans 'Email' %}</th>
-    			<td>{{ user.email }}</td>
-    		</tr>
+				<th>{% trans 'Email' %}</th>
+				<td>{{ user.email }}</td>
+			</tr>
 		<tr>
-    			<th>{% trans 'Karma' %}</th>
-    			<td>{{ user_profile.karma }}</td>
-    		</tr>
+				<th>{% trans 'Karma' %}</th>
+				<td>{{ user_profile.karma }}</td>
+			</tr>
 		<tr>
-    			<th>{% trans 'Date Joined' %}</th>
-    			<td>{{ user.date_joined }}</td>
-    		</tr>
-    	</tbody>
-    </table>
+				<th>{% trans 'Date Joined' %}</th>
+				<td>{{ user.date_joined }}</td>
+			</tr>
+		</tbody>
+	</table>
 
-    {% if use_mockups %}
+	{% if use_mockups %}
 
-    <h3> Up Votes : </h3>
+	<h3> Up Votes : </h3>
 	<ul>
 	{% for vote in votes_up %}
 		<li>
@@ -66,7 +66,9 @@
 	{% endfor %}
 	</ul>
 
-    {% endif %}
+	{% endif %}
 
 
 {% endblock %}
+
+{# vim: set noet: #}

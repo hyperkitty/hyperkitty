@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License along with
 # HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
 #
+# Author: Aurelien Bompard <abompard@fedoraproject.org>
+#
 
 import re
 import datetime

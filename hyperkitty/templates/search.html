@@ -23,7 +23,7 @@
 			<a href="{% url search_tag mlist_fqdn=list_address, tag=email.category_tag %}">{{email.category}}</a>
 		</div>
 		{% endif %}
-        {% if email.category %}
+		{% if email.category %}
 		<div class="inline-block type type_{{email.category|lower}}">
 			<a href="{% url search_tag mlist_fqdn=list_address, tag=email.category|lower %}">{{email.category}}</a>
 		</div>
@@ -95,3 +95,5 @@ Sorry no emails could be found for your search.
 	}); 
 </script>
 {% endblock %}
+
+{# vim: set noet: #}
