@@ -1,8 +1,8 @@
 %global pypi_name HyperKitty
 
 Name:           hyperkitty
-Version:        0.1.3
-Release:        3%{?dist}
+Version:        0.1.4
+Release:        0.1%{?dist}
 Summary:        A web interface to access GNU Mailman v3 archives
 
 License:        GPLv3
