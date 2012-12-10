@@ -129,21 +129,21 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
             totaldislikes = totaldislikes + dislikes
 
         try:
-            thread.avglike = totallikes / totalvotes
+            thread.likes = totallikes / totalvotes
         except:
-            thread.avglike = 0
+            thread.likes = 0
 
         try:
-            thread.avgdislike = totaldislikes / totalvotes
+            thread.dislikes = totaldislikes / totalvotes
         except:
-            thread.avgdislike = 0
+            thread.dislikes = 0
 
         thread.likestatus = "neutral"
-        if thread.avglike - thread.avgdislike >= 10:
+        if thread.likes - thread.dislikes >= 10:
             thread.likestatus = "likealot"
-        elif thread.avglike - thread.avgdislike > 0:
+        elif thread.likes - thread.dislikes > 0:
             thread.likestatus = "like"
-        #elif thread.avglike - thread.avgdislike < 0:
+        #elif thread.likes - thread.dislikes < 0:
         #    thread.likestatus = "dislike"
 
         #threads[cnt] = thread
