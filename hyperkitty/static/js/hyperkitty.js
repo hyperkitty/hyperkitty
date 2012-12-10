@@ -82,6 +82,69 @@ function setup_add_tag() {
 }
 
 
+/*
+ * Recent activity graph
+ */
+
+function activity_graph(dates, data, baseurl) {
+    var w = 500,
+        h = 300,
+        x = pv.Scale.ordinal(pv.range(32)).splitBanded(0, w, 4/5),
+        y = pv.Scale.linear(0, Math.max.apply(null, data)+1).range(0, h);
+
+    var vis = new pv.Panel()
+        .width(w)
+        .height(250)
+        .bottom(60)
+        .left(30)
+        .right(5)
+        .top(5);
+
+    var bar = vis.add(pv.Bar)
+        .data(data)
+        .event("click", function(n) self.location = baseurl + dates[this.index] + "/")
+        .left(function() x(this.index))
+        .width(x.range().band)
+        .bottom(0)
+        .height(y);
+
+    bar.anchor("bottom").add(pv.Label)
+        .textMargin(5)
+        .textAlign("right")
+        .textBaseline("middle")
+        .textAngle(-Math.PI / 3)
+        .text(function() xlabel(this.index));
+
+    function xlabel(ind) {
+        if (!dates[ind -1]) {
+            return dates[ind];
+        }
+        prev = dates[ind - 1];
+        cur = dates[ind];
+        if (prev.substring(0,7) == cur.substring(0,7)) {
+            cur = cur.substring(8);
+        }
+        return cur;
+    }
+
+    vis.add(pv.Rule)
+        .data(y.ticks())
+        .bottom(function(d) Math.round(y(d)) - .5)
+        .strokeStyle(function(d) d ? "rgba(255,255,255,.3)" : "#000")
+        .add(pv.Rule)
+        .left(0)
+        .width(5)
+        .strokeStyle("#000")
+        .anchor("left").add(pv.Label)
+        .text(function(d) d.toFixed(1));
+
+    vis.render();
+}
+
+
+/*
+ * Misc.
+ */
 
 function setup_attachments() {
     $("ul.email_info li.attachments ul.attachments-list").hide();
