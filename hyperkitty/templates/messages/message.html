@@ -46,10 +46,10 @@
 <ul class="email_info inline">
 {% if use_mockups %}
 	<form method="post" action="{% url message_vote mlist_fqdn=list_address %}">
-	<input type="hidden" name="messageid" value="{{email.message_id_hash}}" />
+	<input type="hidden" name="hashid" value="{{ email.message_id_hash }}" />
 	{% csrf_token %}
-	<li class="likestatus {{email.likestatus}}">
-		+{{email.likes}}/-{{email.dislikes}}
+	<li class="likestatus {{ email.likestatus }}">
+		+<span class="likecount">{{ email.likes }}</span>/-<span class="dislikecount">{{ email.dislikes }}</span>
 	</li>
 	<li class="voteup">
 		<a class="youlike" href="#like">Like</a>

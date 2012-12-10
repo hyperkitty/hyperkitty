@@ -101,7 +101,8 @@ def attachment(request, mlist_fqdn, hashid, counter, filename):
     message = store.get_message_by_hash_from_list(mlist_fqdn, hashid)
     if message is None:
         raise Http404
-    attachment = store.get_attachment_by_counter(mlist_fqdn, message.message_id, int(counter))
+    attachment = store.get_attachment_by_counter(
+            mlist_fqdn, message.message_id, int(counter))
     if attachment is None or attachment.name != filename:
         raise Http404
     # http://djangosnippets.org/snippets/1710/
@@ -122,18 +123,30 @@ def vote(request, mlist_fqdn):
         return HttpResponse('You must be logged in to vote',
                             content_type="text/plain", status=403)
 
-    value = request.POST['vote']
+    value = int(request.POST['vote'])
     hashid = request.POST['hashid']
 
-    # Checks if the user has already voted for a this message. If yes modify db entry else create a new one.
+    # Checks if the user has already voted for a this message.
     try:
-        v = Rating.objects.get(user = request.user, messageid = hashid, list_address = mlist_fqdn)
+        v = Rating.objects.get(user=request.user, messageid=hashid,
+                               list_address=mlist_fqdn)
+        if v.vote == value:
+            return HttpResponse("You've already cast this vote",
+                                content_type="text/plain", status=403)
     except Rating.DoesNotExist:
-        v = Rating(list_address=mlist_fqdn, messageid = hashid, vote = value)
+        v = Rating(list_address=mlist_fqdn, messageid=hashid, vote=value)
+        v.user = request.user
 
-    v.user = request.user
     v.vote = value
     v.save()
-    response_dict = { }
 
-    return HttpResponse(simplejson.dumps(response_dict), mimetype='application/javascript')
+    # Extract all the votes for this message to refresh it
+    status = { "like": 0, "dislike": 0 }
+    for vote in Rating.objects.filter(messageid=hashid):
+        if vote.vote == 1:
+            status["like"] += 1
+        elif vote.vote == -1:
+            status["dislike"] += 1
+
+    return HttpResponse(simplejson.dumps(status),
+                        mimetype='application/javascript')

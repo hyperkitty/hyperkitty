@@ -79,6 +79,4 @@ class MessageViewsTestCase(TestCase):
 
      def test_unauth_vote(self):
         resp = self.client.post(reverse('message_vote', kwargs={'mlist_fqdn': 'list@list.com'}), {'vote': 1, 'hashid': 123, })
-        url = "%s?next=%s" % (reverse('user_login'), urllib.quote(reverse('message_vote', kwargs={'mlist_fqdn': 'list@list.com'})))
-        self.assertRedirects(resp, url)
-
+        self.assertEqual(resp.status_code, 403)

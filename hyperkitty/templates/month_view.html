@@ -80,9 +80,12 @@
 				</li>
 			</ul>
 			{% if use_mockups %}
-			<ul class="inline-block" messageid="{{ thread.thread_id }}">
+			<ul class="inline-block">
+				<form method="post" action="{% url message_vote mlist_fqdn=list_address %}">
+				<input type="hidden" name="hashid" value="{{ thread.thread_id }}" />
+				{% csrf_token %}
 				<li class="likestatus {{ thread.likestatus }}">
-					+{{ thread.avglike }}/-{{ thread.avgdislike }}
+					+<span class="like">{{ thread.avglike }}</span>/-<span class="dislike">{{ thread.avgdislike }}</span>
 				</li>
 				<li class="voteup">
 					<a class="youlike" href="#like">Like</a>
@@ -90,6 +93,7 @@
 				<li class="votedown">
 					<a class="youdislike" href="#dislike">Dislike</a>
 				</li>
+				</form>
 			</ul>
 			<a href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
 			   class="btn">Show discussion</a>

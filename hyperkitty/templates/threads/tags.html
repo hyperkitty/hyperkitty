@@ -1,0 +1,13 @@
+		<span id="tag_title">tags </span>({{tags|length}})
+		{% if tags|length %}
+		<ul class="inline">
+			{% for tag in tags %}
+			<li>
+				<a href="{% url search_tag mlist_fqdn=list_address, tag=tag.tag %}" >{{ tag.tag }}</a>
+				{% if not forloop.last %} | {% endif %}
+			</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+
+{# vim: set noet: #}
