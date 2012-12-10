@@ -80,19 +80,7 @@
 				</li>
 			</ul>
 			<ul class="inline-block">
-				<form method="post" action="{% url message_vote mlist_fqdn=list_address %}">
-				<input type="hidden" name="hashid" value="{{ thread.thread_id }}" />
-				{% csrf_token %}
-				<li class="likestatus {{ thread.likestatus }}">
-					+<span class="like">{{ thread.avglike }}</span>/-<span class="dislike">{{ thread.avgdislike }}</span>
-				</li>
-				<li class="voteup">
-					<a class="youlike" href="#like">Like</a>
-				</li>
-				<li class="votedown">
-					<a class="youdislike" href="#dislike">Dislike</a>
-				</li>
-				</form>
+				{% include "messages/like_form.html" with hashid=thread.thread_id object=thread %}
 			</ul>
 			<a href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
 			   class="btn">Show discussion</a>
