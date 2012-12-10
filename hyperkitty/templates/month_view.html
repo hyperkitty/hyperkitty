@@ -79,7 +79,6 @@
 					{{ thread|length }} comments
 				</li>
 			</ul>
-			{% if use_mockups %}
 			<ul class="inline-block">
 				<form method="post" action="{% url message_vote mlist_fqdn=list_address %}">
 				<input type="hidden" name="hashid" value="{{ thread.thread_id }}" />
@@ -97,7 +96,6 @@
 			</ul>
 			<a href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
 			   class="btn">Show discussion</a>
-			{% endif %}
 		</div>
 	</div>
 	<!-- End of thread -->
