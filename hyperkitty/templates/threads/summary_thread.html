@@ -1,0 +1,38 @@
+{% load hk_generic %}
+{% load storm %}
+
+		<div class="thread">
+			<span class="thread_id">#{{counter}}</span>
+			<span class="thread_title"><a name="{{thread.thread_id}}"
+				href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
+				>{{ thread.subject|strip_subject:mlist }}</a></span>
+			<div class="thread_stats">
+				<ul class="inline-block">
+					{% if thread.category_tag %}
+					<li class="type type_{{thread.category_tag}}">
+						<a href="{% url search_tag mlist_fqdn=list_address, tag=thread.category_tag %}"
+							>{{thread.category}}</a>
+					</li>
+					{% endif %}
+					{% if thread.category %}
+					<li class="type type_{{thread.category|lower}}">
+						<a href="{% url search_tag mlist_fqdn=list_address, tag=thread.category|lower %}"
+							>{{thread.category}}</a>
+					</li>
+					{% endif %}
+					{% if use_mockups %}
+					<li class="likestatus neutral">
+						+0/-0
+					</li>
+					{% endif %}
+					<li class="participant">
+						{{ thread.participants|length }}
+					</li>
+					<li class="discussion">
+						{{ thread.length }}
+					</li>
+				</ul>
+			</div>
+		</div>
+
+{# vim: set noet: #}
