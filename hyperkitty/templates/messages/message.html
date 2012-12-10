@@ -44,20 +44,8 @@
 {% endif %}
 
 <ul class="email_info inline">
-	<form method="post" action="{% url message_vote mlist_fqdn=list_address %}">
-	<input type="hidden" name="hashid" value="{{ email.message_id_hash }}" />
-	{% csrf_token %}
-	<li class="likestatus {{ email.likestatus }}">
-		+<span class="likecount">{{ email.likes }}</span>/-<span class="dislikecount">{{ email.dislikes }}</span>
-	</li>
-	<li class="voteup">
-		<a class="youlike" href="#like">Like</a>
-	</li>
-	<li class="votedown">
-		<a class="youdislike" href="#dislike">Dislike</a>
-	</li>
-	</form>
-{% if not unfolded and email.attachments|count %}
+	{% include "messages/like_form.html" with hashid=email.message_id_hash object=email %}
+	{% if not unfolded and email.attachments|count %}
 	<li class="attachments">
 		<a class="attachments" href="#attachments">{{ email.attachments|count }} attachment(s)</a>
 		<ul class="attachments-list">
@@ -68,7 +56,7 @@
 		{% endfor %}
 		</ul>
 	</li>
-{% endif %}
+	{% endif %}
 </ul>
 
 {# vim: set noet: #}

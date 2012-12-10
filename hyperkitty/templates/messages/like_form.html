@@ -1,0 +1,16 @@
+	<form method="post" class="likeform"
+	      action="{% url message_vote mlist_fqdn=list_address %}">
+	<input type="hidden" name="hashid" value="{{ hashid }}" />
+	{% csrf_token %}
+	<li class="likestatus {{ object.likestatus }}">
+		+<span class="likecount">{{ object.likes }}</span>/-<span class="dislikecount">{{ object.dislikes }}</span>
+	</li>
+	<li class="voteup">
+		<a class="youlike" href="#like">Like</a>
+	</li>
+	<li class="votedown">
+		<a class="youdislike" href="#dislike">Dislike</a>
+	</li>
+	</form>
+
+{# vim: set noet: #}
