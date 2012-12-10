@@ -15,17 +15,17 @@
 		{% if unfolded %}<br />{% endif %}
 		<span class="time" title="Sender's time: {{email|sender_date|date:"l, j F H:i:s"}}">{{email|viewer_date|date:"H:i:s"}}</span>
 	</div>
-    <div class="gravatar{% if use_mockups %} pull-left{% endif %}">
-        {% gravatar email.sender_email 40 %}
-    </div>
+	<div class="gravatar{% if use_mockups %} pull-left{% endif %}">
+		{% gravatar email.sender_email 40 %}
+	</div>
 	<div class="email_author inline-block">
 		<span class="name"><a href="{% url message_index mlist_fqdn=list_address, hashid=email.message_id_hash %}">{{email.sender_name|escapeemail}}</a></span>
-        {% if use_mockups %}
+		{% if use_mockups %}
 		<br />
 		<span class="rank">
-            Rank 8
+			Rank 8
 		</span>
-        {% endif %}
+		{% endif %}
 	</div>
 </div>
 
@@ -36,9 +36,9 @@
 <p class="attachments">Attachments:</p>
 <ul class="attachments-list">
 {% for attachment in email.attachments %}
-    <li><a href="{% url message_attachment mlist_fqdn=list_address, hashid=email.message_id_hash, counter=attachment.counter, filename=attachment.name %}">{{attachment.name}}</a>
-        ({{attachment.content_type}} &mdash; {{attachment.size|filesizeformat}})
-    </li>
+	<li><a href="{% url message_attachment mlist_fqdn=list_address, hashid=email.message_id_hash, counter=attachment.counter, filename=attachment.name %}">{{attachment.name}}</a>
+		({{attachment.content_type}} &mdash; {{attachment.size|filesizeformat}})
+	</li>
 {% endfor %}
 </ul>
 {% endif %}
@@ -60,17 +60,17 @@
 	</form>
 {% endif %}
 {% if not unfolded and email.attachments|count %}
-    <li class="attachments">
-        <a class="attachments" href="#attachments">{{ email.attachments|count }} attachment(s)</a>
-        <ul class="attachments-list">
-        {% for attachment in email.attachments %}
-            <li><a href="{% url message_attachment mlist_fqdn=list_address, hashid=email.message_id_hash, counter=attachment.counter, filename=attachment.name %}">{{attachment.name}}</a>
-                ({{attachment.content_type}} &mdash; {{attachment.size|filesizeformat}})
-            </li>
-        {% endfor %}
-        </ul>
-    </li>
+	<li class="attachments">
+		<a class="attachments" href="#attachments">{{ email.attachments|count }} attachment(s)</a>
+		<ul class="attachments-list">
+		{% for attachment in email.attachments %}
+			<li><a href="{% url message_attachment mlist_fqdn=list_address, hashid=email.message_id_hash, counter=attachment.counter, filename=attachment.name %}">{{attachment.name}}</a>
+				({{attachment.content_type}} &mdash; {{attachment.size|filesizeformat}})
+			</li>
+		{% endfor %}
+		</ul>
+	</li>
 {% endif %}
 </ul>
 
-
+{# vim: set noet: #}

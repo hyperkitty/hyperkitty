@@ -19,7 +19,7 @@
 				  <div class="navbar-inner">
 					<div class="container">
 
-                        <ul class="nav auth">
+						<ul class="nav auth">
 						{% if user.is_authenticated %}
 							 <li><a class="mm_logout" href="{% url user_logout %}">Logout</a></li>
 							 <li><a href="{% url user_profile %}">{{ user.username }}</a></li>
@@ -27,7 +27,7 @@
 							 <li><a class="mm_user" href="{% url user_login %}">Login</a></li>
 							 <li><a href="{% url user_registration %}"> Sign Up </a></li>
 						{% endif %}
-                        </ul>
+						</ul>
 
 
 						<ul class="nav">
@@ -60,3 +60,5 @@
 
 	</body>
 </html>
+
+{# vim: set noet: #}

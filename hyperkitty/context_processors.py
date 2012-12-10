@@ -17,7 +17,7 @@
 # HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Author: Aamir Khan <syst3m.w0rm@gmail.com>
-# 
+#
 
 from django.conf import settings
 

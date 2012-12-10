@@ -7,23 +7,23 @@
 
 <div id="month-view">
 
-    <div class="month-header">
-        <div class="list-name">{{ mlist.display_name|default:mlist.name|escapeemail }}</div>
-        <div class="month-name">{{ month|date:"F Y"|capfirst }}</div>
-        <ul class="month-info">
-            <li class="participant">
-                {{ month_participants }} participants
-            </li>
-            <li class="discussion">
-                {{ month_discussions }} discussions
-            </li>
-        </ul>
-        {% if mlist.display_name %}
-        <p class="list-address">
-            {{ list_address|escapeemail }}
-        </p>
-        {% endif %}
-    </div>
+	<div class="month-header">
+		<div class="list-name">{{ mlist.display_name|default:mlist.name|escapeemail }}</div>
+		<div class="month-name">{{ month|date:"F Y"|capfirst }}</div>
+		<ul class="month-info">
+			<li class="participant">
+				{{ month_participants }} participants
+			</li>
+			<li class="discussion">
+				{{ month_discussions }} discussions
+			</li>
+		</ul>
+		{% if mlist.display_name %}
+		<p class="list-address">
+			{{ list_address|escapeemail }}
+		</p>
+		{% endif %}
+	</div>
 
 	{% for thread in threads %}
 	<!-- New thread -->
@@ -126,3 +126,5 @@
 	});
 </script>
 {% endblock %}
+
+{# vim: set noet: #}

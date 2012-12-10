@@ -3,13 +3,15 @@
 <div id="archives">
 	{% for year, months in archives_length|sort %}
 	<h3>{{ year }}</h3>
-    <ul>
-        {% for ar_month in months %}
-        <li class="{% if year == month.year and ar_month == month.month %}current{% endif %}">
-            <a href="{% url archives_with_month year=year, mlist_fqdn=list_address, month=ar_month %}"
-               >{{ ar_month|monthtodate:year|date:"F" }}</a>
-        </li>
-        {% endfor %}
-    </ul>
+	<ul>
+		{% for ar_month in months %}
+		<li class="{% if year == month.year and ar_month == month.month %}current{% endif %}">
+			<a href="{% url archives_with_month year=year, mlist_fqdn=list_address, month=ar_month %}"
+			   >{{ ar_month|monthtodate:year|date:"F" }}</a>
+		</li>
+		{% endfor %}
+	</ul>
 	{% endfor %}
 </div>
+
+{# vim: set noet: #}
