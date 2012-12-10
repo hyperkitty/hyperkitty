@@ -2,7 +2,7 @@
 
 Name:           hyperkitty
 Version:        0.1.3
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        A web interface to access GNU Mailman v3 archives
 
 License:        GPLv3
@@ -11,7 +11,7 @@ Source0:        http://pypi.python.org/packages/source/H/%{pypi_name}/%{pypi_nam
 # bzr branch bzr://bzr.fedorahosted.org/bzr/hyperkitty/hyperkitty_standalone
 Source1:        hyperkitty_standalone.tar.gz
 BuildArch:      noarch
- 
+
 BuildRequires:  python-devel
 BuildRequires:  python-sphinx
 # Unit tests in %%check
@@ -29,7 +29,8 @@ Requires:       kittystore
 
 
 %description
-HyperKitty is an open source Django application under development. It aims at providing a web interface to access GNU Mailman archives.
+HyperKitty is an open source Django application under development. It aims at
+providing a web interface to access GNU Mailman archives.
 The code is available from: http://bzr.fedorahosted.org/bzr/hyperkitty/.
 The documentation can be browsed online at https://hyperkitty.readthedocs.org/.
 
@@ -39,6 +40,8 @@ The documentation can be browsed online at https://hyperkitty.readthedocs.org/.
 rm -rf %{pypi_name}.egg-info
 # remove shebang on manage.py
 sed -i -e '1d' hyperkitty_standalone/manage.py
+# remove executable permissions on wsgi.py
+chmod -x hyperkitty_standalone/wsgi.py
 # remove __init__.py in hyperkitty_standalone to prevent it from being
 # installed (find_package won't find it). It's empty anyway.
 rm -f hyperkitty_standalone/__init__.py
@@ -75,6 +78,12 @@ sed -e 's,/path/to/hyperkitty_standalone,%{_sysconfdir}/%{name}/sites/default,g'
      > %{buildroot}/%{_sysconfdir}/httpd/conf.d/hyperkitty.conf
 touch --reference hyperkitty_standalone/hyperkitty.apache.conf \
     %{buildroot}/%{_sysconfdir}/httpd/conf.d/hyperkitty.conf
+# SQLite databases directory
+mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/sites/default
+sed -i -e 's,/path/to/rw,%{_localstatedir}/lib/%{name}/sites/default,g' \
+    %{buildroot}%{_sysconfdir}/%{name}/sites/default/settings.py
+touch --reference hyperkitty_standalone/settings.py \
+    %{buildroot}%{_sysconfdir}/%{name}/sites/default/settings.py
 
 
 %check
@@ -82,14 +91,31 @@ touch --reference hyperkitty_standalone/hyperkitty.apache.conf \
     --settings=hyperkitty.tests_conf.settings_tests hyperkitty
 
 
+%post
+# Build the static files cache
+%{__python} %{_sysconfdir}/%{name}/sites/default/manage.py \
+    collectstatic --noinput >/dev/null || :
+
+
+%preun
+# The static files are a cache and can be removed with the package
+if [ $1 -eq 0 ] ; then
+    # Package removal, not upgrade
+    rm -rf %{_sysconfdir}/%{name}/sites/default/static
+fi
+
+
 %files
 %doc html README.rst COPYING.txt
-%config %{_sysconfdir}/%{name}
-%config %{_sysconfdir}/httpd/conf.d/hyperkitty.conf
+%config(noreplace) %{_sysconfdir}/%{name}
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/hyperkitty.conf
 %{python_sitelib}/%{name}
 %{python_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
+%dir %{_localstatedir}/lib/%{name}
+%dir %{_localstatedir}/lib/%{name}/sites
+%attr(755,apache,apache) %{_localstatedir}/lib/%{name}/sites/default
 
 
 %changelog
-* Thu Nov 29 2012 Aurelien Bompard - 0.1.3-1
+* Thu Nov 29 2012 Aurelien Bompard <abompard@fedoraproject.org> - 0.1.3-1
 - Initial package.
