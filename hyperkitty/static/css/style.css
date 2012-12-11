@@ -206,6 +206,16 @@ form.likeform {
     float: right;
 }
 
+#recent_activities h2 {
+    font-size: 22px;
+    line-height: 32px;
+    margin-bottom: 0.5em;
+}
+
+#graph h2 {
+    text-align: center;
+}
+
 #archives {
     width: 9%;
     float: left;
@@ -232,10 +242,6 @@ form.likeform {
 }
 #archives li.current {
     font-weight: bold;
-}
-
-#graph h2 {
-    text-align: center;
 }
 
 
