@@ -17,13 +17,13 @@ BuildRequires:  python-sphinx
 # Unit tests in %%check
 BuildRequires:  Django
 BuildRequires:  kittystore
-BuildRequires:  django-rest-framework >= 0.3.3
+BuildRequires:  django-rest-framework >= 2.0.0
 BuildRequires:  django-social-auth >= 0.7.0
 
 Requires:       Django >= 1.4
 Requires:       django-gravatar2
 Requires:       django-social-auth >= 0.7.0
-Requires:       django-rest-framework >= 0.3.3
+Requires:       django-rest-framework >= 2.0.0
 Requires:       mailman >= 3.0.0b2
 Requires:       kittystore
 

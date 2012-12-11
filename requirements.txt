@@ -1,6 +1,6 @@
 Django>=1.4
 django-gravatar2
 django-social-auth>=0.7.0
-djangorestframework>=0.3.3
+djangorestframework>=2.0.0
 mailman>=3.0.0b2
 kittystore
