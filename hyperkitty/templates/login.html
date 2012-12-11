@@ -23,7 +23,7 @@
 	<li><a title="Yahoo" class="socialaccount_provider yahoo" href="{% url socialauth_begin backend='yahoo' %}"><img src="{{ STATIC_URL }}img/login/yahoo.png" alt="Yahoo"></a></li>
 
 	<li>
-		<form method="post" action="{% url socialauth_complete "browserid" %}">
+		<form method="post" action="{% url socialauth_complete "browserid" %}?{{next}}">
 			{% csrf_token %}
 			<input type="hidden" name="assertion" value="" />
 			<a rel="nofollow" id="browserid" href="#"><img src="{{ STATIC_URL }}img/login/browserid.png" alt="Login using BrowserID" /></a>
