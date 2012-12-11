@@ -96,10 +96,10 @@ def user_profile(request, user_email=None):
     votes_up = []
     votes_down = []
     for vote in votes:
-        message = store.get_message_by_id_from_list(
-                vote.list_address, vote.message_id)
+        message = store.get_message_by_hash_from_list(
+                vote.list_address, vote.messageid)
         vote_data = {"list_address": vote.list_address,
-                     "message_id": vote.message_id,
+                     "messageid": vote.messageid,
                      "message": message,
                     }
         if vote.vote == 1:
