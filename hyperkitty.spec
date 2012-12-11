@@ -18,11 +18,11 @@ BuildRequires:  python-sphinx
 BuildRequires:  Django
 BuildRequires:  kittystore
 BuildRequires:  django-rest-framework >= 2.0.0
-BuildRequires:  django-social-auth >= 0.7.0
+BuildRequires:  django-social-auth >= 0.7.1
 
 Requires:       Django >= 1.4
 Requires:       django-gravatar2
-Requires:       django-social-auth >= 0.7.0
+Requires:       django-social-auth >= 0.7.1
 Requires:       django-rest-framework >= 2.0.0
 Requires:       mailman >= 3.0.0b2
 Requires:       kittystore
