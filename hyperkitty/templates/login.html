@@ -8,7 +8,7 @@
 <form action="" method="post" class="login mm_clear">
 	{% csrf_token %}
 	{{ form.as_p }}
-	<input type=hidden name=next value={{ next }}>
+	<input type="hidden" name="next" value="{{ next }}" />
 	<div class="field">
 		<button class="btn btn-primary" type="submit">
 			{% trans "Login" %}
@@ -23,7 +23,7 @@
 	<li><a title="Yahoo" class="socialaccount_provider yahoo" href="{% url socialauth_begin backend='yahoo' %}"><img src="{{ STATIC_URL }}img/login/yahoo.png" alt="Yahoo"></a></li>
 
 	<li>
-		<form method="post" action="{% url socialauth_complete "browserid" %}?{{next}}">
+		<form method="post" action="{% url socialauth_complete "browserid" %}?{{redirect_querystring}}">
 			{% csrf_token %}
 			<input type="hidden" name="assertion" value="" />
 			<a rel="nofollow" id="browserid" href="#"><img src="{{ STATIC_URL }}img/login/browserid.png" alt="Login using BrowserID" /></a>
@@ -52,7 +52,7 @@
 				}
 			});
 		});
-	}); 
+	});
 </script>
 <!-- end browserid stuff -->
 {% endblock additionaljs %}

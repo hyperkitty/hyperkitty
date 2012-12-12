@@ -24,8 +24,8 @@
 							 <li><a class="mm_logout" href="{% url user_logout %}">Logout</a></li>
 							 <li><a href="{% url user_profile %}">{{ user.username }}</a></li>
 						{% else %}
-							 <li><a class="mm_user" href="{% url user_login %}">Login</a></li>
-							 <li><a href="{% url user_registration %}"> Sign Up </a></li>
+							 <li><a class="mm_user" href="{% url user_login %}?next={{request.path}}">Login</a></li>
+							 <li><a href="{% url user_registration %}?next={{request.path}}"> Sign Up </a></li>
 						{% endif %}
 						</ul>
 
