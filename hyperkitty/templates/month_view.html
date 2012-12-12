@@ -55,7 +55,9 @@
 				{{ thread.starting_email.sender_name|escapeemail }}
 			</div>
 			<div class="thread_email">
-				<span class="expander">{{ thread.starting_email.content }}</span>
+				<span class="expander">
+					{{ thread.starting_email.content|wordwrap:90|urlizetrunc:76|escapeemail }}
+				</span>
 			</div>
 		</div>
 		<div class="thread_info">

@@ -36,7 +36,9 @@
 			{{email.sender_name}}
 		</div>
 		<div class="inline-block thread_email">
-			<span class="expander"> {{email.content}} </span>
+			<span class="expander">
+				{{email.content|wordwrap:90|urlizetrunc:76|escapeemail}}
+			</span>
 		</div>
 	</div>
 	<div class="thread_info">
