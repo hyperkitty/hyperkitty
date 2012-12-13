@@ -17,13 +17,21 @@
 # HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Author: Aamir Khan <syst3m.w0rm@gmail.com>
+# Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+import datetime
+import urllib
+
+from mock import Mock, patch
+
 from django.test import TestCase
-from django.test.client import Client
+from django.test.client import Client, RequestFactory
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-import urllib
+
+#from hyperkitty.views.list import archives
+
 
 class AccountViewsTestCase(TestCase):
 
@@ -67,6 +75,7 @@ class AccountViewsTestCase(TestCase):
 
 
 class MessageViewsTestCase(TestCase):
+
      def setUp(self):
         self.client = Client()
 
@@ -80,3 +89,27 @@ class MessageViewsTestCase(TestCase):
      def test_unauth_vote(self):
         resp = self.client.post(reverse('message_vote', kwargs={'mlist_fqdn': 'list@list.com'}), {'vote': 1, 'hashid': 123, })
         self.assertEqual(resp.status_code, 403)
+
+
+from hyperkitty.views.list import archives
+
+class ListArchivesTestCase(TestCase):
+
+    def setUp(self):
+#        self.store = Mock()
+#        self.store.get_threads.return_value = []
+#        self.store.get_list.side_effect = lambda n: FakeList(n)
+#        defaults = {"kittystore.store": self.store}
+#        self.factory = RequestFactory(**defaults)
+        self.factory = RequestFactory()
+
+    def test_no_date(self):
+        today = datetime.date.today()
+        request = self.factory.get("/archives")
+        response = archives(request, 'list@example.com')
+        final_url = reverse('archives_with_month',
+                kwargs={'mlist_fqdn': 'list@example.com',
+                        'year': today.year,
+                        'month': today.month,
+                })
+        self.assertEqual(response["location"], final_url)

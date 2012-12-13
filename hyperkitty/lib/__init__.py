@@ -70,3 +70,19 @@ def stripped_subject(mlist, subject):
     if subject.lower().startswith("[%s] " % list_name.lower()):
         subject = subject[len(list_name)+3 : ]
     return subject
+
+
+def get_display_dates(year, month, day):
+    if day is None:
+        start_day = 1
+    else:
+        start_day = int(day)
+    begin_date = datetime.datetime(int(year), int(month), start_day)
+
+    if day is None:
+        end_date = begin_date + datetime.timedelta(days=32)
+        end_date = end_date.replace(day=1)
+    else:
+        end_date = begin_date + datetime.timedelta(days=1)
+
+    return begin_date, end_date

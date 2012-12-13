@@ -25,8 +25,8 @@ import os
 import json
 import urllib
 import logging
+import datetime
 from calendar import timegm
-from datetime import datetime, timedelta
 from urlparse import urljoin
 from collections import namedtuple
 
@@ -41,7 +41,7 @@ from django.contrib.auth.decorators import (login_required,
                                             user_passes_test)
 
 from hyperkitty.models import Rating, Tag
-from hyperkitty.lib import get_months, get_store
+from hyperkitty.lib import get_months, get_store, get_display_dates
 from forms import *
 
 
@@ -53,39 +53,17 @@ if settings.USE_MOCKUPS:
 
 
 def archives(request, mlist_fqdn, year=None, month=None, day=None):
-    # No year/month: past 32 days
-    # year and month: find the 32 days for that month
     # @TODO : modify url.py to account for page number
 
-    end_date = None
-    if year or month or day:
-        try:
-            start_day = 1
-            end_day = 1
-            start_month = int(month)
-            end_month = int(month) + 1
-            start_year = int(year)
-            end_year = int(year)
-            if day:
-                start_day = int(day)
-                end_day = start_day + 1
-                end_month = start_month
-            if start_month == 12:
-                end_month = 1
-                end_year = start_year + 1
+    if year is None and month is None:
+        today = datetime.date.today()
+        return HttpResponseRedirect(reverse(
+                'archives_with_month', kwargs={
+                    "mlist_fqdn": mlist_fqdn,
+                    'year': today.year,
+                    'month': today.month}))
 
-            begin_date = datetime(start_year, start_month, start_day)
-            end_date = datetime(end_year, end_month, end_day)
-            month_string = begin_date.strftime('%B %Y')
-        except ValueError, err:
-            print err
-            logger.error('Wrong format given for the date')
-
-    if not end_date:
-        today = datetime.utcnow()
-        begin_date = datetime(today.year, today.month, 1)
-        end_date = datetime(today.year, today.month + 1, 1)
-        month_string = 'Past thirty days'
+    begin_date, end_date = get_display_dates(year, month, day)
 
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('month_view.html')
@@ -194,9 +172,10 @@ def list(request, mlist_fqdn=None):
     search_form = SearchForm(auto_id=False)
 
     # Get stats for last 30 days
-    today = datetime.utcnow()
-    end_date = datetime(today.year, today.month, today.day)
-    begin_date = end_date - timedelta(days=32)
+    today = datetime.datetime.utcnow()
+    # the upper boundary is excluded in the search, add one day
+    end_date = today + datetime.timedelta(days=1)
+    begin_date = end_date - datetime.timedelta(days=32)
 
     store = get_store(request)
     mlist = store.get_list(mlist_fqdn)
