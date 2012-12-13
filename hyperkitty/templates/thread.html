@@ -44,8 +44,8 @@
 <script src="{{ STATIC_URL }}js/libs/jquery.expander.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('div.email_body a.quoted-switch').click(function() {
-			$(this).next(".quoted-text").toggle();
+		$('div.email_body .quoted-switch a').click(function() {
+			$(this).parent().next(".quoted-text").slideToggle('fast');
 			return false;
 		});
 	});

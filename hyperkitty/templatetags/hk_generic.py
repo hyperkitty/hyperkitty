@@ -139,7 +139,7 @@ def viewer_date(email):
     return localtime(email_date)
 
 
-SNIPPED_RE = re.compile("^\s*&gt;.*$", re.M)
+SNIPPED_RE = re.compile("^(\s*&gt;).*$", re.M)
 @register.filter(needs_autoescape=True)
 def snip_quoted(content, quotemsg="[...]", autoescape=None):
     """Snip quoted text in messages"""
@@ -147,25 +147,27 @@ def snip_quoted(content, quotemsg="[...]", autoescape=None):
         content = conditional_escape(content)
     quoted = []
     current_quote = []
-    quoting = False
+    current_quote_orig = []
     lastline = None
     for line in content.split("\n"):
-        if SNIPPED_RE.match(line):
-            quoting = True
-            if lastline == "":
-                current_quote.append(lastline)
+        match = SNIPPED_RE.match(line)
+        if match is not None:
+            #if lastline == "":
+            #    current_quote_orig.append(lastline)
+            current_quote_orig.append(line)
+            content_start = len(match.group(1))
+            current_quote.append(line[content_start:])
         else:
-            quoting = False
-            if current_quote:
-                quoted.append(current_quote[:])
+            if current_quote_orig:
+                current_quote_orig.append("")
+                quoted.append( (current_quote_orig[:], current_quote[:]) )
                 current_quote = []
-        if quoting:
-            current_quote.append(line)
+                current_quote_orig = []
         lastline = line
-    for quote in quoted:
-        replaced = ('<a href="#" class="quoted-switch">%s</a>' % quotemsg
-                   +'<span class="quoted-text">\n'
-                   +"\n".join([q for q in quote if q != ""])
-                   +'</span>')
-        content = content.replace("\n".join(quote), replaced)
+    for quote_orig, quote in quoted:
+        replaced = (' <div class="quoted-switch"><a href="#">%s</a></div>' % quotemsg
+                   +'<div class="quoted-text">'
+                   +"\n".join(quote)
+                   +' </div>')
+        content = content.replace("\n".join(quote_orig), replaced)
     return mark_safe(content)

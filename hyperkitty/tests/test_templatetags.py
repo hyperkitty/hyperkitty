@@ -36,29 +36,8 @@ This is the response.
 """
         expected = """
 On Fri, 09.11.12 11:27, Someone wrote:
-<a href="#" class="quoted-switch">%s</a><span class="quoted-text">
-&gt; This is the first quoted line
-&gt; This is the second quoted line</span>
-This is the response.
-""" % self.quotemsg
-        result = snip_quoted(contents, self.quotemsg)
-        self.assertEqual(result, expected)
-
-    def test_quote_2(self):
-        """The quote starts with a newline"""
-        contents = """
-On Fri, 09.11.12 11:27, Someone wrote:
-
-&gt; This is the first quoted line
-&gt; This is the second quoted line
-This is the response.
-"""
-        expected = """
-On Fri, 09.11.12 11:27, Someone wrote:
-<a href="#" class="quoted-switch">%s</a><span class="quoted-text">
-&gt; This is the first quoted line
-&gt; This is the second quoted line</span>
-This is the response.
+ <div class="quoted-switch"><a href="#">%s</a></div><div class="quoted-text"> This is the first quoted line
+ This is the second quoted line </div>This is the response.
 """ % self.quotemsg
         result = snip_quoted(contents, self.quotemsg)
         self.assertEqual(result, expected)

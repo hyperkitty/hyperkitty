@@ -711,5 +711,7 @@ ul.attachments-list li {
 
 .email_body .quoted-text {
     display: none;
+    border-left: 2px solid rgb(55, 113, 200);
+    padding-left: 0.2em;
 }
 

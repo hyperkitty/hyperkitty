@@ -30,7 +30,7 @@
 </div>
 
 <div class="{% if unfolded %}first_{% endif %}email_body"
- >{{ email.content|wordwrap:90|urlizetrunc:76|escapeemail|snip_quoted }}</div>
+ >{{ email.content|snip_quoted|wordwrap:90|urlizetrunc:76|escapeemail }}</div>
 
 {% if unfolded and email.attachments|count %}
 <p class="attachments">Attachments:</p>
