@@ -165,7 +165,7 @@ def snip_quoted(content, quotemsg="[...]", autoescape=None):
                 current_quote_orig = []
         lastline = line
     for quote_orig, quote in quoted:
-        replaced = (' <div class="quoted-switch"><a href="#">%s</a></div>' % quotemsg
+        replaced = ('<div class="quoted-switch"><a href="#">%s</a></div>' % quotemsg
                    +'<div class="quoted-text">'
                    +"\n".join(quote)
                    +' </div>')

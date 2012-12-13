@@ -153,6 +153,14 @@ function setup_attachments() {
     });
 }
 
+function setup_quotes() {
+    $('div.email_body .quoted-switch a')
+        .add('div.first_email_body .quoted-switch a')
+        .click(function() {
+            $(this).parent().next(".quoted-text").slideToggle('fast');
+            return false;
+        });
+}
 
 
 /*
@@ -163,4 +171,5 @@ $(document).ready(function() {
     setup_vote();
     setup_attachments();
     setup_add_tag();
+    setup_quotes();
 });

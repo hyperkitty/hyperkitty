@@ -44,10 +44,8 @@
 <script src="{{ STATIC_URL }}js/libs/jquery.expander.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('div.email_body .quoted-switch a').click(function() {
-			$(this).parent().next(".quoted-text").slideToggle('fast');
-			return false;
-		});
+		// hide quotes by default in the thread view
+		$('div.email_body .quoted-text').hide();
 	});
 </script>
 
