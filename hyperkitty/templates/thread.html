@@ -26,8 +26,19 @@
 		{% include 'messages/first_email.html' %}
 		<!-- End first email -->
 
+		<p class="sort-mode">
+			{% if sort_mode == "date" %}
+			<a href="{% url thread threadid=threadid, mlist_fqdn=list_address %}?sort=thread"
+				>Show replies by thread</a>
+			{% else %}
+			<a href="{% url thread threadid=threadid, mlist_fqdn=list_address %}?sort=date"
+				>Show replies by date</a>
+			{% endif %}
+		</p>
+
 		{% for email in replies %}
-		<div class="{% cycle 'even' 'odd' %}">
+		<div class="{% cycle 'even' 'odd' %}"
+			{% if email.level %}style="margin-left:{{ email.level|multiply:"2" }}em;"{% endif %}>
 			<!-- Start email -->
 			{% include 'messages/message.html' %}
 			<!-- End of email -->

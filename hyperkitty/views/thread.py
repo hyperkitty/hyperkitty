@@ -37,7 +37,7 @@ from django.contrib.auth.decorators import (login_required,
 from hyperkitty.models import Rating, Tag
 #from hyperkitty.lib.mockup import *
 from forms import *
-from hyperkitty.lib import get_months, get_store, stripped_subject
+from hyperkitty.lib import get_months, get_store, stripped_subject, sort_thread
 
 
 def thread_index(request, mlist_fqdn, threadid):
@@ -50,13 +50,18 @@ def thread_index(request, mlist_fqdn, threadid):
         raise Http404
     prev_thread, next_thread = store.get_thread_neighbors(mlist_fqdn, threadid)
 
-    participants = {}
-    cnt = 0
+    if "sort" in request.GET and request.GET["sort"] == "date":
+        sort_mode = "date"
+        emails = thread.emails
+    else:
+        sort_mode = "thread"
+        emails = sort_thread(thread)
 
-    for message in thread.emails:
+    participants = {}
+    for email in emails:
         # Extract all the votes for this message
         try:
-            votes = Rating.objects.filter(messageid=message.message_id)
+            votes = Rating.objects.filter(messageid=email.message_id)
         except Rating.DoesNotExist:
             votes = {}
 
@@ -71,21 +76,25 @@ def thread_index(request, mlist_fqdn, threadid):
             else:
                 pass
 
-        message.votes = votes
-        message.likes = likes
-        message.dislikes = dislikes
-        message.likestatus = "neutral"
-        if message.likes - message.dislikes >= 10:
-            message.likestatus = "likealot"
-        elif message.likes - message.dislikes > 0:
-            message.likestatus = "like"
-        #elif message.likes - message.dislikes < 0:
-        #    message.likestatus = "dislike"
+        email.votes = votes
+        email.likes = likes
+        email.dislikes = dislikes
+        email.likestatus = "neutral"
+        if email.likes - email.dislikes >= 10:
+            email.likestatus = "likealot"
+        elif email.likes - email.dislikes > 0:
+            email.likestatus = "like"
+        #elif email.likes - email.dislikes < 0:
+        #    email.likestatus = "dislike"
 
 
         # Statistics on how many participants and messages this month
-        participants[message.sender_name] = message.sender_email
-        cnt = cnt + 1
+        participants[email.sender_name] = email.sender_email
+
+        if sort_mode == "thread":
+            email.level -= 1 # replies start ragged left
+            if email.level > 5:
+                email.level = 5
 
     archives_length = get_months(store, mlist_fqdn)
     from_url = reverse("thread", kwargs={"mlist_fqdn":mlist_fqdn,
@@ -115,14 +124,14 @@ def thread_index(request, mlist_fqdn, threadid):
         'addtag_form': tag_form,
         'month': 'Thread',
         'participants': participants,
-        'answers': cnt,
         'first_mail': thread.starting_email,
-        'replies': list(thread.emails)[1:],
+        'replies': list(emails)[1:],
         'neighbors': (prev_thread, next_thread),
         'archives_length': archives_length,
         'days_inactive': days_inactive.days,
         'days_old': days_old.days,
         'use_mockups': settings.USE_MOCKUPS,
+        'sort_mode': sort_mode,
     })
     return HttpResponse(t.render(c))
 

@@ -23,6 +23,7 @@ import urllib
 from hashlib import md5
 import datetime
 
+import networkx as nx
 from django.conf import settings
 
 
@@ -86,3 +87,23 @@ def get_display_dates(year, month, day):
         end_date = begin_date + datetime.timedelta(days=1)
 
     return begin_date, end_date
+
+
+def sort_thread(thread):
+    def walk_successors(msgid, level, result):
+        obj = graph.node[msgid]["obj"]
+        obj.level = level
+        result.append(obj)
+        level += 1
+        for succ in sorted(graph.successors(msgid),
+                        key=lambda m: graph.node[m]["num"]):
+            walk_successors(succ, level, result)
+        level -= 1
+    graph = nx.DiGraph()
+    for index, email in enumerate(thread.emails):
+        graph.add_node(email.message_id, num=index, obj=email)
+        if email.in_reply_to is not None:
+            graph.add_edge(email.in_reply_to, email.message_id)
+    result = []
+    walk_successors(thread.starting_email.message_id, 0, result)
+    return result

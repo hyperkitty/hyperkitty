@@ -171,3 +171,12 @@ def snip_quoted(content, quotemsg="[...]", autoescape=None):
                    +' </div>')
         content = content.replace("\n".join(quote_orig), replaced)
     return mark_safe(content)
+
+
+@register.filter()
+def multiply(num1, num2):
+    if int(num2) == float(num2):
+        num2 = int(num2)
+    else:
+        num2 = float(num2)
+    return num1 * num2

@@ -651,6 +651,10 @@ ul.attachments-list li {
     float: right;
 }
 
+.sort-mode {
+    text-align: right;
+}
+
 /* The email thread */
 .even, .odd {
     border-top: 1px solid rgb(179, 179, 179);
