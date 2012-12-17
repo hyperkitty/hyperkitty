@@ -56,7 +56,13 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		// hide quotes by default in the thread view
-		$('div.email_body .quoted-text').hide();
+		$('div.email_body .quoted-text').each(function() {
+			var linescount = $(this).text().split("\n").length;
+			if (linescount > 3) {
+				// hide if the quote is more than 3 lines long
+				$(this).hide();
+			}
+		});
 	});
 </script>
 
