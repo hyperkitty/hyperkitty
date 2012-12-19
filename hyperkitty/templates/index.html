@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% block content %}
+
 <h1>{% trans 'Lists' %}</h1>
 
 <table class="table table-bordered table-striped">
@@ -16,6 +17,8 @@
 		{% endfor %}
 	</tbody>
 </table>
+
+<img id="logo" alt="HyperKitty" src="{{STATIC_URL}}img/logo.png" />
 
 {% endblock %}
 

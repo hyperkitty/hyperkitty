@@ -4,6 +4,10 @@ body {
 	background-color: white;
 }
 
+#logo {
+    display: block;
+    margin: 80px auto;
+}
 
 ul.nav.auth {
     float: right;
