@@ -2,7 +2,7 @@
 {% load gravatar %}
 {% load hk_generic %}
 
-<div class="email_header">
+<div class="email_header" id="{{email.message_id_hash}}">
 	<div class="email_date inline-block pull-right">
 		{% ifchanged %}
 		<span class="date">
