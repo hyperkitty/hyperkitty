@@ -141,7 +141,7 @@ def viewer_date(email):
 
 SNIPPED_RE = re.compile("^(\s*&gt;).*$", re.M)
 @register.filter(needs_autoescape=True)
-def snip_quoted(content, quotemsg="[...]", autoescape=None):
+def snip_quoted(content, quotemsg="...", autoescape=None):
     """Snip quoted text in messages"""
     if autoescape:
         content = conditional_escape(content)

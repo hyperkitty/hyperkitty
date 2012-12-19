@@ -717,8 +717,17 @@ ul.attachments-list li {
     margin-top: 5px;
 }
 
-.first_email_body .quoted-text,
-.email_body .quoted-text {
+.quoted-switch a {
+    background-color: #fafafa;
+    padding: 0 4px 2px 4px;
+    border-left: 2px solid rgb(55, 113, 200);
+    font-weight: bold;
+    font-size: 115%;
+}
+.quoted-switch a:hover {
+    text-decoration: none;
+}
+.quoted-text {
     border-left: 2px solid rgb(55, 113, 200);
     padding-left: 0.2em;
 }
