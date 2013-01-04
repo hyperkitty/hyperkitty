@@ -79,7 +79,7 @@ To receive incoming emails from Mailman, you must add the follwing lines to
 ``mailman.cfg``::
 
     [archiver.hyperkitty]
-    class: hyperkitty.lib.archiver.Archiver
+    class: hyperkitty.archiver.Archiver
     enable: yes
     configuration: /path/to/hyperkitty_standalone/hyperkitty.cfg
 
