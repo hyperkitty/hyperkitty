@@ -2,6 +2,11 @@
 {% load hk_generic %}
 {% load gravatar %}
 
+
+{% block title %}
+{{ search_type }} - {{ app_name|title }}
+{% endblock %}
+
 {% block content %}
 
 {% if threads.object_list %}

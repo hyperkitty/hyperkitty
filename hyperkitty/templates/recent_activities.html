@@ -3,6 +3,11 @@
 {% load gravatar %}
 {% load storm %}
 
+
+{% block title %}
+{{ mlist.display_name|default:mlist.name|escapeemail }} - {{ app_name|title }}
+{% endblock %}
+
 {% block additional_stylesheets %}
 <link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/stats.css" />
 {% endblock %}

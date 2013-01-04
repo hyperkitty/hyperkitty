@@ -1,8 +1,14 @@
 {% extends "base.html" %}
 {% load i18n %}
+
+
+{% block title %}
+{% trans 'Available lists' %} - {{ app_name|title }}
+{% endblock %}
+
 {% block content %}
 
-<h1>{% trans 'Lists' %}</h1>
+<h1>{% trans 'Available lists' %}</h1>
 
 <table class="table table-bordered table-striped">
 	<tbody>

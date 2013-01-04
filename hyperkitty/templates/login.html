@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% load i18n %}
 
+
+{% block title %}
+{% trans 'Login' %} - {{ app_name|title }}
+{% endblock %}
+
 {% block content %}
 
 <h2>Login with username and password</h2>

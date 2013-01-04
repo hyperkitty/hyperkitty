@@ -4,6 +4,11 @@
 {% load hk_generic %}
 {% load storm %}
 
+
+{% block title %}
+{{ subject }} - {{ mlist.display_name|default:mlist.name|escapeemail }} - {{ app_name|title }}
+{% endblock %}
+
 {% block content %}
 
 	<div class="thread-header">
