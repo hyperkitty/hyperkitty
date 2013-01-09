@@ -37,7 +37,7 @@ from django.contrib.auth.decorators import (login_required,
 from hyperkitty.models import Rating, Tag
 #from hyperkitty.lib.mockup import *
 from forms import *
-from hyperkitty.lib import get_months, get_store, stripped_subject, sort_thread
+from hyperkitty.lib import get_months, get_store, stripped_subject
 
 
 def thread_index(request, mlist_fqdn, threadid):
@@ -55,7 +55,7 @@ def thread_index(request, mlist_fqdn, threadid):
         emails = thread.emails
     else:
         sort_mode = "thread"
-        emails = sort_thread(thread)
+        emails = thread.emails_by_reply
 
     participants = {}
     for email in emails:
@@ -92,7 +92,7 @@ def thread_index(request, mlist_fqdn, threadid):
         participants[email.sender_name] = email.sender_email
 
         if sort_mode == "thread":
-            email.level -= 1 # replies start ragged left
+            email.level = email.thread_depth - 1 # replies start ragged left
             if email.level > 5:
                 email.level = 5
 
