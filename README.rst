@@ -5,7 +5,7 @@ HyperKitty - Archiver for for GNU Mailman v3
 HyperKitty is an open source Django application under development. It aims at
 providing a web interface to access GNU Mailman archives.
 
-The code is available from: http://bzr.fedorahosted.org/bzr/hyperkitty/
+The code is available from: https://github.com/hyperkitty/hyperkitty
 
 The documentation is located in the "doc" subfolder. It can be generated in
 various formats thanks to `Sphinx`_. To generate the HTML documentation, run

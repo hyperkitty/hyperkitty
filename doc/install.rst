@@ -26,7 +26,7 @@ Django site (project).
 
 First, get the project directory from the source code management system::
 
-    bzr branch bzr://bzr.fedorahosted.org/bzr/hyperkitty/hyperkitty_standalone
+    git clone https://github.com/hyperkitty/hyperkitty_standalone.git
 
 Second, change the database setting in ``hyperkitty_standalone/settings.py`` to
 your preferred database. HyperKitty uses two databases, one to store the metadata

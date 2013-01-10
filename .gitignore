@@ -1,7 +1,6 @@
 *pyc
 *.swp
 *~
-.bzr
 kittystore
 logs
 *.egg-info

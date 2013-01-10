@@ -6,7 +6,7 @@ The HyperKitty Django app provides a web interface to access GNU Mailman v3
 archives.
 
 The project page is https://fedorahosted.org/hyperkitty/ and the code is
-available from http://bzr.fedorahosted.org/bzr/hyperkitty/ .
+available from https://github.com/hyperkitty/hyperkitty .
 
 The authors are listed in the ``AUTHORS.txt`` file.
 

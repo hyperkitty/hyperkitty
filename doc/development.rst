@@ -28,11 +28,11 @@ Then download the components of HyperKitty::
     cd kittystore
     python setup.py develop
     cd ..
-    bzr branch bzr://bzr.fedorahosted.org/bzr/hyperkitty/hyperkitty
+    git clone https://github.com/hyperkitty/hyperkitty.git
     cd hyperkitty
     python setup.py develop
     cd ..
-    bzr branch bzr://bzr.fedorahosted.org/bzr/hyperkitty/hyperkitty_standalone
+    git clone https://github.com/hyperkitty/hyperkitty_standalone.git
 
 
 .. Setting up the databases
