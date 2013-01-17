@@ -210,6 +210,9 @@ form.likeform {
     float: right;
 }
 
+
+/* Summary page */
+
 #recent_activities h2 {
     font-size: 22px;
     line-height: 32px;
@@ -219,6 +222,85 @@ form.likeform {
 #graph h2 {
     text-align: center;
 }
+
+#fig {
+  position: relative;
+  margin: auto;
+  width: 540px;
+  height: 330px;
+}
+
+#top_discussion {
+    width: 45%;
+    margin-right: 22px;
+    margin-left: 10px;
+}
+
+#discussion_by_topic {
+    width: 45%;
+    margin-top: 20px;
+    margin-right: 22px;
+    margin-left: 10px;
+}
+
+#most_active {
+    float: right;
+    width: 45%;
+}
+
+#discussion-maker {
+    float: right;
+    width: 45%;
+    margin-top: 20px;
+}
+
+.category {
+    font-variant: small-caps;
+    font-weight: bold;
+    color: white;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;
+    vertical-align: top;
+    margin-bottom: 10px;
+    padding-top: 0px;
+    padding-left: 10px;
+}
+
+.category_entry {
+    list-style-type: circle;
+    margin-top: 0px;
+    padding-bottom: 10px;
+    padding-left: 25px;
+}
+
+.category_entry li {
+    padding-bottom: 10px;
+}
+
+.maker {
+    color: rgb(102, 102, 102);
+    padding-right: 10px;
+    padding-bottom: 20px;
+}
+
+.maker-id, .maker-name {
+    font-weight: bold;
+    font-size: 115%;
+    vertical-align: top;
+    padding-right: 20px;
+}
+
+.maker .gravatar {
+    padding-right: 20px;
+}
+
+.score{
+    font-weight: bold;
+}
+
+
+
 
 #archives {
     width: 9%;
@@ -280,6 +362,14 @@ form.likeform {
 
 .thread {
     margin-bottom: 3em;
+}
+
+.thread_id {
+    font-weight: bold;
+    font-size: 125%;
+    color: rgb(102, 102, 102);
+    vertical-align: top;
+    padding-right: 10px;
 }
 
 .thread_title {

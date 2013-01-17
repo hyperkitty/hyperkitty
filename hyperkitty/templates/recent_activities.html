@@ -44,12 +44,12 @@
 	</section>
 
 	{% if top_author %}
-	<section id="discussion_marker">
+	<section id="discussion-maker">
 		<h2>Prominent discussion maker</h2>
 		{% for author in top_author %}
 		<!-- Start discussion maker -->
 		<div class="maker">
-			<div class="inline-block maker_id">
+			<div class="inline-block maker-id">
 				#{{forloop.counter}}
 			</div>
 			<div class="inline-block gravatar">
@@ -59,7 +59,7 @@
 				{% endif %}
 			</div>
 			<div class="inline-block">
-				<span class="marker_name">{{author.name}}</span>
+				<span class="maker-name">{{author.name}}</span>
 				<br />
 				<span class="score">+{{author.kudos}}</span> kudos
 			</div>
