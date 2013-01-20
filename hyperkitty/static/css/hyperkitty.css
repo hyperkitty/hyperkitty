@@ -7,6 +7,7 @@ body {
 #logo {
     display: block;
     margin: 80px auto;
+    clear: both;
 }
 
 ul.nav.auth {
@@ -14,6 +15,32 @@ ul.nav.auth {
     margin: 0;
 }
 
+
+/* List of lists */
+
+h1.lists {
+    margin-bottom: 0.5em;
+}
+
+ul.lists .list-name {
+    font-size: 120%;
+    color: black;
+    font-weight: bold;
+}
+ul.lists li a {
+    display: block;
+    float: left;
+    padding: 2em;
+    margin: 0 3em 3em 0;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+ul.lists li a:hover {
+    text-decoration: none;
+    background-color: #eee;
+}
 
 
 .Sb {

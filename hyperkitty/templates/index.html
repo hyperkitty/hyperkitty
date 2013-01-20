@@ -8,21 +8,22 @@
 
 {% block content %}
 
-<h1>{% trans 'Available lists' %}</h1>
+<h1 class="lists">{% trans 'Available lists' %}</h1>
 
-<table class="table table-bordered table-striped">
-	<tbody>
-		{% for mlist in lists %}
-		<tr>
-			<td>{{ mlist }}</td>
-			<td><a href="{% url list_overview mlist_fqdn=mlist %}"> Overview </a></td>
-			<td><a href="{% url archives mlist_fqdn=mlist %}"> Archives </a></td>
-		</tr>
-		{% empty %}
-		<tr><td>No archived list yet.</td></tr>
-		{% endfor %}
-	</tbody>
-</table>
+{% if lists %}
+<ul class="lists unstyled">
+	{% for mlist in lists %}
+	<li>
+		<a href="{% url list_overview mlist_fqdn=mlist %}">
+			<p class="list-name">{{ mlist }}</p>
+			<p>overview{% if mlist.display_name %} of {{ mlist.display_name }}{% endif %}</p>
+		</a>
+	</li>
+	{% endfor %}
+</ul>
+{% else %}
+<p>No archived list yet.</p>
+{% endif %}
 
 <img id="logo" alt="HyperKitty" src="{{STATIC_URL}}img/logo.png" />
 
