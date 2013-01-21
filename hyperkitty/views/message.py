@@ -35,7 +35,7 @@ from django.contrib.auth.decorators import (login_required,
                                             user_passes_test)
 
 from hyperkitty.models import Rating
-from hyperkitty.lib import get_store
+from hyperkitty.lib import get_store, get_months
 from forms import *
 
 
@@ -90,6 +90,7 @@ def index(request, mlist_fqdn, hashid):
         'list_address': mlist_fqdn,
         'message': message,
         'hashid' : hashid,
+        'archives_length': get_months(store, mlist_fqdn),
         'use_mockups': settings.USE_MOCKUPS,
     })
     return HttpResponse(t.render(c))

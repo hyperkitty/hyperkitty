@@ -10,16 +10,26 @@
 
 {% block content %}
 
-<div class="message-header">
-	<a class="thread-back"
-		href="{% url thread threadid=message.thread_id, mlist_fqdn=list_address %}#{{message.message_id_hash}}">
-	</a> {# the background image will be a "back to thread" button #}
-	<h1>{{ message.subject }}</h1>
-</div>
+<div class="row-fluid">
 
-<section id="thread_content">
-	{% include 'messages/first_email.html' with first_mail=message %}
-</section>
+{% include 'threads/month_list.html' %}
+
+	<div class="span7">
+
+		<div class="message-header">
+			<a class="thread-back"
+				href="{% url thread threadid=message.thread_id, mlist_fqdn=list_address %}#{{message.message_id_hash}}">
+			</a> {# the background image will be a "back to thread" button #}
+			<h1>{{ message.subject }}</h1>
+		</div>
+
+		<section id="thread_content">
+			{% include 'messages/first_email.html' with first_mail=message %}
+		</section>
+
+	</div>
+
+</div>
 
 {% endblock %}
 

@@ -11,46 +11,64 @@
 
 {% block content %}
 
-	<div class="thread-header">
-		{% for thread in neighbors %}
-			{% if thread %}
-			<a class="thread-{% ifequal forloop.counter 1 %}older{% else %}newer{% endifequal %}"
-			   href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
-			   >{{ thread.subject|strip_subject:mlist|truncatesmart:"22" }}</a>
-			{% endif %}
-		{% endfor %}
-		<h1>{{ subject }}</h1>
+<div class="row-fluid">
+
+{% include 'threads/month_list.html' %}
+
+	<div class="span10">
+
+		<div class="thread-header">
+			{% for thread in neighbors %}
+				{% if thread %}
+				<a class="thread-{% ifequal forloop.counter 1 %}older{% else %}newer{% endifequal %}"
+				   href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
+				   >{{ thread.subject|strip_subject:mlist|truncatesmart:"22" }}</a>
+				{% endif %}
+			{% endfor %}
+			<h1>{{ subject }}</h1>
+		</div>
+
+		<div class="row-fluid">
+
+		<div class="span9">
+		<!-- main section, the email thread -->
+		<section id="thread_content">
+
+			<!-- Start first email -->
+			{% include 'messages/first_email.html' %}
+			<!-- End first email -->
+
+			<p class="sort-mode">
+				{% if sort_mode == "date" %}
+				<a href="{% url thread threadid=threadid, mlist_fqdn=list_address %}?sort=thread"
+					>Show replies by thread</a>
+				{% else %}
+				<a href="{% url thread threadid=threadid, mlist_fqdn=list_address %}?sort=date"
+					>Show replies by date</a>
+				{% endif %}
+			</p>
+
+			{% for email in replies %}
+			<div class="{% cycle 'even' 'odd' %}"
+				{% if email.level %}style="margin-left:{{ email.level|multiply:"2" }}em;"{% endif %}>
+				<!-- Start email -->
+				{% include 'messages/message.html' %}
+				<!-- End of email -->
+			</div>
+			{% endfor %}
+
+		</section>
+		</div>
+
+		<div class="span3">
+			{% include 'threads/right_col.html' %}
+		</div>
+
+		</div>
+
 	</div>
 
-	{% include 'threads/right_col.html' %}
-
-	<!-- main section, the email thread -->
-	<section id="thread_content">
-
-		<!-- Start first email -->
-		{% include 'messages/first_email.html' %}
-		<!-- End first email -->
-
-		<p class="sort-mode">
-			{% if sort_mode == "date" %}
-			<a href="{% url thread threadid=threadid, mlist_fqdn=list_address %}?sort=thread"
-				>Show replies by thread</a>
-			{% else %}
-			<a href="{% url thread threadid=threadid, mlist_fqdn=list_address %}?sort=date"
-				>Show replies by date</a>
-			{% endif %}
-		</p>
-
-		{% for email in replies %}
-		<div class="{% cycle 'even' 'odd' %}"
-			{% if email.level %}style="margin-left:{{ email.level|multiply:"2" }}em;"{% endif %}>
-			<!-- Start email -->
-			{% include 'messages/message.html' %}
-			<!-- End of email -->
-		</div>
-		{% endfor %}
-
-	</section>
+</div>
 
 <!-- end of content -->
 {% endblock %}

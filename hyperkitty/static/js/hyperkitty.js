@@ -172,4 +172,5 @@ $(document).ready(function() {
     setup_attachments();
     setup_add_tag();
     setup_quotes();
+    $("#archives").accordion({navigation: true});
 });

@@ -69,15 +69,25 @@ ul.lists li a:hover {
 
 }
 
+
+/* Login form */
+
+.center {
+    text-align: center;
+}
+#loginform {
+    display: inline-block;
+    text-align: left;
+}
 .socialLogin {
 	list-style: none;
 	margin: 0px;
 }
-
 .socialLogin li {
 	float: left;
 	padding: 5px;
 }
+
 
 .right {
     text-align: right;
@@ -194,9 +204,6 @@ form.likeform {
     font-weight: bold;
 }
 
-#thread_content {
-   width: 70%;
-}
 
 #top_right {
     position: absolute;
@@ -231,12 +238,6 @@ form.likeform {
     font-style: italic;
 }
 
-#recent_activities, #month-view {
-    width: 88%;
-    margin-right: 10px;
-    float: right;
-}
-
 
 /* Summary page */
 
@@ -244,6 +245,7 @@ form.likeform {
     font-size: 22px;
     line-height: 32px;
     margin-bottom: 0.5em;
+    text-align: center;
 }
 
 #graph h2 {
@@ -257,28 +259,18 @@ form.likeform {
   height: 330px;
 }
 
-#top_discussion {
-    width: 45%;
-    margin-right: 22px;
-    margin-left: 10px;
-}
 
-#discussion_by_topic {
-    width: 45%;
-    margin-top: 20px;
-    margin-right: 22px;
-    margin-left: 10px;
-}
-
-#most_active {
-    float: right;
-    width: 45%;
-}
-
+#top_discussion,
+#discussion_by_topic,
+#most_active,
 #discussion-maker {
-    float: right;
-    width: 45%;
-    margin-top: 20px;
+    padding: 1em;
+    padding-bottom: 0;
+    border: 1px solid #ddd;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    margin: 1em 0;
 }
 
 .category {
@@ -327,22 +319,7 @@ form.likeform {
 }
 
 
-
-
-#archives {
-    width: 9%;
-    float: left;
-}
-
-#archives h3.ui-state-hover {
-    cursor: pointer;
-    text-decoration: underline;
-}
-#archives h3.ui-state-active.ui-state-hover {
-    cursor: text;
-    color: inherit;
-    text-decoration: none;
-}
+/* Months list */
 
 #archives ul {
     padding: 0;
@@ -388,7 +365,7 @@ form.likeform {
 /* Thread list */
 
 .thread {
-    margin-bottom: 3em;
+    margin: 2em 0 2em 0;
 }
 
 .thread_id {
@@ -416,14 +393,20 @@ form.likeform {
 
 .thread_info {
     text-align:right;
+    clear: both;
+    margin-left: 46px;
 }
 .thread_info .btn {
     padding-top: 2px;
     padding-bottom: 2px;
 }
 
+.thread_content .gravatar {
+    float: left;
+}
 .thread_content .thread_email {
-    display: inline-block;
+    display: block;
+    margin-left: 46px;
     margin-bottom: 5px;
 }
 
@@ -435,7 +418,6 @@ form.likeform {
 
 /* Part containing the body of the mail which can be shown/hidden */
 .expander {
-    width: 740px;
     background-image: linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
     background-image: -o-linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
     background-image: -moz-linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
@@ -455,17 +437,26 @@ form.likeform {
     -webkit-border-radius: 5px 5px 5px 5px;
     -moz-border-radius: 5px 5px 5px 5px;
     border-radius: 5px 5px 5px 5px;
-    padding-left: 20px;
+    padding: 1em;
     margin-left: 21px;
-    display: inline-block;
+    display: block;
     vertical-align: top;
     white-space: pre;
 }
 
-.expander a {
-    float: right;
-    padding: 20px 10px 0px 0px;
+.thread_email .expander.collapsed {
+    white-space: normal;
 }
+
+/*
+.thread_email span.read-more a,
+.thread_email span.read-less a {
+    display: block;
+    float: right;
+    margin-top: 0.5em;
+}
+*/
+
 
 /* Thread types */
 .type {
@@ -643,27 +634,20 @@ ul.attachments-list li {
     margin-right: 20px;
 }
 
-/* Define the two columns */
-#thread_content {
-    width: 74%;
-}
-
 #thread_overview_info {
     float: right;
-    width: 22%;
 }
 
 /* Thread general information column */
-#days_old {
-    margin-left:1em;
-}
-
-.days_text {
-    font-size: 70%;
-}
 
 .days_num {
     font-size: 200%;
+    display: inline-block;
+}
+.days_text {
+    font-size: 70%;
+    display: inline-block;
+    margin-right: 2em;
 }
 
 #add_to_fav a{
@@ -848,4 +832,3 @@ ul.attachments-list li {
     border-left: 2px solid rgb(55, 113, 200);
     padding-left: 0.2em;
 }
-

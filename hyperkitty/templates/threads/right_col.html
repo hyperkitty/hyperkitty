@@ -4,19 +4,19 @@
 <!-- right column -->
 <section id="thread_overview_info">
 	<!-- Start dates -->
-	<div id="thread_date_info">
-		<div class="days_num inline-block">
+	<div id="thread_date_info" class="row-fluid">
+		<div class="days_num">
 			{{ days_inactive }}
 		</div>
-		<div class="days_text inline-block">
+		<div class="days_text">
 			days
 			<br />
 			inactive
 		</div>
-		<div id="days_old" class="days_num inline-block">
+		<div class="days_num">
 			{{ days_old }}
 		</div>
-		<div class="days_text inline-block">
+		<div class="days_text">
 			days
 			<br />
 			old
@@ -28,7 +28,6 @@
 	</p>
 	{% endif %}
 	<!-- End dates -->
-	<hr id="grey"/>
 	<div id="tags">
 		{% include 'threads/tags.html' %}
 	</div>

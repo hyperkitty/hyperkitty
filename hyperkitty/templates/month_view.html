@@ -10,112 +10,123 @@
 
 {% block content %}
 
-<div id="month-view">
-
-	<div class="month-header">
-		<div class="list-name">{{ mlist.display_name|default:mlist.name|escapeemail }}</div>
-		<div class="month-name">{{ month|date:"F Y"|capfirst }}</div>
-		<ul class="month-info">
-			<li class="participant">
-				{{ month_participants }} participants
-			</li>
-			<li class="discussion">
-				{{ month_discussions }} discussions
-			</li>
-		</ul>
-		{% if mlist.display_name %}
-		<p class="list-address">
-			{{ list_address|escapeemail }}
-		</p>
-		{% endif %}
-	</div>
-
-	{% for thread in threads %}
-	<!-- New thread -->
-	<div class="thread">
-		<div class="notsaved">
-			<span class="thread_title"><a name="{{thread.thread_id}}"
-				href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
-				>{{ thread.starting_email.subject|strip_subject:mlist }}</a></span>
-			<span class="thread_date">{{thread.date_active|timesince }}</span>
-		</div>
-		<div class="thread_content">
-			{% if thread.category_tag %}
-			<div class="inline-block type type_{{thread.category_tag}}">
-				<a href="{% url search_tag mlist_fqdn=list_address, tag=thread.category_tag %}"
-					>{{thread.category}}</a>
-			</div>
-			{% endif %}
-			{% if thread.category %}
-			<div class="inline-block type type_{{thread.category|lower}}">
-				<a href="{% url search_tag mlist_fqdn=list_address, tag=thread.category|lower %}"
-					>{{thread.category}}</a>
-			</div>
-			{% endif %}
-			<div class="inline-block gravatar">
-				{% if thread.starting_email.sender_email %}
-				{% gravatar thread.starting_email.sender_email 40 %}
-				<br />
-				{% endif %}
-				{{ thread.starting_email.sender_name|escapeemail }}
-			</div>
-			<div class="thread_email">
-				<span class="expander">
-					{{ thread.starting_email.content|wordwrap:90|urlizetrunc:76|escapeemail }}
-				</span>
-			</div>
-		</div>
-		<div class="thread_info">
-			<ul class="tags inline">
-				{% if thread.tags|length %}
-				<li>
-					Tags:
-				</li>
-				{% for tag in thread.tags %}
-				<li>
-					<a href="{% url search_tag mlist_fqdn=list_address, tag=tag %}">{{tag}}</a>
-				</li>
-				{% endfor %}
-				{% endif %}
-			</ul>
-			<ul class="inline-block">
-				<li class="participant">
-					{{ thread.participants|length }} participants
-				</li>
-				<li class="discussion">
-					{{ thread|length }} comments
-				</li>
-			</ul>
-			<ul class="inline-block">
-				{% include "messages/like_form.html" with hashid=thread.thread_id object=thread %}
-			</ul>
-			<a href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
-			   class="btn">Show discussion</a>
-		</div>
-	</div>
-	<!-- End of thread -->
-	{% empty %}
-		Sorry no emails could be found for this month.
-	{% endfor %}
-
-	{% include "paginator.html" %}
-</div>
+<div class="row-fluid">
 
 {% include 'threads/month_list.html' %}
+
+	<div id="month-view" class="span8">
+
+		<div class="month-header">
+			<div class="list-name">{{ mlist.display_name|default:mlist.name|escapeemail }}</div>
+			<div class="month-name">{{ month|date:"F Y"|capfirst }}</div>
+			<ul class="month-info">
+				<li class="participant">
+					{{ month_participants }} participants
+				</li>
+				<li class="discussion">
+					{{ month_discussions }} discussions
+				</li>
+			</ul>
+			{% if mlist.display_name %}
+			<p class="list-address">
+				{{ list_address|escapeemail }}
+			</p>
+			{% endif %}
+		</div>
+
+		{% for thread in threads %}
+		<!-- New thread -->
+		<div class="thread">
+			<div class="notsaved">
+				<span class="thread_title"><a name="{{thread.thread_id}}"
+					href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
+					>{{ thread.starting_email.subject|strip_subject:mlist }}</a></span>
+				<span class="thread_date">{{thread.date_active|timesince }}</span>
+			</div>
+			<div class="thread_content">
+				{% if thread.category_tag %}
+				<div class="inline-block type type_{{thread.category_tag}}">
+					<a href="{% url search_tag mlist_fqdn=list_address, tag=thread.category_tag %}"
+						>{{thread.category}}</a>
+				</div>
+				{% endif %}
+				{% if thread.category %}
+				<div class="inline-block type type_{{thread.category|lower}}">
+					<a href="{% url search_tag mlist_fqdn=list_address, tag=thread.category|lower %}"
+						>{{thread.category}}</a>
+				</div>
+				{% endif %}
+				<div class="gravatar">
+					{% if thread.starting_email.sender_email %}
+					{% gravatar thread.starting_email.sender_email 40 %}
+					<br />
+					{% endif %}
+					{{ thread.starting_email.sender_name|escapeemail }}
+				</div>
+				<div class="thread_email">
+					<span class="expander collapsed">
+						{{ thread.starting_email.content|urlizetrunc:76|escapeemail }}
+					</span>
+				</div>
+			</div>
+			<div class="thread_info">
+				<ul class="tags inline">
+					{% if thread.tags|length %}
+					<li>
+						Tags:
+					</li>
+					{% for tag in thread.tags %}
+					<li>
+						<a href="{% url search_tag mlist_fqdn=list_address, tag=tag %}">{{tag}}</a>
+					</li>
+					{% endfor %}
+					{% endif %}
+				</ul>
+				<ul class="inline-block">
+					<li class="participant">
+						{{ thread.participants|length }} participants
+					</li>
+					<li class="discussion">
+						{{ thread|length }} comments
+					</li>
+				</ul>
+				<ul class="inline-block">
+					{% include "messages/like_form.html" with hashid=thread.thread_id object=thread %}
+				</ul>
+				<a href="{% url thread threadid=thread.thread_id, mlist_fqdn=list_address %}"
+				   class="btn">Show discussion</a>
+			</div>
+		</div>
+		<!-- End of thread -->
+		{% empty %}
+			Sorry no emails could be found for this month.
+		{% endfor %}
+
+		{% include "paginator.html" %}
+
+	</div>
+
+</div>
 
 {% endblock %}
 
 {% block additionaljs %}
 <script src="{{ STATIC_URL }}js/libs/jquery.expander.js"></script>
-<script src="{{ STATIC_URL }}js/libs/jquery-ui-1.9.1.custom.min.js"></script>
 <script>
 	$(document).ready(function() {
 		$('span.expander').expander({
-			userCollapseText : 'View Less',
-			expandText : 'View More'
+			slicePoint: 500,
+			userCollapseText : '\nView Less',
+			expandText : '\nView More',
+			afterExpand: function() {
+				$(this).removeClass("collapsed");
+				$(this).addClass("expanded");
+			},
+			onCollapse: function() {
+				$(this).removeClass("expanded");
+				$(this).addClass("collapsed");
+			}
 		});
-
-		$("#archives").accordion({navigation: true});
 	});
 </script>
 {% endblock %}

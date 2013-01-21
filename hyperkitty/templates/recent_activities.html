@@ -8,101 +8,112 @@
 {{ mlist.display_name|default:mlist.name|escapeemail }} - {{ app_name|title }}
 {% endblock %}
 
-{% block additional_stylesheets %}
-<link rel="stylesheet" type="text/css" media="all" href="{{ STATIC_URL }}css/stats.css" />
-{% endblock %}
 
 {% block content %}
 
-<section id="recent_activities">
-
-	<section id="graph">
-		<h2>Activities on the list over the last 30 days</h2>
-		<div id="fig">
-			<script type="text/javascript+protovis" >
-				activity_graph(
-						["{{dates_string|join:'","'}}"],
-						{{evolution}},
-						"{% url archives mlist_fqdn=list_address %}"
-					);
-			</script>
-		</div>
-	</section>
-
-	<section id="most_active">
-		<h2>Recently active discussions</h2>
-		{% for thread in most_active_threads %}
-			{% include "threads/summary_thread.html" with counter=forloop.counter %}
-		{% endfor %}
-	</section>
-
-	<section id="top_discussion">
-		<h2>Top discussions the last 30 days</h2>
-		{% for thread in top_threads %}
-			{% include "threads/summary_thread.html" with counter=forloop.counter %}
-		{% endfor %}
-	</section>
-
-	{% if top_author %}
-	<section id="discussion-maker">
-		<h2>Prominent discussion maker</h2>
-		{% for author in top_author %}
-		<!-- Start discussion maker -->
-		<div class="maker">
-			<div class="inline-block maker-id">
-				#{{forloop.counter}}
-			</div>
-			<div class="inline-block gravatar">
-				{% if author.email %}
-				{% gravatar author.email 40 %}
-				<br />
-				{% endif %}
-			</div>
-			<div class="inline-block">
-				<span class="maker-name">{{author.name}}</span>
-				<br />
-				<span class="score">+{{author.kudos}}</span> kudos
-			</div>
-		</div>
-		<!-- End discussion maker -->
-		{% endfor %}
-
-		<h2>Tag cloud</h2>
-	</section>
-	{% endif %}
-
-	{% if threads_per_category %}
-	<section id="discussion_by_topic">
-		<h2>Discussion by topic the last 30 days</h2>
-		{% for category, thread in threads_per_category.items %}
-		<div>
-			<h2 class="category type_{{category}}"> {{category}} </h2>
-			<ul class="category_entry">
-				{% for email in thread %}
-				<li>
-					{{email.title}}
-				</li>
-				{% endfor %}
-			</ul>
-		</div>
-		{% endfor %}
-	</section>
-	{% endif %}
-
-</section>
+<div class="row-fluid">
 
 {% include 'threads/month_list.html' %}
+
+	<section id="recent_activities" class="span10">
+
+		<section id="graph">
+			<h2>Activities on the list over the last 30 days</h2>
+			<div id="fig">
+				<script type="text/javascript+protovis" >
+					activity_graph(
+							["{{dates_string|join:'","'}}"],
+							{{evolution}},
+							"{% url archives mlist_fqdn=list_address %}"
+						);
+				</script>
+			</div>
+		</section>
+
+		<div class="row-fluid">
+
+			<div class="span6">
+			<section id="most_active">
+				<h2>Recently active discussions</h2>
+				{% for thread in most_active_threads %}
+					{% include "threads/summary_thread.html" with counter=forloop.counter %}
+				{% endfor %}
+			</section>
+			</div>
+
+			<div class="span6">
+			<section id="top_discussion">
+				<h2>Top discussions the last 30 days</h2>
+				{% for thread in top_threads %}
+					{% include "threads/summary_thread.html" with counter=forloop.counter %}
+				{% endfor %}
+			</section>
+			</div>
+
+		</div>
+		<div class="row-fluid">
+
+			<div class="span6">
+			{% if top_author %}
+			<section id="discussion-maker">
+				<h2>Prominent discussion maker</h2>
+				{% for author in top_author %}
+				<!-- Start discussion maker -->
+				<div class="maker">
+					<div class="inline-block maker-id">
+						#{{forloop.counter}}
+					</div>
+					<div class="inline-block gravatar">
+						{% if author.email %}
+						{% gravatar author.email 40 %}
+						<br />
+						{% endif %}
+					</div>
+					<div class="inline-block">
+						<span class="maker-name">{{author.name}}</span>
+						<br />
+						<span class="score">+{{author.kudos}}</span> kudos
+					</div>
+				</div>
+				<!-- End discussion maker -->
+				{% endfor %}
+
+				<h2>Tag cloud</h2>
+			</section>
+			{% endif %}
+			</div>
+
+
+			<div class="span6">
+			{% if threads_per_category %}
+			<section id="discussion_by_topic">
+				<h2>Discussion by topic the last 30 days</h2>
+				{% for category, thread in threads_per_category.items %}
+				<div>
+					<h2 class="category type_{{category}}"> {{category}} </h2>
+					<ul class="category_entry">
+						{% for email in thread %}
+						<li>
+							{{email.title}}
+						</li>
+						{% endfor %}
+					</ul>
+				</div>
+				{% endfor %}
+			</section>
+			{% endif %}
+			</div>
+
+		</div>
+
+	</section>
+
+</div>
 
 {% endblock %}
 
 {% block additionaljs %}
 <script src="{{ STATIC_URL }}js/libs/protovis-d3.1.js"></script>
-<script src="{{ STATIC_URL }}js/libs/jquery-ui-1.9.1.custom.min.js"></script>
-<script>
-	$(document).ready(function() {
-		$("#archives").accordion({navigation: true});
-	});
-</script>
 {% endblock %}
 
 {# vim: set noet: #}

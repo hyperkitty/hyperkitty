@@ -9,6 +9,8 @@
 
 {% block content %}
 
+<div class="row-fluid">
+
 {% if threads.object_list %}
 <div class="pagination">
 	<span class="step-links"> {% if threads.has_previous %} <a href="{{full_path|strip_page}}/{{ threads.previous_page_number }}">previous</a> {% endif %} <span class="current"> Page {{ threads.number }} of {{ threads.paginator.num_pages }}. </span> {% if threads.has_next %} <a href="{{full_path|strip_page}}/{{ threads.next_page_number }}">next</a> {% endif %} </span>
@@ -80,6 +82,8 @@ Sorry no emails could be found for your search.
 	<span class="step-links"> {% if threads.has_previous %} <a href="{{ threads.previous_page_number }}">previous</a> {% endif %} <span class="current"> Page {{ threads.number }} of {{ threads.paginator.num_pages }}. </span> {% if threads.has_next %} <a href="{{ threads.next_page_number }}">next</a> {% endif %} </span>
 </div>
 {% endif %}
+
+</div>
 
 {% endblock %}
 
