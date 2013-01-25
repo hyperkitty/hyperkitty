@@ -339,16 +339,14 @@ form.likeform {
 
 /* Months list */
 
-#archives ul {
-    padding: 0;
-    margin: 0;
-    margin-bottom: 1em;
+#months-list h3 {
+    margin-top: 1em;
+    font-size: 120%;
 }
-
-#archives li {
-    list-style-type: none;
+#months-list {
+    padding-top: 1em;
 }
-#archives li.current {
+#months-list li.current {
     font-weight: bold;
 }
 

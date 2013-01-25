@@ -1,29 +1,26 @@
 {% load i18n %}
-<div class="pager">
-	{% if has_previous %}
-		<span class="page">
-		<a href="?page={{ previous }}">&lt; Prev</a>
-		</span>
-	{% endif %}
+<ul class="pager">
+	<li{% if not has_previous %} class="disabled"{% endif %}>
+		<a href="?page={{ previous }}">&larr; Newer</a>
+	</li>
 
 	{% if show_first %}
-		<span class="page"><a href="?page=1">1</a></span>
-		<span class="ellipsis">...</span>
+		<li class="page"><a href="?page=1">1</a></li>
+		<li class="ellipsis">...</li>
 	{% endif %}
 	{% for linkpage in page_numbers %}
 		{% ifequal linkpage page %}
-			<span class="current">{{ page }}</span>
+			<li class="current">{{ page }}</li>
 		{% else %}
-			<span class="page"><a href="?page={{ linkpage }}">{{ linkpage }}</a></span>
+			<li class="page"><a href="?page={{ linkpage }}">{{ linkpage }}</a></li>
 		{% endifequal %}
 	{% endfor %}
 	{% if show_last %}
-		<span class="ellipsis">...</span>
-		<span class="page"><a href="?page=last">{{ pages }}</a></span>
+		<li class="ellipsis">...</li>
+		<li class="page"><a href="?page=last">{{ pages }}</a></li>
 	{% endif %}
-	{% if has_next %}
-		<span class="page"><a href="?page={{ next }}">Next &gt;</a></span>
-	{% endif %}
-</div>
+
+	<li{% if not has_next %} class="disabled"{% endif %}><a href="?page={{ next }}">Older &rarr;</a></li>
+</ul>
 
 {# vim: set noet: #}
