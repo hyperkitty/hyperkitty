@@ -8,15 +8,14 @@
 
 {% block content %}
 
-<div class="center">
 <div id="loginform">
 
 <h2>Login with username and password</h2>
 
-<form action="" method="post" class="login mm_clear">
+
+<form action="{{ request.path }}?next={{ next }}" method="post" class="login mm_clear">
 	{% csrf_token %}
 	{{ form.as_p }}
-	<input type="hidden" name="next" value="{{ next }}" />
 	<div class="field">
 		<button class="btn btn-primary" type="submit">
 			{% trans "Login" %}
@@ -40,7 +39,6 @@
 
 </ul>
 
-</div>
 </div>
 
 {% endblock %}
@@ -66,6 +64,9 @@
 	});
 </script>
 <!-- end browserid stuff -->
+<script type="text/javascript">
+	document.getElementById('id_username').focus();
+</script>
 {% endblock additionaljs %}
 
 {# vim: set noet: #}

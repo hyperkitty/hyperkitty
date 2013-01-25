@@ -26,6 +26,7 @@ from django.views.generic.simple import direct_to_template
 from api import EmailResource, ThreadResource, SearchResource
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.contrib.auth.views import login as login_view
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -33,7 +34,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('hyperkitty.views',
     # Account
-    url(r'^accounts/login/$', 'accounts.user_login', name='user_login'),
+    url(r'^accounts/login/$', login_view, {'template_name': 'login.html'}, name='user_login'),
     url(r'^accounts/logout/$', 'accounts.user_logout', name='user_logout'),
     url(r'^accounts/profile/$', 'accounts.user_profile', name='user_profile'),
     url(r'^accounts/register/$', 'accounts.user_registration', name='user_registration'),

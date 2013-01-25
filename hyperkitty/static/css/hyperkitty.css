@@ -72,12 +72,14 @@ ul.lists li a:hover {
 
 /* Login form */
 
-.center {
-    text-align: center;
-}
 #loginform {
-    display: inline-block;
     text-align: left;
+    width: 40em;
+    margin: 0 auto;
+}
+#loginform h2 {
+    margin-bottom: 1.5em;
+    text-align: center;
 }
 .socialLogin {
 	list-style: none;
@@ -88,6 +90,22 @@ ul.lists li a:hover {
 	padding: 5px;
 }
 
+/* from Bootstrap's alert class */
+.errorlist {
+  list-style-type: none;
+  margin: 0 0 20px 0;
+  padding: 8px 35px 8px 14px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+  border: 1px solid #eed3d7;
+  -webkit-border-radius: 4px;
+     -moz-border-radius: 4px;
+          border-radius: 4px;
+  color: #b94a48;
+  background-color: #f2dede;
+}
+
+
+/* ******************* */
 
 .right {
     text-align: right;
