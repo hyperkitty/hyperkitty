@@ -40,7 +40,7 @@ from forms import *
 from hyperkitty.lib import get_months, get_store, stripped_subject
 
 
-def thread_index(request, mlist_fqdn, threadid):
+def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     ''' Displays all the email for a given thread identifier '''
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('thread.html')
@@ -122,7 +122,7 @@ def thread_index(request, mlist_fqdn, threadid):
         'list_address': mlist_fqdn,
         'search_form': search_form,
         'addtag_form': tag_form,
-        'month': 'Thread',
+        'month': thread.date_active,
         'participants': participants,
         'first_mail': thread.starting_email,
         'replies': list(emails)[1:],

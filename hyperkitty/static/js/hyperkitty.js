@@ -162,6 +162,12 @@ function setup_quotes() {
         });
 }
 
+function setup_months_list() {
+    var accordion = $("#months-list").accordion({
+            active: $("#months-list li.current").parent().prev()
+    });
+}
+
 
 /*
  * General
@@ -172,5 +178,5 @@ $(document).ready(function() {
     setup_attachments();
     setup_add_tag();
     setup_quotes();
-    $("#months-list").accordion({navigation: true});
+    setup_months_list();
 });

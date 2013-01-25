@@ -78,7 +78,7 @@ class AddTagForm(forms.Form):
     tag =  forms.CharField(label='', help_text=None,
                 widget=TextInputWithButton(
                     attrs={'placeholder': 'Add a tag...',
-                           'class': 'span2',
+                           'class': 'input-medium',
                            'button_text': 'Add'}
                     )
                 )
