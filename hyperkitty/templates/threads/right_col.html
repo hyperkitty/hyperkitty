@@ -22,18 +22,22 @@
 			old
 		</div>
 	</div>
-	{% if use_mockups %}
-	<p id="add_to_fav">
-		<a href="#AddFav" class="notsaved">Add to favorite discussions</a>
-	</p>
-	{% endif %}
+	<form id="fav_form" name="favorite" method="post" class="favorite"
+		  action="{% url favorite mlist_fqdn=list_address, threadid=threadid %}">
+		{% csrf_token %}
+		<input type="hidden" name="action" value="{{ fav_action }}" />
+		<p>
+			<a href="#AddFav" class="notsaved">Add to favorite discussions</a>
+			<a href="#RmFav" class="saved">Remove from favorite discussions</a>
+		</p>
+	</form>
 	<!-- End dates -->
 	<div id="tags">
 		{% include 'threads/tags.html' %}
 	</div>
 	<div id="add_tag">
 		<form id="add_tag_form" name="addtag" method="post"
-		      action="{% url add_tag mlist_fqdn=list_address, hashid=threadid %}">
+		      action="{% url add_tag mlist_fqdn=list_address, threadid=threadid %}">
 			{% csrf_token %}
 			{{ addtag_form.as_p }}
 		</form>

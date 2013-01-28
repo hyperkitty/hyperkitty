@@ -134,9 +134,12 @@ def sender_date(email):
 
 
 @register.filter()
-def viewer_date(email):
-    email_date = email.date.replace(tzinfo=tzutc())
-    return localtime(email_date)
+def viewer_date(email_or_thread):
+    if hasattr(email_or_thread, 'date'):
+        date_obj = email_or_thread.date
+    elif hasattr(email_or_thread, 'date_active'):
+        date_obj = email_or_thread.date_active
+    return localtime(date_obj.replace(tzinfo=tzutc()))
 
 
 SNIPPED_RE = re.compile("^(\s*&gt;).*$", re.M)

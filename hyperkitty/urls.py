@@ -52,11 +52,6 @@ urlpatterns = patterns('hyperkitty.views',
     url(r'^archives/(?P<mlist_fqdn>.*@.*)/$',
         'list.archives', name='archives'),
 
-    # Threads
-    url(r'^thread/(?P<mlist_fqdn>.*@.*)/(?P<threadid>.+)/$',
-        'thread.thread_index', name='thread'),
-
-
     # Lists
     url(r'^list/$', 'pages.index'), # Can I remove this URL?
     url(r'^list/(?P<mlist_fqdn>.*@.*)/$',
@@ -95,11 +90,15 @@ urlpatterns = patterns('hyperkitty.views',
     ### THREAD LEVEL VIEWS ###
     # Thread view page
     url(r'^thread/(?P<mlist_fqdn>.*@.*)/(?P<threadid>.+)/$',
-        'thread.thread_index', name='thread_index'),
-
+        'thread.thread_index', name='thread'),
     # Add Tag to a thread
-    url(r'^addtag/(?P<mlist_fqdn>.*@.*)\/(?P<hashid>.*)/$',
+    url(r'^thread/(?P<mlist_fqdn>.*@.*)\/(?P<threadid>.*)/addtag$',
         'thread.add_tag', name='add_tag'),
+    # Thread favorites
+    url(r'^thread/(?P<mlist_fqdn>.*@.*)\/(?P<threadid>.*)/favorite$',
+        'thread.favorite', name='favorite'),
+
+
     ### THREAD LEVEL VIEW ENDS ###
 
 

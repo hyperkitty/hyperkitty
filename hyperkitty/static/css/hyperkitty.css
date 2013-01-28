@@ -666,9 +666,15 @@ ul.attachments-list li {
     margin-right: 2em;
 }
 
-#add_to_fav a{
+.favorite a {
     color: rgb(167, 169, 172);
 }
+.favorite a.saved,
+.favorite a.notsaved {
+    /* Will be shown via Javascript */
+    display: none;
+}
+
 
 #grey {
     color: rgb(167, 169, 172);

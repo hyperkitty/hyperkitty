@@ -39,39 +39,62 @@
 		</tbody>
 	</table>
 
-	<h3> Up Votes : </h3>
-	<ul>
-	{% for vote in votes_up %}
-		<li>
-		{% if vote.message.content|trimString|length > 0 %}
-			<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}"
-				>{{ vote.message.subject }}</a> by {{ vote.message.sender_name }}
-				({{ vote.message|viewer_date|date:"l, j F Y H:i:s" }})
-		{% else %}
-			<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}">Message is empty</a>
-		{% endif %}
-		</li>
-	{% empty %}
-		<p>No up vote yet.</p>
-	{% endfor %}
-	</ul>
 
-	<h3> Down Votes : </h3>
-	<ul>
-	{% for vote in votes_down %}
-		<li>
-		{% if vote.message.content|trimString|length > 0 %}
-			<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}"
-				>{{ vote.message.subject }}</a> by {{ vote.message.sender_name }}
-				({{ vote.message|viewer_date|date:"l, j F Y H:i:s" }})
-		{% else %}
-			<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}">Message is empty</a>
-		{% endif %}
-		</li>
-	{% empty %}
+	<h3>Favorites</h3>
+	{% if favorites %}
+		<ul>
+		{% for fav in favorites %}
+			<li>
+				<a href="{% url thread mlist_fqdn=fav.list_address, threadid=fav.threadid %}"
+					>{{ fav.thread.starting_email.subject }}</a> by {{ fav.thread.starting_email.sender_name }}
+					({{ fav.thread|viewer_date|date:"l, j F Y H:i:s" }})
+			</li>
+		{% endfor %}
+		</ul>
+	{% else %}
+		<p>No favorite yet.</p>
+	{% endif %}
+
+
+	<h3>Votes</h3>
+	<h4>Up Votes</h4>
+	{% if votes_up %}
+		<ul>
+		{% for vote in votes_up %}
+			<li>
+			{% if vote.message.content|trimString|length > 0 %}
+				<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}"
+					>{{ vote.message.subject }}</a> by {{ vote.message.sender_name }}
+					({{ vote.message|viewer_date|date:"l, j F Y H:i:s" }})
+			{% else %}
+				<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}">Message is empty</a>
+			{% endif %}
+			</li>
+		{% endfor %}
+		</ul>
+	{% else %}
+		<p>No up vote yet.</p>
+	{% endif %}
+
+	<h4>Down Votes</h4>
+	{% if votes_down %}
+		<ul>
+		{% for vote in votes_down %}
+			<li>
+			{% if vote.message.content|trimString|length > 0 %}
+				<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}"
+					>{{ vote.message.subject }}</a> by {{ vote.message.sender_name }}
+					({{ vote.message|viewer_date|date:"l, j F Y H:i:s" }})
+			{% else %}
+				<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}">Message is empty</a>
+			{% endif %}
+			</li>
+		{% endfor %}
+		</ul>
+	{% else %}
 		<p>No down vote yet.</p>
-	{% endfor %}
-	</ul>
+	{% endif %}
+
 
 {% endblock %}
 

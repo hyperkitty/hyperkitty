@@ -67,4 +67,14 @@ class Tag(models.Model):
 
     def __unicode__(self):
         """Unicode representation"""
-        return u'threadid = %s , tag = %s ' % (unicode(self.list_address), unicode(self.threadid))
+        return u'threadid = %s , tag = %s ' % (unicode(self.threadid), unicode(self.tag))
+
+
+class Favorite(models.Model):
+    list_address = models.CharField(max_length=50)
+    threadid = models.CharField(max_length=100)
+    user = models.ForeignKey(User)
+
+    def __unicode__(self):
+        """Unicode representation"""
+        return u'thread %s for user %s' % (unicode(self.threadid), unicode(self.user))

@@ -39,7 +39,7 @@ from django.shortcuts import render_to_response, redirect
 from django.template import Context, loader, RequestContext
 from django.utils.translation import gettext as _
 
-from hyperkitty.models import UserProfile, Rating
+from hyperkitty.models import UserProfile, Rating, Favorite
 from hyperkitty.views.forms import RegistrationForm
 from hyperkitty.lib import get_store
 
@@ -57,6 +57,7 @@ def user_profile(request, user_email=None):
     if not request.user.is_authenticated():
         return redirect('user_login')
     t = loader.get_template('user_profile.html')
+    store = get_store(request)
 
     # try to render the user profile.
     try:
@@ -65,11 +66,11 @@ def user_profile(request, user_email=None):
     except:
         user_profile = UserProfile.objects.create(user=request.user)
 
+    # Votes
     try:
         votes = Rating.objects.filter(user=request.user)
     except Rating.DoesNotExist:
-        votes = {}
-    store = get_store(request)
+        votes = []
     votes_up = []
     votes_down = []
     for vote in votes:
@@ -84,10 +85,20 @@ def user_profile(request, user_email=None):
         elif vote.vote == -1:
             votes_down.append(vote_data)
 
+    # Favorites
+    try:
+        favorites = Favorite.objects.filter(user=request.user)
+    except Favorite.DoesNotExist:
+        favorites = []
+    for fav in favorites:
+        thread = store.get_thread(fav.list_address, fav.threadid)
+        fav.thread = thread
+
     c = RequestContext(request, {
         'user_profile' : user_profile,
         'votes_up': votes_up,
         'votes_down': votes_down,
+        'favorites': favorites,
         'use_mockups': settings.USE_MOCKUPS,
     })
 

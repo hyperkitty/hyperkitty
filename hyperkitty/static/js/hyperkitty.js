@@ -53,8 +53,8 @@ function vote(elem, value) {
 
 
 function setup_vote() {
-    $(".voteup").click(function() { vote(this, 1); return false; });
-    $(".votedown").click(function() { vote(this, -1); return false; });
+    $(".voteup").click(function(e) { e.preventDefault(); vote(this, 1); });
+    $(".votedown").click(function(e) { e.preventDefault(); vote(this, -1); });
 }
 
 
@@ -80,6 +80,56 @@ function setup_add_tag() {
         return false;
     });
 }
+
+
+/*
+ * Favorites
+ */
+
+function setup_favorites() {
+    $(".favorite input[name='action']").bind("change", function() {
+        // bind the links' visibilities to the hidden input status
+        var form = $(this).parents("form").first();
+        if ($(this).val() === "add") {
+            form.find("a.saved").hide();
+            form.find("a.notsaved").show();
+        } else {
+            form.find("a.notsaved").hide();
+            form.find("a.saved").show();
+        }
+    }).trigger("change");
+    $(".favorite a").bind("click", function(e) {
+        e.preventDefault();
+        var form = $(this).parents("form").first();
+        var action_field = form.find("input[name='action']");
+        var form_data = form.serializeArray();
+        var data = {};
+        for (input in form_data) {
+            data[form_data[input].name] = form_data[input].value;
+        }
+        $.ajax({
+            type: "POST",
+            url: form.attr("action"),
+            dataType: "text",
+            data: data,
+            success: function(response) {
+                // Update the UI
+                if (action_field.val() === "add") {
+                    action_field.val("rm");
+                } else {
+                    action_field.val("add");
+                }
+                action_field.trigger("change");
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                if (jqXHR.status === 403) {
+                    alert(jqXHR.responseText);
+                }
+            }
+        });
+    });
+}
+
 
 
 /*
@@ -179,4 +229,5 @@ $(document).ready(function() {
     setup_add_tag();
     setup_quotes();
     setup_months_list();
+    setup_favorites();
 });

@@ -34,7 +34,7 @@ from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
 
-from hyperkitty.models import Rating, Tag
+from hyperkitty.models import Rating, Tag, Favorite
 #from hyperkitty.lib.mockup import *
 from forms import *
 from hyperkitty.lib import get_months, get_store, stripped_subject
@@ -99,12 +99,23 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     archives_length = get_months(store, mlist_fqdn)
     from_url = reverse("thread", kwargs={"mlist_fqdn":mlist_fqdn,
                                          "threadid":threadid})
+    # Tags
     tag_form = AddTagForm(initial={'from_url' : from_url})
-
     try:
         tags = Tag.objects.filter(threadid=threadid, list_address=mlist_fqdn)
     except Tag.DoesNotExist:
         tags = {}
+
+    # Favorites
+    fav_action = "add"
+    if request.user.is_authenticated():
+        try:
+            Favorite.objects.get(list_address=mlist_fqdn, threadid=threadid,
+                                 user=request.user)
+        except Favorite.DoesNotExist:
+            pass
+        else:
+            fav_action = "rm"
 
     # Extract relative dates
     today = datetime.date.today()
@@ -132,11 +143,12 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'days_old': days_old.days,
         'use_mockups': settings.USE_MOCKUPS,
         'sort_mode': sort_mode,
+        'fav_action': fav_action,
     })
     return HttpResponse(t.render(c))
 
 
-def add_tag(request, mlist_fqdn, hashid):
+def add_tag(request, mlist_fqdn, threadid):
     """ Add a tag to a given thread. """
     if not request.user.is_authenticated():
         return HttpResponse('You must be logged in to add a tag',
@@ -152,14 +164,14 @@ def add_tag(request, mlist_fqdn, hashid):
                             content_type="text/plain", status=500)
     tag = form.data['tag']
     try:
-        tag_obj = Tag.objects.get(threadid=hashid,
+        tag_obj = Tag.objects.get(threadid=threadid,
                                   list_address=mlist_fqdn, tag=tag)
     except Tag.DoesNotExist:
-        tag_obj = Tag(list_address=mlist_fqdn, threadid=hashid, tag=tag)
+        tag_obj = Tag(list_address=mlist_fqdn, threadid=threadid, tag=tag)
         tag_obj.save()
 
     # Now refresh the tag list
-    tags = Tag.objects.filter(threadid=hashid, list_address=mlist_fqdn)
+    tags = Tag.objects.filter(threadid=threadid, list_address=mlist_fqdn)
     t = loader.get_template('threads/tags.html')
     html = t.render(RequestContext(request, {
             "tags": tags,
@@ -168,4 +180,35 @@ def add_tag(request, mlist_fqdn, hashid):
     response = {"tags": [ t.tag for t in tags ], "html": html}
     return HttpResponse(simplejson.dumps(response),
                         mimetype='application/javascript')
+
+
+
+def favorite(request, mlist_fqdn, threadid):
+    """ Add or remove from favorites"""
+    if not request.user.is_authenticated():
+        return HttpResponse('You must be logged in to have favorites',
+                            content_type="text/plain", status=403)
+
+    if request.method != 'POST':
+        return HttpResponse("Something went wrong here",
+                            content_type="text/plain", status=500)
+
+    props = dict(list_address=mlist_fqdn, threadid=threadid, user=request.user)
+    if request.POST["action"] == "add":
+        try:
+            fav = Favorite.objects.get(**props)
+        except Favorite.DoesNotExist:
+            fav = Favorite(**props)
+        fav.save()
+    elif request.POST["action"] == "rm":
+        try:
+            fav = Favorite.objects.get(**props)
+        except Favorite.DoesNotExist:
+            pass
+        else:
+            fav.delete()
+    else:
+        return HttpResponse("Something went wrong here",
+                            content_type="text/plain", status=500)
+    return HttpResponse("success", mimetype='text/plain')
 

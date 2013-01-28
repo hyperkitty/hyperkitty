@@ -40,7 +40,7 @@ from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
 
-from hyperkitty.models import Rating, Tag
+from hyperkitty.models import Rating, Tag, Favorite
 from hyperkitty.lib import get_months, get_store, get_display_dates
 from forms import *
 
@@ -127,6 +127,18 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         #threads[cnt] = thread
         #cnt = cnt + 1
 
+        # Favorites
+        thread.favorite = False
+        if request.user.is_authenticated():
+            try:
+                Favorite.objects.get(list_address=mlist_fqdn,
+                                     threadid=thread.thread_id,
+                                     user=request.user)
+            except Favorite.DoesNotExist:
+                pass
+            else:
+                thread.favorite = True
+
     paginator = Paginator(all_threads, 10)
     pageNo = request.GET.get('page')
 
@@ -191,7 +203,6 @@ def list(request, mlist_fqdn=None):
         thread = Thread(thread_obj.thread_id, thread_obj.subject,
                         thread_obj.participants, len(thread_obj),
                         thread_obj.date_active)
-        threads.append(thread)
 
         month = thread.date_active.month
         if month < 10:
@@ -206,6 +217,8 @@ def list(request, mlist_fqdn=None):
             dates[key] = 1
         # Statistics on how many participants and threads this month
         participants.update(thread.participants)
+
+        threads.append(thread)
 
     # top threads are the one with the most answers
     top_threads = sorted(threads, key=lambda t: t.length, reverse=True)
