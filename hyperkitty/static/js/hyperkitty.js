@@ -213,9 +213,9 @@ function setup_quotes() {
 }
 
 function setup_months_list() {
-    var accordion = $("#months-list").accordion({
-            active: $("#months-list li.current").parent().prev()
-    });
+    var current = $("#months-list li.current").parent().prev();
+    if (!current.length) { current = 0; } // overview
+    $("#months-list").accordion({ active: current });
 }
 
 
