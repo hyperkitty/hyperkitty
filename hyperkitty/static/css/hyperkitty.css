@@ -105,6 +105,13 @@ ul.lists li a:hover {
 }
 
 
+/* User profile page */
+
+table.user-data {
+    width: auto;
+}
+
+
 /* ******************* */
 
 .right {
