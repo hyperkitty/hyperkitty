@@ -1,0 +1,14 @@
+	<a class="reply icon-envelope" href="#">Reply</a>
+	<div class="reply-form dropdown">
+		<form method="post"
+			  action="{% url message_reply mlist_fqdn=mlist_fqdn, message_id=message_id %}">
+			{% csrf_token %}
+			{{ reply_form.as_p }}
+			<p class="buttons">
+				<button type="submit" class="submit btn btn-primary">Send</button>
+				or <a class="cancel" href="#">cancel</a>
+			</p>
+		</form>
+	</div>
+
+{# vim: set noet: #}

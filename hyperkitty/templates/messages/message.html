@@ -57,6 +57,7 @@
 		</ul>
 	</li>
 	{% endif %}
+	{% include "messages/reply_form.html" with mlist_fqdn=list_address message_id=email.message_id_hash %}
 </ul>
 
 {# vim: set noet: #}

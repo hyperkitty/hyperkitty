@@ -20,17 +20,25 @@
  */
 
 
+/*
+ * Generic
+ */
+function form_to_json(form) {
+    var form_data = form.serializeArray();
+    var data = {};
+    for (input in form_data) {
+        data[form_data[input].name] = form_data[input].value;
+    }
+    return data;
+}
+
 
 /*
  * Voting
  */
 
 function vote(elem, value) {
-    var form_data = $(elem).parent("form").serializeArray();
-    var data = {};
-    for (input in form_data) {
-        data[form_data[input].name] = form_data[input].value;
-    }
+    var data = form_to_json($(elem).parent("form"));
     data['vote'] = value;
     $.ajax({
         type: "POST",
@@ -102,11 +110,7 @@ function setup_favorites() {
         e.preventDefault();
         var form = $(this).parents("form").first();
         var action_field = form.find("input[name='action']");
-        var form_data = form.serializeArray();
-        var data = {};
-        for (input in form_data) {
-            data[form_data[input].name] = form_data[input].value;
-        }
+        var data = form_to_json(form);
         $.ajax({
             type: "POST",
             url: form.attr("action"),
@@ -130,6 +134,47 @@ function setup_favorites() {
     });
 }
 
+
+/*
+ * Replies
+ */
+
+function setup_replies() {
+    $("a.reply").click(function(e) {
+        e.preventDefault();
+        $(this).next().slideToggle();
+    });
+    $(".reply-form button[type='submit']").click(function(e) {
+        e.preventDefault();
+        var form = $(this).parents("form").first();
+        var data = form_to_json(form);
+        $.ajax({
+            type: "POST",
+            url: form.attr("action"),
+            //dataType: "json",
+            data: data,
+            success: function(response) {
+                form.parents(".reply-form").first().slideUp(function() {
+                    form.find("textarea").val("");
+                });
+                $('<div class="reply-result"><div class="alert alert-success">'
+                  + response + '</div></div>')
+                    .appendTo(form.parents('.email_info').first())
+                    .delay(2000).fadeOut('slow', function() { $(this).remove(); });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                $('<div class="reply-result"><div class="alert alert-error">'
+                  + '<button type="button" class="close" data-dismiss="alert">&times;</button> '
+                  + jqXHR.responseText + '</div></div>')
+                    .css("display", "none").insertBefore(form).slideDown();
+            }
+        });
+    });
+    $(".reply-form a.cancel").click(function(e) {
+        e.preventDefault();
+        $(this).parents(".reply-form").first().slideUp();
+    });
+}
 
 
 /*
@@ -230,4 +275,5 @@ $(document).ready(function() {
     setup_quotes();
     setup_months_list();
     setup_favorites();
+    setup_replies();
 });

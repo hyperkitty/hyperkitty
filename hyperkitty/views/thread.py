@@ -144,6 +144,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'use_mockups': settings.USE_MOCKUPS,
         'sort_mode': sort_mode,
         'fav_action': fav_action,
+        'reply_form': ReplyForm(),
     })
     return HttpResponse(t.render(c))
 
