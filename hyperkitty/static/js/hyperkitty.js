@@ -142,7 +142,11 @@ function setup_favorites() {
 function setup_replies() {
     $("a.reply").click(function(e) {
         e.preventDefault();
-        $(this).next().slideToggle();
+        $(this).next().slideToggle("fast", function() {
+            if ($(this).css("display") === "block") {
+                $(this).find("textarea").focus();
+            }
+        });
     });
     $(".reply-form button[type='submit']").click(function(e) {
         e.preventDefault();
