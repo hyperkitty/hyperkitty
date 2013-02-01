@@ -108,6 +108,7 @@ ul.lists li a:hover {
 /* User profile page */
 
 table.user-data {
+    margin-top: 2em;
     width: auto;
 }
 
@@ -223,10 +224,6 @@ form.likeform {
 .list_nav li {
    float: left;
    margin-left: 20px;
-}
-
-.nav .root {
-    font-weight: bold;
 }
 
 
@@ -364,26 +361,21 @@ form.likeform {
     margin-bottom: 4em;
 }
 
-#month-view .month-header .list-name {
-    display: inline;
-    font-size: 190%;
-    font-weight: bold;
-    padding-right: 0.5em;
-}
-
-#month-view .month-header .month-name {
-    display: inline;
-    font-size: 190%;
-    padding-right: 1em;
-}
-
 #month-view .month-header .month-info {
     display: inline;
     list-style-type: none;
+    margin: 0;
+    padding: 0;
 }
 #month-view .month-header .month-info li {
     display: inline;
+    margin-right: 2em;
 }
+#month-view .month-header .month-info li.list-address {
+    font-size: 120%;
+    margin-right: 4em;
+}
+
 
 /* Thread list */
 

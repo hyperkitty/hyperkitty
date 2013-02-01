@@ -16,10 +16,16 @@
 
 	<div id="month-view" class="span8">
 
-		<div class="month-header">
-			<div class="list-name">{{ mlist.display_name|default:mlist.name|escapeemail }}</div>
-			<div class="month-name">{{ month|date:"F Y"|capfirst }}</div>
+		<div class="month-header page-header">
+			<h1>{{ mlist.display_name|default:mlist.name|escapeemail }}
+				<small>{{ month|date:"F Y"|capfirst }}</small>
+			</h1>
 			<ul class="month-info">
+				{% if mlist.display_name %}
+				<li class="list-address">
+					{{ list_address|escapeemail }}
+				</li>
+				{% endif %}
 				<li class="participant">
 					{{ month_participants }} participants
 				</li>
@@ -27,11 +33,6 @@
 					{{ month_discussions }} discussions
 				</li>
 			</ul>
-			{% if mlist.display_name %}
-			<p class="list-address">
-				{{ list_address|escapeemail }}
-			</p>
-			{% endif %}
 		</div>
 
 		{% for thread in threads %}
