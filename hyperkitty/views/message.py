@@ -121,14 +121,13 @@ def attachment(request, mlist_fqdn, hashid, counter, filename):
     return response
 
 
-def vote(request, mlist_fqdn):
+def vote(request, mlist_fqdn, hashid):
     """ Add a rating to a given message identified by messageid. """
     if not request.user.is_authenticated():
         return HttpResponse('You must be logged in to vote',
                             content_type="text/plain", status=403)
 
     value = int(request.POST['vote'])
-    hashid = request.POST['hashid']
 
     # Checks if the user has already voted for a this message.
     try:

@@ -177,7 +177,9 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
     })
     return HttpResponse(t.render(c))
 
-def list(request, mlist_fqdn=None):
+
+
+def overview(request, mlist_fqdn=None):
     if not mlist_fqdn:
         return HttpResponseRedirect('/')
     t = loader.get_template('recent_activities.html')
