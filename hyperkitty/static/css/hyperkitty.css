@@ -36,10 +36,12 @@ ul.lists li a {
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
+    color: black;
 }
 ul.lists li a:hover {
     text-decoration: none;
     background-color: #eee;
+    color: black;
 }
 
 

@@ -49,10 +49,10 @@ def index(request):
         'username': settings.MAILMAN_USER, 'password': settings.MAILMAN_PASS}
 
     store = get_store(request)
-    list_data = store.get_list_names()
+    lists = store.get_lists()
 
     c = RequestContext(request, {
-        'lists': list_data,
+        'lists': lists,
         'search_form': search_form,
         })
     return HttpResponse(t.render(c))
