@@ -101,3 +101,5 @@ class SearchForm(forms.Form):
                 )
 
 
+class ReplyForm(forms.Form):
+    message = forms.CharField(widget=forms.Textarea, label="")

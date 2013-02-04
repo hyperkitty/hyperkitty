@@ -26,10 +26,12 @@ import urllib
 
 import django.utils.simplejson as simplejson
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.template import RequestContext, loader
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
+from django.core.urlresolvers import reverse
+from django.core.mail import EmailMessage
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
@@ -92,6 +94,7 @@ def index(request, mlist_fqdn, hashid):
         'hashid' : hashid,
         'archives_length': get_months(store, mlist_fqdn),
         'use_mockups': settings.USE_MOCKUPS,
+        'reply_form': ReplyForm(),
     })
     return HttpResponse(t.render(c))
 
@@ -153,3 +156,33 @@ def vote(request, mlist_fqdn, hashid):
 
     return HttpResponse(simplejson.dumps(status),
                         mimetype='application/javascript')
+
+
+@login_required
+def reply(request, mlist_fqdn, message_id):
+    """ Sends a reply to the list.
+    TODO: unit tests
+    """
+    if request.method != 'POST':
+        return HttpResponse("Something went wrong", content_type="text/plain", status=500)
+    form = ReplyForm(request.POST)
+    if not form.is_valid():
+        return HttpResponse(form.errors.as_text(), content_type="text/plain", status=400)
+    store = get_store(request)
+    message = store.get_message_by_hash_from_list(mlist_fqdn, message_id)
+    subject = message.subject
+    if not message.subject.lower().startswith("re:"):
+        subject = "Re: %s" % subject
+    reply = EmailMessage(
+                subject=subject,
+                body=form.cleaned_data["message"],
+                from_email='"%s %s" <%s>' %
+                    (request.user.first_name, request.user.last_name,
+                     request.user.email),
+                to=[mlist_fqdn],
+                cc=['aurelien@bompard.org'],
+                headers={
+                    "In-Reply-To": message.message_id,
+                })
+    reply.send()
+    return HttpResponse("The reply has been sent successfully.", mimetype="text/plain")

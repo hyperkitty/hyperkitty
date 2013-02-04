@@ -855,3 +855,39 @@ ul.attachments-list li {
     border-left: 2px solid rgb(55, 113, 200);
     padding-left: 0.2em;
 }
+
+
+/*
+ * Replies
+ */
+a.reply {
+  background: url("../img/reply.png") no-repeat left center;
+  padding-left: 20px;
+  margin-left: 2em;
+}
+.reply-form {
+    display: none;
+    padding-top: 1em;
+}
+.reply-form p {
+    margin: 0;
+}
+.reply-form textarea {
+    width: 95%;
+}
+.reply-form .buttons .submit {
+    margin-right: 2em;
+}
+.reply-result {
+    text-align: center;
+}
+.reply-result .alert {
+    display: inline-block;
+}
+.reply-result .alert-success {
+    margin-bottom: 0;
+}
+.reply-result .alert-error {
+    white-space: pre;
+    text-align: left;
+}
