@@ -41,7 +41,7 @@ from hyperkitty.lib import get_store, get_months
 from forms import *
 
 
-def index(request, mlist_fqdn, hashid):
+def index(request, mlist_fqdn, message_id_hash):
     '''
     Displays a single message identified by its message_id_hash (derived from
     message_id)
@@ -51,14 +51,14 @@ def index(request, mlist_fqdn, hashid):
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('message.html')
     store = get_store(request)
-    message = store.get_message_by_hash_from_list(mlist_fqdn, hashid)
+    message = store.get_message_by_hash_from_list(mlist_fqdn, message_id_hash)
     if message is None:
         raise Http404
     message.sender_email = message.sender_email.strip()
 
     # Extract all the votes for this message
     try:
-        votes = Rating.objects.filter(messageid = hashid)
+        votes = Rating.objects.filter(messageid=message_id_hash)
     except Rating.DoesNotExist:
         votes = {}
 
@@ -91,7 +91,7 @@ def index(request, mlist_fqdn, hashid):
         'list_name' : list_name,
         'list_address': mlist_fqdn,
         'message': message,
-        'hashid' : hashid,
+        'message_id_hash' : message_id_hash,
         'archives_length': get_months(store, mlist_fqdn),
         'use_mockups': settings.USE_MOCKUPS,
         'reply_form': ReplyForm(),
@@ -99,13 +99,13 @@ def index(request, mlist_fqdn, hashid):
     return HttpResponse(t.render(c))
 
 
-def attachment(request, mlist_fqdn, hashid, counter, filename):
+def attachment(request, mlist_fqdn, message_id_hash, counter, filename):
     """
     Sends the numbered attachment for download. The filename is not used for
     lookup, but validated nonetheless for security reasons.
     """
     store = get_store(request)
-    message = store.get_message_by_hash_from_list(mlist_fqdn, hashid)
+    message = store.get_message_by_hash_from_list(mlist_fqdn, message_id_hash)
     if message is None:
         raise Http404
     attachment = store.get_attachment_by_counter(
@@ -124,7 +124,7 @@ def attachment(request, mlist_fqdn, hashid, counter, filename):
     return response
 
 
-def vote(request, mlist_fqdn, hashid):
+def vote(request, mlist_fqdn, message_id_hash):
     """ Add a rating to a given message identified by messageid. """
     if not request.user.is_authenticated():
         return HttpResponse('You must be logged in to vote',
@@ -134,13 +134,13 @@ def vote(request, mlist_fqdn, hashid):
 
     # Checks if the user has already voted for a this message.
     try:
-        v = Rating.objects.get(user=request.user, messageid=hashid,
+        v = Rating.objects.get(user=request.user, messageid=message_id_hash,
                                list_address=mlist_fqdn)
         if v.vote == value:
             return HttpResponse("You've already cast this vote",
                                 content_type="text/plain", status=403)
     except Rating.DoesNotExist:
-        v = Rating(list_address=mlist_fqdn, messageid=hashid, vote=value)
+        v = Rating(list_address=mlist_fqdn, messageid=message_id_hash, vote=value)
         v.user = request.user
 
     v.vote = value
@@ -148,7 +148,7 @@ def vote(request, mlist_fqdn, hashid):
 
     # Extract all the votes for this message to refresh it
     status = { "like": 0, "dislike": 0 }
-    for vote in Rating.objects.filter(messageid=hashid):
+    for vote in Rating.objects.filter(messageid=message_id_hash):
         if vote.vote == 1:
             status["like"] += 1
         elif vote.vote == -1:
@@ -159,7 +159,7 @@ def vote(request, mlist_fqdn, hashid):
 
 
 @login_required
-def reply(request, mlist_fqdn, message_id):
+def reply(request, mlist_fqdn, message_id_hash):
     """ Sends a reply to the list.
     TODO: unit tests
     """
@@ -169,7 +169,7 @@ def reply(request, mlist_fqdn, message_id):
     if not form.is_valid():
         return HttpResponse(form.errors.as_text(), content_type="text/plain", status=400)
     store = get_store(request)
-    message = store.get_message_by_hash_from_list(mlist_fqdn, message_id)
+    message = store.get_message_by_hash_from_list(mlist_fqdn, message_id_hash)
     subject = message.subject
     if not message.subject.lower().startswith("re:"):
         subject = "Re: %s" % subject
@@ -182,7 +182,8 @@ def reply(request, mlist_fqdn, message_id):
                 to=[mlist_fqdn],
                 cc=['aurelien@bompard.org'],
                 headers={
-                    "In-Reply-To": message.message_id,
+                    "In-Reply-To": "<%s>" % message.message_id,
+                    "References": "<%s>" % message.message_id,
                 })
     reply.send()
     return HttpResponse("The reply has been sent successfully.", mimetype="text/plain")

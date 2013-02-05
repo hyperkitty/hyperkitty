@@ -19,7 +19,7 @@
 		{% gravatar email.sender_email 40 %}
 	</div>
 	<div class="email_author inline-block">
-		<span class="name"><a href="{% url message_index mlist_fqdn=list_address, hashid=email.message_id_hash %}">{{email.sender_name|escapeemail}}</a></span>
+		<span class="name"><a href="{% url message_index mlist_fqdn=list_address, message_id_hash=email.message_id_hash %}">{{email.sender_name|escapeemail}}</a></span>
 		{% if use_mockups %}
 		<br />
 		<span class="rank">
@@ -36,7 +36,7 @@
 <p class="attachments">Attachments:</p>
 <ul class="attachments-list">
 {% for attachment in email.attachments %}
-	<li><a href="{% url message_attachment mlist_fqdn=list_address, hashid=email.message_id_hash, counter=attachment.counter, filename=attachment.name %}">{{attachment.name}}</a>
+	<li><a href="{% url message_attachment mlist_fqdn=list_address, message_id_hash=email.message_id_hash, counter=attachment.counter, filename=attachment.name %}">{{attachment.name}}</a>
 		({{attachment.content_type}} &mdash; {{attachment.size|filesizeformat}})
 	</li>
 {% endfor %}
@@ -44,20 +44,20 @@
 {% endif %}
 
 <ul class="email_info inline">
-	{% include "messages/like_form.html" with hashid=email.message_id_hash object=email %}
+	{% include "messages/like_form.html" with message_id_hash=email.message_id_hash object=email %}
 	{% if not unfolded and email.attachments|count %}
 	<li class="attachments">
 		<a class="attachments" href="#attachments">{{ email.attachments|count }} attachment(s)</a>
 		<ul class="attachments-list">
 		{% for attachment in email.attachments %}
-			<li><a href="{% url message_attachment mlist_fqdn=list_address, hashid=email.message_id_hash, counter=attachment.counter, filename=attachment.name %}">{{attachment.name}}</a>
+			<li><a href="{% url message_attachment mlist_fqdn=list_address, message_id_hash=email.message_id_hash, counter=attachment.counter, filename=attachment.name %}">{{attachment.name}}</a>
 				({{attachment.content_type}} &mdash; {{attachment.size|filesizeformat}})
 			</li>
 		{% endfor %}
 		</ul>
 	</li>
 	{% endif %}
-	{% include "messages/reply_form.html" with mlist_fqdn=list_address message_id=email.message_id_hash %}
+	{% include "messages/reply_form.html" with mlist_fqdn=list_address message_id_hash=email.message_id_hash %}
 </ul>
 
 {# vim: set noet: #}

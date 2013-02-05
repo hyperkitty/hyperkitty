@@ -108,7 +108,7 @@ def message(request, list_name, year, month_name, msg_num):
         raise Http404("No such message in this mailing-list.")
     url = reverse('message_index', kwargs={
             'mlist_fqdn': mlist.name,
-            'hashid': message.message_id_hash,
+            'message_id': message.message_id_hash,
             })
     #return HttpResponse(request.build_absolute_uri(url))
     return HttpResponseRedirect(url)

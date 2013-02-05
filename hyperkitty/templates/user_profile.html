@@ -65,11 +65,11 @@
 		{% for vote in votes_up %}
 			<li>
 			{% if vote.message.content|trimString|length > 0 %}
-				<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}"
+				<a href="{% url message_index mlist_fqdn=vote.list_address, message_id_hash=vote.messageid %}"
 					>{{ vote.message.subject }}</a> by {{ vote.message.sender_name }}
 					({{ vote.message|viewer_date|date:"l, j F Y H:i:s" }})
 			{% else %}
-				<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}">Message is empty</a>
+				<a href="{% url message_index mlist_fqdn=vote.list_address, message_id_hash=vote.messageid %}">Message is empty</a>
 			{% endif %}
 			</li>
 		{% endfor %}
@@ -84,11 +84,11 @@
 		{% for vote in votes_down %}
 			<li>
 			{% if vote.message.content|trimString|length > 0 %}
-				<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}"
+				<a href="{% url message_index mlist_fqdn=vote.list_address, message_id_hash=vote.messageid %}"
 					>{{ vote.message.subject }}</a> by {{ vote.message.sender_name }}
 					({{ vote.message|viewer_date|date:"l, j F Y H:i:s" }})
 			{% else %}
-				<a href="{% url message_index mlist_fqdn=vote.list_address, hashid=vote.messageid %}">Message is empty</a>
+				<a href="{% url message_index mlist_fqdn=vote.list_address, message_id_hash=vote.messageid %}">Message is empty</a>
 			{% endif %}
 			</li>
 		{% endfor %}

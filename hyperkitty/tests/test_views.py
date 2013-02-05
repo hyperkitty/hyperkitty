@@ -83,11 +83,11 @@ class MessageViewsTestCase(TestCase):
         User.objects.create_user('testuser', 'syst3m.w0rm+test@gmail.com', 'testPass')
         user = self.client.login(username='testuser', password='testPass')
 
-        resp = self.client.post(reverse('message_vote', kwargs={'mlist_fqdn': 'list@list.com'}), {'vote': 1, 'hashid': 123, })
+        resp = self.client.post(reverse('message_vote', kwargs={'mlist_fqdn': 'list@list.com'}), {'vote': 1, 'message_id_hash': 123, })
         self.assertEqual(resp.status_code, 200)
 
      def test_unauth_vote(self):
-        resp = self.client.post(reverse('message_vote', kwargs={'mlist_fqdn': 'list@list.com'}), {'vote': 1, 'hashid': 123, })
+        resp = self.client.post(reverse('message_vote', kwargs={'mlist_fqdn': 'list@list.com'}), {'vote': 1, 'message_id_hash': 123, })
         self.assertEqual(resp.status_code, 403)
 
 

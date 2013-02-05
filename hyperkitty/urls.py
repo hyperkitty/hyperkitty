@@ -55,13 +55,13 @@ urlpatterns = patterns('hyperkitty.views',
         'list.overview', name='list_overview'),
 
     # Message
-    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/message/(?P<hashid>\w+)/$',
+    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/message/(?P<message_id_hash>\w+)/$',
         'message.index', name='message_index'),
-    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/message/(?P<hashid>\w+)/attachment/(?P<counter>\d+)/(?P<filename>.+)$',
+    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/message/(?P<message_id_hash>\w+)/attachment/(?P<counter>\d+)/(?P<filename>.+)$',
         'message.attachment', name='message_attachment'),
-    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/message/(?P<hashid>\w+)/vote$',
+    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/message/(?P<message_id_hash>\w+)/vote$',
         'message.vote', name='message_vote'),
-    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/message/(?P<message_id>\w+)/reply$',
+    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/message/(?P<message_id_hash>\w+)/reply$',
         'message.reply', name='message_reply'),
 
     # Thread

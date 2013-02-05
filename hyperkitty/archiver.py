@@ -97,7 +97,7 @@ class Archiver(object):
         msg_hash = get_message_id_hash(msg_id)
         return urljoin(self.store_url, reverse('message_index',
                     kwargs={"mlist_fqdn": mlist.fqdn_listname,
-                            "hashid": msg_hash}))
+                            "message_id_hash": msg_hash}))
 
     def archive_message(self, mlist, msg):
         """Send the message to the archiver.
