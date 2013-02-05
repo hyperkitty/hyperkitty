@@ -6,7 +6,7 @@ body {
 
 #logo {
     display: block;
-    margin: 80px auto;
+    margin: 120px auto;
     clear: both;
 }
 
@@ -22,23 +22,27 @@ h1.lists {
     margin-bottom: 0.5em;
 }
 
-ul.lists .list-name {
+.all-lists .list-name {
     font-size: 120%;
     color: black;
     font-weight: bold;
 }
-ul.lists li a {
+.all-lists .list-address {
+    font-size: 90%;
+    font-style: italic;
+}
+.all-lists a {
     display: block;
-    float: left;
     padding: 2em;
-    margin: 0 3em 3em 0;
+    margin: 1em auto;
+    overflow: hidden;
     border: 1px solid #ccc;
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
     color: black;
 }
-ul.lists li a:hover {
+.all-lists a:hover {
     text-decoration: none;
     background-color: #eee;
     color: black;
