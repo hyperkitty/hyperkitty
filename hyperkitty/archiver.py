@@ -80,7 +80,7 @@ class Archiver(object):
         :returns: The url string.
         """
         return urljoin(self.store_url,
-                       reverse('archives', args=[mlist.fqdn_listname]))
+                       reverse('list_overview', args=[mlist.fqdn_listname]))
 
     def permalink(self, mlist, msg):
         """Return the url to the message in the archive.
