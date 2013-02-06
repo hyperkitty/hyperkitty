@@ -865,6 +865,9 @@ a.reply {
     display: none;
     padding-top: 1em;
 }
+.reply-form p.reply-tools {
+    font-size: 90%;
+}
 .reply-form p {
     margin: 0;
 }

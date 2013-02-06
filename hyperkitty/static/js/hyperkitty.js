@@ -178,6 +178,25 @@ function setup_replies() {
         e.preventDefault();
         $(this).parents(".reply-form").first().slideUp();
     });
+    $(".reply-form a.quote").click(function(e) {
+        e.preventDefault();
+        var quoted = $(this).parents(".email").first()
+                        .find(".email-body").clone()
+                        .find(".quoted-switch").remove().end()
+                        .find(".quoted-text").remove().end()
+                        .text();
+        var textarea = $(this).parents(".reply-form").find("textarea");
+        // remove signature
+        var sig_index = quoted.search(/^-- $/m);
+        if (sig_index != -1) {
+            quoted = quoted.substr(0, sig_index);
+        }
+        // add quotation marks
+        quoted = $.trim(quoted).replace(/^/mg, "> ");
+        // insert before any previous text
+        textarea.val(quoted + "\n" + textarea.val());
+        textarea.focus();
+    });
 }
 
 
@@ -258,9 +277,9 @@ function setup_attachments() {
 
 function setup_quotes() {
     $('div.email-body .quoted-switch a')
-        .click(function() {
+        .click(function(e) {
+            e.preventDefault();
             $(this).parent().next(".quoted-text").slideToggle('fast');
-            return false;
         });
 }
 
