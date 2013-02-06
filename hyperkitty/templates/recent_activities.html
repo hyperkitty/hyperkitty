@@ -22,7 +22,7 @@
 			<div id="fig">
 				<script type="text/javascript+protovis" >
 					activity_graph(
-							["{{dates_string|join:'","'}}"],
+							["{{days|join:'","'}}"],
 							{{evolution}},
 							"{% url archives_latest mlist_fqdn=list_address %}"
 						);

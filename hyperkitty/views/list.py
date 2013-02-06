@@ -28,7 +28,7 @@ import logging
 import datetime
 from calendar import timegm
 from urlparse import urljoin
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 
 import django.utils.simplejson as simplejson
 from django.http import HttpResponse, HttpResponseRedirect
@@ -200,26 +200,12 @@ def overview(request, mlist_fqdn=None):
     Thread = namedtuple('Thread', ["thread_id", "subject", "participants",
                                    "length", "date_active"])
     participants = set()
-    dates = {}
     for thread_obj in threads_result:
         thread = Thread(thread_obj.thread_id, thread_obj.subject,
                         thread_obj.participants, len(thread_obj),
                         thread_obj.date_active)
-
-        month = thread.date_active.month
-        if month < 10:
-            month = '0%s' % month
-        day = thread.date_active.day
-        if day < 10:
-            day = '0%s' % day
-        key = '%s%s%s' % (thread.date_active.year, month, day)
-        if key in dates:
-            dates[key] = dates[key] + 1
-        else:
-            dates[key] = 1
         # Statistics on how many participants and threads this month
         participants.update(thread.participants)
-
         threads.append(thread)
 
     # top threads are the one with the most answers
@@ -239,11 +225,18 @@ def overview(request, mlist_fqdn=None):
     else:
         authors = []
 
-    # Get the list activity per day
+    # List activity
+    # Use get_messages and not get_threads to count the emails, because
+    # recently active threads include messages from before the start date
+    emails_in_month = store.get_messages(list_name=mlist_fqdn,
+                                         start=begin_date, end=end_date)
+    dates = defaultdict(lambda: 0) # no activity by default
+    for email in emails_in_month:
+        date_str = email.date.strftime("%Y-%m-%d")
+        dates[date_str] = dates[date_str] + 1
     days = dates.keys()
     days.sort()
-    dates_string = ["%s/%s/%s" % (key[0:4], key[4:6], key[6:8]) for key in days]
-    evolution = [dates[key] for key in days]
+    evolution = [dates[d] for d in days]
     if not evolution:
         evolution.append(0)
 
@@ -266,7 +259,7 @@ def overview(request, mlist_fqdn=None):
         'threads_per_category': threads_per_category,
         'archives_length': archives_length,
         'evolution': evolution,
-        'dates_string': dates_string,
+        'days': days,
         'use_mockups': settings.USE_MOCKUPS,
     })
     return HttpResponse(t.render(c))
