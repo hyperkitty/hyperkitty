@@ -119,7 +119,7 @@
 			slicePoint: 500,
 			userCollapseText : '\nView Less',
 			expandText : '\nView More',
-			afterExpand: function() {
+			beforeExpand: function() {
 				$(this).removeClass("collapsed");
 				$(this).addClass("expanded");
 			},
