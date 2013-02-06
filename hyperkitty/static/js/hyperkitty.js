@@ -61,8 +61,8 @@ function vote(elem, value) {
 
 
 function setup_vote() {
-    $(".voteup").click(function(e) { e.preventDefault(); vote(this, 1); });
-    $(".votedown").click(function(e) { e.preventDefault(); vote(this, -1); });
+    $("a.youlike").click(function(e) { e.preventDefault(); vote(this, 1); });
+    $("a.youdislike").click(function(e) { e.preventDefault(); vote(this, -1); });
 }
 
 
@@ -163,7 +163,7 @@ function setup_replies() {
                 });
                 $('<div class="reply-result"><div class="alert alert-success">'
                   + response + '</div></div>')
-                    .appendTo(form.parents('.email_info').first())
+                    .appendTo(form.parents('.email-info').first())
                     .delay(2000).fadeOut('slow', function() { $(this).remove(); });
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -246,15 +246,18 @@ function activity_graph(dates, data, baseurl) {
  */
 
 function setup_attachments() {
-    $("ul.email_info li.attachments ul.attachments-list").hide();
-    $("ul.email_info li.attachments > a").click(function() {
-        $(this).next("ul").fadeToggle('fast');
+    $(".email-info .attachments a.attachments").each(function() {
+        var att_list = $(this).next("ul.attachments-list");
+        var pos = $(this).position();
+        att_list.css("left", pos.left);
+        $(this).click(function() {
+            att_list.slideToggle('fast');
+        });
     });
 }
 
 function setup_quotes() {
-    $('div.email_body .quoted-switch a')
-        .add('div.first_email_body .quoted-switch a')
+    $('div.email-body .quoted-switch a')
         .click(function() {
             $(this).parent().next(".quoted-text").slideToggle('fast');
             return false;

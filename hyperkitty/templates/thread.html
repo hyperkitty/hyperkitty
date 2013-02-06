@@ -35,7 +35,7 @@
 		<section id="thread_content">
 
 			<!-- Start first email -->
-			{% include 'messages/first_email.html' %}
+			{% include 'messages/message.html' with email=first_mail unfolded='True' %}
 			<!-- End first email -->
 
 			<p class="sort-mode">
@@ -48,14 +48,16 @@
 				{% endif %}
 			</p>
 
-			{% for email in replies %}
-			<div class="{% cycle 'even' 'odd' %}"
-				{% if email.level %}style="margin-left:{{ email.level|multiply:"2" }}em;"{% endif %}>
-				<!-- Start email -->
-				{% include 'messages/message.html' %}
-				<!-- End of email -->
+			<div class="replies">
+				{% for email in replies %}
+				<div class="{% cycle 'even' 'odd' %}"
+					{% if email.level %}style="margin-left:{{ email.level|multiply:"2" }}em;"{% endif %}>
+					<!-- Start email -->
+					{% include 'messages/message.html' %}
+					<!-- End of email -->
+				</div>
+				{% endfor %}
 			</div>
-			{% endfor %}
 
 		</section>
 		</div>
@@ -79,7 +81,7 @@
 <script type="text/javascript">
 	$(document).ready(function() {
 		// hide quotes by default in the thread view
-		$('div.email_body .quoted-text').each(function() {
+		$('div.email-body .quoted-text').each(function() {
 			var linescount = $(this).text().split("\n").length;
 			if (linescount > 3) {
 				// hide if the quote is more than 3 lines long

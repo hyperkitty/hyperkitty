@@ -169,40 +169,44 @@ table.user-data {
     width: 40px;
 }
 
+
 /* Like / dislike */
 
 form.likeform {
     display: inline;
     margin: 0;
+    margin-right: 1em;
     padding: 0;
 }
 .likestatus {
     padding-left: 20px;
-    margin-right: 3em;
+    margin-right: 1.5em;
     font-weight: bold;
 }
+
 .neutral {
     background: url("../img/neutral.png") no-repeat scroll left;
 }
-
 .like {
     background: url("../img/like.png") no-repeat scroll left;
 }
-
 .likealot {
     background: url("../img/likealot.png") no-repeat scroll left;
 }
 
+.youlike,
+.youdislike {
+    padding-left: 15px;
+    margin-left: 0.5em;
+}
 .youlike {
     background: url("../img/youlike.png") no-repeat scroll left;
-    padding-left: 15px;
-    padding-right: 5px;
 }
 .youdislike {
     background: url("../img/youdislike.png") no-repeat scroll left;
-    padding-left: 15px;
-    padding-right: 5px;
 }
+
+
 
 /* Top of the page -- header */
 .header {
@@ -533,30 +537,42 @@ form.likeform {
     display: none;
 }
 
+
+
+/* Attachments */
+
 p.attachments {
     margin-bottom: 0;
     font-weight: bold;
 }
-li.attachments a.attachments {
-    padding-left: 20px;
-    margin-left: 1em;
+a.attachments {
+    padding-left: 18px;
     background: url("../img/mail-attachment.png") no-repeat scroll left;
 }
-li.attachments ul {
-    position: absolute;
-    background-color: #F6F6F6;
-    padding-left: 20px;
-    margin-left: 1em;
+.email-info div.attachments {
+    display: inline;
+    padding: 0 1em;
 }
-li.attachments ul li {
+.email-info .attachments ul.attachments-list {
+    display: none;
+    position: absolute;
+    margin-left: 0;
+    padding-right: 0.5em;
+    border: 1px solid #aaa;
+    border-top: none;
+    z-index: 1;
+}
+.even .email-info .attachments ul.attachments-list {
+    background-color: rgb(246, 246, 246);
+}
+.odd .email-info .attachments ul.attachments-list {
+    background-color: rgb(238, 238, 238);
+}
+.email-info .attachments ul.attachments-list li {
     list-style-position: inside;
     padding-left: 0.5em;
 }
 
-ul.attachments-list li {
-    display: list-item;
-    list-style-type: disc;
-}
 
 
 /* Message view */
@@ -738,41 +754,35 @@ ul.attachments-list li {
 
 /* First email of the thread. */
 
-.first_email {
-}
-
-.email_header {
+.email-header {
     position:relative;
     margin-bottom: 1em;
     height: 40px;
 }
 
-.email_header .gravatar {
+.email-header .gravatar {
     margin-right: 10px;
     display: inline-block;
     vertical-align: middle;
 }
 
-.email_author .name{
+.email-author .name{
     color: rgb(55, 113, 200);
     font-weight: bold;
 }
-.email_author .rank{
+.email-author .rank{
     color: rgb(167, 169, 172);
     font-size: 80%;
     font-weight: bold;
 }
 
-.email .email_date {
-    font-size: 90%;
-}
-.first_email .email_date {
+.email-first .email-date {
     text-align: right;
 }
-.email_date .date {
+.email-date .date {
     font-weight: bold;
 }
-.email_date .time {
+.email-date .time {
     color: rgb(167, 169, 172);
     margin-left: 0.5em;
     border-bottom: 1px dashed rgb(167, 169, 172);
@@ -800,27 +810,11 @@ ul.attachments-list li {
     background-color: rgb(238, 238, 238);
 }
 
-.email {
-}
-
-.email .email_header {
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-.email .email_author {
-    font-size: 90%;
-}
-
-.first_email_body, .email_body {
+.email-body {
     white-space: pre;
-    display: inline-block;
-}
-.first_email_body {
-    width: 100%;
     overflow: auto;
 }
-.email_body{
+.replies .email-body {
     -webkit-border-radius: 5px 5px 5px 5px;
     -moz-border-radius: 5px 5px 5px 5px;
     border-radius: 5px 5px 5px 5px;
@@ -830,17 +824,15 @@ ul.attachments-list li {
     padding: 5px;
     min-height: 40px;
     background-color: rgb(255, 255, 255);
-    width: 95%;
 }
 
-
-.email_body span.read-more a,
-.email_body span.read-less a {
+.email-body span.read-more a,
+.email-body span.read-less a {
     float: right;
     padding: 3px 10px 0px 0px;
 }
 
-.email_info {
+.email-info {
     padding: 0px;
     margin-top: 5px;
 }
@@ -867,7 +859,7 @@ ul.attachments-list li {
 a.reply {
   background: url("../img/reply.png") no-repeat left center;
   padding-left: 20px;
-  margin-left: 2em;
+  margin-left: 1em;
 }
 .reply-form {
     display: none;
