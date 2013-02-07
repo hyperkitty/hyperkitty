@@ -36,8 +36,7 @@ from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
 
-from hyperkitty.models import Rating
-from hyperkitty.lib import get_store, get_months
+from hyperkitty.lib import get_store, get_months, get_votes
 from forms import *
 
 
@@ -57,25 +56,7 @@ def index(request, mlist_fqdn, message_id_hash):
     message.sender_email = message.sender_email.strip()
 
     # Extract all the votes for this message
-    try:
-        votes = Rating.objects.filter(messageid=message_id_hash)
-    except Rating.DoesNotExist:
-        votes = {}
-
-    likes = 0
-    dislikes = 0
-
-    for vote in votes:
-        if vote.vote == 1:
-            likes = likes + 1
-        elif vote.vote == -1:
-            dislikes = dislikes + 1
-        else:
-            pass
-
-    message.votes = votes
-    message.likes = likes
-    message.dislikes = dislikes
+    message.likes, message.dislikes = get_votes(message_id_hash)
     message.likestatus = "neutral"
     if message.likes - message.dislikes >= 10:
         message.likestatus = "likealot"

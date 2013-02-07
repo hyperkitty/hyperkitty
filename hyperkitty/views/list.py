@@ -40,8 +40,8 @@ from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
 
-from hyperkitty.models import Rating, Tag, Favorite
-from hyperkitty.lib import get_months, get_store, get_display_dates
+from hyperkitty.models import Tag, Favorite
+from hyperkitty.lib import get_months, get_store, get_display_dates, get_votes
 from forms import *
 
 
@@ -84,36 +84,21 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         totallikes = 0
         totaldislikes = 0
 
-        for message_id in thread.email_ids:
+        for message_id_hash in thread.email_id_hashes:
             # Extract all the votes for this message
-            try:
-                votes = Rating.objects.filter(messageid=message_id)
-            except Rating.DoesNotExist:
-                votes = {}
-
-            likes = 0
-            dislikes = 0
-
-            for vote in votes:
-                if vote.vote == 1:
-                    likes = likes + 1
-                elif vote.vote == -1:
-                    dislikes = dislikes + 1
-                else:
-                    pass
-
+            likes, dislikes = get_votes(message_id_hash)
             totallikes = totallikes + likes
             totalvotes = totalvotes + likes + dislikes
             totaldislikes = totaldislikes + dislikes
 
         try:
             thread.likes = totallikes / totalvotes
-        except:
+        except ZeroDivisionError:
             thread.likes = 0
 
         try:
             thread.dislikes = totaldislikes / totalvotes
-        except:
+        except ZeroDivisionError:
             thread.dislikes = 0
 
         thread.likestatus = "neutral"

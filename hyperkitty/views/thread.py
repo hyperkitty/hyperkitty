@@ -34,10 +34,10 @@ from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
 
-from hyperkitty.models import Rating, Tag, Favorite
+from hyperkitty.models import Tag, Favorite
 #from hyperkitty.lib.mockup import *
 from forms import *
-from hyperkitty.lib import get_months, get_store, stripped_subject
+from hyperkitty.lib import get_months, get_store, stripped_subject, get_votes
 
 
 def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
@@ -60,25 +60,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     participants = {}
     for email in emails:
         # Extract all the votes for this message
-        try:
-            votes = Rating.objects.filter(messageid=email.message_id)
-        except Rating.DoesNotExist:
-            votes = {}
-
-        likes = 0
-        dislikes = 0
-
-        for vote in votes:
-            if vote.vote == 1:
-                likes = likes + 1
-            elif vote.vote == -1:
-                dislikes = dislikes + 1
-            else:
-                pass
-
-        email.votes = votes
-        email.likes = likes
-        email.dislikes = dislikes
+        email.likes, email.dislikes = get_votes(email.message_id_hash)
         email.likestatus = "neutral"
         if email.likes - email.dislikes >= 10:
             email.likestatus = "likealot"
