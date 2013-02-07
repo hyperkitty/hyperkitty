@@ -46,11 +46,6 @@ from hyperkitty.lib import get_store
 logger = logging.getLogger(__name__)
 
 
-def user_logout(request):
-    logout(request)
-    return redirect('user_login')
-
-
 @login_required
 def user_profile(request, user_email=None):
     if not request.user.is_authenticated():

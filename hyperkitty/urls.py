@@ -27,22 +27,23 @@ from api import EmailResource, ThreadResource, SearchResource
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib.auth.views import login as login_view
+from django.contrib.auth.views import logout as logout_view
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('hyperkitty.views',
-    # Account
-    url(r'^accounts/login/$', login_view, {'template_name': 'login.html'}, name='user_login'),
-    url(r'^accounts/logout/$', 'accounts.user_logout', name='user_logout'),
-    url(r'^accounts/profile/$', 'accounts.user_profile', name='user_profile'),
-    url(r'^accounts/register/$', 'accounts.user_registration', name='user_registration'),
-
-
     # Index
     url(r'^/$', 'pages.index', name='index'),
     url(r'^$', 'pages.index', name='root'),
+
+    # Account
+    url(r'^accounts/login/$', login_view, {'template_name': 'login.html'}, name='user_login'),
+    url(r'^accounts/logout/$', logout_view, {'next_page': '/'}, name='user_logout'),
+    url(r'^accounts/profile/$', 'accounts.user_profile', name='user_profile'),
+    url(r'^accounts/register/$', 'accounts.user_registration', name='user_registration'),
+
 
     # List archives and overview
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/(?P<year>\d{4})/(?P<month>\d\d?)/(?P<day>\d\d?)/$',
