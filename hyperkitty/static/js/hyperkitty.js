@@ -38,6 +38,9 @@ function form_to_json(form) {
  */
 
 function vote(elem, value) {
+    if ($(elem).hasClass("disabled")) {
+        return;
+    }
     var data = form_to_json($(elem).parent("form"));
     data['vote'] = value;
     $.ajax({
@@ -61,6 +64,7 @@ function vote(elem, value) {
 
 
 function setup_vote() {
+    $("a.youlike.disabled").add("a.youdislike.disabled").tooltip();
     $("a.youlike").click(function(e) { e.preventDefault(); vote(this, 1); });
     $("a.youdislike").click(function(e) { e.preventDefault(); vote(this, -1); });
 }
@@ -106,8 +110,12 @@ function setup_favorites() {
             form.find("a.saved").show();
         }
     }).trigger("change");
+    $(".favorite a.disabled").tooltip();
     $(".favorite a").bind("click", function(e) {
         e.preventDefault();
+        if ($(elem).hasClass("disabled")) {
+            return;
+        }
         var form = $(this).parents("form").first();
         var action_field = form.find("input[name='action']");
         var data = form_to_json(form);
@@ -140,13 +148,16 @@ function setup_favorites() {
  */
 
 function setup_replies() {
+    $("a.reply.disabled").tooltip();
     $("a.reply").click(function(e) {
         e.preventDefault();
-        $(this).next().slideToggle("fast", function() {
-            if ($(this).css("display") === "block") {
-                $(this).find("textarea").focus();
-            }
-        });
+        if (!$(this).hasClass("disabled")) {
+            $(this).next().slideToggle("fast", function() {
+                if ($(this).css("display") === "block") {
+                    $(this).find("textarea").focus();
+                }
+            });
+        }
     });
     $(".reply-form button[type='submit']").click(function(e) {
         e.preventDefault();

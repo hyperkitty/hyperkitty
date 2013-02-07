@@ -205,6 +205,14 @@ form.likeform {
 .youdislike {
     background: url("../img/youdislike.png") no-repeat scroll left;
 }
+.youlike.disabled {
+  background: url("../img/youlike-disabled.png") no-repeat scroll left;
+  color: #999;
+}
+.youdislike.disabled {
+  background: url("../img/youdislike-disabled.png") no-repeat scroll left;
+  color: #999;
+}
 
 
 
@@ -860,6 +868,10 @@ a.reply {
   background: url("../img/reply.png") no-repeat left center;
   padding-left: 20px;
   margin-left: 1em;
+}
+a.reply.disabled {
+  background: url("../img/reply-disabled.png") no-repeat left center;
+  color: #999;
 }
 .reply-form {
     display: none;

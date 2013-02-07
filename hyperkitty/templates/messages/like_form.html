@@ -4,8 +4,8 @@
 	<span class="likestatus {{ object.likestatus }}">
 		+<span class="likecount">{{ object.likes }}</span>/-<span class="dislikecount">{{ object.dislikes }}</span>
 	</span>
-	<a class="youlike" href="#like">Like</a>
-	<a class="youdislike" href="#dislike">Dislike</a>
+	<a class="youlike{% if not user.is_authenticated %} disabled" title="You must be logged-in to vote.{% endif %}" href="#like">Like</a>
+	<a class="youdislike{% if not user.is_authenticated %} disabled" title="You must be logged-in to vote.{% endif %}" href="#dislike">Dislike</a>
 	</form>
 
 {# vim: set noet: #}
