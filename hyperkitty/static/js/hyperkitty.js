@@ -54,10 +54,7 @@ function vote(elem, value) {
             likestatus.find(".dislikecount").html(response.dislike);
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            // authentication or double-vote
-            if (jqXHR.status === 403) {
-                alert(jqXHR.responseText);
-            }
+            alert(jqXHR.responseText);
         }
     });
 }
@@ -304,21 +301,6 @@ function setup_months_list() {
     $("#months-list").accordion({ collapsible: true, active: current });
 }
 
-function setup_expander() {
-    $('span.expander').expander({
-        slicePoint: 500,
-        userCollapseText : '\n[-]',
-        expandText : '\n[+]',
-        beforeExpand: function() {
-            $(this).removeClass("collapsed");
-            $(this).addClass("expanded");
-        },
-        onCollapse: function() {
-            $(this).removeClass("expanded");
-            $(this).addClass("collapsed");
-        }
-    });
-}
 
 
 /*
@@ -333,5 +315,4 @@ $(document).ready(function() {
     setup_months_list();
     setup_favorites();
     setup_replies();
-    setup_expander();
 });

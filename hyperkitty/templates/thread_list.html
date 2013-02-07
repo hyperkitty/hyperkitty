@@ -50,6 +50,23 @@
 
 {% block additionaljs %}
 <script src="{{ STATIC_URL }}libs/jquery.expander.js"></script>
+<script>
+$(document).ready(function() {
+    $('span.expander').expander({
+        slicePoint: 500,
+        userCollapseText : '\n[View Less]',
+        expandText : '\n[View More]',
+        beforeExpand: function() {
+            $(this).removeClass("collapsed");
+            $(this).addClass("expanded");
+        },
+        onCollapse: function() {
+            $(this).removeClass("expanded");
+            $(this).addClass("collapsed");
+        }
+    });
+});
+</script>
 {% endblock %}
 
 {# vim: set noet: #}

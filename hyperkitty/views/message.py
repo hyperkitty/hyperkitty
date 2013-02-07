@@ -37,6 +37,7 @@ from django.contrib.auth.decorators import (login_required,
                                             user_passes_test)
 
 from hyperkitty.lib import get_store, get_months, get_votes
+from hyperkitty.models import Rating
 from forms import *
 
 
