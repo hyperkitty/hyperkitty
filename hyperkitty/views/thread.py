@@ -78,7 +78,6 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
             if email.level > 5:
                 email.level = 5
 
-    archives_length = get_months(store, mlist_fqdn)
     from_url = reverse("thread", kwargs={"mlist_fqdn":mlist_fqdn,
                                          "threadid":threadid})
     # Tags
@@ -112,7 +111,6 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'threadid' : threadid,
         'subject': subject,
         'tags' : tags,
-        'list_address': mlist_fqdn,
         'search_form': search_form,
         'addtag_form': tag_form,
         'month': thread.date_active,
@@ -120,7 +118,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'first_mail': thread.starting_email,
         'replies': list(emails)[1:],
         'neighbors': (prev_thread, next_thread),
-        'archives_length': archives_length,
+        'months_list': get_months(store, mlist.name),
         'days_inactive': days_inactive.days,
         'days_old': days_old.days,
         'use_mockups': settings.USE_MOCKUPS,

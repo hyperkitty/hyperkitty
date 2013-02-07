@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load gravatar %}
+{% load hk_generic %}
+
+
+{% block title %}
+{{ list_title }} - {{ mlist.display_name|default:mlist.name|escapeemail }} - {{ app_name|title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="row-fluid">
+
+{% include 'threads/month_list.html' %}
+
+	<div id="thread-list" class="span8">
+
+		<div class="thread-list-header page-header">
+			<h1>{{ mlist.display_name|default:mlist.name|escapeemail }}
+				<small>{{ list_title }}</small>
+			</h1>
+			<ul class="thread-list-info">
+				{% if mlist.display_name %}
+				<li class="list-address">
+					{{ mlist.name|escapeemail }}
+				</li>
+				{% endif %}
+				<li class="participant">
+					{{ participants }} participants
+				</li>
+				<li class="discussion">
+					{{ threads.paginator.count }} discussions
+				</li>
+			</ul>
+		</div>
+
+		{% for thread in threads %}
+			{% include "threads/summary_thread_large.html" %}
+		{% empty %}
+			<p>Sorry no email threads could be found {{ no_results_text }}.</p>
+		{% endfor %}
+
+		{% include "paginator.html" with pager=threads %}
+
+	</div>
+
+</div>
+
+{% endblock %}
+
+{% block additionaljs %}
+<script src="{{ STATIC_URL }}libs/jquery.expander.js"></script>
+{% endblock %}
+
+{# vim: set noet: #}

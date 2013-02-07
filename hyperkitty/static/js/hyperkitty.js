@@ -296,8 +296,28 @@ function setup_quotes() {
 
 function setup_months_list() {
     var current = $("#months-list li.current").parent().prev();
-    if (!current.length) { current = 0; } // overview
-    $("#months-list").accordion({ active: current });
+    if (!current.length) {
+        current = false; // overview or search
+    } else {
+        current = current.prevAll("h3").length;
+    }
+    $("#months-list").accordion({ collapsible: true, active: current });
+}
+
+function setup_expander() {
+    $('span.expander').expander({
+        slicePoint: 500,
+        userCollapseText : '\n[-]',
+        expandText : '\n[+]',
+        beforeExpand: function() {
+            $(this).removeClass("collapsed");
+            $(this).addClass("expanded");
+        },
+        onCollapse: function() {
+            $(this).removeClass("expanded");
+            $(this).addClass("collapsed");
+        }
+    });
 }
 
 
@@ -313,4 +333,5 @@ $(document).ready(function() {
     setup_months_list();
     setup_favorites();
     setup_replies();
+    setup_expander();
 });

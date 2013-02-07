@@ -75,14 +75,10 @@ urlpatterns = patterns('hyperkitty.views',
 
 
     # Search Tag
-    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/tag/(?P<tag>.*)/(?P<page>\d+)/$',
-        'list.search_tag'),
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/tag/(?P<tag>.*)/$',
         'list.search_tag', name='search_tag'),
 
     # Search
-    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/search/(?P<target>.*)/(?P<keyword>.*)/(?P<page>\d+)/$',
-        'list.search_keyword'),
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/search/(?P<target>.*)/(?P<keyword>.*)/$',
         'list.search_keyword', name="search_keyword"),
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/search/$',

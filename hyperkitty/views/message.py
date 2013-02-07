@@ -45,8 +45,6 @@ def index(request, mlist_fqdn, message_id_hash):
     Displays a single message identified by its message_id_hash (derived from
     message_id)
     '''
-    list_name = mlist_fqdn.split('@')[0]
-
     search_form = SearchForm(auto_id=False)
     t = loader.get_template('message.html')
     store = get_store(request)
@@ -69,11 +67,9 @@ def index(request, mlist_fqdn, message_id_hash):
 
     c = RequestContext(request, {
         'mlist' : mlist,
-        'list_name' : list_name,
-        'list_address': mlist_fqdn,
         'message': message,
         'message_id_hash' : message_id_hash,
-        'archives_length': get_months(store, mlist_fqdn),
+        'months_list': get_months(store, mlist.name),
         'use_mockups': settings.USE_MOCKUPS,
         'reply_form': ReplyForm(),
     })

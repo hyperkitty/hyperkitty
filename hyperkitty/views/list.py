@@ -32,6 +32,7 @@ from collections import namedtuple, defaultdict
 
 import django.utils.simplejson as simplejson
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import render_to_response
 from django.template import RequestContext, loader
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -53,8 +54,6 @@ if settings.USE_MOCKUPS:
 
 
 def archives(request, mlist_fqdn, year=None, month=None, day=None):
-    # @TODO : modify url.py to account for page number
-
     if year is None and month is None:
         today = datetime.date.today()
         return HttpResponseRedirect(reverse(
@@ -64,43 +63,43 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
                     'month': today.month}))
 
     begin_date, end_date = get_display_dates(year, month, day)
-
-    search_form = SearchForm(auto_id=False)
-    t = loader.get_template('month_view.html')
     store = get_store(request)
     mlist = store.get_list(mlist_fqdn)
-    all_threads = store.get_threads(mlist_fqdn, start=begin_date,
-                                    end=end_date)
+    threads = store.get_threads(mlist_fqdn, start=begin_date, end=end_date)
+    extra_context = {
+        'month': begin_date,
+        'month_num': begin_date.month,
+        "list_title": begin_date.strftime("%B %Y").capitalize(),
+        "no_results_text": "for this month",
+    }
+    return _thread_list(request, mlist, threads, extra_context=extra_context)
+
+
+def _thread_list(request, mlist, threads, template_name='thread_list.html', extra_context={}):
+    store = get_store(request)
+    search_form = SearchForm(auto_id=False)
 
     participants = set()
-    #cnt = 0
-    for thread in all_threads:
+    for thread in threads:
         participants.update(thread.participants)
 
-        highestlike = 0
-        highestdislike = 0
-
+        # Votes
         totalvotes = 0
         totallikes = 0
         totaldislikes = 0
-
         for message_id_hash in thread.email_id_hashes:
-            # Extract all the votes for this message
             likes, dislikes = get_votes(message_id_hash)
             totallikes = totallikes + likes
             totalvotes = totalvotes + likes + dislikes
             totaldislikes = totaldislikes + dislikes
-
         try:
             thread.likes = totallikes / totalvotes
         except ZeroDivisionError:
             thread.likes = 0
-
         try:
             thread.dislikes = totaldislikes / totalvotes
         except ZeroDivisionError:
             thread.dislikes = 0
-
         thread.likestatus = "neutral"
         if thread.likes - thread.dislikes >= 10:
             thread.likestatus = "likealot"
@@ -109,14 +108,11 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         #elif thread.likes - thread.dislikes < 0:
         #    thread.likestatus = "dislike"
 
-        #threads[cnt] = thread
-        #cnt = cnt + 1
-
         # Favorites
         thread.favorite = False
         if request.user.is_authenticated():
             try:
-                Favorite.objects.get(list_address=mlist_fqdn,
+                Favorite.objects.get(list_address=mlist.name,
                                      threadid=thread.thread_id,
                                      user=request.user)
             except Favorite.DoesNotExist:
@@ -124,11 +120,11 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
             else:
                 thread.favorite = True
 
-    paginator = Paginator(all_threads, 10)
-    pageNo = request.GET.get('page')
-
+    all_threads = threads
+    paginator = Paginator(threads, 10)
+    page_num = request.GET.get('page')
     try:
-        threads = paginator.page(pageNo)
+        threads = paginator.page(page_num)
     except PageNotAnInteger:
         # If page is not an integer, deliver first page.
         threads = paginator.page(1)
@@ -136,31 +132,18 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         # If page is out of range (e.g. 9999), deliver last page of results.
         threads = paginator.page(paginator.num_pages)
 
-
-    archives_length = get_months(store, mlist_fqdn)
-
-    c = RequestContext(request, {
+    context = {
         'mlist' : mlist,
-        'objects': threads.object_list,
-        'page': pageNo,
-        'has_previous': threads.has_previous(),
-        'has_next': threads.has_next(),
-        'previous': threads.previous_page_number(),
-        'next': threads.next_page_number(),
-        'is_first': pageNo == 1,
-        'is_last': pageNo == paginator.num_pages,
-        'list_address': mlist_fqdn,
+        'current_page': page_num,
         'search_form': search_form,
-        'month': begin_date,
-        'month_num': begin_date.month,
-        'month_participants': len(participants),
-        'month_discussions': len(all_threads),
         'threads': threads,
-        'pages' : paginator.object_list,
-        'archives_length': archives_length,
+        'participants': len(participants),
+        'months_list': get_months(store, mlist.name),
         'use_mockups': settings.USE_MOCKUPS,
-    })
-    return HttpResponse(t.render(c))
+    }
+    context.update(extra_context)
+    return render_to_response(template_name, context,
+                              context_instance=RequestContext(request))
 
 
 
@@ -199,8 +182,6 @@ def overview(request, mlist_fqdn=None):
     # active threads are the ones that have the most recent posting
     active_threads = sorted(threads, key=lambda t: t.date_active, reverse=True)
 
-    archives_length = get_months(store, mlist_fqdn)
-
     # top authors are the ones that have the most kudos.  How do we determine
     # that?  Most likes for their post?
     if settings.USE_MOCKUPS:
@@ -233,60 +214,15 @@ def overview(request, mlist_fqdn=None):
 
     c = RequestContext(request, {
         'mlist' : mlist,
-        'list_address': mlist_fqdn,
         'search_form': search_form,
-        'month': None,
-        'month_participants': len(participants),
-        'month_discussions': len(threads),
         'top_threads': top_threads[:5],
         'most_active_threads': active_threads[:5],
         'top_author': authors,
         'threads_per_category': threads_per_category,
-        'archives_length': archives_length,
+        'months_list': get_months(store, mlist.name),
         'evolution': evolution,
         'days': days,
         'use_mockups': settings.USE_MOCKUPS,
-    })
-    return HttpResponse(t.render(c))
-
-
-def _search_results_page(request, mlist_fqdn, threads, search_type,
-                         page=1, num_threads=25, limit=None):
-    search_form = SearchForm(auto_id=False)
-    t = loader.get_template('search.html')
-    list_name = mlist_fqdn.split('@')[0]
-    res_num = len(threads)
-
-    participants = set()
-    for msg in threads:
-        participants.add(msg.sender_name)
-
-    paginator = Paginator(threads, num_threads)
-
-    #If page request is out of range, deliver last page of results.
-    try:
-        threads = paginator.page(page)
-    except (EmptyPage, InvalidPage):
-        threads = paginator.page(paginator.num_pages)
-
-    store = get_store(request)
-    cnt = 0
-    for thread in threads.object_list:
-        #msg.email = msg.sender_email.strip()
-        # Statistics on how many participants and threads this month
-        participants.update(thread.participants)
-        threads.object_list[cnt] = thread
-        cnt = cnt + 1
-
-    c = RequestContext(request, {
-        'list_name' : list_name,
-        'list_address': mlist_fqdn,
-        'search_form': search_form,
-        'search_type': search_type,
-        'month_participants': len(participants),
-        'month_discussions': res_num,
-        'threads': threads,
-        'full_path': request.get_full_path(),
     })
     return HttpResponse(t.render(c))
 
@@ -308,9 +244,9 @@ def search(request, mlist_fqdn):
 
 
 def search_keyword(request, mlist_fqdn, target, keyword, page=1):
+    store = get_store(request)
     ## Should we remove the code below?
     ## If urls.py does it job we should never need it
-    store = get_store(request)
     if not keyword:
         keyword = request.GET.get('keyword')
     if not target:
@@ -331,21 +267,24 @@ def search_keyword(request, mlist_fqdn, target, keyword, page=1):
     return _search_results_page(request, mlist_fqdn, threads, 'Search', page)
 
 
-def search_tag(request, mlist_fqdn, tag=None, page=1):
+def search_tag(request, mlist_fqdn, tag):
     '''Returns threads having a particular tag'''
-
-    store = get_store(settings.KITTYSTORE_URL)
-    list_name = mlist_fqdn.split('@')[0]
+    store = get_store(request)
+    mlist = store.get_list(mlist_fqdn)
 
     try:
-        thread_ids = Tag.objects.filter(tag=tag)
+        tags = Tag.objects.filter(tag=tag)
     except Tag.DoesNotExist:
-        thread_ids = {}
+        tags = {}
 
     threads = []
-    for thread_id in thread_ids:
-        threads.append(store.get_thread(mlist_fqdn, thread_id))
+    for t in tags:
+        threads.append(store.get_thread(mlist_fqdn, t.threadid))
 
-    return _search_results_page(request, mlist_fqdn, threads,
-        'Tag search', page, limit=50)
+    extra_context = {
+        "tag": tag,
+        "list_title": "Search results for tag \"%s\"" % tag,
+        "no_results_text": "for this tag",
+    }
+    return _thread_list(request, mlist, threads, extra_context=extra_context)
 

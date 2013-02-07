@@ -18,7 +18,7 @@
 
 		<div class="message-header">
 			<a class="thread-back"
-				href="{% url thread threadid=message.thread_id, mlist_fqdn=list_address %}#{{message.message_id_hash}}">
+				href="{% url thread threadid=message.thread_id, mlist_fqdn=mlist.name %}#{{message.message_id_hash}}">
 			</a> {# the background image will be a "back to thread" button #}
 			<h1>{{ message.subject }}</h1>
 		</div>

@@ -36,13 +36,13 @@
 
 						<ul class="nav">
 
-							<li {% if not list_address %} class="active"{% endif %}>
+							<li {% if not mlist %} class="active"{% endif %}>
 								<a href="{% url root %}">All lists</a>
 							</li>
 
-						{% if list_address %}
+						{% if mlist %}
 							<li id="list_name" class="active">
-								<a href="{% url list_overview mlist_fqdn=list_address %}">{{list_address}}</a>
+								<a href="{% url list_overview mlist_fqdn=mlist.name %}">{{mlist.name}}</a>
 							</li>
 						{% endif %}
 

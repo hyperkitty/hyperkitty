@@ -373,29 +373,29 @@ form.likeform {
 }
 
 
-/* Month view header */
+/* Threads view header */
 
-#month-view .month-header {
+#thread-list .thread-list-header {
     margin-bottom: 4em;
 }
 
-#month-view .month-header .month-info {
+#thread-list .thread-list-header .thread-list-info {
     display: inline;
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
-#month-view .month-header .month-info li {
+#thread-list .thread-list-header .thread-list-info li {
     display: inline;
     margin-right: 2em;
 }
-#month-view .month-header .month-info li.list-address {
+#thread-list .thread-list-header .thread-list-info li.list-address {
     font-size: 120%;
     margin-right: 4em;
 }
 
 
-/* Thread list */
+/* Thread view */
 
 .thread {
     margin: 2em 0 2em 0;
