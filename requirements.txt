@@ -6,3 +6,4 @@ mailman>=3.0.0b2
 kittystore
 networkx
 South
+django-crispy-forms

@@ -52,6 +52,10 @@ if settings.USE_MOCKUPS:
     from hyperkitty.lib.mockup import generate_top_author, generate_thread_per_category
 
 
+FLASH_MESSAGES = {
+    "sent-ok": "The message has been sent successfully.",
+}
+
 
 def archives(request, mlist_fqdn, year=None, month=None, day=None):
     if year is None and month is None:
@@ -132,6 +136,10 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
         # If page is out of range (e.g. 9999), deliver last page of results.
         threads = paginator.page(paginator.num_pages)
 
+    flash_msg = request.GET.get("msg")
+    if flash_msg:
+        flash_msg = FLASH_MESSAGES[flash_msg]
+
     context = {
         'mlist' : mlist,
         'current_page': page_num,
@@ -139,6 +147,7 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
         'threads': threads,
         'participants': len(participants),
         'months_list': get_months(store, mlist.name),
+        'flash_msg': flash_msg,
         'use_mockups': settings.USE_MOCKUPS,
     }
     context.update(extra_context)

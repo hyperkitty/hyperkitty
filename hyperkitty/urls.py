@@ -64,6 +64,8 @@ urlpatterns = patterns('hyperkitty.views',
         'message.vote', name='message_vote'),
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/message/(?P<message_id_hash>\w+)/reply$',
         'message.reply', name='message_reply'),
+    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/message/new$',
+        'message.new_message', name='message_new'),
 
     # Thread
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/thread/(?P<threadid>\w+)/$',

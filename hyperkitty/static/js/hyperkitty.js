@@ -61,7 +61,6 @@ function vote(elem, value) {
 
 
 function setup_vote() {
-    $("a.youlike.disabled").add("a.youdislike.disabled").tooltip();
     $("a.youlike").click(function(e) { e.preventDefault(); vote(this, 1); });
     $("a.youdislike").click(function(e) { e.preventDefault(); vote(this, -1); });
 }
@@ -107,7 +106,6 @@ function setup_favorites() {
             form.find("a.saved").show();
         }
     }).trigger("change");
-    $(".favorite a.disabled").tooltip();
     $(".favorite a").bind("click", function(e) {
         e.preventDefault();
         if ($(elem).hasClass("disabled")) {
@@ -145,7 +143,6 @@ function setup_favorites() {
  */
 
 function setup_replies() {
-    $("a.reply.disabled").tooltip();
     $("a.reply").click(function(e) {
         e.preventDefault();
         if (!$(this).hasClass("disabled")) {
@@ -301,6 +298,15 @@ function setup_months_list() {
     $("#months-list").accordion({ collapsible: true, active: current });
 }
 
+function setup_disabled_tooltips() {
+    $("a.disabled").tooltip().click(function (e) {
+        e.preventDefault();
+    });
+}
+
+function setup_flash_messages() {
+    $('.flashmsg').delay(3000).fadeOut('slow');
+}
 
 
 /*
@@ -315,4 +321,6 @@ $(document).ready(function() {
     setup_months_list();
     setup_favorites();
     setup_replies();
+    setup_disabled_tooltips();
+    setup_flash_messages();
 });

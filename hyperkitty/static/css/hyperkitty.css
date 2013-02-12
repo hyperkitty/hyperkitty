@@ -134,6 +134,16 @@ table.user-data {
     list-style-type: none;
 }
 
+.flashmsg {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    text-align: center;
+}
+.flashmsg .alert {
+    display: inline-block;
+}
+
 
 /* Add icons to some text */
 .participant, .discussion, .saved, .notsaved {
@@ -392,6 +402,15 @@ form.likeform {
 #thread-list .thread-list-header .thread-list-info li.list-address {
     font-size: 120%;
     margin-right: 4em;
+}
+
+#thread-list .thread-list-header .thread-new {
+    float: right;
+}
+#thread-list .thread-list-header .thread-new strong {
+    font-size: 150%;
+    font-weight: bold;
+    margin-right: 0.2em;
 }
 
 
@@ -901,4 +920,19 @@ a.reply.disabled {
 .reply-result .alert-error {
     white-space: pre;
     text-align: left;
+}
+
+
+/*
+ * New thread form
+ */
+.new-thread-form {
+    margin-left: 2em;
+}
+.new-thread-form #id_subject,
+.new-thread-form textarea {
+    width: 90%;
+}
+.new-thread-form .buttons .submit {
+    margin-right: 2em;
 }

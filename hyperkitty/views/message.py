@@ -23,15 +23,17 @@
 import re
 import os
 import urllib
+import datetime
 
 import django.utils.simplejson as simplejson
 from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, render_to_response
 from django.template import RequestContext, loader
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
+from django.core.exceptions import SuspiciousOperation
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
@@ -142,26 +144,69 @@ def reply(request, mlist_fqdn, message_id_hash):
     TODO: unit tests
     """
     if request.method != 'POST':
-        return HttpResponse("Something went wrong", content_type="text/plain", status=500)
+        raise SuspiciousOperation
     form = ReplyForm(request.POST)
     if not form.is_valid():
-        return HttpResponse(form.errors.as_text(), content_type="text/plain", status=400)
+        return HttpResponse(form.errors.as_text(),
+                            content_type="text/plain", status=400)
     store = get_store(request)
-    message = store.get_message_by_hash_from_list(mlist_fqdn, message_id_hash)
+    mlist = store.get_list(mlist_fqdn)
+    message = store.get_message_by_hash_from_list(mlist.name, message_id_hash)
     subject = message.subject
     if not message.subject.lower().startswith("re:"):
         subject = "Re: %s" % subject
-    reply = EmailMessage(
-                subject=subject,
-                body=form.cleaned_data["message"],
-                from_email='"%s %s" <%s>' %
-                    (request.user.first_name, request.user.last_name,
-                     request.user.email),
-                to=[mlist_fqdn],
-                cc=['aurelien@bompard.org'],
-                headers={
+    _send_email(request, mlist, subject, form.cleaned_data["message"], {
                     "In-Reply-To": "<%s>" % message.message_id,
                     "References": "<%s>" % message.message_id,
                 })
-    reply.send()
-    return HttpResponse("The reply has been sent successfully.", mimetype="text/plain")
+    return HttpResponse("The reply has been sent successfully.",
+                        mimetype="text/plain")
+
+
+@login_required
+def new_message(request, mlist_fqdn):
+    """ Sends a new thread-starting message to the list.
+    TODO: unit tests
+    """
+    store = get_store(request)
+    mlist = store.get_list(mlist_fqdn)
+    if request.method == 'POST':
+        form = PostForm(request.POST)
+        if form.is_valid():
+            _send_email(request, mlist, form.cleaned_data['subject'],
+                        form.cleaned_data["message"])
+            today = datetime.date.today()
+            redirect_url = reverse(
+                    'archives_with_month', kwargs={
+                        "mlist_fqdn": mlist_fqdn,
+                        'year': today.year,
+                        'month': today.month})
+            redirect_url += "?msg=sent-ok"
+            return HttpResponseRedirect(redirect_url)
+    else:
+        form = PostForm()
+    context = {
+        "mlist": mlist,
+        "post_form": form,
+        'months_list': get_months(store, mlist.name),
+        'use_mockups': settings.USE_MOCKUPS,
+    }
+    return render_to_response("message_new.html", context,
+                              context_instance=RequestContext(request))
+
+
+def _send_email(request, mlist, subject, message, headers={}):
+    if not mlist:
+        # Make sure the list exists to avoid posting to any email addess
+        raise SuspiciousOperation("I don't know this mailing-list")
+    headers["User-Agent"] = "HyperKitty on %s" % request.build_absolute_uri("/")
+    msg = EmailMessage(
+               subject=subject,
+               body=message,
+               from_email='"%s %s" <%s>' %
+                   (request.user.first_name, request.user.last_name,
+                    request.user.email),
+               to=[mlist.name],
+               headers=headers,
+               )
+    msg.send()

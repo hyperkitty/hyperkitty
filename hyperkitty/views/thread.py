@@ -29,6 +29,7 @@ from django.template import RequestContext, loader
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
 from django.core.urlresolvers import reverse
+from django.core.exceptions import SuspiciousOperation
 from django.utils.datastructures import SortedDict
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
@@ -136,8 +137,7 @@ def add_tag(request, mlist_fqdn, threadid):
                             content_type="text/plain", status=403)
 
     if request.method != 'POST':
-        return HttpResponse("Something went wrong here",
-                            content_type="text/plain", status=500)
+        raise SuspiciousOperation
 
     form = AddTagForm(request.POST)
     if not form.is_valid():
@@ -171,8 +171,7 @@ def favorite(request, mlist_fqdn, threadid):
                             content_type="text/plain", status=403)
 
     if request.method != 'POST':
-        return HttpResponse("Something went wrong here",
-                            content_type="text/plain", status=500)
+        raise SuspiciousOperation
 
     props = dict(list_address=mlist_fqdn, threadid=threadid, user=request.user)
     if request.POST["action"] == "add":
@@ -189,7 +188,6 @@ def favorite(request, mlist_fqdn, threadid):
         else:
             fav.delete()
     else:
-        return HttpResponse("Something went wrong here",
-                            content_type="text/plain", status=500)
+        raise SuspiciousOperation
     return HttpResponse("success", mimetype='text/plain')
 

@@ -103,3 +103,7 @@ class SearchForm(forms.Form):
 
 class ReplyForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea, label="")
+
+class PostForm(forms.Form):
+    subject = forms.CharField()
+    message = forms.CharField(widget=forms.Textarea)
