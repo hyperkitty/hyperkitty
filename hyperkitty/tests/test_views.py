@@ -25,14 +25,18 @@ import urllib
 
 from mock import Mock, patch
 
+import django.utils.simplejson as json
 from django.test import TestCase
 from django.test.client import Client, RequestFactory
-from django.contrib.auth.models import User
+from django.test.utils import override_settings
+from django.contrib.auth.models import User, AnonymousUser
 from django.core.urlresolvers import reverse
 
-#from hyperkitty.views.list import archives
+from hyperkitty.models import Rating
 
 
+
+@override_settings(USE_SSL=False, USE_INTERNAL_AUTH=True)
 class AccountViewsTestCase(TestCase):
 
     def setUp(self):
@@ -44,7 +48,7 @@ class AccountViewsTestCase(TestCase):
         self.assertRedirects(response, "%s?next=%s" % (reverse('user_login'), reverse('user_profile')))
 
     def test_profile(self):
-        User.objects.create_user('testuser', 'syst3m.w0rm+test@gmail.com', 'testPass')
+        User.objects.create_user('testuser', 'test@example.com', 'testPass')
         user = self.client.login(username='testuser', password='testPass')
 
         response = self.client.get(reverse('user_profile'))
@@ -58,13 +62,13 @@ class AccountViewsTestCase(TestCase):
 
 
     def test_registration(self):
-
-        User.objects.create_user('testuser', 'syst3m.w0rm+test@gmail.com', 'testPass')
+        User.objects.create_user('testuser', 'test@example.com', 'testPass')
         user = self.client.login(username='testuser', password='testPass')
 
-        # If the user if already logged in, redirect to index page..don't let him register again
+        # If the user if already logged in, redirect to index page...
+        # Don't let him register again
         response = self.client.get(reverse('user_registration'))
-        self.assertRedirects(response, reverse('index'))
+        self.assertRedirects(response, reverse('root'))
         self.client.logout()
 
         # Access the user registration page after logging out and try to register now
@@ -74,21 +78,81 @@ class AccountViewsTestCase(TestCase):
         # @TODO: Try to register a user and verify its working
 
 
+
+from hyperkitty.views.message import vote
+
 class MessageViewsTestCase(TestCase):
 
-     def setUp(self):
-        self.client = Client()
+    def setUp(self):
+        self.user = User.objects.create_user(
+                'testuser', 'test@example.com', 'testPass')
+        # Fake KittStore
+        class FakeMessage(object):
+            def __init__(self, h):
+                self.message_id_hash = h
+        self.store = Mock()
+        self.store.get_message_by_hash_from_list.side_effect = \
+                lambda l, h: FakeMessage(h)
+        defaults = {"kittystore.store": self.store}
+        self.factory = RequestFactory(**defaults)
 
-     def test_good_vote(self):
-        User.objects.create_user('testuser', 'syst3m.w0rm+test@gmail.com', 'testPass')
-        user = self.client.login(username='testuser', password='testPass')
 
-        resp = self.client.post(reverse('message_vote', kwargs={'mlist_fqdn': 'list@list.com'}), {'vote': 1, 'message_id_hash': 123, })
+    def test_vote_up(self):
+        request = self.factory.post("/vote", {"vote": "1"})
+        request.user = self.user
+        resp = vote(request, 'list@example.com', '123')
         self.assertEqual(resp.status_code, 200)
+        v = Rating.objects.get(user=self.user, messageid="123",
+                               list_address='list@example.com')
+        self.assertEqual(v.vote, 1)
+        result = json.loads(resp.content)
+        self.assertEqual(result["like"], 1)
+        self.assertEqual(result["dislike"], 0)
 
-     def test_unauth_vote(self):
-        resp = self.client.post(reverse('message_vote', kwargs={'mlist_fqdn': 'list@list.com'}), {'vote': 1, 'message_id_hash': 123, })
+
+    def test_vote_down(self):
+        request = self.factory.post("/vote", {"vote": "-1"})
+        request.user = self.user
+        resp = vote(request, 'list@example.com', '123')
+        self.assertEqual(resp.status_code, 200)
+        v = Rating.objects.get(user=self.user, messageid="123",
+                               list_address='list@example.com')
+        self.assertEqual(v.vote, -1)
+        result = json.loads(resp.content)
+        self.assertEqual(result["like"], 0)
+        self.assertEqual(result["dislike"], 1)
+
+
+    def test_vote_cancel(self):
+        v = Rating(list_address="list@example.com", messageid="m1", vote=1)
+        v.user = self.user
+        v.save()
+        v = Rating(list_address="list@example.com", messageid="m2", vote=-1)
+        v.user = self.user
+        v.save()
+        for msg in ["m1", "m2"]:
+            request = self.factory.post("/vote", {"vote": "0"})
+            request.user = self.user
+            resp = vote(request, 'list@example.com', msg)
+            self.assertEqual(resp.status_code, 200)
+            try:
+                Rating.objects.get(user=self.user, messageid=msg,
+                                   list_address='list@example.com')
+            except Rating.DoesNotExist:
+                pass
+            else:
+                self.fail("Vote for msg %s should have been deleted" % msg)
+            result = json.loads(resp.content)
+            self.assertEqual(result["like"], 0)
+            self.assertEqual(result["dislike"], 0)
+
+
+    def test_unauth_vote(self):
+        request = self.factory.post("/vote", {"vote": "1"})
+        request.user = AnonymousUser()
+        resp = vote(request, 'list@example.com', '123')
         self.assertEqual(resp.status_code, 403)
+
 
 
 from hyperkitty.views.list import archives

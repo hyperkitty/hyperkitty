@@ -21,6 +21,7 @@
 #
 
 import datetime
+from collections import namedtuple
 
 import django.utils.simplejson as json
 
@@ -33,7 +34,8 @@ from django.core.exceptions import SuspiciousOperation
 
 from hyperkitty.models import Tag, Favorite
 from forms import SearchForm, AddTagForm, ReplyForm
-from hyperkitty.lib import get_months, get_store, stripped_subject, get_votes
+from hyperkitty.lib import get_months, get_store, stripped_subject
+from hyperkitty.lib.voting import set_message_votes
 
 
 def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
@@ -55,15 +57,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     participants = {}
     for email in emails:
         # Extract all the votes for this message
-        email.likes, email.dislikes = get_votes(email.message_id_hash)
-        email.likestatus = "neutral"
-        if email.likes - email.dislikes >= 10:
-            email.likestatus = "likealot"
-        elif email.likes - email.dislikes > 0:
-            email.likestatus = "like"
-        #elif email.likes - email.dislikes < 0:
-        #    email.likestatus = "dislike"
-
+        set_message_votes(email, request.user)
 
         # Statistics on how many participants and messages this month
         participants[email.sender_name] = email.sender_email
@@ -146,10 +140,11 @@ def add_tag(request, mlist_fqdn, threadid):
 
     # Now refresh the tag list
     tags = Tag.objects.filter(threadid=threadid, list_address=mlist_fqdn)
+    FakeMList = namedtuple("MailingList", ["name"])
     t = loader.get_template('threads/tags.html')
     html = t.render(RequestContext(request, {
             "tags": tags,
-            "list_address": mlist_fqdn}))
+            "mlist": FakeMList(name=mlist_fqdn)}))
 
     response = {"tags": [ t.tag for t in tags ], "html": html}
     return HttpResponse(json.dumps(response),

@@ -25,7 +25,6 @@ import datetime
 
 from django.conf import settings
 
-from hyperkitty.models import Rating
 
 
 def gravatar_url(email):
@@ -88,18 +87,3 @@ def get_display_dates(year, month, day):
         end_date = begin_date + datetime.timedelta(days=1)
 
     return begin_date, end_date
-
-
-def get_votes(message_id_hash):
-    """Extract all the votes for this message"""
-    likes = dislikes = 0
-    try:
-        votes = Rating.objects.filter(messageid=message_id_hash)
-    except Rating.DoesNotExist:
-        votes = {}
-    for vote in votes:
-        if vote.vote == 1:
-            likes += 1
-        elif vote.vote == -1:
-            dislikes += 1
-    return likes, dislikes

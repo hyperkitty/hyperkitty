@@ -1,11 +1,19 @@
 	<form method="post" class="likeform"
 	      action="{% url message_vote mlist_fqdn=mlist.name, message_id_hash=message_id_hash %}">
 	{% csrf_token %}
-	<span class="likestatus {{ object.likestatus }}">
-		+<span class="likecount">{{ object.likes }}</span>/-<span class="dislikecount">{{ object.dislikes }}</span>
-	</span>
-	<a class="youlike{% if not user.is_authenticated %} disabled" title="You must be logged-in to vote.{% endif %}" href="#like">Like</a>
-	<a class="youdislike{% if not user.is_authenticated %} disabled" title="You must be logged-in to vote.{% endif %}" href="#dislike">Dislike</a>
+	<span class="likestatus {{ object.likestatus }}">+{{ object.likes }}/-{{ object.dislikes }}</span>
+	{% if object.myvote == 1 %}
+	<span class="youlike">You like it
+		(<a href="#cancelvote" onclick="vote(this, 0)">cancel</a>)</span>
+	{% elif object.myvote == -1 %}
+	<span class="youdislike">You dislike it
+		(<a href="#cancelvote" onclick="vote(this, 0)">cancel</a>)</span>
+	{% else %}
+	<a class="youlike{% if not user.is_authenticated %} disabled" title="You must be logged-in to vote.{% endif %}"
+	   href="#like" onclick="vote(this, 1)">Like</a>
+	<a class="youdislike{% if not user.is_authenticated %} disabled" title="You must be logged-in to vote.{% endif %}"
+	   href="#dislike" onclick="vote(this, -1)">Dislike</a>
+	{% endif %}
 	</form>
 
 {# vim: set noet: #}

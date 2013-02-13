@@ -29,7 +29,8 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from hyperkitty.models import Tag, Favorite
-from hyperkitty.lib import get_months, get_store, get_display_dates, get_votes
+from hyperkitty.lib import get_months, get_store, get_display_dates
+from hyperkitty.lib.voting import get_votes
 from forms import SearchForm
 
 
@@ -77,10 +78,13 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
         totallikes = 0
         totaldislikes = 0
         for message_id_hash in thread.email_id_hashes:
-            likes, dislikes = get_votes(message_id_hash)
+            likes, dislikes, myvote = get_votes(message_id_hash, request.user)
             totallikes = totallikes + likes
             totalvotes = totalvotes + likes + dislikes
             totaldislikes = totaldislikes + dislikes
+            if message_id_hash == thread.thread_id:
+                # Starting email: same id as the thread_id
+                thread.myvote = myvote
         try:
             thread.likes = totallikes / totalvotes
         except ZeroDivisionError:

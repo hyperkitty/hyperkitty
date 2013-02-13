@@ -39,30 +39,32 @@ function form_to_json(form) {
 
 function vote(elem, value) {
     if ($(elem).hasClass("disabled")) {
-        return;
+        return false;
     }
-    var data = form_to_json($(elem).parent("form"));
+    var form = $(elem).parents("form").first();
+    var data = form_to_json(form);
     data['vote'] = value;
     $.ajax({
         type: "POST",
-        url: $(elem).parent("form").attr("action"),
+        url: form.attr("action"),
         dataType: "json",
         data: data,
         success: function(response) {
-            var likestatus = $(elem).parent("form").find(".likestatus");
-            likestatus.find(".likecount").html(response.like);
-            likestatus.find(".dislikecount").html(response.dislike);
+            form.replaceWith(response.html);
         },
         error: function(jqXHR, textStatus, errorThrown) {
             alert(jqXHR.responseText);
         }
     });
+    return false;
 }
 
 
 function setup_vote() {
+    /*
     $("a.youlike").click(function(e) { e.preventDefault(); vote(this, 1); });
     $("a.youdislike").click(function(e) { e.preventDefault(); vote(this, -1); });
+    */
 }
 
 
