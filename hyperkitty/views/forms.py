@@ -25,6 +25,7 @@ from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 
 
+
 def isValidUsername(username):
         try:
             User.objects.get(username=username)
@@ -33,27 +34,28 @@ def isValidUsername(username):
         raise validators.ValidationError('The username "%s" is already taken.' % username)
 
 
+
 class RegistrationForm(forms.Form):
 
-    username =  forms.CharField(label='username', help_text=None,
-                widget=forms.TextInput(
-                    attrs={'placeholder': 'username...'}
-                    ), required = True, validators=[isValidUsername]
-                )
+    username =  forms.CharField(widget=forms.TextInput, required=True,
+                                validators=[isValidUsername])
 
     email     = forms.EmailField(required=True)
 
-    password1 = forms.CharField(widget=forms.PasswordInput)
+    password1 = forms.CharField(widget=forms.PasswordInput,
+                                required=True, label="Password")
 
-    password2 = forms.CharField(widget=forms.PasswordInput)
+    password2 = forms.CharField(widget=forms.PasswordInput,
+                                required=True, label="Confirm password")
 
-    def save(self, new_user_data):
-        u = User.objects.create_user(new_user_data['username'],
-                                     new_user_data['email'],
-                                     new_user_data['password1'])
-        u.is_active = True
-        u.save()
-        return u
+    def clean(self):
+        cleaned_data = super(RegistrationForm, self).clean()
+        if cleaned_data.get("password1") != cleaned_data.get("password2"):
+            self._errors["password2"] = self.error_class(["Passwords do not match."])
+            del cleaned_data["password1"]
+            del cleaned_data["password2"]
+        return cleaned_data
+
 
 
 class TextInputWithButton(forms.TextInput):
@@ -74,6 +76,7 @@ class TextInputWithButton(forms.TextInput):
                         initial_rendering, button, u'</span>'])
 
 
+
 class AddTagForm(forms.Form):
     tag =  forms.CharField(label='', help_text=None,
                 widget=TextInputWithButton(
@@ -83,6 +86,8 @@ class AddTagForm(forms.Form):
                     )
                 )
     from_url = forms.CharField(widget=forms.HiddenInput, required=False)
+
+
 
 class SearchForm(forms.Form):
     target =  forms.CharField(label='', help_text=None,
@@ -99,6 +104,7 @@ class SearchForm(forms.Form):
                     attrs={'placeholder': 'Search this list.'}
                     )
                 )
+
 
 
 class ReplyForm(forms.Form):

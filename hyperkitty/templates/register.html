@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load crispy_forms_tags %}
 
 
 {% block title %}
@@ -8,16 +9,21 @@
 
 {% block content %}
 
-<form action="" method="post" class="login mm_clear">
+<div id="register">
+
+<h2>Register</h2>
+
+<form action="{{ request.path }}?next={{ next|urlencode }}" method="post" class="form-horizontal">
 	{% csrf_token %}
-	{{ form.as_p }}
-	<input type="hidden" name="next" value="{{ next }}">
-	<div class="field">
-		<button class="btn btn-primary" type="submit">
-			{% trans "Register" %}
-		</button>
+	{{ form|crispy }}
+	<div class="control-group">
+		<div class="controls">
+			<button type="submit" class="btn btn-primary">{% trans "Register" %}</button>
+		</div>
 	</div>
 </form>
+
+</div>
 
 {% endblock %}
 

@@ -26,16 +26,17 @@ from urllib2 import HTTPError
 from urlparse import urlparse
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import (login_required,
                                             permission_required,
                                             user_passes_test)
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response, redirect
 from django.template import Context, loader, RequestContext
+from django.utils.http import is_safe_url
 from django.utils.translation import gettext as _
 
 from hyperkitty.models import UserProfile, Rating, Favorite
@@ -44,6 +45,7 @@ from hyperkitty.lib import get_store
 
 
 logger = logging.getLogger(__name__)
+
 
 
 @login_required
@@ -100,15 +102,23 @@ def user_profile(request, user_email=None):
 
 
 def user_registration(request):
+    redirect_to = request.REQUEST.get("next", reverse("root"))
+    if not is_safe_url(url=redirect_to, host=request.get_host()):
+        redirect_to = settings.LOGIN_REDIRECT_URL
+
+
     if request.user.is_authenticated():
         # Already registered, redirect back to index page
-        return redirect('index')
+        return HttpResponseRedirect(redirect_to)
 
     if request.POST:
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            # Save the user data.
-            form.save(form.cleaned_data)
+            u = User.objects.create_user(form.cleaned_data['username'],
+                                         form.cleaned_data['email'],
+                                         form.cleaned_data['password1'])
+            u.is_active = True
+            u.save()
             user = authenticate(username=form.cleaned_data['username'],
                                 password=form.cleaned_data['password1'])
 
@@ -116,9 +126,14 @@ def user_registration(request):
                 logger.debug(user)
                 if user.is_active:
                     login(request, user)
-                    return redirect('index')
+                    return HttpResponseRedirect(redirect_to)
     else:
         form = RegistrationForm()
 
-    return render_to_response('register.html', {'form': form}, context_instance=RequestContext(request))
+    context = {
+        'form': form,
+        'next': redirect_to,
+    }
+    return render_to_response('register.html', context,
+                              context_instance=RequestContext(request))
 
