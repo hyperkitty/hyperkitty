@@ -42,7 +42,7 @@ urlpatterns = patterns('hyperkitty.views',
     url(r'^accounts/login/$', login_view, {'template_name': 'login.html', 'SSL': True}, name='user_login'),
     url(r'^accounts/logout/$', logout_view, {'next_page': '/'}, name='user_logout'),
     url(r'^accounts/profile/$', 'accounts.user_profile', name='user_profile'),
-    url(r'^accounts/register/$', 'accounts.user_registration', name='user_registration'),
+    url(r'^accounts/register/$', 'accounts.user_registration', {'SSL': True}, name='user_registration'),
 
 
     # List archives and overview
@@ -100,14 +100,14 @@ urlpatterns = patterns('hyperkitty.views',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Admin
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls), {"SSL": True}),
 
     # Robots.txt
     url(r'^robots\.txt$', direct_to_template,
      {'template': 'robots.txt', 'mimetype': 'text/plain'}),
 
     # Social Auth
-    url(r'', include('social_auth.urls')),
+    url(r'', include('social_auth.urls'), {"SSL": True}),
 
     # Mailman 2.X compatibility
     url(r'^listinfo/?$', 'compat.summary'),

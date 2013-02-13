@@ -23,7 +23,7 @@
 
 						<ul class="nav auth">
 						{% if user.is_authenticated %}
-							<li><a class="mm_logout" href="{% url user_logout %}">Logout</a></li>
+							<li><a class="mm_logout" href="{% url user_logout %}?next={% url root %}">Logout</a></li>
 							<li><a href="{% url user_profile %}">{{ user.username }}</a></li>
 						{% else %}
 							<li><a class="mm_user" href="{% url user_login %}?next={{next|default:request.path|urlencode}}">Login</a></li>

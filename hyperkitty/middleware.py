@@ -45,7 +45,7 @@ class SSLRedirect(object):
         secure = view_kwargs.pop(SSL, False)
         if request.user.is_authenticated():
             secure = True
-        if settings.DEBUG: # Development server (runserver)
+        if not settings.USE_SSL: # User-disabled (e.g: development server)
             secure = False
 
         if not secure == self._is_secure(request):
