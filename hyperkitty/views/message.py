@@ -20,27 +20,21 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-import re
-import os
 import urllib
 import datetime
 
-import django.utils.simplejson as simplejson
-from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.shortcuts import redirect, render, render_to_response
-from django.template import RequestContext, loader
+import django.utils.simplejson as json
+from django.http import HttpResponse, Http404
+from django.shortcuts import redirect, render
 from django.conf import settings
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
 from django.core.urlresolvers import reverse
 from django.core.mail import EmailMessage
 from django.core.exceptions import SuspiciousOperation
-from django.contrib.auth.decorators import (login_required,
-                                            permission_required,
-                                            user_passes_test)
+from django.contrib.auth.decorators import login_required
 
 from hyperkitty.lib import get_store, get_months, get_votes
 from hyperkitty.models import Rating
-from forms import *
+from forms import SearchForm, ReplyForm, PostForm
 
 
 def index(request, mlist_fqdn, message_id_hash):
@@ -49,7 +43,6 @@ def index(request, mlist_fqdn, message_id_hash):
     message_id)
     '''
     search_form = SearchForm(auto_id=False)
-    t = loader.get_template('message.html')
     store = get_store(request)
     message = store.get_message_by_hash_from_list(mlist_fqdn, message_id_hash)
     if message is None:
@@ -68,14 +61,14 @@ def index(request, mlist_fqdn, message_id_hash):
 
     mlist = store.get_list(mlist_fqdn)
 
-    c = RequestContext(request, {
+    context = {
         'mlist' : mlist,
         'message': message,
         'message_id_hash' : message_id_hash,
         'months_list': get_months(store, mlist.name),
         'reply_form': ReplyForm(),
-    })
-    return HttpResponse(t.render(c))
+    }
+    return render(request, "message.html", context)
 
 
 def attachment(request, mlist_fqdn, message_id_hash, counter, filename):
@@ -133,7 +126,7 @@ def vote(request, mlist_fqdn, message_id_hash):
         elif vote.vote == -1:
             status["dislike"] += 1
 
-    return HttpResponse(simplejson.dumps(status),
+    return HttpResponse(json.dumps(status),
                         mimetype='application/javascript')
 
 
@@ -181,7 +174,7 @@ def new_message(request, mlist_fqdn):
                         'year': today.year,
                         'month': today.month})
             redirect_url += "?msg=sent-ok"
-            return HttpResponseRedirect(redirect_url)
+            return redirect(redirect_url)
     else:
         form = PostForm()
     context = {
@@ -189,8 +182,7 @@ def new_message(request, mlist_fqdn):
         "post_form": form,
         'months_list': get_months(store, mlist.name),
     }
-    return render_to_response("message_new.html", context,
-                              context_instance=RequestContext(request))
+    return render(request, "message_new.html", context)
 
 
 def _send_email(request, mlist, subject, message, headers={}):

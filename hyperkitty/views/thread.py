@@ -22,29 +22,23 @@
 
 import datetime
 
-import django.utils.simplejson as simplejson
+import django.utils.simplejson as json
 
-from django.http import HttpResponse, HttpResponseRedirect, Http404
-from django.template import RequestContext, loader
+from django.http import HttpResponse, Http404
 from django.conf import settings
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
+from django.template import RequestContext, loader
+from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.core.exceptions import SuspiciousOperation
-from django.utils.datastructures import SortedDict
-from django.contrib.auth.decorators import (login_required,
-                                            permission_required,
-                                            user_passes_test)
 
 from hyperkitty.models import Tag, Favorite
-#from hyperkitty.lib.mockup import *
-from forms import *
+from forms import SearchForm, AddTagForm, ReplyForm
 from hyperkitty.lib import get_months, get_store, stripped_subject, get_votes
 
 
 def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     ''' Displays all the email for a given thread identifier '''
     search_form = SearchForm(auto_id=False)
-    t = loader.get_template('thread.html')
     store = get_store(request)
     thread = store.get_thread(mlist_fqdn, threadid)
     if not thread:
@@ -107,7 +101,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     mlist = store.get_list(mlist_fqdn)
     subject = stripped_subject(mlist, thread.starting_email.subject)
 
-    c = RequestContext(request, {
+    context = {
         'mlist' : mlist,
         'threadid' : threadid,
         'subject': subject,
@@ -125,8 +119,8 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'sort_mode': sort_mode,
         'fav_action': fav_action,
         'reply_form': ReplyForm(),
-    })
-    return HttpResponse(t.render(c))
+    }
+    return render(request, "thread.html", context)
 
 
 def add_tag(request, mlist_fqdn, threadid):
@@ -158,7 +152,7 @@ def add_tag(request, mlist_fqdn, threadid):
             "list_address": mlist_fqdn}))
 
     response = {"tags": [ t.tag for t in tags ], "html": html}
-    return HttpResponse(simplejson.dumps(response),
+    return HttpResponse(json.dumps(response),
                         mimetype='application/javascript')
 
 

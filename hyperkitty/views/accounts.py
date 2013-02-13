@@ -19,23 +19,14 @@
 # Author: Aamir Khan <syst3m.w0rm@gmail.com>
 #
 
-import re
-import sys
 import logging
-from urllib2 import HTTPError
-from urlparse import urlparse
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.contrib import messages
 from django.contrib.auth import logout, authenticate, login
-from django.contrib.auth.decorators import (login_required,
-                                            permission_required,
-                                            user_passes_test)
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response, redirect
-from django.template import Context, loader, RequestContext
+from django.shortcuts import render, redirect
 from django.utils.http import is_safe_url
 from django.utils.translation import gettext as _
 
@@ -52,7 +43,6 @@ logger = logging.getLogger(__name__)
 def user_profile(request, user_email=None):
     if not request.user.is_authenticated():
         return redirect('user_login')
-    t = loader.get_template('user_profile.html')
     store = get_store(request)
 
     # try to render the user profile.
@@ -90,14 +80,13 @@ def user_profile(request, user_email=None):
         thread = store.get_thread(fav.list_address, fav.threadid)
         fav.thread = thread
 
-    c = RequestContext(request, {
+    context = {
         'user_profile' : user_profile,
         'votes_up': votes_up,
         'votes_down': votes_down,
         'favorites': favorites,
-    })
-
-    return HttpResponse(t.render(c))
+    }
+    return render(request, "user_profile.html", context)
 
 
 def user_registration(request):
@@ -108,7 +97,7 @@ def user_registration(request):
 
     if request.user.is_authenticated():
         # Already registered, redirect back to index page
-        return HttpResponseRedirect(redirect_to)
+        return redirect(redirect_to)
 
     if request.POST:
         form = RegistrationForm(request.POST)
@@ -125,7 +114,7 @@ def user_registration(request):
                 logger.debug(user)
                 if user.is_active:
                     login(request, user)
-                    return HttpResponseRedirect(redirect_to)
+                    return redirect(redirect_to)
     else:
         form = RegistrationForm()
 
@@ -133,6 +122,4 @@ def user_registration(request):
         'form': form,
         'next': redirect_to,
     }
-    return render_to_response('register.html', context,
-                              context_instance=RequestContext(request))
-
+    return render(request, 'register.html', context)

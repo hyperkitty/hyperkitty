@@ -20,33 +20,18 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-import re
-import os
-import json
-import urllib
-import logging
 import datetime
-from calendar import timegm
-from urlparse import urljoin
 from collections import namedtuple, defaultdict
 
-import django.utils.simplejson as simplejson
-from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render_to_response
-from django.template import RequestContext, loader
+from django.shortcuts import redirect, render
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
-from django.contrib.auth.decorators import (login_required,
-                                            permission_required,
-                                            user_passes_test)
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from hyperkitty.models import Tag, Favorite
 from hyperkitty.lib import get_months, get_store, get_display_dates, get_votes
-from forms import *
+from forms import SearchForm
 
-
-logger = logging.getLogger(__name__)
 
 if settings.USE_MOCKUPS:
     from hyperkitty.lib.mockup import generate_top_author, generate_thread_per_category
@@ -60,7 +45,7 @@ FLASH_MESSAGES = {
 def archives(request, mlist_fqdn, year=None, month=None, day=None):
     if year is None and month is None:
         today = datetime.date.today()
-        return HttpResponseRedirect(reverse(
+        return redirect(reverse(
                 'archives_with_month', kwargs={
                     "mlist_fqdn": mlist_fqdn,
                     'year': today.year,
@@ -150,15 +135,13 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
         'flash_msg': flash_msg,
     }
     context.update(extra_context)
-    return render_to_response(template_name, context,
-                              context_instance=RequestContext(request))
+    return render(request, template_name, context)
 
 
 
 def overview(request, mlist_fqdn=None):
     if not mlist_fqdn:
-        return HttpResponseRedirect('/')
-    t = loader.get_template('recent_activities.html')
+        return redirect('/')
     search_form = SearchForm(auto_id=False)
 
     # Get stats for last 30 days
@@ -220,7 +203,7 @@ def overview(request, mlist_fqdn=None):
     else:
         threads_per_category = {}
 
-    c = RequestContext(request, {
+    context = {
         'mlist' : mlist,
         'search_form': search_form,
         'top_threads': top_threads[:5],
@@ -230,8 +213,8 @@ def overview(request, mlist_fqdn=None):
         'months_list': get_months(store, mlist.name),
         'evolution': evolution,
         'days': days,
-    })
-    return HttpResponse(t.render(c))
+    }
+    return render(request, "recent_activities.html", context)
 
 
 def search(request, mlist_fqdn):
@@ -247,7 +230,7 @@ def search(request, mlist_fqdn):
             url += '%s/' % page
     else:
         url = reverse('search_list', kwargs={"mlist_fqdn": mlist_fqdn})
-    return HttpResponseRedirect(url)
+    return redirect(url)
 
 
 def search_keyword(request, mlist_fqdn, target, keyword, page=1):

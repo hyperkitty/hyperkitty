@@ -19,29 +19,14 @@
 # Author: Aamir Khan <syst3m.w0rm@gmail.com>
 #
 
-import re
-import os
-import json
-import urllib
-from calendar import timegm
-from datetime import datetime, timedelta
-from urlparse import urljoin
-
-import django.utils.simplejson as simplejson
-from django.http import HttpResponse, HttpResponseRedirect
-from django.template import RequestContext, loader
+from django.shortcuts import render
 from django.conf import settings
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, InvalidPage
-from django.contrib.auth.decorators import (login_required,
-                                            permission_required,
-                                            user_passes_test)
 
 from hyperkitty.lib import get_store
-from forms import *
+from forms import SearchForm
 
 
 def index(request):
-    t = loader.get_template('index.html')
     search_form = SearchForm(auto_id=False)
 
     base_url = settings.MAILMAN_API_URL % {
@@ -50,8 +35,8 @@ def index(request):
     store = get_store(request)
     lists = store.get_lists()
 
-    c = RequestContext(request, {
+    context = {
         'lists': lists,
         'search_form': search_form,
-        })
-    return HttpResponse(t.render(c))
+        }
+    return render(request, "index.html", context)

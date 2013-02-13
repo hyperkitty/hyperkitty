@@ -88,7 +88,7 @@ urlpatterns = patterns('hyperkitty.views',
 
 
     # REST API
-    url(r'^api/$', 'api.api'),
+    url(r'^api/$', direct_to_template, {"template": "api.html"}),
     url(r'^api/email\/(?P<mlist_fqdn>[^/@]+@[^/@]+)\/(?P<hashid>.*)/',
         EmailResource.as_view(), name="api_email"),
     url(r'^api/thread\/(?P<mlist_fqdn>[^/@]+@[^/@]+)\/(?P<threadid>.*)/',
