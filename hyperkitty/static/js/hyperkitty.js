@@ -108,7 +108,7 @@ function setup_favorites() {
     }).trigger("change");
     $(".favorite a").bind("click", function(e) {
         e.preventDefault();
-        if ($(elem).hasClass("disabled")) {
+        if ($(this).hasClass("disabled")) {
             return;
         }
         var form = $(this).parents("form").first();
