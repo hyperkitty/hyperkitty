@@ -74,7 +74,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     try:
         tags = Tag.objects.filter(threadid=threadid, list_address=mlist_fqdn)
     except Tag.DoesNotExist:
-        tags = {}
+        tags = []
 
     # Favorites
     fav_action = "add"

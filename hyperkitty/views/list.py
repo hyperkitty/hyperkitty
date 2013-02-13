@@ -113,6 +113,13 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
             else:
                 thread.favorite = True
 
+        # Tags
+        try:
+            thread.tags = Tag.objects.filter(threadid=thread.thread_id,
+                                             list_address=mlist.name)
+        except Tag.DoesNotExist:
+            thread.tags = []
+
     all_threads = threads
     paginator = Paginator(threads, 10)
     page_num = request.GET.get('page')

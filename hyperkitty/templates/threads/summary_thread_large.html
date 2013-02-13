@@ -36,31 +36,23 @@
 				</div>
 			</div>
 			<div class="thread_info">
-				<ul class="tags inline">
+				<div class="tags">
 					{% if thread.tags|length %}
-					<li>
-						Tags:
-					</li>
+					Tags:
+					<ul class="tags inline">
 					{% for tag in thread.tags %}
-					<li>
-						<a href="{% url search_tag mlist_fqdn=mlist.name, tag=tag %}">{{tag}}</a>
-					</li>
+						<li>
+							<a href="{% url search_tag mlist_fqdn=mlist.name, tag=tag.tag %}">{{tag.tag}}</a>
+						</li>
 					{% endfor %}
+					</ul>
 					{% endif %}
-				</ul>
-				<ul class="inline-block">
-					<li class="participant">
-						{{ thread.participants|length }} participants
-					</li>
-					<li class="discussion">
-						{{ thread|length }} comments
-					</li>
-				</ul>
-				<ul class="inline-block">
-					{% include "messages/like_form.html" with message_id_hash=thread.starting_email.message_id_hash object=thread %}
-				</ul>
+				</div>
+				<span class="participant">{{ thread.participants|length }} participants</span>
+				<span class="discussion">{{ thread|length }} comments</span>
+				{% include "messages/like_form.html" with message_id_hash=thread.starting_email.message_id_hash object=thread %}
 				<a href="{% url thread threadid=thread.thread_id, mlist_fqdn=mlist.name %}"
-				   class="btn">Show discussion</a>
+				   class="btn thread-show">Show discussion</a>
 			</div>
 		</div>
 

@@ -150,7 +150,6 @@ table.user-data {
 /* Add icons to some text */
 .participant, .discussion, .saved, .notsaved {
     padding-left: 20px;
-    padding-right: 10px;
     background: no-repeat scroll left center;
 }
 
@@ -441,20 +440,30 @@ form.likeform {
     color: rgb(128, 0, 0);
 }
 
-.thread_content {
-    margin-top: 0.5em;
-}
-
 .thread_info {
     text-align:right;
     clear: both;
     margin-left: 46px;
 }
-.thread_info .btn {
+.thread_info .tags {
+    display: inline;
+    margin-right: 1em;
+}
+.thread_info .participant {
+    margin-right: 1em;
+}
+.thread_info .discussion {
+    margin-right: 2em;
+}
+.thread_info .thread-show {
     padding-top: 2px;
     padding-bottom: 2px;
+    margin-left: 2em;
 }
 
+.thread_content {
+    margin-top: 0.5em;
+}
 .thread_content .gravatar {
     float: left;
 }
@@ -462,12 +471,6 @@ form.likeform {
     display: block;
     margin-left: 46px;
     margin-bottom: 5px;
-}
-
-.tags {
-    text-align:left;
-    margin: 0px 0px 0px 200px;
-    padding: 0px;
 }
 
 /* Part containing the body of the mail which can be shown/hidden */
@@ -747,6 +750,12 @@ a.attachments {
 #tags ul {
     padding: 10px 0;
     margin: 0;
+}
+#tags ul li {
+    padding-left: 0;
+}
+#tags ul li span {
+    margin-left: 5px;
 }
 
 #add_tag {

@@ -4,7 +4,7 @@
 			{% for tag in tags %}
 			<li>
 				<a href="{% url search_tag mlist_fqdn=mlist.name, tag=tag.tag %}" >{{ tag.tag }}</a>
-				{% if not forloop.last %} | {% endif %}
+				{% if not forloop.last %} <span>|</span> {% endif %}
 			</li>
 			{% endfor %}
 		</ul>
