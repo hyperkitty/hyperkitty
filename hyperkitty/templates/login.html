@@ -27,6 +27,7 @@
 </ul>
 
 
+{% if use_internal_auth %}
 <h2>Login with username and password</h2>
 
 <form action="{{ request.path }}?next={{ next|urlencode }}" method="post" class="form-horizontal">
@@ -38,6 +39,7 @@
 		</div>
 	</div>
 </form>
+{% endif %}
 
 
 </div>

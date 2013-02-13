@@ -23,6 +23,7 @@ import logging
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.core.exceptions import SuspiciousOperation
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -90,6 +91,8 @@ def user_profile(request, user_email=None):
 
 
 def user_registration(request):
+    if not settings.USE_INTERNAL_AUTH:
+        raise SuspiciousOperation
     redirect_to = request.REQUEST.get("next", reverse("root"))
     if not is_safe_url(url=redirect_to, host=request.get_host()):
         redirect_to = settings.LOGIN_REDIRECT_URL
