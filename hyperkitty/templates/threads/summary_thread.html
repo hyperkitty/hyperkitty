@@ -2,8 +2,8 @@
 {% load storm %}
 
 		<div class="thread">
-			<span class="thread_id">#{{counter}}</span>
-			<span class="thread_title"><a name="{{thread.thread_id}}"
+			<span class="thread-id">#{{counter}}</span>
+			<span class="thread-title"><a name="{{thread.thread_id}}"
 				href="{% url thread threadid=thread.thread_id, mlist_fqdn=mlist.name %}"
 				>{{ thread.subject|strip_subject:mlist }}</a></span>
 			<div class="thread_stats">

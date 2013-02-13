@@ -73,7 +73,7 @@ function setup_vote() {
  */
 
 function setup_add_tag() {
-    $("#add_tag_form").submit( function () {
+    $("#add-tag-form").submit( function () {
         $.ajax({
             type: "POST",
             dataType: "json",

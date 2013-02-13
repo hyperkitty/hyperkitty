@@ -4,12 +4,12 @@
 
 		<div class="thread">
 			<div class="{% if thread.favorite %}saved{% else %}notsaved{% endif %}">
-				<span class="thread_title"><a name="{{thread.thread_id}}"
+				<span class="thread-title"><a name="{{thread.thread_id}}"
 					href="{% url thread threadid=thread.thread_id, mlist_fqdn=mlist.name %}"
 					>{{ thread.starting_email.subject|strip_subject:mlist }}</a></span>
-				<span class="thread_date">{{thread.date_active|timesince }}</span>
+				<span class="thread-date">{{thread.date_active|timesince }}</span>
 			</div>
-			<div class="thread_content">
+			<div class="thread-content">
 				{% if thread.category_tag %}
 				<div class="inline-block type type_{{thread.category_tag}}">
 					<a href="{% url search_tag mlist_fqdn=mlist.name, tag=thread.category_tag %}"
@@ -29,13 +29,13 @@
 					{% endif %}
 					{{ thread.starting_email.sender_name|escapeemail }}
 				</div>
-				<div class="thread_email">
+				<div class="thread-email">
 					<span class="expander collapsed">
 						{{ thread.starting_email.content|urlizetrunc:76|escapeemail }}
 					</span>
 				</div>
 			</div>
-			<div class="thread_info">
+			<div class="thread-info">
 				<div class="tags">
 					{% if thread.tags|length %}
 					Tags:

@@ -243,34 +243,8 @@ form.likeform {
     min-height: 50px;
 }
 
-.list_nav {
-    float: left;
-    list-style: none;
-    margin: 0;
-    padding: 5px 0 0 0;
-}
 
-.list_nav li {
-   float: left;
-   margin-left: 20px;
-}
-
-
-#top_right {
-    position: absolute;
-    right: 20px;
-    bottom: 0;
-    color: rgb(102, 102, 102);
-}
-
-#top_right li {
-    margin-left:10px;
-}
-
-#page_date {
-    font-size: 150%;
-}
-
+/* Search box */
 
 #searchbox {
     text-align:right;
@@ -311,9 +285,9 @@ form.likeform {
 }
 
 
-#top_discussion,
-#discussion_by_topic,
-#most_active,
+#top-discussion,
+#discussion-by-topic,
+#most-active,
 #discussion-maker {
     padding: 1em;
     padding-bottom: 0;
@@ -421,7 +395,7 @@ form.likeform {
     margin: 2em 0 2em 0;
 }
 
-.thread_id {
+.thread-id {
     font-weight: bold;
     font-size: 125%;
     color: rgb(102, 102, 102);
@@ -429,45 +403,45 @@ form.likeform {
     padding-right: 10px;
 }
 
-.thread_title {
+.thread-title {
     font-weight: bold;
     font-size: 125%;
 }
 
-.thread_date {
+.thread-date {
     font-style: italic;
     font-size: 70%;
     color: rgb(128, 0, 0);
 }
 
-.thread_info {
+.thread-info {
     text-align:right;
     clear: both;
     margin-left: 46px;
 }
-.thread_info .tags {
+.thread-info .tags {
     display: inline;
     margin-right: 1em;
 }
-.thread_info .participant {
+.thread-info .participant {
     margin-right: 1em;
 }
-.thread_info .discussion {
+.thread-info .discussion {
     margin-right: 2em;
 }
-.thread_info .thread-show {
+.thread-info .thread-show {
     padding-top: 2px;
     padding-bottom: 2px;
     margin-left: 2em;
 }
 
-.thread_content {
+.thread-content {
     margin-top: 0.5em;
 }
-.thread_content .gravatar {
+.thread-content .gravatar {
     float: left;
 }
-.thread_content .thread_email {
+.thread-content .thread-email {
     display: block;
     margin-left: 46px;
     margin-bottom: 5px;
@@ -501,13 +475,13 @@ form.likeform {
     white-space: pre;
 }
 
-.thread_email .expander.collapsed {
+.thread-email .expander.collapsed {
     white-space: normal;
 }
 
 /*
-.thread_email span.read-more a,
-.thread_email span.read-less a {
+.thread-email span.read-more a,
+.thread-email span.read-less a {
     display: block;
     float: right;
     margin-top: 0.5em;
@@ -661,37 +635,6 @@ a.attachments {
     background-image: url('../img/button_newer.png');
 }
 
-#thread_nav{
-    margin:auto;
-    width:100%;
-    text-align:center;
-}
-
-#thread_nav * {
-    vertical-align: middle;
-}
-
-#thread_nav .thread_title{
-    margin:auto;
-    width: 50%;
-}
-
-#thread_nav br {
-    margin-top: 10px;
-}
-
-#thread_nav .thread_info {
-    margin-top:10px;
-    margin-bottom:10px;
-    font-size: 70%;
-    font-weight: normal;
-    text-align: center;
-}
-
-#thread_nav .thread_info li {
-    margin-left:3em;
-}
-
 #olderhread, #newewthread {
     font-size: 70%;
     color: rgb(167, 169, 172);
@@ -703,17 +646,17 @@ a.attachments {
     margin-right: 20px;
 }
 
-#thread_overview_info {
+#thread-overview-info {
     float: right;
 }
 
 /* Thread general information column */
 
-.days_num {
+.days-num {
     font-size: 200%;
     display: inline-block;
 }
-.days_text {
+.days-text {
     font-size: 70%;
     display: inline-block;
     margin-right: 2em;
@@ -742,7 +685,7 @@ a.attachments {
     margin-top: 2em;
 }
 
-#tag_title {
+#tag-title {
     color: rgb(77, 77, 77);
     text-transform: uppercase;
 }
@@ -758,7 +701,7 @@ a.attachments {
     margin-left: 5px;
 }
 
-#add_tag {
+#add-tag {
     margin-top: 0.3em;
 }
 

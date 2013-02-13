@@ -2,21 +2,21 @@
 {% load hk_generic %}
 
 <!-- right column -->
-<section id="thread_overview_info">
+<section id="thread-overview-info">
 	<!-- Start dates -->
-	<div id="thread_date_info" class="row-fluid">
-		<div class="days_num">
+	<div id="thread-date-info" class="row-fluid">
+		<div class="days-num">
 			{{ days_inactive }}
 		</div>
-		<div class="days_text">
+		<div class="days-text">
 			days
 			<br />
 			inactive
 		</div>
-		<div class="days_num">
+		<div class="days-num">
 			{{ days_old }}
 		</div>
-		<div class="days_text">
+		<div class="days-text">
 			days
 			<br />
 			old
@@ -35,8 +35,8 @@
 	<div id="tags">
 		{% include 'threads/tags.html' %}
 	</div>
-	<div id="add_tag">
-		<form id="add_tag_form" name="addtag" method="post"
+	<div id="add-tag">
+		<form id="add-tag-form" name="addtag" method="post"
 		      action="{% url add_tag mlist_fqdn=mlist.name, threadid=threadid %}">
 			{% csrf_token %}
 			{{ addtag_form.as_p }}

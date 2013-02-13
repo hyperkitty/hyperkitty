@@ -33,7 +33,7 @@
 		<div class="row-fluid">
 
 			<div class="span6">
-			<section id="most_active">
+			<section id="most-active">
 				<h2>Recently active discussions</h2>
 				{% for thread in most_active_threads %}
 					{% include "threads/summary_thread.html" with counter=forloop.counter %}
@@ -42,7 +42,7 @@
 			</div>
 
 			<div class="span6">
-			<section id="top_discussion">
+			<section id="top-discussion">
 				<h2>Top discussions the last 30 days</h2>
 				{% for thread in top_threads %}
 					{% include "threads/summary_thread.html" with counter=forloop.counter %}
@@ -86,7 +86,7 @@
 
 			<div class="span6">
 			{% if threads_per_category %}
-			<section id="discussion_by_topic">
+			<section id="discussion-by-topic">
 				<h2>Discussion by topic the last 30 days</h2>
 				{% for category, thread in threads_per_category.items %}
 				<div>
