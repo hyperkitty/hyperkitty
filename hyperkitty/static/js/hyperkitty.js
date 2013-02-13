@@ -227,7 +227,7 @@ function activity_graph(dates, data, baseurl) {
 
     var bar = vis.add(pv.Bar)
         .data(data)
-        .event("click", function(n) self.location = baseurl + dates[this.index] + "/")
+        .event("click", function(n) { self.location = baseurl + "/" + dates[this.index].replace(/-/g, '/') + "/"; })
         .left(function() x(this.index))
         .width(x.range().band)
         .bottom(0)

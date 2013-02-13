@@ -27,6 +27,8 @@ from django.shortcuts import redirect, render
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.utils import formats
+from django.utils.dateformat import format as date_format
 
 from hyperkitty.models import Tag, Favorite
 from hyperkitty.lib import get_months, get_store, get_display_dates
@@ -56,11 +58,18 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
     store = get_store(request)
     mlist = store.get_list(mlist_fqdn)
     threads = store.get_threads(mlist_fqdn, start=begin_date, end=end_date)
+    if day is None:
+        list_title = date_format(begin_date, "F Y")
+        no_results_text = "for this month"
+    else:
+        #list_title = date_format(begin_date, settings.DATE_FORMAT)
+        list_title = formats.date_format(begin_date) # works with i18n
+        no_results_text = "for this day"
     extra_context = {
         'month': begin_date,
         'month_num': begin_date.month,
-        "list_title": begin_date.strftime("%B %Y").capitalize(),
-        "no_results_text": "for this month",
+        "list_title": list_title.capitalize(),
+        "no_results_text": no_results_text,
     }
     return _thread_list(request, mlist, threads, extra_context=extra_context)
 
@@ -163,7 +172,7 @@ def overview(request, mlist_fqdn=None):
 
     store = get_store(request)
     mlist = store.get_list(mlist_fqdn)
-    threads_result = store.get_threads(list_name=mlist_fqdn, start=begin_date,
+    threads_result = store.get_threads(list_name=mlist.name, start=begin_date,
         end=end_date)
 
     threads = []
@@ -196,7 +205,7 @@ def overview(request, mlist_fqdn=None):
     # List activity
     # Use get_messages and not get_threads to count the emails, because
     # recently active threads include messages from before the start date
-    emails_in_month = store.get_messages(list_name=mlist_fqdn,
+    emails_in_month = store.get_messages(list_name=mlist.name,
                                          start=begin_date, end=end_date)
     dates = defaultdict(lambda: 0) # no activity by default
     for email in emails_in_month:
@@ -207,6 +216,9 @@ def overview(request, mlist_fqdn=None):
     evolution = [dates[d] for d in days]
     if not evolution:
         evolution.append(0)
+    archives_baseurl = reverse("archives_latest",
+                               kwargs={'mlist_fqdn': mlist.name})
+    archives_baseurl = archives_baseurl.rpartition("/")[0]
 
     # threads per category is the top thread titles in each category
     if settings.USE_MOCKUPS:
@@ -224,6 +236,7 @@ def overview(request, mlist_fqdn=None):
         'months_list': get_months(store, mlist.name),
         'evolution': evolution,
         'days': days,
+        'archives_baseurl': archives_baseurl,
     }
     return render(request, "recent_activities.html", context)
 

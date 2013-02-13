@@ -276,6 +276,9 @@ form.likeform {
 #graph h2 {
     text-align: center;
 }
+#graph rect {
+    cursor: pointer;
+}
 
 #fig {
   position: relative;
