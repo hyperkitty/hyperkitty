@@ -21,5 +21,7 @@
 
 from django.conf import settings
 
-def app_name(context):
-    return {'app_name' : settings.APP_NAME}
+def export_settings(context):
+    exports = ["APP_NAME", "USE_MOCKUPS", "USE_INTERNAL_AUTH"]
+    return dict( (name.lower(), getattr(settings, name))
+                 for name in exports)

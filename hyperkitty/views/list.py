@@ -148,7 +148,6 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
         'participants': len(participants),
         'months_list': get_months(store, mlist.name),
         'flash_msg': flash_msg,
-        'use_mockups': settings.USE_MOCKUPS,
     }
     context.update(extra_context)
     return render_to_response(template_name, context,
@@ -231,7 +230,6 @@ def overview(request, mlist_fqdn=None):
         'months_list': get_months(store, mlist.name),
         'evolution': evolution,
         'days': days,
-        'use_mockups': settings.USE_MOCKUPS,
     })
     return HttpResponse(t.render(c))
 

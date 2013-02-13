@@ -73,7 +73,6 @@ def index(request, mlist_fqdn, message_id_hash):
         'message': message,
         'message_id_hash' : message_id_hash,
         'months_list': get_months(store, mlist.name),
-        'use_mockups': settings.USE_MOCKUPS,
         'reply_form': ReplyForm(),
     })
     return HttpResponse(t.render(c))
@@ -189,7 +188,6 @@ def new_message(request, mlist_fqdn):
         "mlist": mlist,
         "post_form": form,
         'months_list': get_months(store, mlist.name),
-        'use_mockups': settings.USE_MOCKUPS,
     }
     return render_to_response("message_new.html", context,
                               context_instance=RequestContext(request))

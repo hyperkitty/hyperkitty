@@ -122,7 +122,6 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'months_list': get_months(store, mlist.name),
         'days_inactive': days_inactive.days,
         'days_old': days_old.days,
-        'use_mockups': settings.USE_MOCKUPS,
         'sort_mode': sort_mode,
         'fav_action': fav_action,
         'reply_form': ReplyForm(),
