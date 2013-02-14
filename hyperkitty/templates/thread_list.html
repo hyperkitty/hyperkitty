@@ -15,12 +15,6 @@
 
 	<div id="thread-list" class="span8">
 
-		{% if flash_msg %}
-		<div class="flashmsg">
-			<div class="alert alert-success">{{ flash_msg }}</div>
-		</div>
-		{% endif %}
-
 		<div class="thread-list-header page-header">
 			<a href="{% url message_new mlist_fqdn=mlist.name %}"
 			   class="thread-new btn{% if not user.is_authenticated %} disabled" title="You must be logged-in to create a thread.{% endif %}"

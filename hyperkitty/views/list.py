@@ -141,9 +141,11 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
         # If page is out of range (e.g. 9999), deliver last page of results.
         threads = paginator.page(paginator.num_pages)
 
+    flash_messages = []
     flash_msg = request.GET.get("msg")
     if flash_msg:
-        flash_msg = FLASH_MESSAGES[flash_msg]
+        flash_msg = { "type": "success", "msg": FLASH_MESSAGES[flash_msg] }
+        flash_messages.append(flash_msg)
 
     context = {
         'mlist' : mlist,
@@ -152,7 +154,7 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
         'threads': threads,
         'participants': len(participants),
         'months_list': get_months(store, mlist.name),
-        'flash_msg': flash_msg,
+        'flash_messages': flash_messages,
     }
     context.update(extra_context)
     return render(request, template_name, context)

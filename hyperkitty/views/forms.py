@@ -58,6 +58,12 @@ class RegistrationForm(forms.Form):
 
 
 
+class UserProfileForm(forms.Form):
+    first_name = forms.CharField()
+    last_name = forms.CharField()
+
+
+
 class TextInputWithButton(forms.TextInput):
     """
     Render a text field and a button following the Twitter Bootstrap

@@ -16,88 +16,6 @@ ul.nav.auth {
 }
 
 
-/* List of lists */
-
-h1.lists {
-    margin-bottom: 0.5em;
-}
-
-.all-lists .list-name {
-    font-size: 120%;
-    color: black;
-    font-weight: bold;
-}
-.all-lists .list-address {
-    font-size: 90%;
-    font-style: italic;
-}
-.all-lists a {
-    display: block;
-    padding: 2em;
-    margin: 1em auto;
-    overflow: hidden;
-    border: 1px solid #ccc;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    color: black;
-}
-.all-lists a:hover {
-    text-decoration: none;
-    background-color: #eee;
-    color: black;
-}
-
-
-.Sb {
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	background-color: white;
-	clear: both;
-	font-size: 13px;
-	line-height: 1.4;
-	margin: 20px 0 20px 68px;
-	outline: none;
-	position: relative;
-	width: 497px;
-	word-wrap: break-word;
-}
-
-.ZX {
-	color: #999;
-	height: 40px;
-	margin: 0 2px;
-	position: relative;
-	bottom: -3px;
-	background-color: #F8F8F8;
-	border: 1px solid #CCC;
-
-}
-
-
-/* Login form */
-
-#login,
-#register {
-    text-align: left;
-    width: 40em;
-    margin: 0 auto;
-}
-#login h2,
-#register h2 {
-    margin: 4em 0 1em 0;
-    text-align: center;
-    font-size: 160%;
-}
-#login .social-login {
-    text-align: center;
-}
-#login .social-login li {
-	margin: 0 20px;
-}
-
-
 /* from Bootstrap's alert class */
 .errorlist {
   list-style-type: none;
@@ -112,16 +30,6 @@ h1.lists {
   background-color: #f2dede;
 }
 
-
-/* User profile page */
-
-table.user-data {
-    margin-top: 2em;
-    width: auto;
-}
-
-
-/* ******************* */
 
 .right {
     text-align: right;
@@ -144,6 +52,11 @@ table.user-data {
 }
 .flashmsg .alert {
     display: inline-block;
+}
+
+form .buttons .submit {
+    /* leave some space before the cancel button/link */
+    margin-right: 2em;
 }
 
 
@@ -178,6 +91,95 @@ table.user-data {
 
 .gravatar img {
     width: 40px;
+}
+
+
+/* ******************* */
+
+
+/* List of lists */
+
+h1.lists {
+    margin-bottom: 0.5em;
+}
+
+.all-lists .list-name {
+    font-size: 120%;
+    color: black;
+    font-weight: bold;
+}
+.all-lists .list-address {
+    font-size: 90%;
+    font-style: italic;
+}
+.all-lists a {
+    display: block;
+    padding: 2em;
+    margin: 1em auto;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    color: black;
+}
+.all-lists a:hover {
+    text-decoration: none;
+    background-color: #eee;
+    color: black;
+}
+
+
+/* Login form */
+
+#login,
+#register {
+    text-align: left;
+    width: 40em;
+    margin: 0 auto;
+}
+#login h2,
+#register h2 {
+    margin: 4em 0 1em 0;
+    text-align: center;
+    font-size: 160%;
+}
+#login .social-login {
+    text-align: center;
+}
+#login .social-login li {
+	margin: 0 20px;
+}
+
+
+/* User profile page */
+
+#user-profile {
+    padding: 0 2em;
+}
+
+#user-profile h1 {
+    margin-bottom: 1em;
+}
+
+#user-profile h3 {
+    margin-top: 2em;
+}
+
+table.user-data {
+    margin-top: 2em;
+    width: auto;
+}
+table.user-data th label {
+    font-weight: bold;
+}
+table.user-data th,
+table.user-data td {
+    vertical-align: middle;
+}
+table.user-data label,
+table.user-data input {
+    margin-bottom: 0;
 }
 
 
@@ -862,9 +864,6 @@ a.reply.disabled {
 .reply-form textarea {
     width: 95%;
 }
-.reply-form .buttons .submit {
-    margin-right: 2em;
-}
 .reply-result {
     text-align: center;
 }
@@ -889,7 +888,4 @@ a.reply.disabled {
 .new-thread-form #id_subject,
 .new-thread-form textarea {
     width: 90%;
-}
-.new-thread-form .buttons .submit {
-    margin-right: 2em;
 }

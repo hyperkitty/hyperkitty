@@ -55,6 +55,14 @@
 			</div>
 		</header>
 
+		{% if flash_messages %}
+		<div class="flashmsg">
+			{% for flash_msg in flash_messages %}
+			<div class="alert alert-{{ flash_msg.type }}">{{ flash_msg.msg }}</div>
+			{% endfor %}
+		</div>
+		{% endif %}
+
 		{% block content %} {% endblock %}
 
 		{% block footer %} {% endblock %}

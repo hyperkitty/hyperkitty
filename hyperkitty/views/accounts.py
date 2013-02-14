@@ -32,18 +32,23 @@ from django.utils.http import is_safe_url
 from django.utils.translation import gettext as _
 
 from hyperkitty.models import UserProfile, Rating, Favorite
-from hyperkitty.views.forms import RegistrationForm
+from hyperkitty.views.forms import RegistrationForm, UserProfileForm
 from hyperkitty.lib import get_store
 
 
 logger = logging.getLogger(__name__)
 
 
+FLASH_MESSAGES = {
+    "updated-ok": "The profile was successfully updated.",
+}
+
 
 @login_required
 def user_profile(request, user_email=None):
     if not request.user.is_authenticated():
         return redirect('user_login')
+
     store = get_store(request)
 
     # try to render the user profile.
@@ -52,6 +57,21 @@ def user_profile(request, user_email=None):
         # @TODO: Include the error name e.g, ProfileDoesNotExist?
     except:
         user_profile = UserProfile.objects.create(user=request.user)
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST)
+        if form.is_valid():
+            request.user.first_name = form.cleaned_data["first_name"]
+            request.user.last_name = form.cleaned_data["last_name"]
+            request.user.save()
+            redirect_url = reverse('user_profile')
+            redirect_url += "?msg=updated-ok"
+            return redirect(redirect_url)
+    else:
+        form = UserProfileForm(initial={
+                "first_name": request.user.first_name,
+                "last_name": request.user.last_name,
+                })
 
     # Votes
     try:
@@ -81,11 +101,19 @@ def user_profile(request, user_email=None):
         thread = store.get_thread(fav.list_address, fav.threadid)
         fav.thread = thread
 
+    flash_messages = []
+    flash_msg = request.GET.get("msg")
+    if flash_msg:
+        flash_msg = { "type": "success", "msg": FLASH_MESSAGES[flash_msg] }
+        flash_messages.append(flash_msg)
+
     context = {
         'user_profile' : user_profile,
+        'form': form,
         'votes_up': votes_up,
         'votes_down': votes_down,
         'favorites': favorites,
+        'flash_messages': flash_messages,
     }
     return render(request, "user_profile.html", context)
 
