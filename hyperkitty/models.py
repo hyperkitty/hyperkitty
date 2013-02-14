@@ -22,8 +22,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.contrib import admin
 
-from kittystore import get_store
 
 
 class Rating(models.Model):
@@ -40,9 +40,13 @@ class Rating(models.Model):
     def __unicode__(self):
         """Unicode representation"""
         if self.vote == 1:
-            return u'id = %s : %s voted up %s' % (self.id, unicode(self.user), self.messageid)
+            return u'%s liked message %s' % (unicode(self.user),
+                    unicode(self.messageid))
         else:
-            return u'id = %s : %s voted down %s' % (self.id, unicode(self.user), self.messageid)
+            return u'%s disliked message %s' % (unicode(self.user),
+                    unicode(self.messageid))
+
+admin.site.register(Rating)
 
 
 class UserProfile(models.Model):
@@ -67,7 +71,10 @@ class Tag(models.Model):
 
     def __unicode__(self):
         """Unicode representation"""
-        return u'threadid = %s , tag = %s ' % (unicode(self.threadid), unicode(self.tag))
+        return u'Tag %s on thread %s in list %s' % (unicode(self.tag),
+                unicode(self.threadid), unicode(self.list_address))
+
+admin.site.register(Tag)
 
 
 class Favorite(models.Model):
@@ -77,4 +84,7 @@ class Favorite(models.Model):
 
     def __unicode__(self):
         """Unicode representation"""
-        return u'thread %s for user %s' % (unicode(self.threadid), unicode(self.user))
+        return u"Thread %s is a favorite of %s" % (unicode(self.threadid),
+                unicode(self.user))
+
+admin.site.register(Favorite)
