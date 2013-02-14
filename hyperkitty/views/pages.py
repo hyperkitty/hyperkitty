@@ -27,8 +27,6 @@ from forms import SearchForm
 
 
 def index(request):
-    search_form = SearchForm(auto_id=False)
-
     base_url = settings.MAILMAN_API_URL % {
         'username': settings.MAILMAN_USER, 'password': settings.MAILMAN_PASS}
 
@@ -36,7 +34,7 @@ def index(request):
     lists = store.get_lists()
 
     context = {
-        'lists': lists,
-        'search_form': search_form,
+        'all_lists': lists,
+        'search_form': SearchForm(auto_id=False),
         }
     return render(request, "index.html", context)

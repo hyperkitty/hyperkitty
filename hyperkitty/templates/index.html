@@ -13,7 +13,7 @@
 <h1 class="lists">{% trans 'Available lists' %}</h1>
 
 <div class="row-fluid">
-{% for mlist in lists %}
+{% for mlist in all_lists %}
 <div class="span3">
 	<a href="{% url list_overview mlist_fqdn=mlist.name %}">
 		<p class="list-name">
