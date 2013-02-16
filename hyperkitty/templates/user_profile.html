@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load hk_generic %}
+{% load gravatar %}
 
 
 {% block title %}
@@ -44,6 +45,12 @@
 	</p>
 	</form>
 
+	<div class="gravatar">
+		<a href="http://gravatar.com/">{% gravatar user.email 150 %}</a>
+		<p><a href="http://gravatar.com/">Edit on gravatar.com</a></p>
+	</div>
+
+	<div class="clearfix"></div>
 
 	<h3>Favorites</h3>
 	{% if favorites %}

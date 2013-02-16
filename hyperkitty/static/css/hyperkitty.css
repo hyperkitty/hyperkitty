@@ -166,8 +166,26 @@ h1.lists {
     margin-top: 2em;
 }
 
+#user-profile form {
+    float: left;
+}
+
+#user-profile div.gravatar {
+    /*float: right;*/
+    float: left;
+    width: auto;
+    font-size: 95%;
+    margin-left: 4em;
+}
+#user-profile img.gravatar {
+    width: auto;
+}
+#user-profile .gravatar p {
+    text-align: center;
+}
+
+
 table.user-data {
-    margin-top: 2em;
     width: auto;
 }
 table.user-data th label {
