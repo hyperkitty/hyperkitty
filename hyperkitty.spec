@@ -2,14 +2,20 @@
 
 Name:           hyperkitty
 Version:        0.1.4
-Release:        0.1%{?dist}
+Release:        1%{?dist}
 Summary:        A web interface to access GNU Mailman v3 archives
 
 License:        GPLv3
 URL:            https://fedorahosted.org/hyperkitty/
 Source0:        http://pypi.python.org/packages/source/H/%{pypi_name}/%{pypi_name}-%{version}.tar.gz
-# git clone https://github.com/hyperkitty/hyperkitty_standalone.git
-Source1:        hyperkitty_standalone.tar.gz
+
+# To get SOURCE1:
+#   git clone https://github.com/hyperkitty/hyperkitty_standalone.git
+#   make sdist -C hyperkitty_standalone
+#   mv hyperkitty_standalone/dist/hyperkitty_standalone-%{version}.tar.gz .
+Source1:        hyperkitty_standalone-%{version}.tar.gz
+
+
 BuildArch:      noarch
 
 BuildRequires:  python-devel
@@ -19,6 +25,8 @@ BuildRequires:  Django
 BuildRequires:  kittystore
 BuildRequires:  django-rest-framework >= 2.0.0
 BuildRequires:  django-social-auth >= 0.7.1
+BuildRequires:  python-django-south
+BuildRequires:  django-crispy-forms
 
 Requires:       Django >= 1.4
 Requires:       django-gravatar2
@@ -26,6 +34,8 @@ Requires:       django-social-auth >= 0.7.1
 Requires:       django-rest-framework >= 2.0.0
 Requires:       mailman >= 3.0.0b2
 Requires:       kittystore
+Requires:       python-django-south
+Requires:       django-crispy-forms
 
 
 %description
@@ -89,7 +99,7 @@ touch --reference hyperkitty_standalone/settings.py \
 
 %check
 touch hyperkitty_standalone/__init__.py
-%{__python} hyperkitty_standalone/manage.py test hyperkitty
+%{__python} hyperkitty_standalone/manage.py test --pythonpath=`pwd` hyperkitty
 rm -f hyperkitty_standalone/__init__.py
 
 
@@ -119,5 +129,8 @@ fi
 
 
 %changelog
+* Tue Feb 19 2013 Aurelien Bompard <abompard@fedoraproject.org> - 0.1.4-1
+- update to 0.1.4
+
 * Thu Nov 29 2012 Aurelien Bompard <abompard@fedoraproject.org> - 0.1.3-1
 - Initial package.
