@@ -34,6 +34,11 @@ and other to store the emails. Edit this file to reflect the correct database
 credentials. The configuration variables are ``DATABASES`` (at the top of the
 file) and ``KITTYSTORE_URL`` (at the bottom).
 
+Or better yet, instead of changing the ``settings.py`` file itself, copy the
+values you want to change to a file called ``settings_local.py`` and change
+them there. It will override the values in ``settings.py`` and will make future
+upgrades easier.
+
 .. note::
     Detailed information on how to use different database engines can be found
     in the `Django documentation`_.
@@ -91,6 +96,33 @@ file.
 After having made these changes, you must restart Mailman. Check its log files
 to make sure the emails are correctly archived. You should not see "``Broken
 archiver: hyperkitty``" messages.
+
+
+Upgrading
+=========
+
+To upgrade an existing installation of HyperKitty, you need to update the code
+base and run the commands that will update the database schemas. Before
+updating any of those databases, it is recommanded to shut down the webserver
+which serves HyperKitty (Apache HTTPd for example).
+
+There are two main databases in HyperKitty. The one from KittyStore and the one
+from HyperKitty itself. To update the KittyStore database, just run::
+
+    kittystore-update -s KITTYSTORE_URL
+
+where "``KITTYSTORE_URL``" is the content of the ``KITTYSTORE_URL`` variable in
+``settings.py`` (or ``settings_local.py``). This command may take a long time
+to complete, donc interrupt it.
+
+Then, to update the HyperKitty database, run::
+
+    python hyperkitty_standalone/manage.py syncdb
+    python hyperkitty_standalone/manage.py migrate hyperkitty
+
+After those commands complete, your database will be updated, you can start
+your webserver again, and restart Mailman (to take the KittyStore upgrade into
+account).
 
 
 License
