@@ -38,6 +38,7 @@ The documentation can be browsed online at https://hyperkitty.readthedocs.org .
 %setup -q -n %{pypi_name}-%{version} -a 1
 # Remove bundled egg-info
 rm -rf %{pypi_name}.egg-info
+mv hyperkitty_standalone-%{version} hyperkitty_standalone
 # remove shebang on manage.py
 sed -i -e '1d' hyperkitty_standalone/manage.py
 # remove executable permissions on wsgi.py
@@ -87,8 +88,9 @@ touch --reference hyperkitty_standalone/settings.py \
 
 
 %check
-%{__python} %{_bindir}/django-admin test --pythonpath=`pwd` \
-    --settings=hyperkitty.tests_conf.settings_tests hyperkitty
+touch hyperkitty_standalone/__init__.py
+%{__python} hyperkitty_standalone/manage.py test hyperkitty
+rm -f hyperkitty_standalone/__init__.py
 
 
 %post
