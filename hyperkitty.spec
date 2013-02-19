@@ -99,8 +99,9 @@ touch --reference hyperkitty_standalone/settings.py \
 
 %check
 touch hyperkitty_standalone/__init__.py
+cp hyperkitty/tests_conf/settings_tests.py hyperkitty_standalone/settings_local.py
 %{__python} hyperkitty_standalone/manage.py test --pythonpath=`pwd` hyperkitty
-rm -f hyperkitty_standalone/__init__.py
+rm -f hyperkitty_standalone/__init__.py hyperkitty_standalone/settings_local.py
 
 
 %post

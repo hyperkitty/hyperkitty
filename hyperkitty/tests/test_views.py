@@ -35,16 +35,7 @@ from django.core.urlresolvers import reverse
 from hyperkitty.models import Rating
 
 
-TEST_DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
-    }
-}
-
-
-@override_settings(USE_SSL=False, USE_INTERNAL_AUTH=True, DEBUG=True,
-                   DATABASES=TEST_DATABASES, KITTYSTORE_URL='sqlite:')
+@override_settings(USE_SSL=False, USE_INTERNAL_AUTH=True)
 class AccountViewsTestCase(TestCase):
 
     def setUp(self):
