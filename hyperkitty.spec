@@ -23,6 +23,7 @@ BuildRequires:  python-sphinx
 # Unit tests in %%check
 BuildRequires:  Django
 BuildRequires:  kittystore
+BuildRequires:  django-gravatar2
 BuildRequires:  django-rest-framework >= 2.0.0
 BuildRequires:  django-social-auth >= 0.7.1
 BuildRequires:  python-django-south
