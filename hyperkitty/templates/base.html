@@ -8,7 +8,7 @@
 		<meta name="author" content="" />
 		<meta name="dc.language" content="en" />
 		<link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" />
-		{% assets filters="cssmin", output="gen/hyperkitty.css", "libs/jquery/ui-lightness/jquery-ui-1.10.0.custom.min.css", "libs/bootstrap/bootstrap.min.css", "css/hyperkitty.css" %}
+		{% assets filters="cssmin", output="gen/hyperkitty.css", "libs/jquery/ui-lightness/jquery-ui-1.10.0.custom.min.css", "libs/bootstrap/bootstrap.min.css", "css/hyperkitty-base.css", "css/hyperkitty-common.css", "css/hyperkitty-index.css", "css/hyperkitty-user.css", "css/hyperkitty-overview.css", "css/hyperkitty-threadslist.css", "css/hyperkitty-message.css" %}
 		<link rel="stylesheet" media="all" href="{{ ASSET_URL }}" />
 		{% endassets %}
 		{% block additional_stylesheets %} {% endblock %}

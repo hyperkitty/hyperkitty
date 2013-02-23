@@ -1,0 +1,30 @@
+body {
+	position: relative;
+	padding-top: 70px;
+	background-color: white;
+}
+
+ul.nav.auth {
+    float: right;
+    margin: 0;
+}
+
+
+/* Search box */
+
+#searchbox {
+    text-align:right;
+    padding-right: 20px;
+}
+
+#searchbox input {
+    width: 250px
+}
+
+#searchbox input::-webkit-input-placeholder {
+    font-style: italic;
+}
+
+#searchbox input:-moz-placeholder {
+    font-style: italic;
+}

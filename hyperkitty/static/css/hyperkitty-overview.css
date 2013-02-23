@@ -1,0 +1,81 @@
+/* Summary page */
+
+#recent_activities h2 {
+    font-size: 22px;
+    line-height: 32px;
+    margin-bottom: 0.5em;
+    text-align: center;
+}
+
+#graph h2 {
+    text-align: center;
+}
+#graph rect {
+    cursor: pointer;
+}
+
+#fig {
+  position: relative;
+  margin: auto;
+  width: 540px;
+  height: 330px;
+}
+
+
+#top-discussion,
+#discussion-by-topic,
+#most-active,
+#discussion-maker {
+    padding: 1em;
+    padding-bottom: 0;
+    border: 1px solid #ddd;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    margin: 1em 0;
+}
+
+.category {
+    font-variant: small-caps;
+    font-weight: bold;
+    color: white;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;
+    vertical-align: top;
+    margin-bottom: 10px;
+    padding-top: 0px;
+    padding-left: 10px;
+}
+
+.category_entry {
+    list-style-type: circle;
+    margin-top: 0px;
+    padding-bottom: 10px;
+    padding-left: 25px;
+}
+
+.category_entry li {
+    padding-bottom: 10px;
+}
+
+.maker {
+    color: rgb(102, 102, 102);
+    padding-right: 10px;
+    padding-bottom: 20px;
+}
+
+.maker-id, .maker-name {
+    font-weight: bold;
+    font-size: 115%;
+    vertical-align: top;
+    padding-right: 20px;
+}
+
+.maker .gravatar {
+    padding-right: 20px;
+}
+
+.score{
+    font-weight: bold;
+}

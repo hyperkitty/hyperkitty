@@ -1,0 +1,37 @@
+/* List of lists */
+
+#logo {
+    display: block;
+    margin: 120px auto;
+    clear: both;
+}
+
+h1.lists {
+    margin-bottom: 0.5em;
+}
+
+.all-lists .list-name {
+    font-size: 120%;
+    color: black;
+    font-weight: bold;
+}
+.all-lists .list-address {
+    font-size: 90%;
+    font-style: italic;
+}
+.all-lists a {
+    display: block;
+    padding: 2em;
+    margin: 1em auto;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    color: black;
+}
+.all-lists a:hover {
+    text-decoration: none;
+    background-color: #eee;
+    color: black;
+}
