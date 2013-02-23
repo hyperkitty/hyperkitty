@@ -6,3 +6,6 @@ mailman>=3.0.0b2
 kittystore
 South
 django-crispy-forms
+django-assets
+jsmin
+cssmin
