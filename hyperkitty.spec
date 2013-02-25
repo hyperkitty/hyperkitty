@@ -26,6 +26,9 @@ BuildRequires:  django-gravatar2
 BuildRequires:  django-rest-framework >= 2.0.0
 BuildRequires:  django-social-auth >= 0.7.1
 BuildRequires:  django-crispy-forms
+BuildRequires:  django-assets
+BuildRequires:  python-rjsmin
+BuildRequires:  python-cssmin
 %if 0%{fedora} && 0%{fedora} < 18
 BuildRequires:  Django
 BuildRequires:  Django-south
@@ -40,6 +43,9 @@ Requires:       django-rest-framework >= 2.0.0
 Requires:       mailman >= 3.0.0b2
 Requires:       kittystore
 Requires:       django-crispy-forms
+Requires:       django-assets
+Requires:       python-rjsmin
+Requires:       python-cssmin
 %if 0%{fedora} && 0%{fedora} < 18
 Requires:       Django >= 1.4
 Requires:       Django-south

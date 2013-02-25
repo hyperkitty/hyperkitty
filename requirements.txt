@@ -7,5 +7,5 @@ kittystore
 South
 django-crispy-forms
 django-assets
-jsmin
+rjsmin
 cssmin
