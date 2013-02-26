@@ -31,14 +31,19 @@ from django.test.client import Client, RequestFactory
 from django.test.utils import override_settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.urlresolvers import reverse
+import django_assets.env
 
 from hyperkitty.models import Rating
 
 
-@override_settings(USE_SSL=False, USE_INTERNAL_AUTH=True)
+@override_settings(USE_SSL=False, USE_INTERNAL_AUTH=True, DEBUG=True, ASSETS_DEBUG=True)
 class AccountViewsTestCase(TestCase):
 
     def setUp(self):
+        # Re-do the settings patching
+        # https://github.com/miracle2k/django-assets/issues/3
+        django_assets.env.reset()
+        django_assets.env.get_env()
         self.client = Client()
 
     def test_login(self):
