@@ -35,7 +35,7 @@ class PaginationMiddleware(object):
 # http://stackoverflow.com/questions/2799450/django-https-for-just-login-page
 
 from django.conf import settings
-from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect, get_host
+from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 
 SSL = 'SSL'
 
@@ -63,7 +63,7 @@ class SSLRedirect(object):
 
     def _redirect(self, request, secure):
         protocol = secure and "https" or "http"
-        newurl = "%s://%s%s" % (protocol, get_host(request), request.get_full_path())
+        newurl = "%s://%s%s" % (protocol, request.get_host(), request.get_full_path())
         if settings.DEBUG and request.method == 'POST':
             raise RuntimeError, \
         """Django can't perform a SSL redirect while maintaining POST data.

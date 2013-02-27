@@ -1,11 +1,23 @@
 {% load i18n %}
 <ul class="pager">
-	<li{% if not pager.has_previous %} class="disabled"{% endif %}>
-		<a href="?page={{ pager.previous_page_number }}">&larr; Newer</a>
+	{% if pager.has_previous %}
+	<li>
+		<a href="?page={{ pager.previous_page_number }}">
+	{% else %}
+	<li class="disabled">
+		<a href="#">
+	{% endif %}
+		&larr; Newer</a>
 	</li>
 
-	<li{% if not pager.has_next %} class="disabled"{% endif %}>
-		<a href="?page={{ pager.next_page_number }}">Older &rarr;</a>
+	{% if pager.has_next %}
+	<li>
+		<a href="?page={{ pager.next_page_number }}">
+	{% else %}
+	<li class="disabled">
+		<a href="#">
+	{% endif %}
+		Older &rarr;</a>
 	</li>
 </ul>
 
