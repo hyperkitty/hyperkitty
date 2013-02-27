@@ -68,19 +68,6 @@
     display: inline;
     margin-right: 1em;
 }
-.thread-info .participant, .thread-info .discussion {
-    padding-left: 20px;
-    background: no-repeat scroll left center;
-}
-.thread-info .participant {
-    background-image: url("../img/participant.png");
-    padding-left: 16px;
-    margin-right: 1em;
-}
-.thread-info .discussion {
-    background-image: url("../img/discussion.png");
-    margin-right: 2em;
-}
 .thread-info .thread-show {
     padding-top: 2px;
     padding-bottom: 2px;

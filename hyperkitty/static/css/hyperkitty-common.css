@@ -75,6 +75,21 @@ form .buttons .submit {
 }
 
 
+/* On the thread list and the overview page */
+.participant, .discussion {
+    padding-left: 20px;
+    background: no-repeat scroll left center;
+}
+.participant {
+    background-image: url("../img/participant.png");
+    padding-left: 16px;
+    margin-right: 1em;
+}
+.discussion {
+    background-image: url("../img/discussion.png");
+    margin-right: 2em;
+}
+
 
 /*
  * Like / dislike
