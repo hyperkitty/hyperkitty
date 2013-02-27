@@ -40,7 +40,7 @@ BuildRequires:  python-django-south
 Requires:       django-gravatar2
 Requires:       django-social-auth >= 0.7.1
 Requires:       django-rest-framework >= 2.0.0
-Requires:       mailman >= 3.0.0b2
+Requires:       mailman >= 3:3.0.0
 Requires:       kittystore
 Requires:       django-crispy-forms
 Requires:       django-assets
