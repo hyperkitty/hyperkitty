@@ -24,7 +24,7 @@ First, create the virtualenv and activate it::
 
 Then download the components of HyperKitty::
 
-    git clone git://github.com/pypingou/kittystore.git
+    git clone https://github.com/hyperkitty/kittystore.git
     cd kittystore
     python setup.py develop
     cd ..
@@ -60,7 +60,7 @@ Testing
 
 Use the following command::
 
-    python manage.py test hyperkitty
+    python hyperkitty_standalone/manage.py test hyperkitty
 
 All test modules reside in the ``hyperkitty/tests`` directory
 and this is where you should put your own tests, too. To make the django test

@@ -71,6 +71,7 @@ from HyperKitty (which resides somewhere on your pythonpath) to be able to
 serve them from the site directory. All you have to do is run::
 
     python hyperkitty_standalone/manage.py collectstatic
+    python hyperkitty_standalone/manage.py assets build --parse-templates
 
 These static files will be collected in the ``hyperkitty_standalone/static``
 directory and served by Apache. You should now be all set. Try accessing
