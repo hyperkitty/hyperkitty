@@ -1,5 +1,5 @@
 	<form method="post" class="likeform"
-	      action="{% url message_vote mlist_fqdn=mlist.name, message_id_hash=message_id_hash %}">
+	      action="{% url 'message_vote' mlist_fqdn=mlist.name message_id_hash=message_id_hash %}">
 	{% csrf_token %}
 	<span class="likestatus {{ object.likestatus }}">+{{ object.likes }}/-{{ object.dislikes }}</span>
 	{% if object.myvote == 1 %}

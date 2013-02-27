@@ -15,15 +15,15 @@
 <h2>Login with your email</h2>
 <ul class="social-login inline">
 	<li>
-		<form method="post" action="{% url socialauth_complete "browserid" %}?next={{ next }}">
+		<form method="post" action="{% url 'socialauth_complete' "browserid" %}?next={{ next }}">
 			{% csrf_token %}
 			<input type="hidden" name="assertion" value="" />
 			<a rel="nofollow" id="browserid" href="#"><img src="{{ STATIC_URL }}img/login/persona-large-disabled.png" alt="Login using Persona" /></a>
 		</form>
 	</li>
-	<li><a title="Google" class="socialaccount_provider google" href="{% url socialauth_begin backend='google' %}"><img src="{{ STATIC_URL }}img/login/google.png" alt="Google"></a></li>
+	<li><a title="Google" class="socialaccount_provider google" href="{% url 'socialauth_begin' backend='google' %}"><img src="{{ STATIC_URL }}img/login/google.png" alt="Google"></a></li>
 
-	<li><a title="Yahoo" class="socialaccount_provider yahoo" href="{% url socialauth_begin backend='yahoo' %}"><img src="{{ STATIC_URL }}img/login/yahoo.png" alt="Yahoo"></a></li>
+	<li><a title="Yahoo" class="socialaccount_provider yahoo" href="{% url 'socialauth_begin' backend='yahoo' %}"><img src="{{ STATIC_URL }}img/login/yahoo.png" alt="Yahoo"></a></li>
 </ul>
 
 

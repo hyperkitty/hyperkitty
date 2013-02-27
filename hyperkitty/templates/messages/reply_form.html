@@ -2,7 +2,7 @@
 	<div class="reply-form dropdown">
 		<p class="reply-tools">[<a href="#" class="quote">Quote</a>]</p>
 		<form method="post"
-			  action="{% url message_reply mlist_fqdn=mlist_fqdn, message_id_hash=message_id_hash %}">
+			  action="{% url 'message_reply' mlist_fqdn=mlist_fqdn message_id_hash=message_id_hash %}">
 			{% csrf_token %}
 			{{ reply_form.as_p }}
 			<p class="buttons">

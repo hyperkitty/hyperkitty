@@ -20,7 +20,7 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-from django.conf.urls.defaults import patterns, include, url
+from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.views.generic.base import TemplateView
 from api import EmailResource, ThreadResource, SearchResource

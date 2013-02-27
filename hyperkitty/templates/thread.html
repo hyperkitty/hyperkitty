@@ -21,7 +21,7 @@
 			{% for thread in neighbors %}
 				{% if thread %}
 				<a class="thread-{% ifequal forloop.counter 1 %}older{% else %}newer{% endifequal %}"
-				   href="{% url thread threadid=thread.thread_id, mlist_fqdn=mlist.name %}"
+				   href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
 				   title="{{ thread.subject|strip_subject:mlist|escape }}">{{ thread.subject|strip_subject:mlist|truncatesmart:"22" }}</a>
 				{% endif %}
 			{% endfor %}
@@ -40,10 +40,10 @@
 
 			<p class="sort-mode">
 				{% if sort_mode == "date" %}
-				<a href="{% url thread threadid=threadid, mlist_fqdn=mlist.name %}?sort=thread"
+				<a href="{% url 'thread' threadid=threadid mlist_fqdn=mlist.name %}?sort=thread"
 					>Show replies by thread</a>
 				{% else %}
-				<a href="{% url thread threadid=threadid, mlist_fqdn=mlist.name %}?sort=date"
+				<a href="{% url 'thread' threadid=threadid mlist_fqdn=mlist.name %}?sort=date"
 					>Show replies by date</a>
 				{% endif %}
 			</p>

@@ -15,7 +15,7 @@
 <div class="row-fluid">
 {% for mlist in all_lists %}
 <div class="span3">
-	<a href="{% url list_overview mlist_fqdn=mlist.name %}">
+	<a href="{% url 'list_overview' mlist_fqdn=mlist.name %}">
 		<p class="list-name">
 		{% if mlist.display_name %}
 			{{ mlist.display_name }}

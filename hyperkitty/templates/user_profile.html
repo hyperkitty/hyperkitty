@@ -14,7 +14,7 @@
 
 	<h1>User profile <small>for {{ user }}</small></h1>
 
-	<form method="post" action="{% url user_profile %}">
+	<form method="post" action="{% url 'user_profile' %}">
 	{% csrf_token %}
 	<table class="table table-bordered table-striped user-data">
 		<tbody>
@@ -57,7 +57,7 @@
 		<ul>
 		{% for fav in favorites %}
 			<li>
-				<a href="{% url thread mlist_fqdn=fav.list_address, threadid=fav.threadid %}"
+				<a href="{% url 'thread' mlist_fqdn=fav.list_address threadid=fav.threadid %}"
 					>{{ fav.thread.starting_email.subject }}</a> by {{ fav.thread.starting_email.sender_name }}
 					({{ fav.thread|viewer_date|date:"l, j F Y H:i:s" }})
 			</li>
@@ -75,11 +75,11 @@
 		{% for vote in votes_up %}
 			<li>
 			{% if vote.message.content|trimString|length > 0 %}
-				<a href="{% url message_index mlist_fqdn=vote.list_address, message_id_hash=vote.messageid %}"
+				<a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}"
 					>{{ vote.message.subject }}</a> by {{ vote.message.sender_name }}
 					({{ vote.message|viewer_date|date:"l, j F Y H:i:s" }})
 			{% else %}
-				<a href="{% url message_index mlist_fqdn=vote.list_address, message_id_hash=vote.messageid %}">Message is empty</a>
+				<a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}">Message is empty</a>
 			{% endif %}
 			</li>
 		{% endfor %}
@@ -94,11 +94,11 @@
 		{% for vote in votes_down %}
 			<li>
 			{% if vote.message.content|trimString|length > 0 %}
-				<a href="{% url message_index mlist_fqdn=vote.list_address, message_id_hash=vote.messageid %}"
+				<a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}"
 					>{{ vote.message.subject }}</a> by {{ vote.message.sender_name }}
 					({{ vote.message|viewer_date|date:"l, j F Y H:i:s" }})
 			{% else %}
-				<a href="{% url message_index mlist_fqdn=vote.list_address, message_id_hash=vote.messageid %}">Message is empty</a>
+				<a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}">Message is empty</a>
 			{% endif %}
 			</li>
 		{% endfor %}

@@ -25,28 +25,28 @@
 
 						<ul class="nav auth">
 						{% if user.is_authenticated %}
-							<li><a class="mm_logout" href="{% url user_logout %}?next={% url root %}">Logout</a></li>
-							<li><a href="{% url user_profile %}">{{ user.username }}</a></li>
+							<li><a class="mm_logout" href="{% url 'user_logout' %}?next={% url 'root' %}">Logout</a></li>
+							<li><a href="{% url 'user_profile' %}">{{ user.username }}</a></li>
 						{% else %}
-							<li><a class="mm_user" href="{% url user_login %}?next={{next|default:request.path|urlencode}}">Login</a></li>
+							<li><a class="mm_user" href="{% url 'user_login' %}?next={{next|default:request.path|urlencode}}">Login</a></li>
 							{% if use_internal_auth %}
-							<li><a href="{% url user_registration %}?next={{next|default:request.path|urlencode}}"> Sign Up </a></li>
+							<li><a href="{% url 'user_registration' %}?next={{next|default:request.path|urlencode}}"> Sign Up </a></li>
 							{% endif %}
 						{% endif %}
 						</ul>
 
 
-						<a class="brand" href="{% url root %}">{{ app_name|title }}</a>
+						<a class="brand" href="{% url 'root' %}">{{ app_name|title }}</a>
 
 						<ul class="nav">
 
 							<li {% if all_lists %} class="active"{% endif %}>
-								<a href="{% url root %}">All lists</a>
+								<a href="{% url 'root' %}">All lists</a>
 							</li>
 
 						{% if mlist %}
 							<li id="list_name" class="active">
-								<a href="{% url list_overview mlist_fqdn=mlist.name %}">{{mlist.name}}</a>
+								<a href="{% url 'list_overview' mlist_fqdn=mlist.name %}">{{mlist.name}}</a>
 							</li>
 						{% endif %}
 

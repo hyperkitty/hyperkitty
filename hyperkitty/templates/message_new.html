@@ -23,12 +23,12 @@ Create a new thread - {{ mlist.display_name|default:mlist.name|escapeemail }} - 
 
 		<div class="new-thread-form">
 			<form method="post"
-				  action="{% url message_new mlist_fqdn=mlist.name %}">
+				  action="{% url 'message_new' mlist_fqdn=mlist.name %}">
 				{% csrf_token %}
 				{{ post_form|crispy }}
 				<p class="buttons">
 					<button type="submit" class="submit btn btn-primary">Send</button>
-					or <a class="cancel" href="{% url archives_latest mlist_fqdn=mlist.name %}">cancel</a>
+					or <a class="cancel" href="{% url 'archives_latest' mlist_fqdn=mlist.name %}">cancel</a>
 				</p>
 			</form>
 		</div>

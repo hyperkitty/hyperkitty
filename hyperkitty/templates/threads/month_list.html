@@ -6,7 +6,7 @@
 	<ul>
 		{% for ar_month in months %}
 		<li class="{% if month and year == month.year and ar_month == month.month %}current{% endif %}">
-			<a href="{% url archives_with_month year=year, mlist_fqdn=mlist.name, month=ar_month %}"
+			<a href="{% url 'archives_with_month' year=year mlist_fqdn=mlist.name month=ar_month %}"
 			   >{{ ar_month|monthtodate:year|date:"F" }}</a>
 		</li>
 		{% endfor %}
