@@ -22,7 +22,7 @@
 
 from django.conf.urls.defaults import patterns, include, url
 from django.conf import settings
-from django.views.generic.simple import direct_to_template
+from django.views.generic.base import TemplateView
 from api import EmailResource, ThreadResource, SearchResource
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -32,6 +32,10 @@ from django.contrib.auth.views import logout as logout_view
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
+
+from hyperkitty.views import TextTemplateView
+
+
 
 urlpatterns = patterns('hyperkitty.views',
     # Index
@@ -88,7 +92,7 @@ urlpatterns = patterns('hyperkitty.views',
 
 
     # REST API
-    url(r'^api/$', direct_to_template, {"template": "api.html"}),
+    url(r'^api/$', TemplateView.as_view(template_name="api.html")),
     url(r'^api/email\/(?P<mlist_fqdn>[^/@]+@[^/@]+)\/(?P<hashid>.*)/',
         EmailResource.as_view(), name="api_email"),
     url(r'^api/thread\/(?P<mlist_fqdn>[^/@]+@[^/@]+)\/(?P<threadid>.*)/',
@@ -103,8 +107,7 @@ urlpatterns = patterns('hyperkitty.views',
     url(r'^admin/', include(admin.site.urls), {"SSL": True}),
 
     # Robots.txt
-    url(r'^robots\.txt$', direct_to_template,
-     {'template': 'robots.txt', 'mimetype': 'text/plain'}),
+    url(r'^robots\.txt$', TextTemplateView.as_view(template_name="robots.txt")),
 
     # Social Auth
     url(r'', include('social_auth.urls'), {"SSL": True}),
