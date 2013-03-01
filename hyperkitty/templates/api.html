@@ -27,13 +27,24 @@
 	</div>
 
 	<div class="even" style="padding-left: 1em">
+		<h3>Lists <a>/api/list/</a></h3>
+		<p>
+Using the address /api/list/ you will be able to
+retrieve the information known about all the mailing-lists.
+		</p>
+		<p> For example: <a href="{% url 'api_list' %}?format=api">
+			{% url 'api_list' %}
+		</a>
+		</p>
+	</div>
+	<div class="even" style="padding-left: 1em">
 		<h3>Emails <a>/api/email/&lt;list name&gt;/&lt;Message-ID&gt;</a></h3>
 		<p>
 Using the address /api/email/&lt;list name&gt;/&lt;Message-ID&gt; you will be able to
 retrieve the information known about a specific email on the specified mailing-list.
 		</p>
-		<p> For example: <a href="{% url 'api_email' mlist_fqdn='devel@fp.o' hashid='13129854572893334' %}">
-			{% url 'api_email' mlist_fqdn='devel@fp.o' hashid='13129854572893334' %}
+		<p> For example: <a href="{% url 'api_email' mlist_fqdn='devel@fp.o' messageid='13129854572893334' %}?format=api">
+			{% url 'api_email' mlist_fqdn='devel@fp.o' messageid='13129854572893334' %}
 		</a>
 		</p>
 	</div>
@@ -43,7 +54,7 @@ retrieve the information known about a specific email on the specified mailing-l
 Using the address /api/thread/&lt;list name&gt;/&lt;Message-ID&gt; you will be able to
 retrieve the all the email for a specific thread on the specified mailing-list.
 		</p>
-		<p> For example: <a href="{% url 'api_thread' mlist_fqdn='devel@fp.o' threadid='13129854572893334' %}">
+		<p> For example: <a href="{% url 'api_thread' mlist_fqdn='devel@fp.o' threadid='13129854572893334' %}?format=api">
 			{% url 'api_thread' mlist_fqdn='devel@fp.o' threadid='13129854572893334' %}
 		</a>
 		</p>
@@ -61,7 +72,7 @@ search for all emails of the specified mailing-list containing the provided keyw
 			<li>Content</li>
 			<li>SubjectContent</li>
 		</ul>
-		<p> For example: <a href="{% url 'api_search' mlist_fqdn='devel@fp.o' field='From' keyword='pingoured' %}">
+		<p> For example: <a href="{% url 'api_search' mlist_fqdn='devel@fp.o' field='From' keyword='pingoured' %}?format=api">
 			{% url 'api_search' mlist_fqdn='devel@fp.o' field='From' keyword='pingoured' %}
 		</a>
 		</p>

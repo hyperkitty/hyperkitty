@@ -23,7 +23,7 @@
 from django.conf.urls import patterns, include, url
 from django.conf import settings
 from django.views.generic.base import TemplateView
-from api import EmailResource, ThreadResource, SearchResource
+from api import ListResource, EmailResource, ThreadResource, SearchResource
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib.auth.views import login as login_view
@@ -93,7 +93,9 @@ urlpatterns = patterns('hyperkitty.views',
 
     # REST API
     url(r'^api/$', TemplateView.as_view(template_name="api.html")),
-    url(r'^api/email\/(?P<mlist_fqdn>[^/@]+@[^/@]+)\/(?P<hashid>.*)/',
+    url(r'^api/list\/',
+        ListResource.as_view(), name="api_list"),
+    url(r'^api/email\/(?P<mlist_fqdn>[^/@]+@[^/@]+)\/(?P<messageid>.*)/',
         EmailResource.as_view(), name="api_email"),
     url(r'^api/thread\/(?P<mlist_fqdn>[^/@]+@[^/@]+)\/(?P<threadid>.*)/',
         ThreadResource.as_view(), name="api_thread"),

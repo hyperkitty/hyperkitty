@@ -20,68 +20,111 @@
 import json
 import re
 
-from rest_framework.views import View
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import serializers
+from rest_framework.exceptions import ParseError
 from django.conf.urls import url
 from django.conf import settings
-from django.http import HttpResponseNotModified, HttpResponse
 
 from hyperkitty.lib import get_store
+from kittystore.storm.model import Email, Thread
 
 
-class EmailResource(View):
+class ListSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    display_name = serializers.CharField()
+    description = serializers.CharField()
+
+class EmailSerializer(serializers.Serializer):
+    list_name = serializers.EmailField()
+    message_id = serializers.CharField()
+    thread_id = serializers.CharField()
+    sender_name = serializers.CharField()
+    sender_email = serializers.EmailField()
+    subject = serializers.CharField()
+    in_reply_to = serializers.CharField()
+    date = serializers.DateTimeField()
+
+class EmailLinkSerializer(serializers.Serializer):
+    list_name = serializers.EmailField()
+    message_id = serializers.CharField()
+    sender_name = serializers.CharField()
+    sender_email = serializers.EmailField()
+    date = serializers.DateTimeField()
+
+class ThreadSerializer(serializers.Serializer):
+    thread_id = serializers.CharField()
+    list_name = serializers.EmailField()
+    date_active = serializers.DateTimeField()
+    subject = serializers.CharField()
+    starting_email = EmailLinkSerializer()
+    email_ids = serializers.CharField()
+    participants = serializers.CharField()
+
+
+class ListResource(APIView):
+    """ Resource used to retrieve lists from the archives using the
+    REST API.
+    """
+
+    def get(self, request):
+        store = get_store(request)
+        lists = store.get_lists()
+        if not lists:
+            return Response(status=404)
+        else:
+            return Response(ListSerializer(lists, many=True).data)
+
+class EmailResource(APIView):
     """ Resource used to retrieve emails from the archives using the
     REST API.
     """
 
     def get(self, request, mlist_fqdn, messageid):
-        list_name = mlist_fqdn.split('@')[0]
         store = get_store(request)
-        email = store.get_message_by_hash_from_list(list_name, messageid)
+        email = store.get_message_by_id_from_list(mlist_fqdn, messageid)
         if not email:
-            return HttpResponse(status=404)
+            return Response(status=404)
         else:
-            return email
+            return Response(EmailSerializer(email).data)
 
 
-class ThreadResource(View):
+class ThreadResource(APIView):
     """ Resource used to retrieve threads from the archives using the
     REST API.
     """
 
     def get(self, request, mlist_fqdn, threadid):
-        list_name = mlist_fqdn.split('@')[0]
         store = get_store(request)
-        thread = store.get_thread(list_name, threadid)
+        thread = store.get_thread(mlist_fqdn, threadid)
         if not thread:
-            return HttpResponse(status=404)
+            return Response(status=404)
         else:
-            return thread
+            return Response(ThreadSerializer(thread).data)
 
 
-class SearchResource(View):
+class SearchResource(APIView):
     """ Resource used to search the archives using the REST API.
     """
 
     def get(self, request, mlist_fqdn, field, keyword):
-        list_name = mlist_fqdn.split('@')[0]
+        fields = ['Subject', 'Content', 'SubjectContent', 'From']
+        if field not in fields:
+            raise ParseError(detail="Unknown field: " + field + ". Supported fields are " + ", ".join(fields))
 
-        if field not in ['Subject', 'Content', 'SubjectContent', 'From']:
-            return HttpResponse(status=404)
-
-        regex = '.*%s.*' % keyword
-        if field == 'SubjectContent':
-            query_string = {'$or' : [
-                {'Subject': re.compile(regex, re.IGNORECASE)},
-                {'Content': re.compile(regex, re.IGNORECASE)}
-                ]}
-        else:
-            query_string = {field.capitalize():
-                re.compile(regex, re.IGNORECASE)}
-
-        #print query_string, field, keyword
         store = get_store(request)
-        threads = store.search_archives(list_name, query_string)
+        threads = None
+        if field == 'Subject':
+            threads = store.search_list_for_subject(mlist_fqdn, keyword)
+        elif field == 'Content':
+            threads = store.search_list_for_content(mlist_fqdn, keyword)
+        elif field == 'SubjectContent':
+            threads = store.search_list_for_content_subject(mlist_fqdn, keyword)
+        elif field == 'From':
+            threads = store.search_list_for_sender(mlist_fqdn, keyword)
+
         if not threads:
-            return HttpResponse(status=404)
+            return Response(status=404)
         else:
-            return threads
+            return Response(EmailSerializer(threads, many=True).data)
