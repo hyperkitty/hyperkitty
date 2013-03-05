@@ -19,15 +19,7 @@
 
 		<section id="graph">
 			<h2>Activities on the list over the last 30 days</h2>
-			<div id="fig">
-				<script type="text/javascript+protovis" >
-					activity_graph(
-							["{{days|join:'","'}}"],
-							{{evolution}},
-							"{{ archives_baseurl }}"
-						);
-				</script>
-			</div>
+			<div id="fig" />
 		</section>
 
 		<div class="row-fluid">
@@ -112,5 +104,19 @@
 
 {% endblock %}
 
+{% block additionaljs %}
+
+<script type="text/javascript" >
+	$(function() {
+		activity_graph(
+			"#fig",
+			["{{days|join:'","'}}"],
+			{{evolution}},
+			"{{ archives_baseurl }}"
+		)
+	});
+</script>
+
+{% endblock %}
 
 {# vim: set noet: #}

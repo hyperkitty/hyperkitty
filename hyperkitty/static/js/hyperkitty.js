@@ -210,62 +210,88 @@ function setup_replies() {
 /*
  * Recent activity graph
  */
-
-function activity_graph(dates, data, baseurl) {
-    var w = 500,
-        h = 300,
-        x = pv.Scale.ordinal(pv.range(32)).splitBanded(0, w, 4/5),
-        y = pv.Scale.linear(0, Math.max.apply(null, data)+1).range(0, h);
-
-    var vis = new pv.Panel()
-        .width(w)
-        .height(250)
-        .bottom(60)
-        .left(30)
-        .right(5)
-        .top(5);
-
-    var bar = vis.add(pv.Bar)
-        .data(data)
-        .event("click", function(n) { self.location = baseurl + "/" + dates[this.index].replace(/-/g, '/') + "/"; })
-        .left(function() x(this.index))
-        .width(x.range().band)
-        .bottom(0)
-        .height(y);
-
-    bar.anchor("bottom").add(pv.Label)
-        .textMargin(5)
-        .textAlign("right")
-        .textBaseline("middle")
-        .textAngle(-Math.PI / 3)
-        .text(function() xlabel(this.index));
-
-    function xlabel(ind) {
-        if (!dates[ind -1]) {
-            return dates[ind];
+function activity_graph(elem_id, dates, counts, baseurl) {
+    function merge(dates, counts) {
+        result = []
+        for(i = 0; i < dates.length; i++) {
+            result.push({
+                "date": dates[i],
+                "count": counts[i]
+            })
         }
-        prev = dates[ind - 1];
-        cur = dates[ind];
-        if (prev.substring(0,7) == cur.substring(0,7)) {
-            cur = cur.substring(8);
-        }
-        return cur;
+        return result;
     }
+    var data = merge(dates, counts);
+    var margin = {top: 20, right: 20, bottom: 100, left: 50},
+        width = 540 - margin.left - margin.right,
+        height = 330 - margin.top - margin.bottom;
 
-    vis.add(pv.Rule)
-        .data(y.ticks())
-        .bottom(function(d) Math.round(y(d)) - .5)
-        .strokeStyle(function(d) d ? "rgba(255,255,255,.3)" : "#000")
-        .add(pv.Rule)
-        .left(0)
-        .width(5)
-        .strokeStyle("#000")
-        .anchor("left").add(pv.Label)
-        .text(function(d) d.toFixed(1));
+    var format_in = d3.time.format("%Y-%m-%d");
+    var format_out = d3.time.format("%m-%d");
 
-    vis.render();
+    var x = d3.time.scale()
+        .range([0, width]);
+
+    var y = d3.scale.linear()
+        .range([height, 0]);
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .tickFormat(format_out)
+        .ticks(d3.time.days, 2);
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .ticks(5)
+        .tickSubdivide(1);
+
+    var area = d3.svg.area()
+        .x(function(d) { return x(d.date); })
+        .y0(height)
+        .y1(function(d) { return y(d.count); });
+
+    var svg = d3.select(elem_id).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    data.forEach(function(d) {
+        d.date = format_in.parse(d.date);
+        d.count = parseInt(d.count);
+    });
+
+    x.domain(d3.extent(data, function(d) { return d.date; }));
+    y.domain([0, d3.max(data, function(d) { return d.count; })]);
+
+    svg.append("path")
+      .datum(data)
+      .attr("class", "area")
+      .attr("d", area);
+
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .selectAll("text")
+        .attr("y", -5)
+        .attr("x", -30)
+        .attr("transform", function(d) {
+            return "rotate(-90)"
+            });
+
+    svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Messages");
 }
-
 
 /*
  * Misc.
