@@ -31,7 +31,7 @@ from django.utils import formats
 from django.utils.dateformat import format as date_format
 
 from hyperkitty.models import Tag, Favorite
-from hyperkitty.lib import get_months, get_store, get_display_dates
+from hyperkitty.lib import get_months, get_store, get_display_dates, daterange
 from hyperkitty.lib.voting import get_votes
 from forms import SearchForm
 
@@ -160,7 +160,6 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
     return render(request, template_name, context)
 
 
-
 def overview(request, mlist_fqdn=None):
     if not mlist_fqdn:
         return redirect('/')
@@ -210,6 +209,10 @@ def overview(request, mlist_fqdn=None):
     emails_in_month = store.get_messages(list_name=mlist.name,
                                          start=begin_date, end=end_date)
     dates = defaultdict(lambda: 0) # no activity by default
+    # populate with all days before adding data.
+    for single_date in daterange(begin_date, end_date):
+        dates[single_date.strftime("%Y-%m-%d")] = 0
+
     for email in emails_in_month:
         date_str = email.date.strftime("%Y-%m-%d")
         dates[date_str] = dates[date_str] + 1

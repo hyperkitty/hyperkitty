@@ -87,3 +87,8 @@ def get_display_dates(year, month, day):
         end_date = begin_date + datetime.timedelta(days=1)
 
     return begin_date, end_date
+
+
+def daterange(start_date, end_date):
+    for n in range(int((end_date - start_date).days)):
+        yield start_date + datetime.timedelta(n)

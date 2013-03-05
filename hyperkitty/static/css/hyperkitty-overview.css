@@ -21,6 +21,16 @@
   height: 330px;
 }
 
+#fig .axis path, #fig .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: geometricPrecision;
+}
+
+#fig .area {
+  fill: steelBlue;
+}
+
 
 #top-discussion,
 #discussion-by-topic,
