@@ -1,3 +1,5 @@
+{% load url from future %}
+
 	<form method="post" class="likeform"
 	      action="{% url 'message_vote' mlist_fqdn=mlist.name message_id_hash=message_id_hash %}">
 	{% csrf_token %}

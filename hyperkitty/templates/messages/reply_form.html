@@ -1,3 +1,5 @@
+{% load url from future %}
+
 	<a class="reply{% if not user.is_authenticated %} disabled" title="You must be logged-in to reply.{% endif %}" href="#">Reply</a>
 	<div class="reply-form dropdown">
 		<p class="reply-tools">[<a href="#" class="quote">Quote</a>]</p>
