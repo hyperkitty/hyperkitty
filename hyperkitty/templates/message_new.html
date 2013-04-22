@@ -27,6 +27,7 @@ Create a new thread - {{ mlist.display_name|default:mlist.name|escapeemail }} - 
 				  action="{% url 'message_new' mlist_fqdn=mlist.name %}">
 				{% csrf_token %}
 				{{ post_form|crispy }}
+				<p class="note">Please note that you should be subscribed to the list or your reply won't get through.</p>
 				<p class="buttons">
 					<button type="submit" class="submit btn btn-primary">Send</button>
 					or <a class="cancel" href="{% url 'archives_latest' mlist_fqdn=mlist.name %}">cancel</a>
