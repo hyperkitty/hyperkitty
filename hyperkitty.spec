@@ -2,7 +2,7 @@
 
 Name:           hyperkitty
 Version:        0.1.5
-Release:        0.1%{?dist}
+Release:        0.2%{?dist}
 Summary:        A web interface to access GNU Mailman v3 archives
 
 License:        GPLv3
@@ -101,14 +101,17 @@ touch --reference hyperkitty_standalone/hyperkitty.cfg \
     %{buildroot}%{_sysconfdir}/%{name}/sites/default/hyperkitty.cfg
 # Apache HTTPd config file
 mkdir -p %{buildroot}/%{_sysconfdir}/httpd/conf.d/
-sed -e 's,/path/to/hyperkitty_standalone,%{_sysconfdir}/%{name}/sites/default,g' \
+sed -e 's,/path/to/hyperkitty_standalone/static,%{_localstatedir}/lib/%{name}/sites/default/static,g' \
+    -e 's,/path/to/hyperkitty_standalone,%{_sysconfdir}/%{name}/sites/default,g' \
      hyperkitty_standalone/hyperkitty.apache.conf \
      > %{buildroot}/%{_sysconfdir}/httpd/conf.d/hyperkitty.conf
 touch --reference hyperkitty_standalone/hyperkitty.apache.conf \
     %{buildroot}/%{_sysconfdir}/httpd/conf.d/hyperkitty.conf
-# SQLite databases directory
-mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/sites/default
-sed -i -e 's,/path/to/rw,%{_localstatedir}/lib/%{name}/sites/default,g' \
+# SQLite databases directory and static files
+mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/sites/default/static
+mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/sites/default/db
+sed -i -e 's,/path/to/rw,%{_localstatedir}/lib/%{name}/sites/default/db,g' \
+       -e 's,^STATIC_ROOT = .*$,STATIC_ROOT = "%{_localstatedir}/lib/%{name}/sites/default/static/",g' \
     %{buildroot}%{_sysconfdir}/%{name}/sites/default/settings.py
 touch --reference hyperkitty_standalone/settings.py \
     %{buildroot}%{_sysconfdir}/%{name}/sites/default/settings.py
@@ -125,28 +128,36 @@ rm -f hyperkitty_standalone/__init__.py hyperkitty_standalone/settings_local.py
 # Build the static files cache
 %{__python} %{_sysconfdir}/%{name}/sites/default/manage.py \
     collectstatic --noinput >/dev/null || :
+%{__python} %{_sysconfdir}/%{name}/sites/default/manage.py \
+    assets build --parse-templates >/dev/null || :
 
 
 %preun
 # The static files are a cache and can be removed with the package
 if [ $1 -eq 0 ] ; then
     # Package removal, not upgrade
-    rm -rf %{_sysconfdir}/%{name}/sites/default/static
+    rm -rf %{_localstatedir}/lib/%{name}/sites/default/static
 fi
 
 
 %files
 %doc html README.rst COPYING.txt
 %config(noreplace) %{_sysconfdir}/%{name}
+%config(noreplace) %attr(640,root,apache) %{_sysconfdir}/%{name}/sites/default/settings.py
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/hyperkitty.conf
 %{python_sitelib}/%{name}
 %{python_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
 %dir %{_localstatedir}/lib/%{name}
 %dir %{_localstatedir}/lib/%{name}/sites
-%attr(755,apache,apache) %{_localstatedir}/lib/%{name}/sites/default
+%dir %{_localstatedir}/lib/%{name}/sites/default
+%dir %{_localstatedir}/lib/%{name}/sites/default/static
+%attr(755,apache,apache) %{_localstatedir}/lib/%{name}/sites/default/db
 
 
 %changelog
+* Thu Mar 28 2013 Aurelien Bompard <abompard@fedoraproject.org> - 0.1.5-0.2
+- put collected static files in _localstatedir
+
 * Tue Feb 19 2013 Aurelien Bompard <abompard@fedoraproject.org> - 0.1.4-1
 - update to 0.1.4
 
