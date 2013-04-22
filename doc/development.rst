@@ -35,6 +35,32 @@ Then download the components of HyperKitty::
     git clone https://github.com/hyperkitty/hyperkitty_standalone.git
 
 
+Configuration
+=============
+
+For a development setup, you should create a
+``hyperkitty_standalone/settings_local.py`` file with at least the following
+content::
+
+    DEBUG = True
+    TEMPLATE_DEBUG = DEBUG
+    ASSETS_DEBUG = DEBUG
+    ASSETS_AUTO_BUILD = DEBUG
+    USE_SSL = False
+
+It's also recommanded to change the database access paths in the ``DATABASES``
+and ``KITTYSTORE_URL`` variables.
+
+If you ever want to turn the ``DEBUG`` variable to ``False`` (by removing it
+from ``settings_local.py``), you'll have to run two additional commands at
+first and each time you change the static files::
+
+    python hyperkitty_standalone/manage.py collectstatic
+    python hyperkitty_standalone/manage.py assets build --parse-templates
+
+But for development purposes, it's better to keep ``DEBUG = True``.
+
+
 .. Setting up the databases
 
 .. include:: database.rst

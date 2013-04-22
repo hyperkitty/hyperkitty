@@ -94,6 +94,13 @@ key is an additional HyperKitty-specific configuration file for which an
 example is provided. See the included ``hyperkitty_standalone/hyperkitty.cfg``
 file.
 
+.. warning::
+    The user that Mailman runs under (unually "mailman") must be able to read
+    both the ``settings.py`` and ``settings_local.py`` files. Remember that
+    those files also contain the database passwords, so make sure the
+    permissions are correct. We suggest adding the mailman user to the apache
+    group, and only giving this group read access to those files.
+
 After having made these changes, you must restart Mailman. Check its log files
 to make sure the emails are correctly archived. You should not see "``Broken
 archiver: hyperkitty``" messages.
