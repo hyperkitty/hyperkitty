@@ -19,7 +19,7 @@
 		<form method="post" action="{% url 'socialauth_complete' "browserid" %}?next={{ next }}">
 			{% csrf_token %}
 			<input type="hidden" name="assertion" value="" />
-			<a rel="nofollow" id="browserid" href="#"><img src="{{ STATIC_URL }}img/login/persona-large-disabled.png" alt="Login using Persona" /></a>
+			<a rel="nofollow" id="browserid" href="#" class="disabled"><img src="{{ STATIC_URL }}img/login/persona-large-disabled.png" alt="Login using Persona" /></a>
 		</form>
 	</li>
 	<li><a title="Google" class="socialaccount_provider google" href="{% url 'socialauth_begin' backend='google' %}"><img src="{{ STATIC_URL }}img/login/google.png" alt="Google"></a></li>
@@ -67,6 +67,7 @@
 		}).each(function() {
 			var img = $(this).find("img");
 			img.attr("src", img.attr("src").replace(/-disabled/, ""));
+			$(this).removeClass("disabled");
 		});
 	});
 </script>

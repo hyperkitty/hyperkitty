@@ -20,6 +20,9 @@
 #login .social-login li {
 	margin: 0 20px;
 }
+a#browserid.disabled {
+    cursor: wait;
+}
 
 
 
