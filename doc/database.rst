@@ -7,6 +7,7 @@ access URLs in ``hyperkitty_standalone/settings.py`` (or
 created using the following command::
 
     python hyperkitty_standalone/manage.py syncdb
+    python hyperkitty_standalone/manage.py migrate hyperkitty
 
 KittyStore's database will be created automatically on first access.
 
