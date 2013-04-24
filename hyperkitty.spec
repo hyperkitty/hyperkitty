@@ -131,7 +131,7 @@ rm -f hyperkitty_standalone/__init__.py hyperkitty_standalone/settings_local.py
 %{__python} %{_sysconfdir}/%{name}/sites/default/manage.py \
     collectstatic --noinput >/dev/null || :
 %{__python} %{_sysconfdir}/%{name}/sites/default/manage.py \
-    assets build --parse-templates >/dev/null || :
+    assets build --parse-templates &>/dev/null || :
 
 
 %preun
