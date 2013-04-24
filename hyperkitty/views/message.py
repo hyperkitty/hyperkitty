@@ -29,12 +29,11 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.core.mail import EmailMessage
 from django.core.exceptions import SuspiciousOperation
 from django.template import RequestContext, loader
 from django.contrib.auth.decorators import login_required
 
-from hyperkitty.lib import get_store, get_months
+from hyperkitty.lib import get_store, get_months, post_to_list
 from hyperkitty.lib.voting import set_message_votes
 from hyperkitty.models import Rating
 from forms import SearchForm, ReplyForm, PostForm
@@ -162,7 +161,7 @@ def reply(request, mlist_fqdn, message_id_hash):
     subject = message.subject
     if not message.subject.lower().startswith("re:"):
         subject = "Re: %s" % subject
-    _send_email(request, mlist, subject, form.cleaned_data["message"], {
+    post_to_list(request, mlist, subject, form.cleaned_data["message"], {
                     "In-Reply-To": "<%s>" % message.message_id,
                     "References": "<%s>" % message.message_id,
                 })
@@ -180,7 +179,7 @@ def new_message(request, mlist_fqdn):
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
-            _send_email(request, mlist, form.cleaned_data['subject'],
+            post_to_list(request, mlist, form.cleaned_data['subject'],
                         form.cleaned_data["message"])
             today = datetime.date.today()
             redirect_url = reverse(
@@ -198,20 +197,3 @@ def new_message(request, mlist_fqdn):
         'months_list': get_months(store, mlist.name),
     }
     return render(request, "message_new.html", context)
-
-
-def _send_email(request, mlist, subject, message, headers={}):
-    if not mlist:
-        # Make sure the list exists to avoid posting to any email addess
-        raise SuspiciousOperation("I don't know this mailing-list")
-    headers["User-Agent"] = "HyperKitty on %s" % request.build_absolute_uri("/")
-    msg = EmailMessage(
-               subject=subject,
-               body=message,
-               from_email='"%s %s" <%s>' %
-                   (request.user.first_name, request.user.last_name,
-                    request.user.email),
-               to=[mlist.name],
-               headers=headers,
-               )
-    msg.send()

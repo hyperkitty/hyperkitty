@@ -24,6 +24,9 @@ from hashlib import md5
 import datetime
 
 from django.conf import settings
+from django.core.exceptions import SuspiciousOperation
+from django.core.mail import EmailMessage
+from mailmanclient import Client
 
 
 
@@ -92,3 +95,33 @@ def get_display_dates(year, month, day):
 def daterange(start_date, end_date):
     for n in range(int((end_date - start_date).days)):
         yield start_date + datetime.timedelta(n)
+
+
+def post_to_list(request, mlist, subject, message, headers={}):
+    if not mlist:
+        # Make sure the list exists to avoid posting to any email addess
+        raise SuspiciousOperation("I don't know this mailing-list")
+    # Check that the user is subscribed
+    client = Client('%s/3.0' % settings.MAILMAN_REST_SERVER,
+                    settings.MAILMAN_API_USER, settings.MAILMAN_API_PASS)
+    rest_list = client.get_list(mlist.name)
+    try:
+        member = rest_list.get_member(request.user.email)
+    except ValueError:
+        # not subscribed yet, subscribe the user without email delivery
+        member = rest_list.subscribe(request.user.email,
+                "%s %s" % (request.user.first_name, request.user.last_name))
+        member.preferences["delivery_status"] = "by_user"
+        member.preferences.save()
+    # send the message
+    headers["User-Agent"] = "HyperKitty on %s" % request.build_absolute_uri("/")
+    msg = EmailMessage(
+               subject=subject,
+               body=message,
+               from_email='"%s %s" <%s>' %
+                   (request.user.first_name, request.user.last_name,
+                    request.user.email),
+               to=[mlist.name],
+               headers=headers,
+               )
+    msg.send()
