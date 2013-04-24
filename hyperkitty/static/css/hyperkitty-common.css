@@ -235,8 +235,14 @@ a.reply.disabled {
 
 
 /*
- * New thread form
+ * New thread
  */
+
+a.thread-new strong {
+    font-size: 150%;
+    font-weight: bold;
+    margin-right: 0.2em;
+}
 
 .new-thread-form {
     margin-left: 2em;

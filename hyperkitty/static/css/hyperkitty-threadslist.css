@@ -24,12 +24,6 @@
 #thread-list .thread-list-header .thread-new {
     float: right;
 }
-#thread-list .thread-list-header .thread-new strong {
-    font-size: 150%;
-    font-weight: bold;
-    margin-right: 0.2em;
-}
-
 
 
 /*

@@ -32,6 +32,11 @@
 }
 
 
+#recent_activities p.thread-new {
+    text-align: center;
+}
+
+
 #top-discussion,
 #discussion-by-topic,
 #most-active,
