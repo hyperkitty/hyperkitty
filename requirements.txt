@@ -9,3 +9,4 @@ django-crispy-forms
 django-assets
 rjsmin
 cssmin
+mailmanclient
