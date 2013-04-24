@@ -245,14 +245,3 @@ a.reply.disabled {
 .new-thread-form textarea {
     width: 90%;
 }
-
-
-/*
- * Common to both
- */
-
-.reply-form .note,
-.new-thread-form .note {
-    color: #666666;
-    font-style: italic;
-}
