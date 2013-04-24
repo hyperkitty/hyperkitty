@@ -79,9 +79,10 @@ class KittyStoreDjangoMiddleware(object):
                         kittystore.get_store(settings.KITTYSTORE_URL,
                                              settings.KITTYSTORE_DEBUG))
 
-    #def process_response(self, request, response):
+    def process_response(self, request, response):
+        request.environ['kittystore.store'].commit()
     #    request.environ['kittystore.store'].close()
-    #    return response
+        return response
 
     def process_exception(self, request, exception):
         request.environ['kittystore.store'].rollback()
