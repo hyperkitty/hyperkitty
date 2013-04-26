@@ -20,10 +20,19 @@
 #login .social-login li {
 	margin: 0 20px;
 }
-a#browserid.disabled {
+#login .social-login li.browserid {
+    display: block;
+}
+#login a#browserid.disabled {
     cursor: wait;
 }
-
+#login form.openid {
+    display: none;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    margin-top: 10px;
+}
 
 
 /*

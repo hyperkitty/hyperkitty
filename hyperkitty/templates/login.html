@@ -15,16 +15,27 @@
 
 <h2>Login with your email</h2>
 <ul class="social-login inline">
-	<li>
+	<li class="browserid">
 		<form method="post" action="{% url 'socialauth_complete' "browserid" %}?next={{ next }}">
 			{% csrf_token %}
 			<input type="hidden" name="assertion" value="" />
 			<a rel="nofollow" id="browserid" href="#" class="disabled"><img src="{{ STATIC_URL }}img/login/persona-large-disabled.png" alt="Login using Persona" /></a>
 		</form>
 	</li>
-	<li><a title="Google" class="socialaccount_provider google" href="{% url 'socialauth_begin' backend='google' %}"><img src="{{ STATIC_URL }}img/login/google.png" alt="Google"></a></li>
 
-	<li><a title="Yahoo" class="socialaccount_provider yahoo" href="{% url 'socialauth_begin' backend='yahoo' %}"><img src="{{ STATIC_URL }}img/login/yahoo.png" alt="Yahoo"></a></li>
+	<li><a title="Google" class="socialaccount_provider google" href="{% url 'socialauth_begin' backend='google' %}?next={{ next }}"><img src="{{ STATIC_URL }}img/login/google.png" alt="Google" /></a></li>
+
+	<li><a title="Yahoo" class="socialaccount_provider yahoo" href="{% url 'socialauth_begin' backend='yahoo' %}?next={{ next }}"><img src="{{ STATIC_URL }}img/login/yahoo.png" alt="Yahoo" /></a></li>
+
+	<li><a class="socialaccount_provider openid" href="#"><img src="{{ STATIC_URL }}img/login/openid.png" alt="OpenID" /></a>
+		<form method="post" action="{% url 'socialauth_begin' "openid" %}?next={{ next }}" class="form-inline openid">
+			{% csrf_token %}
+			<div class="input-append">
+			<input type="text" class="input-large" name="openid_identifier" placeholder="OpenID URL" />
+			<button type="submit" class="btn">Login with OpenID</button>
+			</div>
+		</form>
+	</li>
 </ul>
 
 
@@ -53,6 +64,7 @@
 <!-- Setup click handler that receives BrowserID assertion code and sends POST data -->
 <script type="text/javascript">
 	$(function() {
+		// BrowserID
 		$('#browserid').click(function(e) {
 			e.preventDefault();
 			var self = $(this);
@@ -68,6 +80,13 @@
 			var img = $(this).find("img");
 			img.attr("src", img.attr("src").replace(/-disabled/, ""));
 			$(this).removeClass("disabled");
+		});
+		// OpenID
+		$('a.openid').click(function(e) {
+			e.preventDefault();
+			$("form.openid").slideToggle("fast")
+				.filter(":visible")
+				.find("input[name='openid_identifier']").focus();
 		});
 	});
 </script>
