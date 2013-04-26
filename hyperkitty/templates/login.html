@@ -27,6 +27,8 @@
 
 	<li><a title="Yahoo" class="socialaccount_provider yahoo" href="{% url 'socialauth_begin' backend='yahoo' %}?next={{ next }}"><img src="{{ STATIC_URL }}img/login/yahoo.png" alt="Yahoo" /></a></li>
 
+	<li><a title="Fedora" class="socialaccount_provider fedora" href="{% url 'socialauth_begin' backend='fedora' %}?next={{ next }}"><img src="{{ STATIC_URL }}img/login/fedora.png" alt="Fedora" /></a></li>
+
 	<li><a class="socialaccount_provider openid" href="#"><img src="{{ STATIC_URL }}img/login/openid.png" alt="OpenID" /></a>
 		<form method="post" action="{% url 'socialauth_begin' "openid" %}?next={{ next }}" class="form-inline openid">
 			{% csrf_token %}
