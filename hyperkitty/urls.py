@@ -43,7 +43,8 @@ urlpatterns = patterns('hyperkitty.views',
     url(r'^$', 'pages.index', name='root'),
 
     # Account
-    url(r'^accounts/login/$', login_view, {'template_name': 'login.html', 'SSL': True}, name='user_login'),
+    #url(r'^accounts/login/$', login_view, {'template_name': 'login.html', 'SSL': True}, name='user_login'),
+    url(r'^accounts/login/$', 'accounts.login_view', {'template_name': 'login.html', 'SSL': True}, name='user_login'),
     url(r'^accounts/logout/$', logout_view, {'next_page': '/'}, name='user_logout'),
     url(r'^accounts/profile/$', 'accounts.user_profile', name='user_profile'),
     url(r'^accounts/register/$', 'accounts.user_registration', {'SSL': True}, name='user_registration'),

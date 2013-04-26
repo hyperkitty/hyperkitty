@@ -24,12 +24,14 @@ import logging
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.exceptions import SuspiciousOperation
-from django.contrib.auth import logout, authenticate, login
+from django.contrib.auth import logout, authenticate, login, get_backends
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.views import login as django_login_view
 from django.shortcuts import render, redirect
 from django.utils.http import is_safe_url
 from django.utils.translation import gettext as _
+from social_auth.backends import SocialAuthBackend
 
 from hyperkitty.models import UserProfile, Rating, Favorite
 from hyperkitty.views.forms import RegistrationForm, UserProfileForm
@@ -42,6 +44,20 @@ logger = logging.getLogger(__name__)
 FLASH_MESSAGES = {
     "updated-ok": "The profile was successfully updated.",
 }
+
+
+def login_view(request, *args, **kwargs):
+    if "extra_context" not in kwargs:
+        kwargs["extra_context"] = {}
+    if "backends" not in kwargs["extra_context"]:
+        kwargs["extra_context"]["backends"] = []
+    # Note: sorry but I really find the .setdefault() method non-obvious and
+    # harder to re-read that the lines above.
+    for backend in get_backends():
+        if not isinstance(backend, SocialAuthBackend):
+            continue # It should be checked using duck-typing instead
+        kwargs["extra_context"]["backends"].append(backend.name)
+    return django_login_view(request, *args, **kwargs)
 
 
 @login_required
