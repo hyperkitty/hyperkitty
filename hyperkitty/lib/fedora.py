@@ -6,7 +6,7 @@ No extra configurations are needed to make this work.
 from social_auth.backends import OpenIDBackend, OpenIdAuth
 
 
-FEDORA_OPENID_URL = 'http://id.fedoraproject.org'
+FEDORA_OPENID_URL = 'https://id.fedoraproject.org'
 
 
 class FedoraBackend(OpenIDBackend):
