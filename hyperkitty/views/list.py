@@ -29,6 +29,7 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import formats
 from django.utils.dateformat import format as date_format
+from django.http import Http404
 
 from hyperkitty.models import Tag, Favorite
 from hyperkitty.lib import get_months, get_store, get_display_dates, daterange
@@ -75,6 +76,8 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
 
 
 def _thread_list(request, mlist, threads, template_name='thread_list.html', extra_context={}):
+    if mlist is None:
+        raise Http404("No archived mailing-list by that name.")
     store = get_store(request)
     search_form = SearchForm(auto_id=False)
 
