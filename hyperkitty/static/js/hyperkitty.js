@@ -136,9 +136,7 @@ function setup_favorites() {
                 action_field.trigger("change");
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                if (jqXHR.status === 403) {
-                    alert(jqXHR.responseText);
-                }
+                alert(jqXHR.responseText);
             }
         });
     });
