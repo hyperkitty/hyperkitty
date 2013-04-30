@@ -28,7 +28,7 @@ from django.contrib import admin
 
 class Rating(models.Model):
     # @TODO: instead of list_address, user list model from kittystore?
-    list_address = models.CharField(max_length=50)
+    list_address = models.CharField(max_length=255)
 
     # @TODO: instead of messsageid, use message model from kittystore?
     messageid = models.CharField(max_length=100)
@@ -62,7 +62,7 @@ class UserProfile(models.Model):
 
 class Tag(models.Model):
     # @TODO: instead of list_address, user list model from kittystore?
-    list_address = models.CharField(max_length=50)
+    list_address = models.CharField(max_length=255)
 
     # @TODO: instead of threadid, use thread model from kittystore?
     threadid = models.CharField(max_length=100)
@@ -78,7 +78,7 @@ admin.site.register(Tag)
 
 
 class Favorite(models.Model):
-    list_address = models.CharField(max_length=50)
+    list_address = models.CharField(max_length=255)
     threadid = models.CharField(max_length=100)
     user = models.ForeignKey(User)
 
