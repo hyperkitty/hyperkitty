@@ -37,10 +37,11 @@ function form_to_json(form) {
  * Voting
  */
 
-function vote(elem, value) {
+function vote(elem) {
     if ($(elem).hasClass("disabled")) {
-        return false;
+        return;
     }
+    var value = parseInt($(elem).attr("data-vote"));
     var form = $(elem).parents("form").first();
     var data = form_to_json(form);
     data['vote'] = value;
@@ -50,21 +51,25 @@ function vote(elem, value) {
         dataType: "json",
         data: data,
         success: function(response) {
-            form.replaceWith(response.html);
+            var newcontent = $(response.html);
+            form.replaceWith(newcontent);
+            setup_vote(newcontent); // re-bind events
         },
         error: function(jqXHR, textStatus, errorThrown) {
             alert(jqXHR.responseText);
         }
     });
-    return false;
 }
 
 
-function setup_vote() {
-    /*
-    $("a.youlike").click(function(e) { e.preventDefault(); vote(this, 1); });
-    $("a.youdislike").click(function(e) { e.preventDefault(); vote(this, -1); });
-    */
+function setup_vote(baseElem) {
+    if (!baseElem) {
+        baseElem = document;
+    }
+    $(baseElem).find("a.vote").click(function(e) {
+        e.preventDefault();
+        vote(this);
+    });
 }
 
 

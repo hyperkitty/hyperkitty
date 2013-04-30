@@ -6,15 +6,15 @@
 	<span class="likestatus {{ object.likestatus }}">+{{ object.likes }}/-{{ object.dislikes }}</span>
 	{% if object.myvote == 1 %}
 	<span class="youlike">You like it
-		(<a href="#cancelvote" onclick="vote(this, 0)">cancel</a>)</span>
+		(<a href="#cancelvote" class="vote" data-vote="0">cancel</a>)</span>
 	{% elif object.myvote == -1 %}
 	<span class="youdislike">You dislike it
-		(<a href="#cancelvote" onclick="vote(this, 0)">cancel</a>)</span>
+		(<a href="#cancelvote" class="vote" data-vote="0">cancel</a>)</span>
 	{% else %}
-	<a class="youlike{% if not user.is_authenticated %} disabled" title="You must be logged-in to vote.{% endif %}"
-	   href="#like" onclick="vote(this, 1)">Like</a>
-	<a class="youdislike{% if not user.is_authenticated %} disabled" title="You must be logged-in to vote.{% endif %}"
-	   href="#dislike" onclick="vote(this, -1)">Dislike</a>
+	<a class="youlike vote{% if not user.is_authenticated %} disabled" title="You must be logged-in to vote.{% endif %}"
+	   href="#like" data-vote="1">Like</a>
+	<a class="youdislike vote{% if not user.is_authenticated %} disabled" title="You must be logged-in to vote.{% endif %}"
+	   href="#dislike" data-vote="-1">Dislike</a>
 	{% endif %}
 	</form>
 
