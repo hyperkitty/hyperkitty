@@ -161,6 +161,8 @@ function setup_replies() {
     $(".reply-form button[type='submit']").click(function(e) {
         e.preventDefault();
         var form = $(this).parents("form").first();
+        // remove previous error messages
+        form.find("div.reply-result").remove();
         var data = form_to_json(form);
         $.ajax({
             type: "POST",
@@ -180,7 +182,7 @@ function setup_replies() {
                 $('<div class="reply-result"><div class="alert alert-error">'
                   + '<button type="button" class="close" data-dismiss="alert">&times;</button> '
                   + jqXHR.responseText + '</div></div>')
-                    .css("display", "none").insertBefore(form).slideDown();
+                    .css("display", "none").prependTo(form).slideDown();
             }
         });
     });
@@ -207,6 +209,20 @@ function setup_replies() {
         textarea.val(quoted + "\n" + textarea.val());
         textarea.focus();
     });
+    function set_new_thread(checkbox) {
+        var this_form = checkbox.parents("form").first();
+        var subj = this_form.find("input[name='subject']").parents("p").first();
+        if (checkbox.is(":checked")) {
+            subj.slideDown("fast");
+            subj.find("input").focus();
+        } else {
+            subj.slideUp("fast");
+            this_form.find("textarea").focus();
+        }
+    }
+    $(".reply-form input[name='newthread']").change(function() {
+        set_new_thread($(this));
+    }).change();
 }
 
 

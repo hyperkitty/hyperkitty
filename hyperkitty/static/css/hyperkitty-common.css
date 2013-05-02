@@ -47,7 +47,7 @@
 /* Forms (replies, registration, ...) */
 form .buttons .submit {
     /* leave some space before the cancel button/link */
-    margin-right: 2em;
+    margin-right: 1em;
 }
 
 
@@ -210,11 +210,21 @@ a.reply.disabled {
     padding-top: 1em;
 }
 .reply-form p.reply-tools {
+    margin-bottom: 0.7em;
+}
+.reply-form p.reply-tools label {
+    display: inline;
     font-size: 90%;
+    margin-left: 1.5em;
+}
+.reply-form p.reply-tools input {
+    margin-top: 0;
+    margin-right: 0.1em;
 }
 .reply-form p {
     margin: 0;
 }
+.reply-form #id_subject,
 .reply-form textarea {
     width: 95%;
 }

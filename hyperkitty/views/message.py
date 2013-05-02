@@ -157,14 +157,17 @@ def reply(request, mlist_fqdn, message_id_hash):
                             content_type="text/plain", status=400)
     store = get_store(request)
     mlist = store.get_list(mlist_fqdn)
-    message = store.get_message_by_hash_from_list(mlist.name, message_id_hash)
-    subject = message.subject
-    if not message.subject.lower().startswith("re:"):
-        subject = "Re: %s" % subject
-    post_to_list(request, mlist, subject, form.cleaned_data["message"], {
-                    "In-Reply-To": "<%s>" % message.message_id,
-                    "References": "<%s>" % message.message_id,
-                })
+    if form.cleaned_data["newthread"]:
+        subject = form.cleaned_data["subject"]
+        headers = {}
+    else:
+        message = store.get_message_by_hash_from_list(mlist.name, message_id_hash)
+        subject = message.subject
+        if not message.subject.lower().startswith("re:"):
+            subject = "Re: %s" % subject
+        headers = {"In-Reply-To": "<%s>" % message.message_id,
+                   "References": "<%s>" % message.message_id, }
+    post_to_list(request, mlist, subject, form.cleaned_data["message"], headers)
     return HttpResponse("The reply has been sent successfully.",
                         mimetype="text/plain")
 

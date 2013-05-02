@@ -114,7 +114,10 @@ class SearchForm(forms.Form):
 
 
 class ReplyForm(forms.Form):
-    message = forms.CharField(widget=forms.Textarea, label="")
+    newthread = forms.BooleanField(label="", required=False)
+    subject = forms.CharField(label="", required=False,
+            widget=forms.TextInput(attrs={ 'placeholder': 'New subject'}))
+    message = forms.CharField(label="", widget=forms.Textarea)
 
 class PostForm(forms.Form):
     subject = forms.CharField()
