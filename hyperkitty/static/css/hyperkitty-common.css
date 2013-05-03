@@ -33,13 +33,16 @@
 
 
 /* Flash messages */
-.flashmsg {
+.flashmsgs {
     position: absolute;
     left: 0;
     width: 100%;
     text-align: center;
 }
-.flashmsg .alert {
+.flashmsgs .flashmsg-wrapper {
+    display: block;
+}
+.flashmsgs .alert {
     display: inline-block;
 }
 

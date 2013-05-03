@@ -352,7 +352,7 @@ function setup_disabled_tooltips() {
 }
 
 function setup_flash_messages() {
-    $('.flashmsg').delay(3000).fadeOut('slow');
+    $('.flashmsgs .alert-success').delay(3000).fadeOut('slow');
 }
 
 

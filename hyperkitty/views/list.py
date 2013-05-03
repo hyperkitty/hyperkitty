@@ -33,17 +33,13 @@ from django.http import Http404
 
 from hyperkitty.models import Tag, Favorite
 from hyperkitty.lib import get_months, get_store, get_display_dates, daterange
+from hyperkitty.lib import FLASH_MESSAGES
 from hyperkitty.lib.voting import get_votes
 from forms import SearchForm
 
 
 if settings.USE_MOCKUPS:
     from hyperkitty.lib.mockup import generate_top_author, generate_thread_per_category
-
-
-FLASH_MESSAGES = {
-    "sent-ok": "The message has been sent successfully.",
-}
 
 
 def archives(request, mlist_fqdn, year=None, month=None, day=None):
@@ -147,7 +143,8 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
     flash_messages = []
     flash_msg = request.GET.get("msg")
     if flash_msg:
-        flash_msg = { "type": "success", "msg": FLASH_MESSAGES[flash_msg] }
+        flash_msg = { "type": FLASH_MESSAGES[flash_msg][0],
+                      "msg": FLASH_MESSAGES[flash_msg][1] }
         flash_messages.append(flash_msg)
 
     context = {

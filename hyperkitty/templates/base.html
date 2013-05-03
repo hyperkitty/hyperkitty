@@ -59,9 +59,16 @@
 		</header>
 
 		{% if flash_messages %}
-		<div class="flashmsg">
+		<div class="flashmsgs">
 			{% for flash_msg in flash_messages %}
-			<div class="alert alert-{{ flash_msg.type }}">{{ flash_msg.msg }}</div>
+			<div class="flashmsg-wrapper">
+				<div class="alert alert-{{ flash_msg.type }}">
+					{% if flash_msg.type != "success" %}
+						<button type="button" class="close" data-dismiss="alert">&times;</button>
+					{% endif %}
+					{{ flash_msg.msg }}
+				</div>
+			</div>
 			{% endfor %}
 		</div>
 		{% endif %}

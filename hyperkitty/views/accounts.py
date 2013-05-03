@@ -35,15 +35,10 @@ from social_auth.backends import SocialAuthBackend
 
 from hyperkitty.models import UserProfile, Rating, Favorite
 from hyperkitty.views.forms import RegistrationForm, UserProfileForm
-from hyperkitty.lib import get_store
+from hyperkitty.lib import get_store, FLASH_MESSAGES
 
 
 logger = logging.getLogger(__name__)
-
-
-FLASH_MESSAGES = {
-    "updated-ok": "The profile was successfully updated.",
-}
 
 
 def login_view(request, *args, **kwargs):
@@ -120,7 +115,8 @@ def user_profile(request, user_email=None):
     flash_messages = []
     flash_msg = request.GET.get("msg")
     if flash_msg:
-        flash_msg = { "type": "success", "msg": FLASH_MESSAGES[flash_msg] }
+        flash_msg = { "type": FLASH_MESSAGES[flash_msg][0],
+                      "msg": FLASH_MESSAGES[flash_msg][1] }
         flash_messages.append(flash_msg)
 
     context = {

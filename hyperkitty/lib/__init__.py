@@ -26,8 +26,13 @@ import datetime
 from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 from django.core.mail import EmailMessage
-from mailmanclient import Client
 
+
+
+FLASH_MESSAGES = {
+    "updated-ok": ("success", "The profile was successfully updated."),
+    "sent-ok": ("success", "The message has been sent successfully."),
+}
 
 
 def gravatar_url(email):
