@@ -33,7 +33,7 @@ from django.core.exceptions import SuspiciousOperation
 from django.template import RequestContext, loader
 from django.contrib.auth.decorators import login_required
 
-from hyperkitty.lib import get_store, get_months, post_to_list
+from hyperkitty.lib import get_store, get_months, post_to_list, PostingFailed
 from hyperkitty.lib.voting import set_message_votes
 from hyperkitty.models import Rating
 from forms import SearchForm, ReplyForm, PostForm
@@ -167,7 +167,10 @@ def reply(request, mlist_fqdn, message_id_hash):
             subject = "Re: %s" % subject
         headers = {"In-Reply-To": "<%s>" % message.message_id,
                    "References": "<%s>" % message.message_id, }
-    post_to_list(request, mlist, subject, form.cleaned_data["message"], headers)
+    try:
+        post_to_list(request, mlist, subject, form.cleaned_data["message"], headers)
+    except PostingFailed, e:
+        return HttpResponse(str(e), content_type="text/plain", status=500)
     return HttpResponse("The reply has been sent successfully.",
                         mimetype="text/plain")
 
@@ -179,11 +182,10 @@ def new_message(request, mlist_fqdn):
     """
     store = get_store(request)
     mlist = store.get_list(mlist_fqdn)
+    failure = None
     if request.method == 'POST':
         form = PostForm(request.POST)
         if form.is_valid():
-            post_to_list(request, mlist, form.cleaned_data['subject'],
-                        form.cleaned_data["message"])
             today = datetime.date.today()
             redirect_url = reverse(
                     'archives_with_month', kwargs={
@@ -191,12 +193,19 @@ def new_message(request, mlist_fqdn):
                         'year': today.year,
                         'month': today.month})
             redirect_url += "?msg=sent-ok"
-            return redirect(redirect_url)
+            try:
+                post_to_list(request, mlist, form.cleaned_data['subject'],
+                             form.cleaned_data["message"])
+            except PostingFailed, e:
+                failure = str(e)
+            else:
+                return redirect(redirect_url)
     else:
         form = PostForm()
     context = {
         "mlist": mlist,
         "post_form": form,
+        "failure": failure,
         'months_list': get_months(store, mlist.name),
     }
     return render(request, "message_new.html", context)

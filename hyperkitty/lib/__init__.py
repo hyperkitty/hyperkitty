@@ -27,6 +27,7 @@ from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 from django.core.mail import EmailMessage
 
+from hyperkitty.lib import mailman
 
 
 FLASH_MESSAGES = {
@@ -102,22 +103,18 @@ def daterange(start_date, end_date):
         yield start_date + datetime.timedelta(n)
 
 
+class PostingFailed(Exception): pass
+
 def post_to_list(request, mlist, subject, message, headers={}):
     if not mlist:
         # Make sure the list exists to avoid posting to any email addess
         raise SuspiciousOperation("I don't know this mailing-list")
     # Check that the user is subscribed
-    client = Client('%s/3.0' % settings.MAILMAN_REST_SERVER,
-                    settings.MAILMAN_API_USER, settings.MAILMAN_API_PASS)
-    rest_list = client.get_list(mlist.name)
     try:
-        member = rest_list.get_member(request.user.email)
-    except ValueError:
-        # not subscribed yet, subscribe the user without email delivery
-        member = rest_list.subscribe(request.user.email,
-                "%s %s" % (request.user.first_name, request.user.last_name))
-        member.preferences["delivery_status"] = "by_user"
-        member.preferences.save()
+        mailman.subscribe(mlist.name, request.user)
+    except mailman.MailmanConnectionError:
+        raise PostingFailed("Can't connect to Mailman's REST server, "
+                            "your message has not been sent.")
     # send the message
     headers["User-Agent"] = "HyperKitty on %s" % request.build_absolute_uri("/")
     msg = EmailMessage(
