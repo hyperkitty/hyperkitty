@@ -147,8 +147,43 @@ function setup_favorites() {
  * Replies
  */
 
-function setup_replies() {
-    $("a.reply").click(function(e) {
+function setup_emails_list(baseElem) {
+    if (!baseElem) {
+        baseElem = document;
+    }
+    // Attachements
+    $(baseElem).find(".email-info .attachments a.attachments").each(function() {
+        var att_list = $(this).next("ul.attachments-list");
+        var pos = $(this).position();
+        att_list.css("left", pos.left);
+        $(this).click(function() {
+            att_list.slideToggle('fast');
+        });
+    });
+    // Quotes
+    $(baseElem).find('div.email-body .quoted-switch a')
+        .click(function(e) {
+            e.preventDefault();
+            $(this).parent().next(".quoted-text").slideToggle('fast');
+        });
+    setup_replies(baseElem);
+}
+
+function fold_quotes(baseElem) {
+    $(baseElem).find('div.email-body .quoted-text').each(function() {
+        var linescount = $(this).text().split("\n").length;
+        if (linescount > 3) {
+            // hide if the quote is more than 3 lines long
+            $(this).hide();
+        }
+    });
+}
+
+function setup_replies(baseElem) {
+    if (!baseElem) {
+        baseElem = document;
+    }
+    $(baseElem).find("a.reply").click(function(e) {
         e.preventDefault();
         if (!$(this).hasClass("disabled")) {
             $(this).next().slideToggle("fast", function() {
@@ -158,7 +193,7 @@ function setup_replies() {
             });
         }
     });
-    $(".reply-form button[type='submit']").click(function(e) {
+    $(baseElem).find(".reply-form button[type='submit']").click(function(e) {
         e.preventDefault();
         var form = $(this).parents("form").first();
         // remove previous error messages
@@ -186,11 +221,11 @@ function setup_replies() {
             }
         });
     });
-    $(".reply-form a.cancel").click(function(e) {
+    $(baseElem).find(".reply-form a.cancel").click(function(e) {
         e.preventDefault();
         $(this).parents(".reply-form").first().slideUp();
     });
-    $(".reply-form a.quote").click(function(e) {
+    $(baseElem).find(".reply-form a.quote").click(function(e) {
         e.preventDefault();
         var quoted = $(this).parents(".email").first()
                         .find(".email-body").clone()
@@ -220,7 +255,7 @@ function setup_replies() {
             this_form.find("textarea").focus();
         }
     }
-    $(".reply-form input[name='newthread']").change(function() {
+    $(baseElem).find(".reply-form input[name='newthread']").change(function() {
         set_new_thread($(this));
     }).change();
 }
@@ -312,28 +347,36 @@ function activity_graph(elem_id, dates, counts, baseurl) {
       .text("Messages");
 }
 
-/*
- * Misc.
- */
 
-function setup_attachments() {
-    $(".email-info .attachments a.attachments").each(function() {
-        var att_list = $(this).next("ul.attachments-list");
-        var pos = $(this).position();
-        att_list.css("left", pos.left);
-        $(this).click(function() {
-            att_list.slideToggle('fast');
-        });
+/*
+ * Thread replies list
+ */
+function update_thread_replies(url) {
+    $.ajax({
+        dataType: "json",
+        url: url,
+        success: function(data) {
+            // replies
+            var newcontent = $(data.replies_html);
+            $(".replies").html(newcontent);
+            // re-bind events
+            setup_emails_list(newcontent);
+            fold_quotes(newcontent);
+            setup_disabled_tooltips(newcontent);
+            setup_vote(newcontent);
+            // participants list
+            $("#participants").html(data.participants_html);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            alert(jqXHR.responseText);
+        }
     });
 }
 
-function setup_quotes() {
-    $('div.email-body .quoted-switch a')
-        .click(function(e) {
-            e.preventDefault();
-            $(this).parent().next(".quoted-text").slideToggle('fast');
-        });
-}
+
+/*
+ * Misc.
+ */
 
 function setup_months_list() {
     var current = $("#months-list li.current").parent().prev();
@@ -345,8 +388,11 @@ function setup_months_list() {
     $("#months-list").accordion({ collapsible: true, active: current });
 }
 
-function setup_disabled_tooltips() {
-    $("a.disabled").tooltip().click(function (e) {
+function setup_disabled_tooltips(baseElem) {
+    if (!baseElem) {
+        baseElem = document;
+    }
+    $(baseElem).find("a.disabled").tooltip().click(function (e) {
         e.preventDefault();
     });
 }
@@ -362,12 +408,10 @@ function setup_flash_messages() {
 
 $(document).ready(function() {
     setup_vote();
-    setup_attachments();
     setup_add_tag();
-    setup_quotes();
     setup_months_list();
     setup_favorites();
-    setup_replies();
+    setup_emails_list();
     setup_disabled_tooltips();
     setup_flash_messages();
 });

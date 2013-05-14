@@ -1,0 +1,14 @@
+{% load url from future %}
+{% load gravatar %}
+{% load hk_generic %}
+
+		<span id="participants_title">participants</span> ({{participants|length}})
+		<ul>
+			{% for name, email in participants.items|sort %}
+			<li>
+				{% gravatar email 20 %}
+				{{ name|escapeemail }}
+			</li>
+			{% endfor %}
+		</ul>
+

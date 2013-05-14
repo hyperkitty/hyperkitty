@@ -50,14 +50,11 @@
 			</p>
 
 			<div class="replies">
-				{% for email in replies %}
-				<div class="{% cycle 'even' 'odd' %}"
-					{% if email.level %}style="margin-left:{{ email.level|multiply:"2" }}em;"{% endif %}>
-					<!-- Start email -->
-					{% include 'messages/message.html' %}
-					<!-- End of email -->
-				</div>
-				{% endfor %}
+			{% if is_bot %}
+				{% include 'threads/replies.html' %}
+			{% else %}
+				<img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}img/ajax-loader.gif" />
+			{% endif %}
 			</div>
 
 		</section>
@@ -80,14 +77,10 @@
 
 <script type="text/javascript">
 	$(document).ready(function() {
-		// hide quotes by default in the thread view
-		$('div.email-body .quoted-text').each(function() {
-			var linescount = $(this).text().split("\n").length;
-			if (linescount > 3) {
-				// hide if the quote is more than 3 lines long
-				$(this).hide();
-			}
-		});
+		// Hide quotes by default in the thread view
+		fold_quotes()
+		// Load the replies
+		update_thread_replies("{% url 'thread_replies' threadid=threadid mlist_fqdn=mlist.name %}?sort={{sort_mode}}");
 	});
 </script>
 

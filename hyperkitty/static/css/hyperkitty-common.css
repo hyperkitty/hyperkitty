@@ -264,3 +264,10 @@ a.thread-new strong {
 .new-thread-form textarea {
     width: 90%;
 }
+
+
+/* AJAX */
+.ajaxloader {
+    display: block;
+    margin: 1em auto;
+}

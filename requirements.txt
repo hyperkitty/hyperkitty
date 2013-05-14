@@ -10,3 +10,4 @@ django-assets
 rjsmin
 cssmin
 mailmanclient
+robot-detection

@@ -144,7 +144,7 @@
     margin: 1em 0;
 }
 
-#participants img {
+#participants img.gravatar {
     width: 20px;
     vertical-align: middle;
 }

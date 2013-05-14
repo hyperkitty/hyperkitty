@@ -31,6 +31,7 @@ from django.template import RequestContext, loader
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.core.exceptions import SuspiciousOperation
+import robot_detection
 
 from hyperkitty.models import Tag, Favorite
 from forms import SearchForm, AddTagForm, ReplyForm
@@ -38,14 +39,10 @@ from hyperkitty.lib import get_months, get_store, stripped_subject
 from hyperkitty.lib.voting import set_message_votes
 
 
-def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
-    ''' Displays all the email for a given thread identifier '''
-    search_form = SearchForm(auto_id=False)
-    store = get_store(request)
-    thread = store.get_thread(mlist_fqdn, threadid)
+def _get_thread_replies(request, thread):
+    '''Get and sort the replies for a thread'''
     if not thread:
         raise Http404
-    prev_thread, next_thread = store.get_thread_neighbors(mlist_fqdn, threadid)
 
     if "sort" in request.GET and request.GET["sort"] == "date":
         sort_mode = "date"
@@ -54,7 +51,10 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         sort_mode = "thread"
         emails = thread.emails_by_reply
 
-    participants = {}
+    # Don't forget to add the sender to the participants
+    participants = {thread.starting_email.sender_name:
+                    thread.starting_email.sender_email}
+    emails = list(emails)[1:] # only select replies
     for email in emails:
         # Extract all the votes for this message
         set_message_votes(email, request.user)
@@ -66,6 +66,21 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
             email.level = email.thread_depth - 1 # replies start ragged left
             if email.level > 5:
                 email.level = 5
+
+    return {"replies": emails, "participants": participants}
+
+
+def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
+    ''' Displays all the email for a given thread identifier '''
+    search_form = SearchForm(auto_id=False)
+    store = get_store(request)
+    thread = store.get_thread(mlist_fqdn, threadid)
+    if not thread:
+        raise Http404
+    prev_thread, next_thread = store.get_thread_neighbors(mlist_fqdn, threadid)
+
+    sort_mode = request.GET.get("sort", "thread")
+    set_message_votes(thread.starting_email, request.user)
 
     from_url = reverse("thread", kwargs={"mlist_fqdn":mlist_fqdn,
                                          "threadid":threadid})
@@ -95,17 +110,22 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     mlist = store.get_list(mlist_fqdn)
     subject = stripped_subject(mlist, thread.starting_email.subject)
 
+    # TODO: eventually move to a middleware ?
+    # http://djangosnippets.org/snippets/1865/
+    is_bot = True
+    user_agent = request.META.get('HTTP_USER_AGENT', None)
+    if user_agent:
+        is_bot = robot_detection.is_robot(user_agent)
+
     context = {
-        'mlist' : mlist,
-        'threadid' : threadid,
+        'mlist': mlist,
+        'threadid': threadid,
         'subject': subject,
-        'tags' : tags,
+        'tags': tags,
         'search_form': search_form,
         'addtag_form': tag_form,
         'month': thread.date_active,
-        'participants': participants,
         'first_mail': thread.starting_email,
-        'replies': list(emails)[1:],
         'neighbors': (prev_thread, next_thread),
         'months_list': get_months(store, mlist.name),
         'days_inactive': days_inactive.days,
@@ -113,8 +133,41 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'sort_mode': sort_mode,
         'fav_action': fav_action,
         'reply_form': ReplyForm(),
+        'is_bot': is_bot,
     }
+
+    if is_bot:
+        # Don't rely on AJAX to load the replies
+        thread_replies = _get_thread_replies(request, thread)
+        context["participants"] = thread_replies["participants"]
+        context["replies"] = thread_replies["replies"]
+
     return render(request, "thread.html", context)
+
+
+def replies(request, mlist_fqdn, threadid):
+    """Get JSON encoded lists with the replies and the participants"""
+    store = get_store(request)
+    thread = store.get_thread(mlist_fqdn, threadid)
+    thread_replies = _get_thread_replies(request, thread)
+    mlist = store.get_list(mlist_fqdn)
+    context = {
+        'mlist': mlist,
+        'threadid': threadid,
+        'reply_form': ReplyForm(),
+    }
+    context["participants"] = thread_replies["participants"]
+    context["replies"] = thread_replies["replies"]
+
+    replies_tpl = loader.get_template('threads/replies.html')
+    replies_html = replies_tpl.render(RequestContext(request, context))
+    participants_tpl = loader.get_template('threads/participants.html')
+    participants_html = participants_tpl.render(RequestContext(request, context))
+    response = {"replies_html": replies_html,
+                "participants_html": participants_html,
+               }
+    return HttpResponse(json.dumps(response),
+                        mimetype='application/javascript')
 
 
 def add_tag(request, mlist_fqdn, threadid):
