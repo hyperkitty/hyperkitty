@@ -1,0 +1,38 @@
+{% load url from future %}
+{% load gravatar %}
+{% load hk_generic %}
+
+<div class="temporary"
+	{% if email.level %}style="margin-left:{{ email.level|multiply:"2" }}em;"{% endif %}>
+	<!-- Start email -->
+	<div class="email">
+
+		<div class="email-header">
+			<div class="email-date inline-block pull-right">
+				<span class="date">Sent just now, not yet distributed</span>
+			</div>
+			<div class="gravatar{% if use_mockups %} pull-left{% endif %}">
+				{% gravatar email.sender_email 40 %}
+			</div>
+			<div class="email-author inline-block">
+				<span class="name">{{email.sender_name|escapeemail}}</span>
+				{% if use_mockups %}
+				<br />
+				<span class="rank">
+					Rank 8
+				</span>
+				{% endif %}
+			</div>
+		</div>
+
+		<div class="email-body"
+		 >{{ email.content|snip_quoted|wordwrap:90|urlizetrunc:76|escapeemail }}</div>
+
+		<div class="email-info">
+		</div>
+
+	</div>
+	<!-- End of email -->
+</div>
+
+{# vim: set noet: #}

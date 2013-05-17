@@ -194,7 +194,7 @@
 }
 
 /* The email thread */
-.even, .odd {
+.even, .odd, .temporary {
     border-top: 1px solid rgb(179, 179, 179);
     padding: 1em;
 	margin: 20px 0px 20px 0px;
@@ -204,6 +204,10 @@
 }
 .odd {
     background-color: rgb(238, 238, 238);
+}
+.temporary {
+    background-color: rgb(215, 215, 229);
+    display: none;
 }
 
 .email-body {

@@ -202,14 +202,17 @@ function setup_replies(baseElem) {
         $.ajax({
             type: "POST",
             url: form.attr("action"),
-            //dataType: "json",
+            dataType: "json",
             data: data,
             success: function(response) {
+                var reply = $(response.message_html);
+                reply.insertAfter(form.parents(".email").first().parent());
                 form.parents(".reply-form").first().slideUp(function() {
                     form.find("textarea").val("");
+                    reply.slideDown();
                 });
                 $('<div class="reply-result"><div class="alert alert-success">'
-                  + response + '</div></div>')
+                  + response.result + '</div></div>')
                     .appendTo(form.parents('.email-info').first())
                     .delay(2000).fadeOut('slow', function() { $(this).remove(); });
             },

@@ -171,8 +171,20 @@ def reply(request, mlist_fqdn, message_id_hash):
         post_to_list(request, mlist, subject, form.cleaned_data["message"], headers)
     except PostingFailed, e:
         return HttpResponse(str(e), content_type="text/plain", status=500)
-    return HttpResponse("The reply has been sent successfully.",
-                        mimetype="text/plain")
+
+    reply = {
+        "sender_name": "%s %s" % (request.user.first_name,
+                                  request.user.last_name),
+        "sender_email": request.user.email,
+        "content": form.cleaned_data["message"],
+        "level": message.thread_depth, # no need to increment, level = thread_depth - 1
+    }
+    t = loader.get_template('messages/temp_message.html')
+    html = t.render(RequestContext(request, { 'email': reply }))
+    result = {"result": "The reply has been sent successfully.",
+              "message_html": html}
+    return HttpResponse(json.dumps(result),
+                        mimetype="application/javascript")
 
 
 @login_required
