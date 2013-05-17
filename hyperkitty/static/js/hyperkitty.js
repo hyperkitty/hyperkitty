@@ -355,25 +355,33 @@ function activity_graph(elem_id, dates, counts, baseurl) {
  * Thread replies list
  */
 function update_thread_replies(url) {
-    $.ajax({
-        dataType: "json",
-        url: url,
-        success: function(data) {
-            // replies
-            var newcontent = $(data.replies_html);
-            $(".replies").html(newcontent);
-            // re-bind events
-            setup_emails_list(newcontent);
-            fold_quotes(newcontent);
-            setup_disabled_tooltips(newcontent);
-            setup_vote(newcontent);
-            // participants list
-            $("#participants").html(data.participants_html);
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            alert(jqXHR.responseText);
-        }
-    });
+    function load_more(current_url) {
+        $.ajax({
+            dataType: "json",
+            url: current_url,
+            success: function(data) {
+                // replies
+                var newcontent = $(data.replies_html);
+                $(".replies").append(newcontent)
+                             .append($(".replies .ajaxloader"));
+                // re-bind events
+                setup_emails_list(newcontent);
+                fold_quotes(newcontent);
+                setup_disabled_tooltips(newcontent);
+                setup_vote(newcontent);
+                // load the rest if applicable
+                if (data.more_pending) {
+                    load_more(url+"&offset="+data.next_offset);
+                } else {
+                    $(".replies .ajaxloader").remove();
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert(jqXHR.responseText);
+            }
+        });
+    }
+    load_more(url);
 }
 
 

@@ -39,8 +39,11 @@ from hyperkitty.lib import get_months, get_store, stripped_subject
 from hyperkitty.lib.voting import set_message_votes
 
 
-def _get_thread_replies(request, thread):
-    '''Get and sort the replies for a thread'''
+def _get_thread_replies(request, thread, offset=1, limit=None):
+    '''
+    Get and sort the replies for a thread.
+    By default, offset = 1 to skip the original message.
+    '''
     if not thread:
         raise Http404
 
@@ -51,23 +54,22 @@ def _get_thread_replies(request, thread):
         sort_mode = "thread"
         emails = thread.emails_by_reply
 
-    # Don't forget to add the sender to the participants
-    participants = {thread.starting_email.sender_name:
-                    thread.starting_email.sender_email}
-    emails = list(emails)[1:] # only select replies
+    # XXX: Storm-specific
+    emails = emails.find()
+    emails.config(offset=offset)
+    if limit is not None:
+        emails.config(limit=limit)
+
+    emails = list(emails)
     for email in emails:
         # Extract all the votes for this message
         set_message_votes(email, request.user)
-
-        # Statistics on how many participants and messages this month
-        participants[email.sender_name] = email.sender_email
-
         if sort_mode == "thread":
             email.level = email.thread_depth - 1 # replies start ragged left
             if email.level > 5:
                 email.level = 5
 
-    return {"replies": emails, "participants": participants}
+    return emails
 
 
 def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
@@ -134,38 +136,41 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'fav_action': fav_action,
         'reply_form': ReplyForm(),
         'is_bot': is_bot,
+        'participants': thread.participants,
     }
+    context["participants"].sort(key=lambda x: x[0].lower())
 
     if is_bot:
         # Don't rely on AJAX to load the replies
-        thread_replies = _get_thread_replies(request, thread)
-        context["participants"] = thread_replies["participants"]
-        context["replies"] = thread_replies["replies"]
+        context["replies"] = _get_thread_replies(request, thread)
 
     return render(request, "thread.html", context)
 
 
 def replies(request, mlist_fqdn, threadid):
     """Get JSON encoded lists with the replies and the participants"""
+    chunk_size = 5
+    offset = int(request.GET.get("offset", "1"))
     store = get_store(request)
     thread = store.get_thread(mlist_fqdn, threadid)
-    thread_replies = _get_thread_replies(request, thread)
     mlist = store.get_list(mlist_fqdn)
     context = {
         'mlist': mlist,
         'threadid': threadid,
         'reply_form': ReplyForm(),
     }
-    context["participants"] = thread_replies["participants"]
-    context["replies"] = thread_replies["replies"]
+    context["replies"] = _get_thread_replies(request, thread, offset=offset,
+                                             limit=chunk_size)
 
     replies_tpl = loader.get_template('threads/replies.html')
     replies_html = replies_tpl.render(RequestContext(request, context))
-    participants_tpl = loader.get_template('threads/participants.html')
-    participants_html = participants_tpl.render(RequestContext(request, context))
     response = {"replies_html": replies_html,
-                "participants_html": participants_html,
+                "more_pending": False,
+                "next_offset": None,
                }
+    if len(context["replies"]) == chunk_size:
+        response["more_pending"] = True
+        response["next_offset"] = offset + chunk_size
     return HttpResponse(json.dumps(response),
                         mimetype='application/javascript')
 

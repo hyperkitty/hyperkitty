@@ -44,12 +44,15 @@
 		</form>
 	</div>
 	<div id="participants">
-		{% if is_bot %}
-			{% include 'threads/participants.html' %}
-		{% else %}
-			<span id="participants_title">participants</span>
-			<img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}img/ajax-loader.gif" />
-		{% endif %}
+		<span id="participants_title">participants</span> ({{participants|length}})
+		<ul>
+			{% for name, email in participants %}
+			<li>
+				{% gravatar email 20 %}
+				{{ name|escapeemail }}
+			</li>
+			{% endfor %}
+		</ul>
 	</div>
 </section>
 
