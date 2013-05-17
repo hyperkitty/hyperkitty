@@ -80,8 +80,10 @@ class KittyStoreDjangoMiddleware(object):
                                              settings.KITTYSTORE_DEBUG))
 
     def process_response(self, request, response):
-        request.environ['kittystore.store'].commit()
-    #    request.environ['kittystore.store'].close()
+        if "kittystore.store" in request.environ:
+            # kittystore.store could be absent on automatic redirects for ex.
+            request.environ['kittystore.store'].commit()
+            #request.environ['kittystore.store'].close()
         return response
 
     def process_exception(self, request, exception):
