@@ -378,6 +378,38 @@ function update_thread_replies(url) {
 
 
 /*
+ * List descriptions on the front page
+ */
+function update_list_properties(url) {
+    $.ajax({
+        dataType: "json",
+        url: url,
+        success: function(data) {
+            $(".all-lists .mailinglist").each(function() {
+                var name = $(this).find(".list-address").text();
+                if (!data[name]) {
+                    return;
+                }
+                if (data[name]["display_name"]) {
+                    $(this).find(".list-name").text(data[name]["display_name"]);
+                }
+                if (data[name]["description"]) {
+                    $(this).find(".list-description")
+                           .text(data[name]["description"]);
+                }
+            });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            //alert(jqXHR.responseText);
+        },
+        complete: function(jqXHR, textStatus) {
+            $(".all-lists .mailinglist img.ajaxloader").remove();
+        }
+    });
+}
+
+
+/*
  * Misc.
  */
 

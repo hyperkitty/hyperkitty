@@ -41,6 +41,7 @@ urlpatterns = patterns('hyperkitty.views',
     # Index
     url(r'^/$', 'pages.index', name='index'),
     url(r'^$', 'pages.index', name='root'),
+    url(r'^lists-properties$', 'pages.list_properties', name='list_properties'),
 
     # Account
     #url(r'^accounts/login/$', login_view, {'template_name': 'login.html', 'SSL': True}, name='user_login'),

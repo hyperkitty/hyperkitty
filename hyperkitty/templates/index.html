@@ -16,18 +16,11 @@
 <div class="row-fluid">
 {% for mlist in all_lists %}
 <div class="span3">
-	<a href="{% url 'list_overview' mlist_fqdn=mlist.name %}">
-		<p class="list-name">
-		{% if mlist.display_name %}
-			{{ mlist.display_name }}
-		{% else %}
-			{{ mlist.name }}
-		</p>
-		{% endif %}
+	<a href="{% url 'list_overview' mlist_fqdn=mlist.name %}" class="mailinglist">
+		<p class="list-name">{{ mlist.name }}</p>
 		<p class="list-address">{{ mlist.name }}</p>
-		{% if mlist.description %}
-		<p>{{ mlist.description }}</p>
-		{% endif %}
+		<p class="list-description"></p>
+		<img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}img/ajax-loader.gif" />
 	</a>
 </div>
 {% if forloop.counter|divisibleby:"4" %}
@@ -42,6 +35,17 @@
 </div>
 
 <img id="logo" alt="HyperKitty" src="{{STATIC_URL}}img/logo.png" />
+
+{% endblock %}
+
+{% block additionaljs %}
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		// Load the properties
+		update_list_properties("{% url 'list_properties' %}");
+	});
+</script>
 
 {% endblock %}
 
