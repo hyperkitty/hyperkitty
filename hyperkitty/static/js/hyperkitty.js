@@ -377,7 +377,9 @@ function update_thread_replies(url) {
                 }
             },
             error: function(jqXHR, textStatus, errorThrown) {
-                alert(jqXHR.responseText);
+                if (jqXHR.responseText !== "") {
+                    alert(jqXHR.responseText);
+                }
             }
         });
     }
