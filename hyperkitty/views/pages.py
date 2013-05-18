@@ -61,5 +61,8 @@ def list_properties(request):
             "display_name": mm_list.display_name,
             "description": mm_list.settings["description"],
         }
+        # Update KittyStore if necessary
+        if ml.display_name != mm_list.display_name:
+            ml.display_name = mm_list.display_name
     return HttpResponse(json.dumps(props),
                         mimetype='application/javascript')

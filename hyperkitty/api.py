@@ -34,7 +34,7 @@ from kittystore.storm.model import Email, Thread
 class ListSerializer(serializers.Serializer):
     name = serializers.CharField()
     display_name = serializers.CharField()
-    description = serializers.CharField()
+    subject_prefix = serializers.CharField()
 
 class EmailSerializer(serializers.Serializer):
     list_name = serializers.EmailField()

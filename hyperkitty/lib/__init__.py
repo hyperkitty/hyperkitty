@@ -76,9 +76,8 @@ def get_store(request):
 def stripped_subject(mlist, subject):
     if mlist is None:
         return subject
-    list_name = mlist.display_name or mlist.name[:mlist.name.index("@")]
-    if subject.lower().startswith("[%s] " % list_name.lower()):
-        subject = subject[len(list_name)+3 : ]
+    if subject.lower().startswith(mlist.subject_prefix.lower()):
+        subject = subject[len(mlist.subject_prefix)+1 : ]
     return subject
 
 
