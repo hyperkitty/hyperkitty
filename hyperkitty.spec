@@ -2,7 +2,7 @@
 
 Name:           hyperkitty
 Version:        0.1.5
-Release:        0.2%{?dist}
+Release:        1%{?dist}
 Summary:        A web interface to access GNU Mailman v3 archives
 
 License:        GPLv3
@@ -23,7 +23,7 @@ BuildRequires:  python-sphinx
 # Unit tests in %%check
 BuildRequires:  kittystore
 BuildRequires:  django-gravatar2
-BuildRequires:  django-rest-framework >= 2.0.0
+BuildRequires:  django-rest-framework >= 2.2.0
 BuildRequires:  django-social-auth >= 0.7.1
 BuildRequires:  django-crispy-forms
 BuildRequires:  django-assets
@@ -41,7 +41,7 @@ BuildRequires:  python-django-south
 
 Requires:       django-gravatar2
 Requires:       django-social-auth >= 0.7.1
-Requires:       django-rest-framework >= 2.0.0
+Requires:       django-rest-framework >= 2.2.0
 Requires:       mailman >= 3:3.0.0
 Requires:       kittystore
 Requires:       django-crispy-forms
