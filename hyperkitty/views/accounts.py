@@ -24,7 +24,7 @@ import logging
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.exceptions import SuspiciousOperation
-from django.contrib.auth import logout, authenticate, login, get_backends
+from django.contrib.auth import authenticate, login, get_backends
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.views import login as django_login_view

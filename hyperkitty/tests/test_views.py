@@ -21,9 +21,8 @@
 #
 
 import datetime
-import urllib
 
-from mock import Mock, patch
+from mock import Mock
 
 import django.utils.simplejson as json
 from django.test import TestCase

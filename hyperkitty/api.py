@@ -17,18 +17,12 @@
 # HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import json
-import re
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.exceptions import ParseError
-from django.conf.urls import url
-from django.conf import settings
 
 from hyperkitty.lib import get_store
-from kittystore.storm.model import Email, Thread
 
 
 class ListSerializer(serializers.Serializer):

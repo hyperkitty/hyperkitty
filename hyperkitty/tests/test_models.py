@@ -17,9 +17,8 @@
 # HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Author: Aamir Khan <syst3m.w0rm@gmail.com>
-# 
+#
 
-import datetime
 from django.test import TestCase
 from hyperkitty.models import Rating, Tag
 

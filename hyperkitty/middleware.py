@@ -35,7 +35,7 @@ class PaginationMiddleware(object):
 # http://stackoverflow.com/questions/2799450/django-https-for-just-login-page
 
 from django.conf import settings
-from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.http import HttpResponsePermanentRedirect
 
 SSL = 'SSL'
 

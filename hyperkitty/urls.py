@@ -21,12 +21,10 @@
 #
 
 from django.conf.urls import patterns, include, url
-from django.conf import settings
 from django.views.generic.base import TemplateView
 from api import ListResource, EmailResource, ThreadResource, SearchResource
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.contrib.auth.views import login as login_view
 from django.contrib.auth.views import logout as logout_view
 
 # Uncomment the next two lines to enable the admin:
@@ -44,7 +42,6 @@ urlpatterns = patterns('hyperkitty.views',
     url(r'^lists-properties$', 'pages.list_properties', name='list_properties'),
 
     # Account
-    #url(r'^accounts/login/$', login_view, {'template_name': 'login.html', 'SSL': True}, name='user_login'),
     url(r'^accounts/login/$', 'accounts.login_view', {'template_name': 'login.html', 'SSL': True}, name='user_login'),
     url(r'^accounts/logout/$', logout_view, {'next_page': '/'}, name='user_logout'),
     url(r'^accounts/profile/$', 'accounts.user_profile', name='user_profile'),

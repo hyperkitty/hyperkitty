@@ -27,7 +27,6 @@ from collections import namedtuple
 import django.utils.simplejson as json
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render
-from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.exceptions import SuspiciousOperation
 from django.template import RequestContext, loader

@@ -20,7 +20,7 @@
 #
 
 from django.conf import settings
-from mailmanclient import Client, MailmanConnectionError
+from mailmanclient import Client
 
 
 def subscribe(list_address, user):
