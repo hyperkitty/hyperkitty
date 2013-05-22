@@ -209,9 +209,14 @@
     background-color: rgb(215, 215, 229);
     display: none;
 }
-.replies .email.new-message {
+.replies .email.unread {
     border-top: 1px solid rgb(100, 100, 100);
     background-color: rgb(214, 214, 214);
+}
+
+.email.unread i.unread {
+    float: right;
+    margin-right: 2em;
 }
 
 .email-body {

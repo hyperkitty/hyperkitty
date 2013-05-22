@@ -16,11 +16,6 @@
     list-style-type: none;
 }
 
-i.new-message {
-    float: right;
-    margin-right: 2em;
-}
-
 /* from Bootstrap's alert class */
 .errorlist {
   list-style-type: none;

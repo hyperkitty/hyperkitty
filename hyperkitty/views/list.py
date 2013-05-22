@@ -31,7 +31,7 @@ from django.utils import formats
 from django.utils.dateformat import format as date_format
 from django.http import Http404
 
-from hyperkitty.models import Tag, Favorite
+from hyperkitty.models import Tag, Favorite, LastView
 from hyperkitty.lib import get_months, get_store, get_display_dates, daterange
 from hyperkitty.lib import FLASH_MESSAGES
 from hyperkitty.lib.voting import get_votes
@@ -127,6 +127,20 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
                                              list_address=mlist.name)
         except Tag.DoesNotExist:
             thread.tags = []
+
+        # Unread status
+        thread.unread = False
+        if request.user.is_authenticated():
+            try:
+                last_view_obj = LastView.objects.get(
+                        list_address=mlist.name,
+                        threadid=thread.thread_id,
+                        user=request.user)
+            except LastView.DoesNotExist:
+                thread.unread = True
+            else:
+                if thread.date_active > last_view_obj.view_date:
+                    thread.unread = True
 
     all_threads = threads
     paginator = Paginator(threads, 10)

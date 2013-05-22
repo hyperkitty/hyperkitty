@@ -68,6 +68,10 @@
     margin-left: 2em;
 }
 
+.thread.unread i.unread {
+    vertical-align: baseline;
+}
+
 .thread-content {
     margin-top: 0.5em;
 }
