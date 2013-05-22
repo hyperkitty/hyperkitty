@@ -32,7 +32,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import SuspiciousOperation
 import robot_detection
 
-from hyperkitty.models import Tag, Favorite
+from hyperkitty.models import Tag, Favorite, LastView
 from forms import SearchForm, AddTagForm, ReplyForm
 from hyperkitty.lib import get_months, get_store, stripped_subject
 from hyperkitty.lib.voting import set_message_votes
@@ -111,6 +111,15 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     mlist = store.get_list(mlist_fqdn)
     subject = stripped_subject(mlist, thread.starting_email.subject)
 
+    # Last view
+    last_view = None
+    if request.user.is_authenticated():
+        last_view_obj, created = LastView.objects.get_or_create(
+                list_address=mlist_fqdn, threadid=threadid, user=request.user)
+        if not created:
+            last_view = last_view_obj.view_date
+            last_view_obj.save() # update timestamp
+
     # TODO: eventually move to a middleware ?
     # http://djangosnippets.org/snippets/1865/
     is_bot = True
@@ -136,6 +145,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'reply_form': ReplyForm(),
         'is_bot': is_bot,
         'participants': thread.participants,
+        'last_view': last_view,
     }
     context["participants"].sort(key=lambda x: x[0].lower())
 
@@ -153,10 +163,18 @@ def replies(request, mlist_fqdn, threadid):
     store = get_store(request)
     thread = store.get_thread(mlist_fqdn, threadid)
     mlist = store.get_list(mlist_fqdn)
+    # Last view
+    last_view = request.GET.get("last_view")
+    if last_view:
+        try:
+            last_view = datetime.datetime.fromtimestamp(int(last_view))
+        except ValueError:
+            last_view = None
     context = {
         'mlist': mlist,
         'threadid': threadid,
         'reply_form': ReplyForm(),
+        'last_view': last_view,
     }
     context["replies"] = _get_thread_replies(request, thread, offset=offset,
                                              limit=chunk_size)

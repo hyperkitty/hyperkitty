@@ -3,7 +3,8 @@
 {% load gravatar %}
 {% load hk_generic %}
 
-<div class="email{% if unfolded %} email-first{% endif %}">
+{% is_message_new as is_new %}
+<div class="email{% if unfolded %} email-first{% endif %}{% if is_new %} new-message{% endif %}">
 
 	<div class="email-header" id="{{email.message_id_hash}}">
 		<div class="email-date inline-block pull-right">
@@ -18,6 +19,9 @@
 			{% if unfolded %}<br />{% endif %}
 			<span class="time" title="Sender's time: {{email|sender_date|date:"l, j F H:i:s"}}">{{email|viewer_date|date:"H:i:s"}}</span>
 		</div>
+		{% if is_new %}
+			<i class="new-message icon-eye-close"></i>
+		{% endif %}
 		<div class="gravatar{% if use_mockups %} pull-left{% endif %}">
 			{% gravatar email.sender_email 40 %}
 		</div>

@@ -194,20 +194,24 @@
 }
 
 /* The email thread */
-.even, .odd, .temporary {
+.replies .email {
     border-top: 1px solid rgb(179, 179, 179);
     padding: 1em;
 	margin: 20px 0px 20px 0px;
 }
-.even {
+.even .email {
     background-color: rgb(246, 246, 246);
 }
-.odd {
+.odd .email {
     background-color: rgb(238, 238, 238);
 }
-.temporary {
+.temporary .email {
     background-color: rgb(215, 215, 229);
     display: none;
+}
+.replies .email.new-message {
+    border-top: 1px solid rgb(100, 100, 100);
+    background-color: rgb(214, 214, 214);
 }
 
 .email-body {

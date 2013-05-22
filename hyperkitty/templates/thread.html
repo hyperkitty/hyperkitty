@@ -80,7 +80,7 @@
 		// Hide quotes by default in the thread view
 		fold_quotes()
 		// Load the replies
-		update_thread_replies("{% url 'thread_replies' threadid=threadid mlist_fqdn=mlist.name %}?sort={{sort_mode}}");
+		update_thread_replies("{% url 'thread_replies' threadid=threadid mlist_fqdn=mlist.name %}?sort={{sort_mode}}&last_view={{last_view|date:'U'}}");
 	});
 </script>
 

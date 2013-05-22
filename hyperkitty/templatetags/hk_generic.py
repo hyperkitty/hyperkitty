@@ -183,3 +183,13 @@ def multiply(num1, num2):
     else:
         num2 = float(num2)
     return num1 * num2
+
+
+def is_message_new(context):
+    user = context["user"]
+    last_view = context.get("last_view")
+    email = context["email"]
+    return (user.is_authenticated() and
+            (last_view is None or email.date > last_view)
+           )
+register.assignment_tag(takes_context=True)(is_message_new)

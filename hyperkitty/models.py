@@ -87,3 +87,17 @@ class Favorite(models.Model):
                 unicode(self.user))
 
 admin.site.register(Favorite)
+
+
+class LastView(models.Model):
+    list_address = models.CharField(max_length=255)
+    threadid = models.CharField(max_length=100)
+    user = models.ForeignKey(User)
+    view_date = models.DateTimeField(auto_now=True)
+
+    def __unicode__(self):
+        """Unicode representation"""
+        return u"Last view of %s by user %s was %s" % (unicode(self.threadid),
+                unicode(self.user), self.view_date.isoformat())
+
+admin.site.register(LastView)
