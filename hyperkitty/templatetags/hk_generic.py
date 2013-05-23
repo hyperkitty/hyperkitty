@@ -189,6 +189,6 @@ def is_message_new(context, refdate):
     user = context["user"]
     last_view = context.get("last_view")
     return (user.is_authenticated() and
-            (last_view is None or refdate > last_view)
+            (not last_view or refdate > last_view)
            )
 register.assignment_tag(takes_context=True)(is_message_new)

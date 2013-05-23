@@ -69,6 +69,11 @@
 	{% endif %}
 
 
+	<h3>Threads you have read</h3>
+	<img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}img/ajax-loader.gif" />
+	<div class="views"></div>
+
+
 	<h3>Votes</h3>
 	<h4>Up Votes</h4>
 	{% if votes_up %}
@@ -109,6 +114,17 @@
 	{% endif %}
 
 </div>
+
+{% endblock %}
+
+{% block additionaljs %}
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		// Load the last views
+		update_last_views("{% url 'user_last_views' %}");
+	});
+</script>
 
 {% endblock %}
 

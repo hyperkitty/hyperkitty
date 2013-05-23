@@ -24,6 +24,7 @@ import logging
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.exceptions import SuspiciousOperation
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login, get_backends
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -31,9 +32,10 @@ from django.contrib.auth.views import login as django_login_view
 from django.shortcuts import render, redirect
 from django.utils.http import is_safe_url
 from django.utils.translation import gettext as _
+from django.template import RequestContext, loader
 from social_auth.backends import SocialAuthBackend
 
-from hyperkitty.models import UserProfile, Rating, Favorite
+from hyperkitty.models import UserProfile, Rating, Favorite, LastView
 from hyperkitty.views.forms import RegistrationForm, UserProfileForm
 from hyperkitty.lib import get_store, FLASH_MESSAGES
 
@@ -112,6 +114,7 @@ def user_profile(request, user_email=None):
         thread = store.get_thread(fav.list_address, fav.threadid)
         fav.thread = thread
 
+    # Flash messages
     flash_messages = []
     flash_msg = request.GET.get("msg")
     if flash_msg:
@@ -166,3 +169,30 @@ def user_registration(request):
         'next': redirect_to,
     }
     return render(request, 'register.html', context)
+
+
+@login_required
+def last_views(request):
+    store = get_store(request)
+    # Last viewed threads
+    try:
+        last_views = LastView.objects.filter(user=request.user
+                                            ).order_by("view_date")
+    except Favorite.DoesNotExist:
+        last_views = []
+    last_views_paginator = Paginator(last_views, 10)
+    last_views_page = request.GET.get('lvpage')
+    try:
+        last_views = last_views_paginator.page(last_views_page)
+    except PageNotAnInteger:
+        last_views = last_views_paginator.page(1)
+    except EmptyPage:
+        last_views = last_views_paginator.page(last_views_paginator.num_pages)
+    for last_view in last_views:
+        thread = store.get_thread(last_view.list_address, last_view.threadid)
+        thread.unread = bool( thread.date_active > last_view.view_date )
+        last_view.thread = thread
+
+    return render(request, 'ajax/last_views.html', {
+                "last_views": last_views,
+            })

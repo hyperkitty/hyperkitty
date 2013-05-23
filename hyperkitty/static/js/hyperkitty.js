@@ -420,6 +420,35 @@ function update_list_properties(url) {
 
 
 /*
+ * Last viewed threads in the user's profile
+ */
+function update_last_views(base_url) {
+    var container = $(".views");
+    var loader = container.prev(".ajaxloader");
+    function _update(url) {
+        loader.show();
+        $.ajax({
+            url: url,
+            success: function(data) {
+                container.html(data);
+                container.find(".pager a").click(function(e) {
+                    e.preventDefault();
+                    _update(base_url + $(this).attr("href"));
+                });
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                //alert(jqXHR.responseText);
+            },
+            complete: function(jqXHR, textStatus) {
+                loader.hide();
+            }
+        });
+    }
+    _update(base_url);
+}
+
+
+/*
  * Misc.
  */
 

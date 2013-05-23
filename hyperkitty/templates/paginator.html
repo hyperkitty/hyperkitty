@@ -2,7 +2,7 @@
 <ul class="pager">
 	{% if pager.has_previous %}
 	<li>
-		<a href="?page={{ pager.previous_page_number }}">
+		<a href="?{{ page_key|default:'page' }}={{ pager.previous_page_number }}">
 	{% else %}
 	<li class="disabled">
 		<a href="#">
@@ -12,7 +12,7 @@
 
 	{% if pager.has_next %}
 	<li>
-		<a href="?page={{ pager.next_page_number }}">
+		<a href="?{{ page_key|default:'page' }}={{ pager.next_page_number }}">
 	{% else %}
 	<li class="disabled">
 		<a href="#">

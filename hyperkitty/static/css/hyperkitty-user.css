@@ -84,3 +84,10 @@ table.user-data label,
 table.user-data input {
     margin-bottom: 0;
 }
+
+
+.ajaxloader {
+    margin-top: 0;
+    margin-left: 0;
+    position: absolute;
+}
