@@ -51,7 +51,7 @@
 
 			<div class="replies">
 			{% if is_bot %}
-				{% include 'threads/replies.html' %}
+				{% include 'ajax/replies.html' %}
 			{% else %}
 				<img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}img/ajax-loader.gif" />
 			{% endif %}

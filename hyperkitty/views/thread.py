@@ -179,7 +179,7 @@ def replies(request, mlist_fqdn, threadid):
     context["replies"] = _get_thread_replies(request, thread, offset=offset,
                                              limit=chunk_size)
 
-    replies_tpl = loader.get_template('threads/replies.html')
+    replies_tpl = loader.get_template('ajax/replies.html')
     replies_html = replies_tpl.render(RequestContext(request, context))
     response = {"replies_html": replies_html,
                 "more_pending": False,

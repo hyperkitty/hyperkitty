@@ -178,7 +178,7 @@ def reply(request, mlist_fqdn, message_id_hash):
         "content": form.cleaned_data["message"],
         "level": message.thread_depth, # no need to increment, level = thread_depth - 1
     }
-    t = loader.get_template('messages/temp_message.html')
+    t = loader.get_template('ajax/temp_message.html')
     html = t.render(RequestContext(request, { 'email': reply }))
     result = {"result": "The reply has been sent successfully.",
               "message_html": html}
