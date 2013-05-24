@@ -27,7 +27,12 @@
 					<td>{{ lv.thread.starting_email.sender_name }}</td>
 					<td>{{ lv.thread.starting_email|viewer_date|date:"l, j F Y H:i:s" }}</td>
 					<td>{{ lv.thread|viewer_date|timesince }}</td>
-					<td>{{ lv.thread|length }}</td>
+					<td>
+						{{ lv.thread|length }}
+						{% if thread.unread %}
+						/ {{ thread.unread }} new
+						{% endif %}
+					</td>
 				</tr>
 			{% endfor %}
 			</tbody>

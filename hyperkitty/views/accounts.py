@@ -190,7 +190,12 @@ def last_views(request):
         last_views = last_views_paginator.page(last_views_paginator.num_pages)
     for last_view in last_views:
         thread = store.get_thread(last_view.list_address, last_view.threadid)
-        thread.unread = bool( thread.date_active > last_view.view_date )
+        if thread.date_active > last_view.view_date:
+            # small optimization: only query the replies if necessary
+            # XXX: Storm-specific (count method)
+            thread.unread = thread.replies_after(last_view.view_date).count()
+        else:
+            thread.unread = 0
         last_view.thread = thread
 
     return render(request, 'ajax/last_views.html', {
