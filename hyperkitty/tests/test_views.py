@@ -30,9 +30,14 @@ from django.test.client import Client, RequestFactory
 from django.test.utils import override_settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.urlresolvers import reverse
+from mailman.email.message import Message
 import django_assets.env
 
-from hyperkitty.models import Rating
+import kittystore
+from kittystore.utils import get_message_id_hash
+from kittystore.test import FakeList
+
+from hyperkitty.models import Rating, LastView
 
 
 @override_settings(USE_SSL=False, USE_INTERNAL_AUTH=True, DEBUG=True, ASSETS_DEBUG=True)
@@ -52,7 +57,7 @@ class AccountViewsTestCase(TestCase):
 
     def test_profile(self):
         User.objects.create_user('testuser', 'test@example.com', 'testPass')
-        user = self.client.login(username='testuser', password='testPass')
+        self.client.login(username='testuser', password='testPass')
 
         response = self.client.get(reverse('user_profile'))
         self.assertEqual(response.status_code, 200)
@@ -66,7 +71,7 @@ class AccountViewsTestCase(TestCase):
 
     def test_registration(self):
         User.objects.create_user('testuser', 'test@example.com', 'testPass')
-        user = self.client.login(username='testuser', password='testPass')
+        self.client.login(username='testuser', password='testPass')
 
         # If the user if already logged in, redirect to index page...
         # Don't let him register again
@@ -80,6 +85,68 @@ class AccountViewsTestCase(TestCase):
 
         # @TODO: Try to register a user and verify its working
 
+
+from hyperkitty.views.accounts import last_views
+from hyperkitty.views.thread import thread_index
+
+@override_settings(DEBUG=True, ASSETS_DEBUG=True)
+class LastViewsTestCase(TestCase):
+
+    def setUp(self):
+        # Re-do the settings patching
+        # https://github.com/miracle2k/django-assets/issues/3
+        django_assets.env.reset()
+        django_assets.env.get_env()
+        self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
+        self.client.login(username='testuser', password='testPass')
+        store = kittystore.get_store("sqlite:", debug=False)
+        ml = FakeList("list@example.com")
+        ml.subject_prefix = u"[example] "
+        # Create 3 threads
+        messages = []
+        for msgnum in range(3):
+            msg = Message()
+            msg["From"] = "dummy@example.com"
+            msg["Message-ID"] = "<id%d>" % (msgnum+1)
+            msg["Subject"] = "Dummy message"
+            msg.set_payload("Dummy message")
+            store.add_to_list(ml, msg)
+            messages.append(msg)
+        # 1st is unread, 2nd is read, 3rd is updated
+        LastView.objects.create(list_address="list@example.com", user=self.user,
+                                threadid=get_message_id_hash("<id2>"))
+        LastView.objects.create(list_address="list@example.com", user=self.user,
+                                threadid=get_message_id_hash("<id3>"))
+        msg4 = Message()
+        msg4["From"] = "dummy@example.com"
+        msg4["Message-ID"] = "<id4>"
+        msg4["Subject"] = "Dummy message"
+        msg4["In-Reply-To"] = "<id3>"
+        msg4.set_payload("Dummy message")
+        store.add_to_list(ml, msg4)
+        # Factory
+        defaults = {"kittystore.store": store, "HTTP_USER_AGENT": "testbot"}
+        self.factory = RequestFactory(**defaults)
+
+    def test_profile(self):
+        request = self.factory.get(reverse('user_last_views'))
+        request.user = self.user
+        response = last_views(request)
+        self.assertContains(response, "<td>dummy@example.com</td>",
+                            count=2, status_code=200, html=True)
+
+    def test_thread(self):
+        responses = []
+        for msgnum in range(3):
+            threadid = get_message_id_hash("<id%d>" % (msgnum+1))
+            request = self.factory.get(reverse('thread',
+                        args=["list@example.com", threadid]))
+            request.user = self.user
+            response = thread_index(request, "list@example.com", threadid)
+            responses.append(response)
+        self.assertContains(responses[0], "icon-eye-close", count=1, status_code=200)
+        self.assertNotContains(responses[1], "icon-eye-close", status_code=200)
+        self.assertContains(responses[2], "icon-eye-close", count=1, status_code=200)
 
 
 from hyperkitty.views.message import vote

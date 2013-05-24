@@ -55,9 +55,7 @@ def _get_thread_replies(request, thread, offset=1, limit=None):
 
     # XXX: Storm-specific
     emails = emails.find()
-    emails.config(offset=offset)
-    if limit is not None:
-        emails.config(limit=limit)
+    emails.config(offset=offset, limit=limit)
 
     emails = list(emails)
     for email in emails:
@@ -151,7 +149,8 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
 
     if is_bot:
         # Don't rely on AJAX to load the replies
-        context["replies"] = _get_thread_replies(request, thread)
+        # The limit is a safety measure, don't let a bot kill the DB
+        context["replies"] = _get_thread_replies(request, thread, limit=1000)
 
     return render(request, "thread.html", context)
 
