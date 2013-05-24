@@ -27,10 +27,10 @@ from django.contrib import admin
 
 class Rating(models.Model):
     # @TODO: instead of list_address, user list model from kittystore?
-    list_address = models.CharField(max_length=255)
+    list_address = models.CharField(max_length=255, db_index=True)
 
     # @TODO: instead of messsageid, use message model from kittystore?
-    messageid = models.CharField(max_length=100)
+    messageid = models.CharField(max_length=100, db_index=True)
 
     user = models.ForeignKey(User)
 
@@ -61,10 +61,10 @@ class UserProfile(models.Model):
 
 class Tag(models.Model):
     # @TODO: instead of list_address, user list model from kittystore?
-    list_address = models.CharField(max_length=255)
+    list_address = models.CharField(max_length=255, db_index=True)
 
     # @TODO: instead of threadid, use thread model from kittystore?
-    threadid = models.CharField(max_length=100)
+    threadid = models.CharField(max_length=100, db_index=True)
 
     tag = models.CharField(max_length=255)
 
@@ -77,8 +77,8 @@ admin.site.register(Tag)
 
 
 class Favorite(models.Model):
-    list_address = models.CharField(max_length=255)
-    threadid = models.CharField(max_length=100)
+    list_address = models.CharField(max_length=255, db_index=True)
+    threadid = models.CharField(max_length=100, db_index=True)
     user = models.ForeignKey(User)
 
     def __unicode__(self):
@@ -90,8 +90,8 @@ admin.site.register(Favorite)
 
 
 class LastView(models.Model):
-    list_address = models.CharField(max_length=255)
-    threadid = models.CharField(max_length=100)
+    list_address = models.CharField(max_length=255, db_index=True)
+    threadid = models.CharField(max_length=100, db_index=True)
     user = models.ForeignKey(User)
     view_date = models.DateTimeField(auto_now=True)
 
