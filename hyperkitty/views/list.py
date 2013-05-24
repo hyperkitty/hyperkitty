@@ -142,7 +142,6 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
                 if thread.date_active > last_view_obj.view_date:
                     thread.unread = True
 
-    all_threads = threads
     paginator = Paginator(threads, 10)
     page_num = request.GET.get('page')
     try:
@@ -260,46 +259,6 @@ def overview(request, mlist_fqdn=None):
     return render(request, "recent_activities.html", context)
 
 
-def search(request, mlist_fqdn):
-    keyword = request.GET.get('keyword')
-    target = request.GET.get('target')
-    page = request.GET.get('page')
-    if keyword and target:
-        url = reverse('search_keyword',
-                      kwargs={'mlist_fqdn': mlist_fqdn,
-                              'target': target,
-                              'keyword': keyword})
-        if page:
-            url += '%s/' % page
-    else:
-        url = reverse('search_list', kwargs={"mlist_fqdn": mlist_fqdn})
-    return redirect(url)
-
-
-def search_keyword(request, mlist_fqdn, target, keyword, page=1):
-    store = get_store(request)
-    ## Should we remove the code below?
-    ## If urls.py does it job we should never need it
-    if not keyword:
-        keyword = request.GET.get('keyword')
-    if not target:
-        target = request.GET.get('target')
-    if not target:
-        target = 'Subject'
-    regex = '%%%s%%' % keyword
-    list_name = mlist_fqdn.split('@')[0]
-    if target.lower() == 'subjectcontent':
-        threads = store.search_content_subject(mlist_fqdn, keyword)
-    elif target.lower() == 'subject':
-        threads = store.search_subject(mlist_fqdn, keyword)
-    elif target.lower() == 'content':
-        threads = store.search_content(mlist_fqdn, keyword)
-    elif target.lower() == 'from':
-        threads = store.search_sender(mlist_fqdn, keyword)
-
-    return _search_results_page(request, mlist_fqdn, threads, 'Search', page)
-
-
 def search_tag(request, mlist_fqdn, tag):
     '''Returns threads having a particular tag'''
     store = get_store(request)
@@ -320,4 +279,3 @@ def search_tag(request, mlist_fqdn, tag):
         "no_results_text": "for this tag",
     }
     return _thread_list(request, mlist, threads, extra_context=extra_context)
-

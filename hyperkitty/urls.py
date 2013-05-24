@@ -86,12 +86,6 @@ urlpatterns = patterns('hyperkitty.views',
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/tag/(?P<tag>.*)/$',
         'list.search_tag', name='search_tag'),
 
-    # Search
-    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/search/(?P<target>.*)/(?P<keyword>.*)/$',
-        'list.search_keyword', name="search_keyword"),
-    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/search/$',
-        'list.search', name="search_list"),
-
 
     # REST API
     url(r'^api/$', TemplateView.as_view(template_name="api.html")),

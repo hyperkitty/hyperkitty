@@ -216,8 +216,8 @@ def add_tag(request, mlist_fqdn, threadid):
     # Now refresh the tag list
     tags = Tag.objects.filter(threadid=threadid, list_address=mlist_fqdn)
     FakeMList = namedtuple("MailingList", ["name"])
-    t = loader.get_template('threads/tags.html')
-    html = t.render(RequestContext(request, {
+    tpl = loader.get_template('threads/tags.html')
+    html = tpl.render(RequestContext(request, {
             "tags": tags,
             "mlist": FakeMList(name=mlist_fqdn)}))
 

@@ -31,8 +31,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import login as django_login_view
 from django.shortcuts import render, redirect
 from django.utils.http import is_safe_url
-from django.utils.translation import gettext as _
-from django.template import RequestContext, loader
+#from django.utils.translation import gettext as _
 from social_auth.backends import SocialAuthBackend
 
 from hyperkitty.models import UserProfile, Rating, Favorite, LastView

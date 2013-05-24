@@ -23,9 +23,9 @@ import urllib
 from hashlib import md5
 import datetime
 
-from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 from django.core.mail import EmailMessage
+from mailmanclient import MailmanConnectionError
 
 from hyperkitty.lib import mailman
 
@@ -111,7 +111,7 @@ def post_to_list(request, mlist, subject, message, headers={}):
     # Check that the user is subscribed
     try:
         mailman.subscribe(mlist.name, request.user)
-    except mailman.MailmanConnectionError:
+    except MailmanConnectionError:
         raise PostingFailed("Can't connect to Mailman's REST server, "
                             "your message has not been sent.")
     # send the message

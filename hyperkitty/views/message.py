@@ -35,7 +35,7 @@ from django.contrib.auth.decorators import login_required
 from hyperkitty.lib import get_store, get_months, post_to_list, PostingFailed
 from hyperkitty.lib.voting import set_message_votes
 from hyperkitty.models import Rating
-from forms import SearchForm, ReplyForm, PostForm
+from forms import ReplyForm, PostForm
 
 
 def index(request, mlist_fqdn, message_id_hash):
@@ -43,7 +43,6 @@ def index(request, mlist_fqdn, message_id_hash):
     Displays a single message identified by its message_id_hash (derived from
     message_id)
     '''
-    search_form = SearchForm(auto_id=False)
     store = get_store(request)
     message = store.get_message_by_hash_from_list(mlist_fqdn, message_id_hash)
     if message is None:

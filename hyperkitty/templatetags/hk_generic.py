@@ -151,7 +151,7 @@ def snip_quoted(content, quotemsg="...", autoescape=None):
     quoted = []
     current_quote = []
     current_quote_orig = []
-    lastline = None
+    #lastline = None
     for line in content.split("\n"):
         match = SNIPPED_RE.match(line)
         if match is not None:
@@ -166,7 +166,7 @@ def snip_quoted(content, quotemsg="...", autoescape=None):
                 quoted.append( (current_quote_orig[:], current_quote[:]) )
                 current_quote = []
                 current_quote_orig = []
-        lastline = line
+        #lastline = line
     for quote_orig, quote in quoted:
         replaced = ('<div class="quoted-switch"><a href="#">%s</a></div>' % quotemsg
                    +'<div class="quoted-text">'
