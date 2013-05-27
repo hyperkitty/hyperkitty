@@ -30,6 +30,7 @@ from django.template import RequestContext, loader
 from django.shortcuts import render
 from django.core.urlresolvers import reverse
 from django.core.exceptions import SuspiciousOperation
+from django.utils.timezone import utc
 import robot_detection
 
 from hyperkitty.models import Tag, Favorite, LastView
@@ -166,7 +167,7 @@ def replies(request, mlist_fqdn, threadid):
     last_view = request.GET.get("last_view")
     if last_view:
         try:
-            last_view = datetime.datetime.fromtimestamp(int(last_view))
+            last_view = datetime.datetime.fromtimestamp(int(last_view), utc)
         except ValueError:
             last_view = None
     context = {

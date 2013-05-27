@@ -29,6 +29,7 @@ from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import formats
 from django.utils.dateformat import format as date_format
+from django.utils.timezone import utc
 from django.http import Http404
 
 from hyperkitty.models import Tag, Favorite, LastView
@@ -139,7 +140,8 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
             except LastView.DoesNotExist:
                 thread.unread = True
             else:
-                if thread.date_active > last_view_obj.view_date:
+                if thread.date_active.replace(tzinfo=utc) \
+                        > last_view_obj.view_date:
                     thread.unread = True
 
     paginator = Paginator(threads, 10)
@@ -196,7 +198,7 @@ def overview(request, mlist_fqdn=None):
     for thread_obj in threads_result:
         thread = Thread(thread_obj.thread_id, thread_obj.subject,
                         thread_obj.participants, len(thread_obj),
-                        thread_obj.date_active)
+                        thread_obj.date_active.replace(tzinfo=utc))
         # Statistics on how many participants and threads this month
         participants.update(thread.participants)
         threads.append(thread)

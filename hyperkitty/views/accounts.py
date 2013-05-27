@@ -31,6 +31,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import login as django_login_view
 from django.shortcuts import render, redirect
 from django.utils.http import is_safe_url
+from django.utils.timezone import utc
 #from django.utils.translation import gettext as _
 from social_auth.backends import SocialAuthBackend
 
@@ -189,7 +190,7 @@ def last_views(request):
         last_views = last_views_paginator.page(last_views_paginator.num_pages)
     for last_view in last_views:
         thread = store.get_thread(last_view.list_address, last_view.threadid)
-        if thread.date_active > last_view.view_date:
+        if thread.date_active.replace(tzinfo=utc) > last_view.view_date:
             # small optimization: only query the replies if necessary
             # XXX: Storm-specific (count method)
             thread.unread = thread.replies_after(last_view.view_date).count()

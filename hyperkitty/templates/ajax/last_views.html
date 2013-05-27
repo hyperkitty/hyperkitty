@@ -25,8 +25,8 @@
 					<td><a href="{% url 'thread' mlist_fqdn=lv.list_address threadid=lv.threadid %}"
 							>{{ lv.thread.starting_email.subject }}</a></td>
 					<td>{{ lv.thread.starting_email.sender_name }}</td>
-					<td>{{ lv.thread.starting_email|viewer_date|date:"l, j F Y H:i:s" }}</td>
-					<td>{{ lv.thread|viewer_date|timesince }}</td>
+					<td>{{ lv.thread.starting_email|get_date|date:"l, j F Y H:i:s" }}</td>
+					<td>{{ lv.thread|get_date|timesince }}</td>
 					<td>
 						{{ lv.thread|length }}
 						{% if thread.unread %}

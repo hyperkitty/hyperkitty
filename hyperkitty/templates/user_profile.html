@@ -60,7 +60,7 @@
 			<li>
 				<a href="{% url 'thread' mlist_fqdn=fav.list_address threadid=fav.threadid %}"
 					>{{ fav.thread.starting_email.subject }}</a> by {{ fav.thread.starting_email.sender_name }}
-					({{ fav.thread|viewer_date|date:"l, j F Y H:i:s" }})
+					({{ fav.thread|get_date|date:"l, j F Y H:i:s" }})
 			</li>
 		{% endfor %}
 		</ul>
@@ -83,7 +83,7 @@
 			{% if vote.message.content|trimString|length > 0 %}
 				<a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}"
 					>{{ vote.message.subject }}</a> by {{ vote.message.sender_name }}
-					({{ vote.message|viewer_date|date:"l, j F Y H:i:s" }})
+					({{ vote.message|get_date|date:"l, j F Y H:i:s" }})
 			{% else %}
 				<a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}">Message is empty</a>
 			{% endif %}
@@ -102,7 +102,7 @@
 			{% if vote.message.content|trimString|length > 0 %}
 				<a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}"
 					>{{ vote.message.subject }}</a> by {{ vote.message.sender_name }}
-					({{ vote.message|viewer_date|date:"l, j F Y H:i:s" }})
+					({{ vote.message|get_date|date:"l, j F Y H:i:s" }})
 			{% else %}
 				<a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}">Message is empty</a>
 			{% endif %}

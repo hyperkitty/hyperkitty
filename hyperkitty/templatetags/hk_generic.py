@@ -22,12 +22,13 @@
 import datetime
 import re
 
-from dateutil.tz import tzutc, tzoffset
+from dateutil.tz import tzoffset
 from django import template
 from django.utils.datastructures import SortedDict
 from django.templatetags.tz import localtime
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
+from django.utils.timezone import utc
 
 register = template.Library()
 
@@ -127,19 +128,17 @@ def escapeemail(text):
 
 
 @register.filter()
-def sender_date(email):
-    tz = tzoffset(None, email.timezone * 60)
-    email_date = email.date.replace(tzinfo=tzutc())
-    return email_date.astimezone(tz)
-
-
-@register.filter()
-def viewer_date(email_or_thread):
+def get_date(email_or_thread):
+    """
+    Rebuild the date of an email or a thread taking the timezone into account
+    when applicable.
+    """
     if hasattr(email_or_thread, 'date'):
-        date_obj = email_or_thread.date
+        tz = tzoffset(None, email_or_thread.timezone * 60)
+        date_obj = email_or_thread.date.replace(tzinfo=tz)
     elif hasattr(email_or_thread, 'date_active'):
         date_obj = email_or_thread.date_active
-    return localtime(date_obj.replace(tzinfo=tzutc()))
+    return date_obj
 
 
 SNIPPED_RE = re.compile("^(\s*&gt;).*$", re.M)
@@ -188,6 +187,7 @@ def multiply(num1, num2):
 def is_message_new(context, refdate):
     user = context["user"]
     last_view = context.get("last_view")
+    refdate = refdate.replace(tzinfo=utc)
     return (user.is_authenticated() and
             (not last_view or refdate > last_view)
            )

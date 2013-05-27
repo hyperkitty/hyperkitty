@@ -88,6 +88,7 @@ class AccountViewsTestCase(TestCase):
 
 from hyperkitty.views.accounts import last_views
 from hyperkitty.views.thread import thread_index
+from hyperkitty.views.list import archives
 
 @override_settings(DEBUG=True, ASSETS_DEBUG=True)
 class LastViewsTestCase(TestCase):
@@ -147,6 +148,14 @@ class LastViewsTestCase(TestCase):
         self.assertContains(responses[0], "icon-eye-close", count=1, status_code=200)
         self.assertNotContains(responses[1], "icon-eye-close", status_code=200)
         self.assertContains(responses[2], "icon-eye-close", count=1, status_code=200)
+
+    def test_thread_list(self):
+        now = datetime.datetime.now()
+        request = self.factory.get(reverse('archives_with_month', args=["list@example.com", now.year, now.month]))
+        request.user = self.user
+        response = archives(request, "list@example.com", now.year, now.month)
+        self.assertContains(response, "icon-eye-close",
+                            count=2, status_code=200)
 
 
 from hyperkitty.views.message import vote

@@ -2,6 +2,7 @@
 {% load storm %}
 {% load gravatar %}
 {% load hk_generic %}
+{% load tz %}
 
 {% is_message_new email.date as is_new %}
 <div class="email{% if unfolded %} email-first{% endif %}{% if is_new %} unread{% endif %}">
@@ -10,14 +11,14 @@
 		<div class="email-date inline-block pull-right">
 			{% ifchanged %}
 			<span class="date">
-				{{email|viewer_date|date:"l, j F"}}
+				{{email|get_date|date:"l, j F"}}
 				{% if unfolded %}
-				{{email|viewer_date|date:"Y"}}
+				{{email|get_date|date:"Y"}}
 				{% endif %}
 			</span>
 			{% endifchanged %}
 			{% if unfolded %}<br />{% endif %}
-			<span class="time" title="Sender's time: {{email|sender_date|date:"l, j F H:i:s"}}">{{email|viewer_date|date:"H:i:s"}}</span>
+			<span class="time" title="Sender's time: {% localtime off %}{{email|get_date|date:"l, j F H:i:s e"}}{% endlocaltime %}">{{email|get_date|date:"H:i:s"}}</span>
 		</div>
 		{% if is_new %}
 			<i class="unread icon-eye-close" title="Unread"></i>
