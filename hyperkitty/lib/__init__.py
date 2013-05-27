@@ -77,7 +77,7 @@ def stripped_subject(mlist, subject):
     if mlist is None:
         return subject
     if subject.lower().startswith(mlist.subject_prefix.lower()):
-        subject = subject[len(mlist.subject_prefix)+1 : ]
+        subject = subject[len(mlist.subject_prefix) : ]
     return subject
 
 
