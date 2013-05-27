@@ -34,7 +34,7 @@ from django.contrib.auth.decorators import login_required
 
 from hyperkitty.lib import get_store, get_months, post_to_list, PostingFailed
 from hyperkitty.lib.voting import set_message_votes
-from hyperkitty.models import Rating
+from hyperkitty.models import Rating, LastView
 from forms import ReplyForm, PostForm
 
 
@@ -51,12 +51,26 @@ def index(request, mlist_fqdn, message_id_hash):
     set_message_votes(message, request.user)
     mlist = store.get_list(mlist_fqdn)
 
+    # Last thread view
+    last_view = None
+    if request.user.is_authenticated():
+        try:
+            last_view_obj = LastView.objects.get(
+                    list_address=mlist.name,
+                    threadid=message.thread_id,
+                    user=request.user)
+        except LastView.DoesNotExist:
+            pass
+        else:
+            last_view = last_view_obj.view_date
+
     context = {
         'mlist' : mlist,
         'message': message,
         'message_id_hash' : message_id_hash,
         'months_list': get_months(store, mlist.name),
         'reply_form': ReplyForm(),
+        'last_view': last_view,
     }
     return render(request, "message.html", context)
 
