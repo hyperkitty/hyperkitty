@@ -188,6 +188,8 @@ def overview(request, mlist_fqdn=None):
 
     store = get_store(request)
     mlist = store.get_list(mlist_fqdn)
+    if mlist is None:
+        raise Http404("No archived mailing-list by that name.")
     threads_result = store.get_threads(list_name=mlist.name, start=begin_date,
         end=end_date)
 
