@@ -86,7 +86,7 @@ table.user-data input {
 }
 
 
-.ajaxloader {
+#user-profile .ajaxloader {
     margin-top: 0;
     margin-left: 0;
     position: absolute;
