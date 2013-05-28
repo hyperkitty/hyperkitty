@@ -275,7 +275,9 @@ def search_tag(request, mlist_fqdn, tag):
 
     threads = []
     for t in tags:
-        threads.append(store.get_thread(mlist_fqdn, t.threadid))
+        thread = store.get_thread(mlist_fqdn, t.threadid)
+        if thread is not None:
+            threads.append(thread)
 
     extra_context = {
         "tag": tag,
