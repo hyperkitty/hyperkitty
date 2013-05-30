@@ -130,14 +130,13 @@ def escapeemail(text):
 @register.filter()
 def get_date(email_or_thread):
     """
-    Rebuild the date of an email or a thread taking the timezone into account
-    when applicable.
+    Rebuild the date of an email or a thread taking the timezone into account.
     """
     if hasattr(email_or_thread, 'date'):
         tz = tzoffset(None, email_or_thread.timezone * 60)
         date_obj = email_or_thread.date.replace(tzinfo=tz)
     elif hasattr(email_or_thread, 'date_active'):
-        date_obj = email_or_thread.date_active
+        date_obj = email_or_thread.date_active.replace(tzinfo=utc)
     return date_obj
 
 
