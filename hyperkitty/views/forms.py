@@ -24,6 +24,7 @@ from django.core import validators
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 
+from hyperkitty.models import UserProfile
 
 
 def isValidUsername(username):
@@ -61,6 +62,8 @@ class RegistrationForm(forms.Form):
 class UserProfileForm(forms.Form):
     first_name = forms.CharField()
     last_name = forms.CharField()
+    timezone = forms.ChoiceField(label="Time zone",
+                                 choices=UserProfile.TIMEZONES)
 
 
 

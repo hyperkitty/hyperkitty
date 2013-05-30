@@ -69,3 +69,23 @@ class SSLRedirect(object):
         """Django can't perform a SSL redirect while maintaining POST data.
            Please structure your views so that redirects only occur during GETs."""
         return HttpResponsePermanentRedirect(newurl)
+
+
+
+# https://docs.djangoproject.com/en/dev/topics/i18n/timezones/
+
+from django.utils import timezone
+from django.core.exceptions import ObjectDoesNotExist
+from hyperkitty.models import UserProfile
+
+class TimezoneMiddleware(object):
+
+    def process_request(self, request):
+        if not request.user.is_authenticated():
+            return
+        try:
+            user_profile = request.user.get_profile()
+        except ObjectDoesNotExist:
+            return
+        if user_profile.timezone:
+            timezone.activate(user_profile.timezone)

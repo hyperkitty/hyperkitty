@@ -23,7 +23,7 @@ import logging
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.core.exceptions import SuspiciousOperation
+from django.core.exceptions import SuspiciousOperation, ObjectDoesNotExist
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login, get_backends
 from django.contrib.auth.decorators import login_required
@@ -31,7 +31,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import login as django_login_view
 from django.shortcuts import render, redirect
 from django.utils.http import is_safe_url
-from django.utils.timezone import utc
+from django.utils.timezone import utc, get_current_timezone
 #from django.utils.translation import gettext as _
 from social_auth.backends import SocialAuthBackend
 
@@ -67,8 +67,7 @@ def user_profile(request, user_email=None):
     # try to render the user profile.
     try:
         user_profile = request.user.get_profile()
-        # @TODO: Include the error name e.g, ProfileDoesNotExist?
-    except:
+    except ObjectDoesNotExist:
         user_profile = UserProfile.objects.create(user=request.user)
 
     if request.method == 'POST':
@@ -76,7 +75,9 @@ def user_profile(request, user_email=None):
         if form.is_valid():
             request.user.first_name = form.cleaned_data["first_name"]
             request.user.last_name = form.cleaned_data["last_name"]
+            user_profile.timezone = form.cleaned_data["timezone"]
             request.user.save()
+            user_profile.save()
             redirect_url = reverse('user_profile')
             redirect_url += "?msg=updated-ok"
             return redirect(redirect_url)
@@ -84,6 +85,7 @@ def user_profile(request, user_email=None):
         form = UserProfileForm(initial={
                 "first_name": request.user.first_name,
                 "last_name": request.user.last_name,
+                "timezone": get_current_timezone(),
                 })
 
     # Votes

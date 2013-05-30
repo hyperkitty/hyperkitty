@@ -23,6 +23,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
 
+import pytz
+
 
 
 class Rating(models.Model):
@@ -53,6 +55,8 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
 
     karma = models.IntegerField(default=1)
+    TIMEZONES = [ (tz, tz) for tz in pytz.common_timezones ]
+    timezone = models.CharField(max_length=100, choices=TIMEZONES, default=u"")
 
     def __unicode__(self):
         """Unicode representation"""
