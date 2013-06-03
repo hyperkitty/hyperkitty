@@ -281,7 +281,7 @@
     padding-right: 2em;
     display: none;
 }
-#unreadnavbar div {
+#unreadnavbar>div {
     width: auto;
     padding: 0.2em 1em;
     border: 1px solid #888;

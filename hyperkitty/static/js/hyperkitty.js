@@ -290,6 +290,7 @@ function setup_unreadnavbar(element) {
     element.find(".prevunread").click(function(e) { e.preventDefault(); scroll(-1); });
     $(document).bind("keydown", "j", function(e) { scroll(1); });
     $(document).bind("keydown", "k", function(e) { scroll(-1); });
+    element.find("a").tooltip();
     element.animate({height: "show"}, 700);
 }
 
