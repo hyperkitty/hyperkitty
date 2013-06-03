@@ -88,13 +88,20 @@
     margin-right: 2em;
 }
 
-.favorite a {
+#thread-overview-info form.favorite {
+    margin-bottom: 0;
+}
+#thread-overview-info .favorite a {
     color: rgb(167, 169, 172);
 }
-.favorite a.saved,
-.favorite a.notsaved {
+#thread-overview-info .favorite a.saved,
+#thread-overview-info .favorite a.notsaved {
     /* Will be shown via Javascript */
     display: none;
+}
+
+#thread-overview-info .unread {
+    margin: 0 2px 0 2px;
 }
 
 /* Tags */
@@ -260,4 +267,24 @@
 .quoted-text {
     border-left: 2px solid rgb(55, 113, 200);
     padding-left: 0.2em;
+}
+
+
+/*
+ * Navigation for unread messages
+ */
+#unreadnavbar {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    text-align: right;
+    padding-right: 2em;
+    display: none;
+}
+#unreadnavbar div {
+    width: auto;
+    padding: 0.2em 1em;
+    border: 1px solid #888;
+    border-bottom: none;
+    background-color: #eee;
 }

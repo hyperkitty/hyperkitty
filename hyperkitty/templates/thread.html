@@ -31,38 +31,38 @@
 
 		<div class="row-fluid">
 
-		<div class="span9">
-		<!-- main section, the email thread -->
-		<section id="thread-content">
+			<div class="span9">
+				<!-- main section, the email thread -->
+				<section id="thread-content">
 
-			<!-- Start first email -->
-			{% include 'messages/message.html' with email=first_mail unfolded='True' %}
-			<!-- End first email -->
+					<!-- Start first email -->
+					{% include 'messages/message.html' with email=first_mail unfolded='True' %}
+					<!-- End first email -->
 
-			<p class="sort-mode">
-				{% if sort_mode == "date" %}
-				<a href="{% url 'thread' threadid=threadid mlist_fqdn=mlist.name %}?sort=thread"
-					>Show replies by thread</a>
-				{% else %}
-				<a href="{% url 'thread' threadid=threadid mlist_fqdn=mlist.name %}?sort=date"
-					>Show replies by date</a>
-				{% endif %}
-			</p>
+					<p class="sort-mode">
+						{% if sort_mode == "date" %}
+						<a href="{% url 'thread' threadid=threadid mlist_fqdn=mlist.name %}?sort=thread"
+							>Show replies by thread</a>
+						{% else %}
+						<a href="{% url 'thread' threadid=threadid mlist_fqdn=mlist.name %}?sort=date"
+							>Show replies by date</a>
+						{% endif %}
+					</p>
 
-			<div class="replies">
-			{% if is_bot %}
-				{% include 'ajax/replies.html' %}
-			{% else %}
-				<img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}img/ajax-loader.gif" />
-			{% endif %}
+					<div class="replies">
+					{% if is_bot %}
+						{% include 'ajax/replies.html' %}
+					{% else %}
+						<img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}img/ajax-loader.gif" />
+					{% endif %}
+					</div>
+
+				</section>
 			</div>
 
-		</section>
-		</div>
-
-		<div class="span3">
-			{% include 'threads/right_col.html' %}
-		</div>
+			<div class="span3">
+				{% include 'threads/right_col.html' %}
+			</div>
 
 		</div>
 
@@ -81,7 +81,7 @@
 		fold_quotes();
 		// Load the replies
 		update_thread_replies("{% url 'thread_replies' threadid=threadid mlist_fqdn=mlist.name %}?sort={{sort_mode}}&last_view={{last_view|date:'U'}}");
-		setup_navkeys();
+		setup_unreadnavbar("#unreadnavbar");
 	});
 </script>
 

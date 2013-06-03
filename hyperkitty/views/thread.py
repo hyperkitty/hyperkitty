@@ -118,6 +118,15 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         if not created:
             last_view = last_view_obj.view_date
             last_view_obj.save() # update timestamp
+    # get the number of unread messages
+    if last_view is None:
+        if request.user.is_authenticated():
+            unread_count = len(thread)
+        else:
+            unread_count = 0
+    else:
+        # XXX: Storm-specific
+        unread_count = thread.replies_after(last_view).count()
 
     # TODO: eventually move to a middleware ?
     # http://djangosnippets.org/snippets/1865/
@@ -145,6 +154,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'is_bot': is_bot,
         'participants': thread.participants,
         'last_view': last_view,
+        'unread_count': unread_count,
     }
     context["participants"].sort(key=lambda x: x[0].lower())
 

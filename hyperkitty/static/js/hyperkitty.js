@@ -263,14 +263,15 @@ function setup_replies(baseElem) {
     }).change();
 }
 
-function setup_navkeys() {
+function setup_unreadnavbar(element) {
+    element = $(element);
+    if (element.length === 0) {
+        return;
+    }
     var current_index;
-    function scroll(e) {
-        var inc;
+    function scroll(inc) {
         var unreads = $(".email.unread");
         if (unreads.length == 0) { return; }
-        if (e.data == "j") { inc = 1; }
-        if (e.data == "k") { inc = -1; }
         if (typeof current_index == "undefined") {
             if (inc == 1) { current_index = -1; }
             if (inc == -1) { current_index = unreads.length; }
@@ -278,14 +279,18 @@ function setup_navkeys() {
         current_index = current_index + inc;
         if (current_index < 0) { current_index = unreads.length - 1; }
         if (current_index >= unreads.length) { current_index = 0; }
+        element.find(".unreadindex").text(current_index + 1);
         // compensate for the fixed banner at the top
         var target = unreads.eq(current_index).offset().top - 70;
-        $("html,body").animate({
+        $("html,body").stop(true, false).animate({
             scrollTop: target
         }, 500);
     }
-    $(document).bind("keydown", "j", scroll);
-    $(document).bind("keydown", "k", scroll);
+    element.find(".nextunread").click(function(e) { e.preventDefault(); scroll(1); });
+    element.find(".prevunread").click(function(e) { e.preventDefault(); scroll(-1); });
+    $(document).bind("keydown", "j", function(e) { scroll(1); });
+    $(document).bind("keydown", "k", function(e) { scroll(-1); });
+    element.animate({height: "show"}, 700);
 }
 
 

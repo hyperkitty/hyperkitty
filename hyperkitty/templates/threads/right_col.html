@@ -23,6 +23,7 @@
 			old
 		</div>
 	</div>
+	<!-- End dates -->
 	<form id="fav_form" name="favorite" method="post" class="favorite"
 		  action="{% url 'favorite' mlist_fqdn=mlist.name threadid=threadid %}">
 		{% csrf_token %}
@@ -32,7 +33,11 @@
 			<a href="#RmFav" class="saved">Remove from favorite discussions</a>
 		</p>
 	</form>
-	<!-- End dates -->
+	<p class="unread">
+		{% if user.is_authenticated %}
+		<i class="unread icon-eye-close"></i> {{ unread_count }} unread messages
+		{% endif %}
+	</p>
 	<div id="tags">
 		{% include 'threads/tags.html' %}
 	</div>
@@ -55,5 +60,16 @@
 		</ul>
 	</div>
 </section>
+
+{% if user.is_authenticated %}
+<div id="unreadnavbar">
+	<div>
+	Unreads: <span class="unreadindex">0</span>/{{unread_count}}
+	&nbsp;
+	Go to: <a href="#" class="nextunread">next &darr;</a>
+		 - <a href="#" class="prevunread">prev &uarr;</a>
+	</div>
+</div>
+{% endif %}
 
 {# vim: set noet: #}
