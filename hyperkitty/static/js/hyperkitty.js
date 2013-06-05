@@ -486,7 +486,7 @@ function update_last_views(base_url) {
 function setup_months_list() {
     var current = $("#months-list li.current").parent().prev();
     if (!current.length) {
-        current = false; // overview or search
+        current = 0; // overview or search
     } else {
         current = current.prevAll("h3").length;
     }
