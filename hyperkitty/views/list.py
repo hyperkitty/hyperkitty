@@ -152,6 +152,7 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         threads = paginator.page(paginator.num_pages)
+    threads.page_range = [ p+1 for p in range(paginator.num_pages) ]
 
     flash_messages = []
     flash_msg = request.GET.get("msg")

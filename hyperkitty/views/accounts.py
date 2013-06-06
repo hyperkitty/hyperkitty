@@ -190,6 +190,7 @@ def last_views(request):
         last_views = last_views_paginator.page(1)
     except EmptyPage:
         last_views = last_views_paginator.page(last_views_paginator.num_pages)
+    last_views.page_range = [ p+1 for p in range(last_views_paginator.num_pages) ]
     for last_view in last_views:
         thread = store.get_thread(last_view.list_address, last_view.threadid)
         if thread.date_active.replace(tzinfo=utc) > last_view.view_date:

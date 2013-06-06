@@ -462,7 +462,7 @@ function update_last_views(base_url) {
             url: url,
             success: function(data) {
                 container.html(data);
-                container.find(".pager a").click(function(e) {
+                container.find(".pagination a").click(function(e) {
                     e.preventDefault();
                     _update(base_url + $(this).attr("href"));
                 });

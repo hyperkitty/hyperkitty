@@ -194,7 +194,12 @@ def is_message_new(context, refdate):
 
 
 @register.simple_tag(takes_context=True)
-def add_to_query_string(context, **kwargs):
+def add_to_query_string(context, *args, **kwargs):
     qs = context["request"].GET.copy()
-    qs.update(kwargs)
+    # create a dict from every args couple
+    new_qs_elements = dict(zip(args[::2], args[1::2]))
+    new_qs_elements.update(kwargs)
+    # don't use the .update() method, it appends instead of overwriting
+    for key, value in new_qs_elements.iteritems():
+        qs[key] = value
     return qs.urlencode()

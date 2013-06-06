@@ -56,7 +56,7 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
 				&larr; Previous</a>
 			</li>
 
-			{% for pagenum in page_range %}
+			{% for pagenum in messages.page_range %}
 				<li{% if pagenum == messages.number %} class="active"{% endif %}>
 					<a href="?{% add_to_query_string page=pagenum %}">{{ pagenum }}</a>
 				</li>

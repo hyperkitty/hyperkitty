@@ -74,7 +74,7 @@ def search(request, page=1):
     query = request.GET.get("query")
     mlist_fqdn = request.GET.get("list")
     try:
-        page_num = int(request.GET.get('page'))
+        page_num = int(request.GET.get('page', "1"))
     except ValueError:
         page_num = 1
     results_per_page = 10
@@ -99,6 +99,7 @@ def search(request, page=1):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         messages = paginator.page(paginator.num_pages)
+    messages.page_range = [ p+1 for p in range(paginator.num_pages) ]
 
     context = {
         'mlist' : mlist,
@@ -106,7 +107,6 @@ def search(request, page=1):
         'current_page': page_num,
         'messages': messages,
         'total': total,
-        'page_range': [ p+1 for p in range(paginator.num_pages) ],
     }
     return render(request, "search_results.html", context)
 

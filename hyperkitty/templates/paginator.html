@@ -1,8 +1,11 @@
 {% load i18n %}
-<ul class="pager">
+{% load hk_generic %}
+
+<div class="pagination pagination-centered">
+<ul>
 	{% if pager.has_previous %}
 	<li>
-		<a href="?{{ page_key|default:'page' }}={{ pager.previous_page_number }}">
+		<a href="?{% add_to_query_string page_key|default:'page' pager.previous_page_number %}">
 	{% else %}
 	<li class="disabled">
 		<a href="#">
@@ -10,9 +13,15 @@
 		&larr; Newer</a>
 	</li>
 
+	{% for pagenum in pager.page_range %}
+		<li{% if pagenum == pager.number %} class="active"{% endif %}>
+			<a href="?{% add_to_query_string page_key|default:'page' pagenum %}">{{ pagenum }}</a>
+		</li>
+	{% endfor %}
+
 	{% if pager.has_next %}
 	<li>
-		<a href="?{{ page_key|default:'page' }}={{ pager.next_page_number }}">
+		<a href="?{% add_to_query_string page_key|default:'page' pager.next_page_number %}">
 	{% else %}
 	<li class="disabled">
 		<a href="#">
@@ -20,5 +29,6 @@
 		Older &rarr;</a>
 	</li>
 </ul>
+</div>
 
 {# vim: set noet: #}
