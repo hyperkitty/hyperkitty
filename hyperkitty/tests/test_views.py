@@ -145,9 +145,10 @@ class LastViewsTestCase(TestCase):
             request.user = self.user
             response = thread_index(request, "list@example.com", threadid)
             responses.append(response)
-        self.assertContains(responses[0], "icon-eye-close", count=1, status_code=200)
-        self.assertNotContains(responses[1], "icon-eye-close", status_code=200)
-        self.assertContains(responses[2], "icon-eye-close", count=1, status_code=200)
+        # There's always one icon in the right column, so all counts are +1
+        self.assertContains(responses[0], "icon-eye-close", count=2, status_code=200)
+        self.assertContains(responses[1], "icon-eye-close", count=1, status_code=200)
+        self.assertContains(responses[2], "icon-eye-close", count=2, status_code=200)
 
     def test_thread_list(self):
         now = datetime.datetime.now()
