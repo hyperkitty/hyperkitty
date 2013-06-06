@@ -169,6 +169,7 @@ class MessageViewsTestCase(TestCase):
         class FakeMessage(object):
             def __init__(self, h):
                 self.message_id_hash = h
+                self.list_name = "list@example.com"
         self.store = Mock()
         self.store.get_message_by_hash_from_list.side_effect = \
                 lambda l, h: FakeMessage(h)

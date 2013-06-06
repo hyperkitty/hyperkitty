@@ -22,7 +22,6 @@
 
 import urllib
 import datetime
-from collections import namedtuple
 
 import django.utils.simplejson as json
 from django.http import HttpResponse, Http404
@@ -142,13 +141,11 @@ def vote(request, mlist_fqdn, message_id_hash):
 
     # Extract all the votes for this message to refresh it
     set_message_votes(message, request.user)
-    FakeMList = namedtuple("MailingList", ["name"])
     t = loader.get_template('messages/like_form.html')
     html = t.render(RequestContext(request, {
             "object": message,
             "message_id_hash": message_id_hash,
-            "mlist": FakeMList(name=mlist_fqdn)}
-            ))
+            }))
 
     result = { "like": message.likes, "dislike": message.dislikes,
                "html": html, }
