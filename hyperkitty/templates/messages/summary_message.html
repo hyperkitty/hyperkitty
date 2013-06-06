@@ -1,0 +1,37 @@
+{% load url from future %}
+{% load gravatar %}
+{% load hk_generic %}
+{% load storm %}
+
+		<div class="thread">
+			<div>
+				<span class="thread-title">
+					<a name="{{message.message_id_hash}}"
+					   href="{% url 'message_index' message_id_hash=message.message_id_hash mlist_fqdn=message.list_name %}"
+					   >{{ message.subject|strip_subject:mlist }}</a></span>
+				<span class="thread-date">{{ message|get_date|timesince }}</span>
+			</div>
+			<div class="thread-content">
+				<div class="gravatar">
+					{% if message.sender_email %}
+					{% gravatar message.sender_email 40 %}
+					<br />
+					{% endif %}
+					{{ message.sender_name|escapeemail }}
+				</div>
+				<div class="thread-email">
+					<span class="expander collapsed">
+						{{ message.content|urlizetrunc:76|escapeemail }}
+					</span>
+				</div>
+			</div>
+			<div class="thread-info">
+				<div class="tags">
+				</div>
+				{% include "messages/like_form.html" with message_id_hash=message.message_id_hash object=message %}
+				<a href="{% url 'message_index' message_id_hash=message.message_id_hash mlist_fqdn=message.list_name %}"
+				   class="btn thread-show">Show message</a>
+			</div>
+		</div>
+
+{# vim: set noet: #}

@@ -52,6 +52,7 @@ class KittyStoreWSGIMiddleware(object):
             environ['kittystore.store']  = \
                     self._local.__dict__.setdefault('store',
                         kittystore.get_store(settings.KITTYSTORE_URL,
+                                             settings.KITTYSTORE_SEARCH_INDEX,
                                              settings.KITTYSTORE_DEBUG))
         try:
             return self._app(environ, start_response)
@@ -77,6 +78,7 @@ class KittyStoreDjangoMiddleware(object):
             request.environ['kittystore.store']  = \
                     self._local.__dict__.setdefault('store',
                         kittystore.get_store(settings.KITTYSTORE_URL,
+                                             settings.KITTYSTORE_SEARCH_INDEX,
                                              settings.KITTYSTORE_DEBUG))
 
     def process_response(self, request, response):

@@ -31,7 +31,6 @@ from django.http import HttpResponse
 from mailmanclient import Client
 
 from hyperkitty.lib import get_store
-from forms import SearchForm
 
 
 def index(request):
@@ -40,7 +39,6 @@ def index(request):
 
     context = {
         'all_lists': lists,
-        'search_form': SearchForm(auto_id=False),
         }
     return render(request, "index.html", context)
 

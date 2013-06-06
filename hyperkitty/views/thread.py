@@ -34,7 +34,7 @@ from django.utils.timezone import utc
 import robot_detection
 
 from hyperkitty.models import Tag, Favorite, LastView
-from forms import SearchForm, AddTagForm, ReplyForm
+from forms import AddTagForm, ReplyForm
 from hyperkitty.lib import get_months, get_store, stripped_subject
 from hyperkitty.lib.voting import set_message_votes
 
@@ -72,7 +72,6 @@ def _get_thread_replies(request, thread, offset=1, limit=None):
 
 def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     ''' Displays all the email for a given thread identifier '''
-    search_form = SearchForm(auto_id=False)
     store = get_store(request)
     thread = store.get_thread(mlist_fqdn, threadid)
     if not thread:
@@ -140,7 +139,6 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'threadid': threadid,
         'subject': subject,
         'tags': tags,
-        'search_form': search_form,
         'addtag_form': tag_form,
         'month': thread.date_active,
         'first_mail': thread.starting_email,

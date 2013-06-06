@@ -98,24 +98,6 @@ class AddTagForm(forms.Form):
 
 
 
-class SearchForm(forms.Form):
-    target =  forms.CharField(label='', help_text=None,
-                widget=forms.Select(
-                    choices=(('Subject', 'Subject'),
-                            ('Content', 'Content'),
-                            ('SubjectContent', 'Subject & Content'),
-                            ('From', 'From'))
-                    )
-                )
-
-    keyword = forms.CharField(max_length=100,label='', help_text=None,
-                widget=forms.TextInput(
-                    attrs={'placeholder': 'Search this list.'}
-                    )
-                )
-
-
-
 class ReplyForm(forms.Form):
     newthread = forms.BooleanField(label="", required=False)
     subject = forms.CharField(label="", required=False,

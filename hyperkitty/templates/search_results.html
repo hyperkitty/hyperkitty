@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load gravatar %}
+{% load hk_generic %}
+
+
+{% block title %}
+Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:mlist.name|escapeemail }} {% endif %} - {{ app_name|title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="row-fluid">
+
+{% include 'threads/month_list.html' %}
+
+	<div id="thread-list" class="span8">
+
+		<div class="thread-list-header page-header">
+			{% if mlist %}
+			<h1>{{ mlist.display_name|default:mlist.name|escapeemail }}
+				<small>Search results for query "{{ query }}"</small>
+			</h1>
+			{% else %}
+			<h1>Search results
+			<small>for query "{{ query }}"</small>
+			</h1>
+			{% endif %}
+			<ul class="thread-list-info">
+				{% if mlist.display_name %}
+				<li class="list-address">
+					{{ mlist.name|escapeemail }}
+				</li>
+				{% endif %}
+				<li class="discussion">
+					{{ total }} messages
+				</li>
+			</ul>
+		</div>
+
+		{% for message in messages %}
+			{% include "messages/summary_message.html" %}
+		{% empty %}
+			<p>Sorry no email could be found for this query.</p>
+		{% endfor %}
+
+		<div class="pagination pagination-centered">
+		<ul>
+			{% if messages.has_previous %}
+			<li>
+				<a href="?{% add_to_query_string page=messages.previous_page_number %}">
+			{% else %}
+			<li class="disabled">
+				<a href="#">
+			{% endif %}
+				&larr; Previous</a>
+			</li>
+
+			{% for pagenum in page_range %}
+				<li{% if pagenum == messages.number %} class="active"{% endif %}>
+					<a href="?{% add_to_query_string page=pagenum %}">{{ pagenum }}</a>
+				</li>
+			{% endfor %}
+
+			{% if messages.has_next %}
+			<li>
+				<a href="?{% add_to_query_string page=messages.next_page_number %}">
+			{% else %}
+			<li class="disabled">
+				<a href="#">
+			{% endif %}
+				Next &rarr;</a>
+			</li>
+		</ul>
+		</div>
+
+	</div>
+
+</div>
+
+{% endblock %}
+
+{% block additionaljs %}
+<script>
+$(document).ready(function() {
+    $('span.expander').expander({
+        slicePoint: 500,
+        userCollapseText : '\n[View Less]',
+        expandText : '\n[View More]',
+        beforeExpand: function() {
+            $(this).removeClass("collapsed");
+            $(this).addClass("expanded");
+        },
+        onCollapse: function() {
+            $(this).removeClass("expanded");
+            $(this).addClass("collapsed");
+        }
+    });
+});
+</script>
+{% endblock %}
+
+{# vim: set noet: #}

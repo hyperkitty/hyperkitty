@@ -35,8 +35,7 @@ from django.http import Http404
 from hyperkitty.models import Tag, Favorite, LastView
 from hyperkitty.lib import get_months, get_store, get_display_dates, daterange
 from hyperkitty.lib import FLASH_MESSAGES
-from hyperkitty.lib.voting import get_votes
-from forms import SearchForm
+from hyperkitty.lib.voting import get_votes, set_message_votes
 
 
 if settings.USE_MOCKUPS:
@@ -76,7 +75,6 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
     if mlist is None:
         raise Http404("No archived mailing-list by that name.")
     store = get_store(request)
-    search_form = SearchForm(auto_id=False)
 
     participants = set()
     for thread in threads:
@@ -165,7 +163,6 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
     context = {
         'mlist' : mlist,
         'current_page': page_num,
-        'search_form': search_form,
         'threads': threads,
         'participants': len(participants),
         'months_list': get_months(store, mlist.name),
@@ -178,7 +175,6 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
 def overview(request, mlist_fqdn=None):
     if not mlist_fqdn:
         return redirect('/')
-    search_form = SearchForm(auto_id=False)
 
     # Get stats for last 30 days
     today = datetime.datetime.utcnow()
@@ -250,7 +246,6 @@ def overview(request, mlist_fqdn=None):
 
     context = {
         'mlist' : mlist,
-        'search_form': search_form,
         'top_threads': top_threads[:5],
         'most_active_threads': active_threads[:5],
         'top_author': authors,
@@ -261,27 +256,3 @@ def overview(request, mlist_fqdn=None):
         'archives_baseurl': archives_baseurl,
     }
     return render(request, "recent_activities.html", context)
-
-
-def search_tag(request, mlist_fqdn, tag):
-    '''Returns threads having a particular tag'''
-    store = get_store(request)
-    mlist = store.get_list(mlist_fqdn)
-
-    try:
-        tags = Tag.objects.filter(tag=tag)
-    except Tag.DoesNotExist:
-        tags = {}
-
-    threads = []
-    for t in tags:
-        thread = store.get_thread(mlist_fqdn, t.threadid)
-        if thread is not None:
-            threads.append(thread)
-
-    extra_context = {
-        "tag": tag,
-        "list_title": "Search results for tag \"%s\"" % tag,
-        "no_results_text": "for this tag",
-    }
-    return _thread_list(request, mlist, threads, extra_context=extra_context)

@@ -183,6 +183,7 @@ def multiply(num1, num2):
     return num1 * num2
 
 
+@register.assignment_tag(takes_context=True)
 def is_message_new(context, refdate):
     user = context["user"]
     last_view = context.get("last_view")
@@ -190,4 +191,10 @@ def is_message_new(context, refdate):
     return (user.is_authenticated() and
             (not last_view or refdate > last_view)
            )
-register.assignment_tag(takes_context=True)(is_message_new)
+
+
+@register.simple_tag(takes_context=True)
+def add_to_query_string(context, **kwargs):
+    qs = context["request"].GET.copy()
+    qs.update(kwargs)
+    return qs.urlencode()
