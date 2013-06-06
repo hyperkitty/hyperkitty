@@ -44,6 +44,7 @@ class Archiver(object):
 
     def __init__(self):
         self.store = None
+        self.base_url = None
         self.store_url = None
         self._load_conf()
 
@@ -55,6 +56,7 @@ class Archiver(object):
         # Read our specific configuration file
         archiver_config = external_configuration(
                 config.archiver.hyperkitty.configuration)
+        self.base_url = archiver_config.get("general", "base_url")
         settings_path = archiver_config.get("general", "django_settings")
         if settings_path.endswith("/settings.py"):
             # we want the directory
@@ -79,7 +81,7 @@ class Archiver(object):
         :param mlist: The IMailingList object.
         :returns: The url string.
         """
-        return urljoin(self.store_url,
+        return urljoin(self.base_url,
                        reverse('list_overview', args=[mlist.fqdn_listname]))
 
     def permalink(self, mlist, msg):
@@ -95,7 +97,7 @@ class Archiver(object):
         """
         msg_id = msg['Message-Id'].strip().strip("<>")
         msg_hash = get_message_id_hash(msg_id)
-        return urljoin(self.store_url, reverse('message_index',
+        return urljoin(self.base_url, reverse('message_index',
                     kwargs={"mlist_fqdn": mlist.fqdn_listname,
                             "message_id_hash": msg_hash}))
 
