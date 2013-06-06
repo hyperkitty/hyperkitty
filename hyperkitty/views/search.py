@@ -24,7 +24,7 @@ from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Page
 
 from hyperkitty.models import Tag
-from hyperkitty.lib import get_store
+from hyperkitty.lib import get_store, paginate
 from hyperkitty.lib.voting import get_votes, set_message_votes
 
 from .list import _thread_list
@@ -91,20 +91,11 @@ def search(request, page=1):
             raise Http404("No archived mailing-list by that name.")
 
     paginator = SearchPaginator(messages, 10, total)
-    try:
-        messages = paginator.page(page_num)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        messages = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        messages = paginator.page(paginator.num_pages)
-    messages.page_range = [ p+1 for p in range(paginator.num_pages) ]
+    messages = paginate(messages, page_num, paginator=paginator)
 
     context = {
         'mlist' : mlist,
         "query": query,
-        'current_page': page_num,
         'messages': messages,
         'total': total,
     }

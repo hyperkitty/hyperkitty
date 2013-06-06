@@ -24,7 +24,6 @@ import logging
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.exceptions import SuspiciousOperation, ObjectDoesNotExist
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login, get_backends
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -37,7 +36,7 @@ from social_auth.backends import SocialAuthBackend
 
 from hyperkitty.models import UserProfile, Rating, Favorite, LastView
 from hyperkitty.views.forms import RegistrationForm, UserProfileForm
-from hyperkitty.lib import get_store, FLASH_MESSAGES
+from hyperkitty.lib import get_store, FLASH_MESSAGES, paginate
 
 
 logger = logging.getLogger(__name__)
@@ -182,15 +181,7 @@ def last_views(request):
                                             ).order_by("view_date")
     except Favorite.DoesNotExist:
         last_views = []
-    last_views_paginator = Paginator(last_views, 10)
-    last_views_page = request.GET.get('lvpage')
-    try:
-        last_views = last_views_paginator.page(last_views_page)
-    except PageNotAnInteger:
-        last_views = last_views_paginator.page(1)
-    except EmptyPage:
-        last_views = last_views_paginator.page(last_views_paginator.num_pages)
-    last_views.page_range = [ p+1 for p in range(last_views_paginator.num_pages) ]
+    last_views = paginate(last_views, request.GET.get('lvpage'))
     for last_view in last_views:
         thread = store.get_thread(last_view.list_address, last_view.threadid)
         if thread.date_active.replace(tzinfo=utc) > last_view.view_date:

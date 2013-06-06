@@ -26,7 +26,6 @@ from collections import namedtuple, defaultdict
 from django.shortcuts import redirect, render
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.utils import formats
 from django.utils.dateformat import format as date_format
 from django.utils.timezone import utc
@@ -34,7 +33,7 @@ from django.http import Http404
 
 from hyperkitty.models import Tag, Favorite, LastView
 from hyperkitty.lib import get_months, get_store, get_display_dates, daterange
-from hyperkitty.lib import FLASH_MESSAGES
+from hyperkitty.lib import FLASH_MESSAGES, paginate
 from hyperkitty.lib.voting import get_votes, set_message_votes
 
 
@@ -142,17 +141,7 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
                         > last_view_obj.view_date:
                     thread.unread = True
 
-    paginator = Paginator(threads, 10)
-    page_num = request.GET.get('page')
-    try:
-        threads = paginator.page(page_num)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        threads = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        threads = paginator.page(paginator.num_pages)
-    threads.page_range = [ p+1 for p in range(paginator.num_pages) ]
+    threads = paginate(threads, request.GET.get('page'))
 
     flash_messages = []
     flash_msg = request.GET.get("msg")
@@ -163,7 +152,6 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
 
     context = {
         'mlist' : mlist,
-        'current_page': page_num,
         'threads': threads,
         'participants': len(participants),
         'months_list': get_months(store, mlist.name),

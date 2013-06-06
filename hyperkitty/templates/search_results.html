@@ -44,35 +44,7 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
 			<p>Sorry no email could be found for this query.</p>
 		{% endfor %}
 
-		<div class="pagination pagination-centered">
-		<ul>
-			{% if messages.has_previous %}
-			<li>
-				<a href="?{% add_to_query_string page=messages.previous_page_number %}">
-			{% else %}
-			<li class="disabled">
-				<a href="#">
-			{% endif %}
-				&larr; Previous</a>
-			</li>
-
-			{% for pagenum in messages.page_range %}
-				<li{% if pagenum == messages.number %} class="active"{% endif %}>
-					<a href="?{% add_to_query_string page=pagenum %}">{{ pagenum }}</a>
-				</li>
-			{% endfor %}
-
-			{% if messages.has_next %}
-			<li>
-				<a href="?{% add_to_query_string page=messages.next_page_number %}">
-			{% else %}
-			<li class="disabled">
-				<a href="#">
-			{% endif %}
-				Next &rarr;</a>
-			</li>
-		</ul>
-		</div>
+		{% include "paginator.html" with pager=messages notbydate=True %}
 
 	</div>
 
