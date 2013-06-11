@@ -70,15 +70,27 @@ def search_tag(request, mlist_fqdn, tag):
 
 def search(request, page=1):
     """ Returns messages corresponding to a query """
+    results_per_page = 10
     store = get_store(request)
     query = request.GET.get("query")
     mlist_fqdn = request.GET.get("list")
+
     try:
         page_num = int(request.GET.get('page', "1"))
     except ValueError:
         page_num = 1
-    results_per_page = 10
-    query_result = store.search(query, mlist_fqdn, page_num, results_per_page)
+
+    sort_mode = request.GET.get('sort')
+    sortedby = None
+    reverse = False
+    if sort_mode == "date-asc":
+        sortedby = "date"
+    elif sort_mode == "date-desc":
+        sortedby = "date"
+        reverse = True
+
+    query_result = store.search(query, mlist_fqdn, page_num, results_per_page,
+                                sortedby=sortedby, reverse=reverse)
     total = query_result["total"]
     messages = query_result["results"]
     for message in messages:
@@ -98,6 +110,7 @@ def search(request, page=1):
         "query": query,
         'messages': messages,
         'total': total,
+        'sort_mode': sort_mode,
     }
     return render(request, "search_results.html", context)
 

@@ -36,7 +36,30 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
 					{{ total }} messages
 				</li>
 			</ul>
+
+			<form method="get" action="{% url 'search' %}" class="form-inline">
+				<input type="hidden" name="query" value="{{ query|escape }}" />
+				<input type="hidden" name="page" value="{{ messages.number }}" />
+				{% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
+				<p>
+				Sort mode:
+				<select name="sort">
+					<option value="score"
+						{% if sort_mode == "score" %}selected{% endif %}
+						>score</option>
+					<option value="date-desc"
+						{% if sort_mode == "date-desc" %}selected{% endif %}
+						>latest first</option>
+					<option value="date-asc"
+						{% if sort_mode == "date-asc" %}selected{% endif %}
+						>earliest first</option>
+				</select>
+				<button type="submit" class="btn btn-small">Update</button>
+				</p>
+			</form>
+
 		</div>
+
 
 		{% for message in messages %}
 			{% include "messages/summary_message.html" %}

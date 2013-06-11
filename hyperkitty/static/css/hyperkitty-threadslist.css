@@ -25,6 +25,15 @@
     float: right;
 }
 
+#thread-list .thread-list-header form {
+    margin-bottom: 0;
+    float: right;
+}
+#thread-list .thread-list-header form select {
+    margin-bottom: 0;
+    width: auto;
+}
+
 
 /*
  * Thread view
