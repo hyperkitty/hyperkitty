@@ -16,35 +16,33 @@ Create a new thread - {{ mlist.display_name|default:mlist.name|escapeemail }} - 
 
 {% include 'threads/month_list.html' %}
 
-	<div class="span7">
+    <div class="span7">
 
-		<div class="message-header">
-			<h1>Create a new thread</h1>
-		</div>
+        <div class="message-header">
+            <h1>Create a new thread</h1>
+        </div>
 
-		{% if failure %}
-		<div class="alert alert-error">
-			<button type="button" class="close" data-dismiss="alert">&times;</button>
-			{{ failure }}
-		</div>
-		{% endif %}
+        {% if failure %}
+        <div class="alert alert-error">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {{ failure }}
+        </div>
+        {% endif %}
 
-		<div class="new-thread-form">
-			<form method="post"
-				  action="{% url 'message_new' mlist_fqdn=mlist.name %}">
-				{% csrf_token %}
-				{{ post_form|crispy }}
-				<p class="buttons">
-					<button type="submit" class="submit btn btn-primary">Send</button>
-					or <a class="cancel" href="{% url 'archives_latest' mlist_fqdn=mlist.name %}">cancel</a>
-				</p>
-			</form>
-		</div>
+        <div class="new-thread-form">
+            <form method="post"
+                  action="{% url 'message_new' mlist_fqdn=mlist.name %}">
+                {% csrf_token %}
+                {{ post_form|crispy }}
+                <p class="buttons">
+                    <button type="submit" class="submit btn btn-primary">Send</button>
+                    or <a class="cancel" href="{% url 'archives_latest' mlist_fqdn=mlist.name %}">cancel</a>
+                </p>
+            </form>
+        </div>
 
-	</div>
+    </div>
 
 </div>
 
 {% endblock %}
-
-{# vim: set noet: #}

@@ -13,105 +13,105 @@
 
 <div id="user-profile">
 
-	<h1>User profile <small>for {{ user }}</small></h1>
+    <h1>User profile <small>for {{ user }}</small></h1>
 
-	<form method="post" action="{% url 'user_profile' %}">
-	{% csrf_token %}
-	<table class="table table-bordered table-striped user-data">
-		<tbody>
-			<tr>
-				<th>{% trans 'User name:' %}</th>
-				<td>{{ user.username}}</td>
-			</tr>
-			{{ form.as_table }}
-			<tr>
-				<th>{% trans 'Email:' %}</th>
-				<td>{{ user.email }}</td>
-			</tr>
-			{% if use_mockups %}
-			<tr>
-				<th>{% trans 'Karma:' %}</th>
-				<td>{{ user_profile.karma }}</td>
-			</tr>
-			{% endif %}
-			<tr>
-				<th>{% trans 'Date joined:' %}</th>
-				<td>{{ user.date_joined }}</td>
-			</tr>
-		</tbody>
-	</table>
-	<p class="buttons">
-		<button type="submit" class="submit btn btn-primary">Update</button>
-		or <a href="#" class="cancel" onclick="document.forms[0].reset(); return false;">cancel</a>
-	</p>
-	</form>
+    <form method="post" action="{% url 'user_profile' %}">
+    {% csrf_token %}
+    <table class="table table-bordered table-striped user-data">
+        <tbody>
+            <tr>
+                <th>{% trans 'User name:' %}</th>
+                <td>{{ user.username}}</td>
+            </tr>
+            {{ form.as_table }}
+            <tr>
+                <th>{% trans 'Email:' %}</th>
+                <td>{{ user.email }}</td>
+            </tr>
+            {% if use_mockups %}
+            <tr>
+                <th>{% trans 'Karma:' %}</th>
+                <td>{{ user_profile.karma }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <th>{% trans 'Date joined:' %}</th>
+                <td>{{ user.date_joined }}</td>
+            </tr>
+        </tbody>
+    </table>
+    <p class="buttons">
+        <button type="submit" class="submit btn btn-primary">Update</button>
+        or <a href="#" class="cancel" onclick="document.forms[0].reset(); return false;">cancel</a>
+    </p>
+    </form>
 
-	<div class="gravatar">
-		<a href="http://gravatar.com/">{% gravatar user.email 150 %}</a>
-		<p><a href="http://gravatar.com/">Edit on gravatar.com</a></p>
-	</div>
+    <div class="gravatar">
+        <a href="http://gravatar.com/">{% gravatar user.email 150 %}</a>
+        <p><a href="http://gravatar.com/">Edit on gravatar.com</a></p>
+    </div>
 
-	<div class="clearfix"></div>
+    <div class="clearfix"></div>
 
-	<h3>Favorites</h3>
-	{% if favorites %}
-		<ul>
-		{% for fav in favorites %}
-			<li>
-				<a href="{% url 'thread' mlist_fqdn=fav.list_address threadid=fav.threadid %}"
-					>{{ fav.thread.starting_email.subject }}</a> by {{ fav.thread.starting_email.sender_name }}
-					({{ fav.thread|get_date|date:"l, j F Y H:i:s" }})
-			</li>
-		{% endfor %}
-		</ul>
-	{% else %}
-		<p>No favorite yet.</p>
-	{% endif %}
-
-
-	<h3>Threads you have read</h3>
-	<img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}img/ajax-loader.gif" />
-	<div class="views"></div>
+    <h3>Favorites</h3>
+    {% if favorites %}
+        <ul>
+        {% for fav in favorites %}
+            <li>
+                <a href="{% url 'thread' mlist_fqdn=fav.list_address threadid=fav.threadid %}"
+                    >{{ fav.thread.starting_email.subject }}</a> by {{ fav.thread.starting_email.sender_name }}
+                    ({{ fav.thread|get_date|date:"l, j F Y H:i:s" }})
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No favorite yet.</p>
+    {% endif %}
 
 
-	<h3>Votes</h3>
-	<h4>Up Votes</h4>
-	{% if votes_up %}
-		<ul>
-		{% for vote in votes_up %}
-			<li>
-			{% if vote.message.content|trimString|length > 0 %}
-				<a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}"
-					>{{ vote.message.subject }}</a> by {{ vote.message.sender_name }}
-					({{ vote.message|get_date|date:"l, j F Y H:i:s" }})
-			{% else %}
-				<a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}">Message is empty</a>
-			{% endif %}
-			</li>
-		{% endfor %}
-		</ul>
-	{% else %}
-		<p>No up vote yet.</p>
-	{% endif %}
+    <h3>Threads you have read</h3>
+    <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}img/ajax-loader.gif" />
+    <div class="views"></div>
 
-	<h4>Down Votes</h4>
-	{% if votes_down %}
-		<ul>
-		{% for vote in votes_down %}
-			<li>
-			{% if vote.message.content|trimString|length > 0 %}
-				<a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}"
-					>{{ vote.message.subject }}</a> by {{ vote.message.sender_name }}
-					({{ vote.message|get_date|date:"l, j F Y H:i:s" }})
-			{% else %}
-				<a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}">Message is empty</a>
-			{% endif %}
-			</li>
-		{% endfor %}
-		</ul>
-	{% else %}
-		<p>No down vote yet.</p>
-	{% endif %}
+
+    <h3>Votes</h3>
+    <h4>Up Votes</h4>
+    {% if votes_up %}
+        <ul>
+        {% for vote in votes_up %}
+            <li>
+            {% if vote.message.content|trimString|length > 0 %}
+                <a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}"
+                    >{{ vote.message.subject }}</a> by {{ vote.message.sender_name }}
+                    ({{ vote.message|get_date|date:"l, j F Y H:i:s" }})
+            {% else %}
+                <a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}">Message is empty</a>
+            {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No up vote yet.</p>
+    {% endif %}
+
+    <h4>Down Votes</h4>
+    {% if votes_down %}
+        <ul>
+        {% for vote in votes_down %}
+            <li>
+            {% if vote.message.content|trimString|length > 0 %}
+                <a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}"
+                    >{{ vote.message.subject }}</a> by {{ vote.message.sender_name }}
+                    ({{ vote.message|get_date|date:"l, j F Y H:i:s" }})
+            {% else %}
+                <a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}">Message is empty</a>
+            {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No down vote yet.</p>
+    {% endif %}
 
 </div>
 
@@ -120,12 +120,10 @@
 {% block additionaljs %}
 
 <script type="text/javascript">
-	$(document).ready(function() {
-		// Load the last views
-		update_last_views("{% url 'user_last_views' %}");
-	});
+    $(document).ready(function() {
+        // Load the last views
+        update_last_views("{% url 'user_last_views' %}");
+    });
 </script>
 
 {% endblock %}
-
-{# vim: set noet: #}

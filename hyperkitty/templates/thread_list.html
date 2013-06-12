@@ -14,39 +14,39 @@
 
 {% include 'threads/month_list.html' %}
 
-	<div id="thread-list" class="span8">
+    <div id="thread-list" class="span8">
 
-		<div class="thread-list-header page-header">
-			<a href="{% url "message_new" mlist_fqdn=mlist.name %}"
-			   class="thread-new btn{% if not user.is_authenticated %} disabled" title="You must be logged-in to create a thread.{% endif %}"
-			   ><strong>+</strong> Start a new thread</a>
-			<h1>{{ mlist.display_name|default:mlist.name|escapeemail }}
-				<small>{{ list_title }}</small>
-			</h1>
-			<ul class="thread-list-info">
-				{% if mlist.display_name %}
-				<li class="list-address">
-					{{ mlist.name|escapeemail }}
-				</li>
-				{% endif %}
-				<li class="participant">
-					{{ participants }} participants
-				</li>
-				<li class="discussion">
-					{{ threads.paginator.count }} discussions
-				</li>
-			</ul>
-		</div>
+        <div class="thread-list-header page-header">
+            <a href="{% url "message_new" mlist_fqdn=mlist.name %}"
+               class="thread-new btn{% if not user.is_authenticated %} disabled" title="You must be logged-in to create a thread.{% endif %}"
+               ><strong>+</strong> Start a new thread</a>
+            <h1>{{ mlist.display_name|default:mlist.name|escapeemail }}
+                <small>{{ list_title }}</small>
+            </h1>
+            <ul class="thread-list-info">
+                {% if mlist.display_name %}
+                <li class="list-address">
+                    {{ mlist.name|escapeemail }}
+                </li>
+                {% endif %}
+                <li class="participant">
+                    {{ participants }} participants
+                </li>
+                <li class="discussion">
+                    {{ threads.paginator.count }} discussions
+                </li>
+            </ul>
+        </div>
 
-		{% for thread in threads %}
-			{% include "threads/summary_thread_large.html" %}
-		{% empty %}
-			<p>Sorry no email threads could be found {{ no_results_text }}.</p>
-		{% endfor %}
+        {% for thread in threads %}
+            {% include "threads/summary_thread_large.html" %}
+        {% empty %}
+            <p>Sorry no email threads could be found {{ no_results_text }}.</p>
+        {% endfor %}
 
-		{% include "paginator.html" with pager=threads %}
+        {% include "paginator.html" with pager=threads %}
 
-	</div>
+    </div>
 
 </div>
 
@@ -71,5 +71,3 @@ $(document).ready(function() {
 });
 </script>
 {% endblock %}
-
-{# vim: set noet: #}

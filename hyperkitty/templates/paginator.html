@@ -3,37 +3,35 @@
 
 <div class="pagination pagination-centered">
 <ul>
-	{% if pager.has_previous %}
-	<li>
-		<a href="?{% add_to_query_string page_key|default:'page' pager.previous_page_number %}">
-	{% else %}
-	<li class="disabled">
-		<a href="#">
-	{% endif %}
-		&larr; {% if notbydate %}Previous{% else %}Newer{% endif %}
-		</a>
-	</li>
+    {% if pager.has_previous %}
+    <li>
+        <a href="?{% add_to_query_string page_key|default:'page' pager.previous_page_number %}">
+    {% else %}
+    <li class="disabled">
+        <a href="#">
+    {% endif %}
+        &larr; {% if notbydate %}Previous{% else %}Newer{% endif %}
+        </a>
+    </li>
 
-	{% for pagenum in pager.page_range %}
-		<li{% if pagenum == pager.number %} class="active"{% endif %}>
-			{% if pagenum == "..." %}
-			<a href="#" class="disabled">...</a>
-			{% else %}
-			<a href="?{% add_to_query_string page_key|default:'page' pagenum %}">{{ pagenum }}</a>
-			{% endif %}
-		</li>
-	{% endfor %}
+    {% for pagenum in pager.page_range %}
+        <li{% if pagenum == pager.number %} class="active"{% endif %}>
+            {% if pagenum == "..." %}
+            <a href="#" class="disabled">...</a>
+            {% else %}
+            <a href="?{% add_to_query_string page_key|default:'page' pagenum %}">{{ pagenum }}</a>
+            {% endif %}
+        </li>
+    {% endfor %}
 
-	{% if pager.has_next %}
-	<li>
-		<a href="?{% add_to_query_string page_key|default:'page' pager.next_page_number %}">
-	{% else %}
-	<li class="disabled">
-		<a href="#">
-	{% endif %}
-		{% if notbydate %}Next{% else %}Older{% endif %} &rarr;</a>
-	</li>
+    {% if pager.has_next %}
+    <li>
+        <a href="?{% add_to_query_string page_key|default:'page' pager.next_page_number %}">
+    {% else %}
+    <li class="disabled">
+        <a href="#">
+    {% endif %}
+        {% if notbydate %}Next{% else %}Older{% endif %} &rarr;</a>
+    </li>
 </ul>
 </div>
-
-{# vim: set noet: #}

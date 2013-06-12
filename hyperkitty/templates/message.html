@@ -15,23 +15,21 @@
 
 {% include 'threads/month_list.html' %}
 
-	<div class="span7">
+    <div class="span7">
 
-		<div class="message-header">
-			<a class="thread-back"
-				href="{% url 'thread' threadid=message.thread_id mlist_fqdn=mlist.name %}#{{message.message_id_hash}}">
-			</a> {# the background image will be a "back to thread" button #}
-			<h1>{{ message.subject }}</h1>
-		</div>
+        <div class="message-header">
+            <a class="thread-back"
+                href="{% url 'thread' threadid=message.thread_id mlist_fqdn=mlist.name %}#{{message.message_id_hash}}">
+            </a> {# the background image will be a "back to thread" button #}
+            <h1>{{ message.subject }}</h1>
+        </div>
 
-		<section id="thread-content">
-			{% include 'messages/message.html' with email=message unfolded='True' %}
-		</section>
+        <section id="thread-content">
+            {% include 'messages/message.html' with email=message unfolded='True' %}
+        </section>
 
-	</div>
+    </div>
 
 </div>
 
 {% endblock %}
-
-{# vim: set noet: #}

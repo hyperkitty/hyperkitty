@@ -14,17 +14,15 @@
 <h2>Register</h2>
 
 <form action="{{ request.path }}?next={{ next|urlencode }}" method="post" class="form-horizontal">
-	{% csrf_token %}
-	{{ form|crispy }}
-	<div class="control-group">
-		<div class="controls">
-			<button type="submit" class="btn btn-primary">{% trans "Register" %}</button>
-		</div>
-	</div>
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="control-group">
+        <div class="controls">
+            <button type="submit" class="btn btn-primary">{% trans "Register" %}</button>
+        </div>
+    </div>
 </form>
 
 </div>
 
 {% endblock %}
-
-{# vim: set noet: #}

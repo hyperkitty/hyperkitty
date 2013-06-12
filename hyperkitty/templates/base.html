@@ -2,104 +2,102 @@
 {% load assets %}
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<meta name="ROBOTS" content="INDEX, FOLLOW" />
-		<title>{% block title %}{{ app_name|title }}{% endblock %}</title>
-		<meta name="author" content="" />
-		<meta name="dc.language" content="en" />
-		<link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" />
-		<link rel="stylesheet" media="all" href="{{ STATIC_URL }}libs/jquery/ui-lightness/jquery-ui-1.10.0.custom.min.css" />
-		{% assets filters="cssrewrite,cssmin", output="gen/hyperkitty.css", "libs/bootstrap/css/bootstrap.min.css", "css/hyperkitty-base.css", "css/hyperkitty-common.css", "css/hyperkitty-index.css", "css/hyperkitty-user.css", "css/hyperkitty-overview.css", "css/hyperkitty-threadslist.css", "css/hyperkitty-message.css" %}
-		<link rel="stylesheet" media="all" href="{{ ASSET_URL }}" />
-		{% endassets %}
-		{% block additional_stylesheets %} {% endblock %}
-	</head>
-	{% load i18n %}
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="ROBOTS" content="INDEX, FOLLOW" />
+        <title>{% block title %}{{ app_name|title }}{% endblock %}</title>
+        <meta name="author" content="" />
+        <meta name="dc.language" content="en" />
+        <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" />
+        <link rel="stylesheet" media="all" href="{{ STATIC_URL }}libs/jquery/ui-lightness/jquery-ui-1.10.0.custom.min.css" />
+        {% assets filters="cssrewrite,cssmin", output="gen/hyperkitty.css", "libs/bootstrap/css/bootstrap.min.css", "css/hyperkitty-base.css", "css/hyperkitty-common.css", "css/hyperkitty-index.css", "css/hyperkitty-user.css", "css/hyperkitty-overview.css", "css/hyperkitty-threadslist.css", "css/hyperkitty-message.css" %}
+        <link rel="stylesheet" media="all" href="{{ ASSET_URL }}" />
+        {% endassets %}
+        {% block additional_stylesheets %} {% endblock %}
+    </head>
+    {% load i18n %}
 
-	<body>
-		<div class="container-fluid">
-		<header class="row-fluid">
-			<div class="navbar navbar-fixed-top">
-				  <div class="navbar-inner">
-					<div class="container-fluid">
+    <body>
+        <div class="container-fluid">
+        <header class="row-fluid">
+            <div class="navbar navbar-fixed-top">
+                  <div class="navbar-inner">
+                    <div class="container-fluid">
 
-						<ul class="nav auth">
-						{% if user.is_authenticated %}
-							<li><a class="mm_logout" href="{% url 'user_logout' %}?next={% url 'root' %}">Logout</a></li>
-							<li><a href="{% url 'user_profile' %}">{{ user.username }}</a></li>
-						{% else %}
-							<li><a class="mm_user" href="{% url 'user_login' %}?next={{next|default:request.path|urlencode}}">Login</a></li>
-							{% if use_internal_auth %}
-							<li><a href="{% url 'user_registration' %}?next={{next|default:request.path|urlencode}}"> Sign Up </a></li>
-							{% endif %}
-						{% endif %}
-						</ul>
+                        <ul class="nav auth">
+                        {% if user.is_authenticated %}
+                            <li><a class="mm_logout" href="{% url 'user_logout' %}?next={% url 'root' %}">Logout</a></li>
+                            <li><a href="{% url 'user_profile' %}">{{ user.username }}</a></li>
+                        {% else %}
+                            <li><a class="mm_user" href="{% url 'user_login' %}?next={{next|default:request.path|urlencode}}">Login</a></li>
+                            {% if use_internal_auth %}
+                            <li><a href="{% url 'user_registration' %}?next={{next|default:request.path|urlencode}}"> Sign Up </a></li>
+                            {% endif %}
+                        {% endif %}
+                        </ul>
 
-						<div id="search-form" class="nav">
-							<form name="search" method="get" action="{% url 'search' %}" class="form-search">
-								{% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
-								<div class="input-append">
-									<input name="query" type="text" class="search-query"
-									       placeholder="Search {% if mlist %}this list{% else %}all lists{% endif %}"
-										   {% if query %}value="{{ query }}"{% endif %}
-									       />
-									<button type="submit" class="btn"><i class="icon-search"></i></button>
-								</div>
-							</form>
-						</div>
-
-
-						<a class="brand" href="{% url 'root' %}">{{ app_name|title }}</a>
-
-						<ul class="nav">
-
-							<li {% if all_lists %} class="active"{% endif %}>
-								<a href="{% url 'root' %}">All lists</a>
-							</li>
-
-						{% if mlist %}
-							<li id="list_name" class="active">
-								<a href="{% url 'list_overview' mlist_fqdn=mlist.name %}">{{mlist.name}}</a>
-							</li>
-						{% endif %}
+                        <div id="search-form" class="nav">
+                            <form name="search" method="get" action="{% url 'search' %}" class="form-search">
+                                {% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
+                                <div class="input-append">
+                                    <input name="query" type="text" class="search-query"
+                                           placeholder="Search {% if mlist %}this list{% else %}all lists{% endif %}"
+                                           {% if query %}value="{{ query }}"{% endif %}
+                                           />
+                                    <button type="submit" class="btn"><i class="icon-search"></i></button>
+                                </div>
+                            </form>
+                        </div>
 
 
-						</ul>
-					</div>
-				  </div>
-			</div>
-		</header>
+                        <a class="brand" href="{% url 'root' %}">{{ app_name|title }}</a>
 
-		{% if flash_messages %}
-		<div class="flashmsgs">
-			{% for flash_msg in flash_messages %}
-			<div class="flashmsg-wrapper">
-				<div class="alert alert-{{ flash_msg.type }}">
-					{% if flash_msg.type != "success" %}
-						<button type="button" class="close" data-dismiss="alert">&times;</button>
-					{% endif %}
-					{{ flash_msg.msg }}
-				</div>
-			</div>
-			{% endfor %}
-		</div>
-		{% endif %}
+                        <ul class="nav">
 
-		{% block content %} {% endblock %}
+                            <li {% if all_lists %} class="active"{% endif %}>
+                                <a href="{% url 'root' %}">All lists</a>
+                            </li>
 
-		{% block footer %} {% endblock %}
+                        {% if mlist %}
+                            <li id="list_name" class="active">
+                                <a href="{% url 'list_overview' mlist_fqdn=mlist.name %}">{{mlist.name}}</a>
+                            </li>
+                        {% endif %}
 
-		</div>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-	<script>window.jQuery || document.write('<script src="{{ STATIC_URL }}libs/jquery/jquery-1.8.3.min.js"><\/script>')</script>
-	<script src="{{ STATIC_URL }}libs/jquery/jquery-ui-1.10.0.custom.min.js"></script>
-	{% assets filters="rjsmin", output="gen/hyperkitty.js", "libs/bootstrap/js/bootstrap.min.js", "libs/jquery.expander.js", "libs/d3.v2.min.js", "libs/jquery.hotkeys.js", "js/hyperkitty.js" %}
-	<script src="{{ ASSET_URL }}"></script>
-	{% endassets %}
-	{% block additionaljs %} {% endblock %}
 
-	</body>
+                        </ul>
+                    </div>
+                  </div>
+            </div>
+        </header>
+
+        {% if flash_messages %}
+        <div class="flashmsgs">
+            {% for flash_msg in flash_messages %}
+            <div class="flashmsg-wrapper">
+                <div class="alert alert-{{ flash_msg.type }}">
+                    {% if flash_msg.type != "success" %}
+                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    {% endif %}
+                    {{ flash_msg.msg }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% block content %} {% endblock %}
+
+        {% block footer %} {% endblock %}
+
+        </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}libs/jquery/jquery-1.8.3.min.js"><\/script>')</script>
+    <script src="{{ STATIC_URL }}libs/jquery/jquery-ui-1.10.0.custom.min.js"></script>
+    {% assets filters="rjsmin", output="gen/hyperkitty.js", "libs/bootstrap/js/bootstrap.min.js", "libs/jquery.expander.js", "libs/d3.v2.min.js", "libs/jquery.hotkeys.js", "js/hyperkitty.js" %}
+    <script src="{{ ASSET_URL }}"></script>
+    {% endassets %}
+    {% block additionaljs %} {% endblock %}
+
+    </body>
 </html>
-
-{# vim: set noet: #}
