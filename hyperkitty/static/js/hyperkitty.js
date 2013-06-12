@@ -451,10 +451,10 @@ function update_list_properties(url) {
 
 
 /*
- * Last viewed threads in the user's profile
+ * Last viewed threads and votes in the user's profile
  */
-function update_last_views(base_url) {
-    var container = $(".views");
+function update_user_profile_part(container, base_url) {
+    container = $(container);
     var loader = container.prev(".ajaxloader");
     function _update(url) {
         loader.show();
@@ -465,6 +465,24 @@ function update_last_views(base_url) {
                 container.find(".pagination a").click(function(e) {
                     e.preventDefault();
                     _update(base_url + $(this).attr("href"));
+                });
+                // setup cancellation links
+                container.find("a.cancel").click(function(e) {
+                    e.preventDefault();
+                    var form = $(this).parents("form").first();
+                    var data = form_to_json(form);
+                    $.ajax({
+                        type: "POST",
+                        url: form.attr("action"),
+                        data: data,
+                        dataType: "json",
+                        success: function(response) {
+                            form.parents("tr").remove();
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            alert(jqXHR.responseText);
+                        }
+                    });
                 });
             },
             error: function(jqXHR, textStatus, errorThrown) {

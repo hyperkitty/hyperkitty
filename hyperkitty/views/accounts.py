@@ -87,25 +87,6 @@ def user_profile(request, user_email=None):
                 "timezone": get_current_timezone(),
                 })
 
-    # Votes
-    try:
-        votes = Rating.objects.filter(user=request.user)
-    except Rating.DoesNotExist:
-        votes = []
-    votes_up = []
-    votes_down = []
-    for vote in votes:
-        message = store.get_message_by_hash_from_list(
-                vote.list_address, vote.messageid)
-        vote_data = {"list_address": vote.list_address,
-                     "messageid": vote.messageid,
-                     "message": message,
-                    }
-        if vote.vote == 1:
-            votes_up.append(vote_data)
-        elif vote.vote == -1:
-            votes_down.append(vote_data)
-
     # Favorites
     try:
         favorites = Favorite.objects.filter(user=request.user)
@@ -126,8 +107,6 @@ def user_profile(request, user_email=None):
     context = {
         'user_profile' : user_profile,
         'form': form,
-        'votes_up': votes_up,
-        'votes_down': votes_down,
         'favorites': favorites,
         'flash_messages': flash_messages,
     }
@@ -194,4 +173,21 @@ def last_views(request):
 
     return render(request, 'ajax/last_views.html', {
                 "last_views": last_views,
+            })
+
+
+@login_required
+def votes(request):
+    store = get_store(request)
+    # Votes
+    try:
+        votes = Rating.objects.filter(user=request.user)
+    except Rating.DoesNotExist:
+        votes = []
+    votes = paginate(votes, request.GET.get('vpage'))
+    for vote in votes:
+        vote.message = store.get_message_by_hash_from_list(
+                vote.list_address, vote.messageid)
+    return render(request, 'ajax/votes.html', {
+                "votes": votes,
             })

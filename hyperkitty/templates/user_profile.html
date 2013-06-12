@@ -75,43 +75,8 @@
 
 
     <h3>Votes</h3>
-    <h4>Up Votes</h4>
-    {% if votes_up %}
-        <ul>
-        {% for vote in votes_up %}
-            <li>
-            {% if vote.message.content|trimString|length > 0 %}
-                <a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}"
-                    >{{ vote.message.subject }}</a> by {{ vote.message.sender_name }}
-                    ({{ vote.message|get_date|date:"l, j F Y H:i:s" }})
-            {% else %}
-                <a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}">Message is empty</a>
-            {% endif %}
-            </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No up vote yet.</p>
-    {% endif %}
-
-    <h4>Down Votes</h4>
-    {% if votes_down %}
-        <ul>
-        {% for vote in votes_down %}
-            <li>
-            {% if vote.message.content|trimString|length > 0 %}
-                <a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}"
-                    >{{ vote.message.subject }}</a> by {{ vote.message.sender_name }}
-                    ({{ vote.message|get_date|date:"l, j F Y H:i:s" }})
-            {% else %}
-                <a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}">Message is empty</a>
-            {% endif %}
-            </li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No down vote yet.</p>
-    {% endif %}
+    <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}img/ajax-loader.gif" />
+    <div class="votes"></div>
 
 </div>
 
@@ -122,7 +87,8 @@
 <script type="text/javascript">
     $(document).ready(function() {
         // Load the last views
-        update_last_views("{% url 'user_last_views' %}");
+        update_user_profile_part(".views", "{% url 'user_last_views' %}");
+        update_user_profile_part(".votes", "{% url 'user_votes' %}");
     });
 </script>
 

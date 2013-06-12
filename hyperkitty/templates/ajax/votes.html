@@ -1,0 +1,44 @@
+{% load url from future %}
+{% load i18n %}
+{% load hk_generic %}
+
+    {% if votes %}
+        <table class="table table-striped table-bordered table-condensed">
+            <thead>
+                <tr>
+                    <th>List</th>
+                    <th>Subject</th>
+                    <th>Author</th>
+                    <th>Date</th>
+                    <th>Vote</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for vote in votes %}
+                <tr>
+                    <td>{{ vote.list_address }}</td>
+                    <td><a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}"
+                            >{{ vote.message.subject }}</a></td>
+                    <td>{{ vote.message.sender_name }}</td>
+                    <td>{{ vote.message|get_date|date:"l, j F Y H:i:s" }}</td>
+                    <td>
+                        <form method="post" class="likeform"
+                              action="{% url 'message_vote' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="vote" value="0" />
+                            {% if vote.vote == 1 %}
+                            <span class="youlike">You like it
+                            {% elif vote.vote == -1 %}
+                            <span class="youdislike">You dislike it
+                            {% endif %}
+                            (<a href="#cancelvote" class="cancel">cancel</a>)</span>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% include "paginator.html" with pager=votes page_key="vpage" %}
+    {% else %}
+        <p>No vote yet.</p>
+    {% endif %}
