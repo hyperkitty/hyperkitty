@@ -94,7 +94,7 @@ class AddTagForm(forms.Form):
                            'button_text': 'Add'}
                     )
                 )
-    from_url = forms.CharField(widget=forms.HiddenInput, required=False)
+    action = forms.CharField(widget=forms.HiddenInput, initial="add")
 
 
 

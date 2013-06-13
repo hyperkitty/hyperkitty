@@ -77,8 +77,9 @@ function setup_vote(baseElem) {
  * Tagging
  */
 
-function setup_add_tag() {
-    $("#add-tag-form").submit( function () {
+function setup_tags() {
+    function post_tags(e) {
+        e.preventDefault();
         $.ajax({
             type: "POST",
             dataType: "json",
@@ -86,13 +87,23 @@ function setup_add_tag() {
             url: $(this).attr("action"),
             success: function(data) {
                 $("#tags").html(data.html);
+                $("#tags form").submit(post_tags);
+                $("#tags form a").click(function(e) {
+                    e.preventDefault();
+                    $(this).parents("form").first().submit();
+                });
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 // authentication and invalid data
                 alert(jqXHR.responseText);
             }
         });
-        return false;
+    }
+    $("#add-tag-form").submit(post_tags);
+    $("#tags form").submit(post_tags);
+    $("#tags form a").click(function(e) {
+        e.preventDefault();
+        $(this).parents("form").first().submit();
     });
 }
 
@@ -531,7 +542,7 @@ function setup_flash_messages() {
 
 $(document).ready(function() {
     setup_vote();
-    setup_add_tag();
+    setup_tags();
     setup_months_list();
     setup_favorites();
     setup_emails_list();

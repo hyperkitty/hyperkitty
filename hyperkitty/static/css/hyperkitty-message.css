@@ -104,7 +104,9 @@
     margin: 0 2px 0 2px;
 }
 
+
 /* Tags */
+
 #tags {
     color: rgb(167, 169, 172);
     margin-top: 2em;
@@ -126,11 +128,28 @@
     margin-left: 5px;
 }
 
+#tags .rmtag {
+    margin: 0;
+    display: inline;
+}
+#tags .rmtag a {
+    visibility: hidden;
+    font-size: 125%;
+}
+#tags:hover .rmtag a {
+    visibility: visible;
+}
+#tags:hover .rmtag a:hover {
+    text-decoration: none;
+}
+
 #add-tag {
     margin-top: 0.3em;
 }
 
+
 /* Participants */
+
 #participants {
     margin-top: 2em;
     color: rgb(167, 169, 172);

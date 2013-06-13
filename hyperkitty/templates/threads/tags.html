@@ -5,7 +5,16 @@
         <ul class="inline">
             {% for tag in tags %}
             <li>
-                <a href="{% url 'search_tag' mlist_fqdn=mlist.name tag=tag.tag %}" >{{ tag.tag }}</a>
+                <a href="{% url 'search_tag' mlist_fqdn=mlist.name tag=tag.tag %}"
+                   title="Search for tag {{ tag.tag|escape }}">{{ tag.tag }}</a>
+                {% if user == tag.user %}
+                <form method="post" class="rmtag" action="{% url 'tags' mlist_fqdn=mlist.name threadid=threadid %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="rm" />
+                    <input type="hidden" name="tag" value="{{ tag.tag|escape }}" />
+                    <a href="#rmtag" title="Remove">&times;</a>
+                </form>
+                {% endif %}
                 {% if not forloop.last %} <span>|</span> {% endif %}
             </li>
             {% endfor %}

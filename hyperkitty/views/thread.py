@@ -81,10 +81,8 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     sort_mode = request.GET.get("sort", "thread")
     set_message_votes(thread.starting_email, request.user)
 
-    from_url = reverse("thread", kwargs={"mlist_fqdn":mlist_fqdn,
-                                         "threadid":threadid})
     # Tags
-    tag_form = AddTagForm(initial={'from_url' : from_url})
+    tag_form = AddTagForm()
     try:
         tags = Tag.objects.filter(threadid=threadid, list_address=mlist_fqdn)
     except Tag.DoesNotExist:
@@ -200,26 +198,38 @@ def replies(request, mlist_fqdn, threadid):
                         mimetype='application/javascript')
 
 
-def add_tag(request, mlist_fqdn, threadid):
-    """ Add a tag to a given thread. """
+def tags(request, mlist_fqdn, threadid):
+    """ Add or remove a tag on a given thread. """
     if not request.user.is_authenticated():
         return HttpResponse('You must be logged in to add a tag',
                             content_type="text/plain", status=403)
 
     if request.method != 'POST':
         raise SuspiciousOperation
+    action = request.POST.get("action")
 
-    form = AddTagForm(request.POST)
-    if not form.is_valid():
-        return HttpResponse("Error adding tag: invalid data",
-                            content_type="text/plain", status=500)
-    tag = form.data['tag']
+    if action == "add":
+        form = AddTagForm(request.POST)
+        if not form.is_valid():
+            return HttpResponse("Error adding tag: invalid data",
+                                content_type="text/plain", status=500)
+        tagname = form.data['tag']
+    elif action == "rm":
+        tagname = request.POST.get('tag')
+    else:
+        raise SuspiciousOperation
     try:
-        tag_obj = Tag.objects.get(threadid=threadid,
-                                  list_address=mlist_fqdn, tag=tag)
+        tag = Tag.objects.get(threadid=threadid, list_address=mlist_fqdn,
+                              tag=tagname)
+        if action == "rm":
+            tag.delete()
     except Tag.DoesNotExist:
-        tag_obj = Tag(list_address=mlist_fqdn, threadid=threadid, tag=tag)
-        tag_obj.save()
+        if action == "add":
+            tag = Tag(list_address=mlist_fqdn, threadid=threadid,
+                      tag=tagname, user=request.user)
+            tag.save()
+        elif action == "rm":
+            raise Http404("No such tag: %s" % tagname)
 
     # Now refresh the tag list
     tags = Tag.objects.filter(threadid=threadid, list_address=mlist_fqdn)
@@ -227,7 +237,9 @@ def add_tag(request, mlist_fqdn, threadid):
     tpl = loader.get_template('threads/tags.html')
     html = tpl.render(RequestContext(request, {
             "tags": tags,
-            "mlist": FakeMList(name=mlist_fqdn)}))
+            "mlist": FakeMList(name=mlist_fqdn),
+            "threadid": threadid,
+            }))
 
     response = {"tags": [ t.tag for t in tags ], "html": html}
     return HttpResponse(json.dumps(response),

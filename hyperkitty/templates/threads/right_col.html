@@ -43,7 +43,7 @@
     </div>
     <div id="add-tag">
         <form id="add-tag-form" name="addtag" method="post"
-              action="{% url 'add_tag' mlist_fqdn=mlist.name threadid=threadid %}">
+              action="{% url 'tags' mlist_fqdn=mlist.name threadid=threadid %}">
             {% csrf_token %}
             {{ addtag_form.as_p }}
         </form>
