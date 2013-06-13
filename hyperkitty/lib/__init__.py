@@ -130,6 +130,10 @@ def post_to_list(request, mlist, subject, message, headers={}):
 
 
 def paginate(objects, page_num, max_page_range=10, paginator=None):
+    try:
+        page_num = int(page_num)
+    except (TypeError, ValueError):
+        page_num = 1
     if paginator is None:
         paginator = Paginator(objects, 10) # else use the provided instance
     try:
