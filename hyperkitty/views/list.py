@@ -175,17 +175,21 @@ def overview(request, mlist_fqdn=None):
     mlist = store.get_list(mlist_fqdn)
     if mlist is None:
         raise Http404("No archived mailing-list by that name.")
-    threads_result = store.get_threads(list_name=mlist.name, start=begin_date,
-        end=end_date)
+    threads_result = store.get_threads(
+            list_name=mlist.name, start=begin_date, end=end_date)
 
     threads = []
     Thread = namedtuple('Thread', ["thread_id", "subject", "participants",
-                                   "length", "date_active"])
+            "length", "date_active", "likes", "dislikes"])
     participants = set()
     for thread_obj in threads_result:
+        # Votes
+        # XXX: 1 SQL request per thread, possible optimization here
+        likes, dislikes, myvote = get_votes(thread_obj.email_id_hashes)
         thread = Thread(thread_obj.thread_id, thread_obj.subject,
                         thread_obj.participants, len(thread_obj),
-                        thread_obj.date_active.replace(tzinfo=utc))
+                        thread_obj.date_active.replace(tzinfo=utc),
+                        likes, dislikes)
         # Statistics on how many participants and threads this month
         participants.update(thread.participants)
         threads.append(thread)
@@ -204,6 +208,17 @@ def overview(request, mlist_fqdn=None):
         authors.reverse()
     else:
         authors = []
+
+    # Top posters
+    top_posters = []
+    for poster in store.get_top_participants(list_name=mlist.name,
+                start=begin_date, end=end_date, limit=5):
+        top_posters.append({"name": poster[0], "email": poster[1],
+                            "count": poster[2]})
+
+    # Popular threads
+    pop_threads = sorted(threads, key=lambda t: t.likes - t.dislikes,
+                         reverse=True)[:5]
 
     # List activity
     # Use get_messages and not get_threads to count the emails, because
@@ -238,6 +253,8 @@ def overview(request, mlist_fqdn=None):
         'top_threads': top_threads[:5],
         'most_active_threads': active_threads[:5],
         'top_author': authors,
+        'top_posters': top_posters,
+        'pop_threads': pop_threads,
         'threads_per_category': threads_per_category,
         'months_list': get_months(store, mlist.name),
         'evolution': evolution,

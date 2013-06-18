@@ -7,6 +7,13 @@
     text-align: center;
 }
 
+#recent_activities h3 {
+    font-size: 20px;
+    line-height: 28px;
+    margin-bottom: 0.5em;
+    text-align: center;
+}
+
 #graph h2 {
     text-align: center;
 }
@@ -37,10 +44,7 @@
 }
 
 
-#top-discussion,
-#discussion-by-topic,
-#most-active,
-#discussion-maker {
+#recent_activities .widget {
     padding: 1em;
     padding-bottom: 0;
     border: 1px solid #ddd;

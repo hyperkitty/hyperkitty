@@ -23,14 +23,16 @@
 from hyperkitty.models import Rating
 
 
-def get_votes(message_id_hash, user=None):
+def get_votes(msgid, user=None):
     """Extract all the votes for this message"""
-    likes = dislikes = 0
+    likes = dislikes = myvote = 0
     try:
-        votes = Rating.objects.filter(messageid=message_id_hash)
+        if isinstance(msgid, basestring):
+            votes = Rating.objects.filter(messageid=msgid)
+        elif isinstance(msgid, list):
+            votes = Rating.objects.filter(messageid__in=msgid)
     except Rating.DoesNotExist:
         votes = {}
-    myvote = 0
     for vote in votes:
         if vote.vote == 1:
             likes += 1
