@@ -1,13 +1,13 @@
 /* Summary page */
 
-#recent_activities h2 {
+#recent-activities h2 {
     font-size: 22px;
     line-height: 32px;
     margin-bottom: 0.5em;
     text-align: center;
 }
 
-#recent_activities h3 {
+#recent-activities h3 {
     font-size: 20px;
     line-height: 28px;
     margin-bottom: 0.5em;
@@ -39,12 +39,12 @@
 }
 
 
-#recent_activities p.thread-new {
+#recent-activities p.thread-new {
     text-align: center;
 }
 
 
-#recent_activities .widget {
+#recent-activities .widget {
     padding: 1em;
     padding-bottom: 0;
     border: 1px solid #ddd;
