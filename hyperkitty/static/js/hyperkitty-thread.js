@@ -54,6 +54,11 @@ function setup_tags() {
         e.preventDefault();
         $(this).parents("form").first().submit();
     });
+    // Autocomplete
+    $("#id_tag").autocomplete({
+        //minLength: 2,
+        source: $("#add-tag-form").attr("data-autocompleteurl")
+    });
 }
 
 

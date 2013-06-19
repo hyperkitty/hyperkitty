@@ -245,6 +245,18 @@ def tags(request, mlist_fqdn, threadid):
     return HttpResponse(json.dumps(response),
                         mimetype='application/javascript')
 
+def suggest_tags(request, mlist_fqdn, threadid):
+    term = request.GET.get("term")
+    current_tags = Tag.objects.filter(
+            list_address=mlist_fqdn, threadid=threadid
+            ).values_list("tag", flat=True)
+    if term:
+        tags = Tag.objects.filter(list_address=mlist_fqdn, tag__istartswith=term)
+    else:
+        tags = Tag.objects.all()
+    tags = tags.exclude(tag__in=current_tags).values_list("tag", flat=True)
+    tags = [ t.encode("utf8") for t in tags ]
+    return HttpResponse(json.dumps(tags), mimetype='application/javascript')
 
 
 def favorite(request, mlist_fqdn, threadid):

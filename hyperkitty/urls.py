@@ -79,6 +79,8 @@ urlpatterns = patterns('hyperkitty.views',
         'thread.replies', name='thread_replies'),
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/thread/(?P<threadid>\w+)/tags$',
         'thread.tags', name='tags'),
+    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/thread/(?P<threadid>\w+)/suggest-tags$',
+        'thread.suggest_tags', name='suggest_tags'),
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/thread/(?P<threadid>\w+)/favorite$',
         'thread.favorite', name='favorite'),
 

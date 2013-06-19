@@ -276,3 +276,6 @@ a.thread-new strong {
     display: block;
     margin: 1em auto;
 }
+.ui-autocomplete-loading {
+    background: white url('../img/ajax-loader.gif') right center no-repeat;
+}
