@@ -1,2 +1,3 @@
 Widgets/Accordion
+Widgets/Autocomplete
 Widgets/Tooltip
