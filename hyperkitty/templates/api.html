@@ -38,7 +38,7 @@ retrieve the information known about all the mailing-lists.
         </a>
         </p>
     </div>
-    <div class="even" style="padding-left: 1em">
+    <div class="odd" style="padding-left: 1em">
         <h3>Emails <a>/api/email/&lt;list name&gt;/&lt;Message-ID&gt;</a></h3>
         <p>
 Using the address /api/email/&lt;list name&gt;/&lt;Message-ID&gt; you will be able to
@@ -49,7 +49,7 @@ retrieve the information known about a specific email on the specified mailing-l
         </a>
         </p>
     </div>
-    <div class="odd" style="padding-left: 1em">
+    <div class="even" style="padding-left: 1em">
         <h3>Threads <a>/api/thread/&lt;list name&gt;/&lt;ThreadID&gt;</a></h3>
         <p>
 Using the address /api/thread/&lt;list name&gt;/&lt;Message-ID&gt; you will be able to
@@ -60,7 +60,7 @@ retrieve the all the email for a specific thread on the specified mailing-list.
         </a>
         </p>
     </div>
-        <div class="even" style="padding-left: 1em">
+        <div class="odd" style="padding-left: 1em">
         <h3>Search <a>/api/search/&lt;list name&gt;/&lt;field&gt;/&lt;keyword&gt;</a></h3>
         <p>
 Using the address /api/search/&lt;list name&gt;/&lt;field&gt;/&lt;keyword&gt; you will be able to
@@ -75,6 +75,17 @@ search for all emails of the specified mailing-list containing the provided keyw
         </ul>
         <p> For example: <a href="{% url 'api_search' mlist_fqdn='devel@fp.o' field='From' keyword='pingoured' %}?format=api">
             {% url 'api_search' mlist_fqdn='devel@fp.o' field='From' keyword='pingoured' %}
+        </a>
+        </p>
+    </div>
+    <div class="even" style="padding-left: 1em">
+        <h3>Tags <a>/api/tag/</a></h3>
+        <p>
+Using the address /api/tag/ you will be able to
+retrieve the list of tags.
+        </p>
+        <p> For example: <a href="{% url 'api_tag' %}?format=api">
+            {% url 'api_tag' %}
         </a>
         </p>
     </div>

@@ -22,7 +22,8 @@
 
 from django.conf.urls import patterns, include, url
 from django.views.generic.base import TemplateView
-from api import ListResource, EmailResource, ThreadResource, SearchResource
+from hyperkitty.api import ListResource, EmailResource, ThreadResource, SearchResource
+from hyperkitty.api import TagResource
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib.auth.views import logout as logout_view
@@ -101,6 +102,7 @@ urlpatterns = patterns('hyperkitty.views',
         ThreadResource.as_view(), name="api_thread"),
     url(r'^api/search\/(?P<mlist_fqdn>[^/@]+@[^/@]+)\/(?P<field>.*)\/(?P<keyword>.*)/',
         SearchResource.as_view(), name="api_search"),
+    url(r'^api/tag\/', TagResource.as_view(), name="api_tag"),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

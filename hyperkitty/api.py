@@ -22,6 +22,7 @@ from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.exceptions import ParseError
 
+from hyperkitty.models import Tag
 from hyperkitty.lib import get_store
 
 
@@ -55,6 +56,11 @@ class ThreadSerializer(serializers.Serializer):
     starting_email = EmailLinkSerializer()
     email_ids = serializers.CharField()
     participants = serializers.CharField()
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ("list_address", "threadid", "tag")
 
 
 class ListResource(APIView):
@@ -122,3 +128,14 @@ class SearchResource(APIView):
             return Response(status=404)
         else:
             return Response(EmailSerializer(threads, many=True).data)
+
+
+class TagResource(APIView):
+    """
+    Resource used to retrieve tags from the database using the REST API.
+    """
+
+    def get(self, request):
+        tags = Tag.objects.all()
+        serializer = TagSerializer(tags, many=True)
+        return Response(serializer.data)
