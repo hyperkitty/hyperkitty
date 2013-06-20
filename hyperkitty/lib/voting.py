@@ -39,7 +39,9 @@ def get_votes(msgid, user=None):
         elif vote.vote == -1:
             dislikes += 1
         if user is not None and user.is_authenticated() and vote.user == user:
-            myvote = vote.vote
+            if not isinstance(msgid, list) or vote.messageid == msgid[0]:
+                # for a thread, only consider the starting email
+                myvote = vote.vote
     return likes, dislikes, myvote
 
 
@@ -54,3 +56,26 @@ def set_message_votes(message, user=None):
         message.likestatus = "like"
     #elif message.likes - message.dislikes < 0:
     #    message.likestatus = "dislike"
+
+
+def set_thread_votes(thread, user=None):
+    total = 0
+    # XXX: 1 SQL request per thread, possible optimization here
+    likes, dislikes, myvote = get_votes(thread.email_id_hashes)
+    total = likes + dislikes
+    try:
+        thread.likes = likes / total
+    except ZeroDivisionError:
+        thread.likes = 0
+    try:
+        thread.dislikes = dislikes / total
+    except ZeroDivisionError:
+        thread.dislikes = 0
+    thread.likestatus = "neutral"
+    if thread.likes - thread.dislikes >= 10:
+        thread.likestatus = "likealot"
+    elif thread.likes - thread.dislikes > 0:
+        thread.likestatus = "like"
+    #elif thread.likes - thread.dislikes < 0:
+    #    thread.likestatus = "dislike"
+

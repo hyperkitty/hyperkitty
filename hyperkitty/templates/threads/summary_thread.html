@@ -21,17 +21,13 @@
                             >{{thread.category}}</a>
                     </li>
                     {% endif %}
-                    {% if use_mockups %}
-                    <li class="likestatus neutral">
-                        +0/-0
-                    </li>
-                    {% endif %}
                     <li class="participant">
                         {{ thread.participants|length }}
                     </li>
                     <li class="discussion">
                         {{ thread.length }}
                     </li>
+                    <span class="likestatus {{ thread.likestatus }}">+{{ thread.likes }}/-{{ thread.dislikes }}</span>
                 </ul>
             </div>
         </div>

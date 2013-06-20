@@ -34,11 +34,17 @@ from django.http import Http404
 from hyperkitty.models import Tag, Favorite, LastView
 from hyperkitty.lib import get_months, get_store, get_display_dates, daterange
 from hyperkitty.lib import FLASH_MESSAGES, paginate
-from hyperkitty.lib.voting import get_votes, set_message_votes
+from hyperkitty.lib.voting import get_votes, set_message_votes, set_thread_votes
 
 
 if settings.USE_MOCKUPS:
     from hyperkitty.lib.mockup import generate_top_author, generate_thread_per_category
+
+
+Thread = namedtuple('Thread', [
+    "thread_id", "subject", "participants", "length", "date_active",
+    "likes", "dislikes", "likestatus",
+    ])
 
 
 def archives(request, mlist_fqdn, year=None, month=None, day=None):
@@ -80,32 +86,7 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
         participants.update(thread.participants)
 
         # Votes
-        totalvotes = 0
-        totallikes = 0
-        totaldislikes = 0
-        for message_id_hash in thread.email_id_hashes:
-            likes, dislikes, myvote = get_votes(message_id_hash, request.user)
-            totallikes = totallikes + likes
-            totalvotes = totalvotes + likes + dislikes
-            totaldislikes = totaldislikes + dislikes
-            if message_id_hash == thread.thread_id:
-                # Starting email: same id as the thread_id
-                thread.myvote = myvote
-        try:
-            thread.likes = totallikes / totalvotes
-        except ZeroDivisionError:
-            thread.likes = 0
-        try:
-            thread.dislikes = totaldislikes / totalvotes
-        except ZeroDivisionError:
-            thread.dislikes = 0
-        thread.likestatus = "neutral"
-        if thread.likes - thread.dislikes >= 10:
-            thread.likestatus = "likealot"
-        elif thread.likes - thread.dislikes > 0:
-            thread.likestatus = "like"
-        #elif thread.likes - thread.dislikes < 0:
-        #    thread.likestatus = "dislike"
+        set_thread_votes(thread, request.user)
 
         # Favorites
         thread.favorite = False
@@ -179,17 +160,15 @@ def overview(request, mlist_fqdn=None):
             list_name=mlist.name, start=begin_date, end=end_date)
 
     threads = []
-    Thread = namedtuple('Thread', ["thread_id", "subject", "participants",
-            "length", "date_active", "likes", "dislikes"])
     participants = set()
     for thread_obj in threads_result:
         # Votes
-        # XXX: 1 SQL request per thread, possible optimization here
-        likes, dislikes, myvote = get_votes(thread_obj.email_id_hashes)
+        set_thread_votes(thread_obj, request.user)
         thread = Thread(thread_obj.thread_id, thread_obj.subject,
                         thread_obj.participants, len(thread_obj),
                         thread_obj.date_active.replace(tzinfo=utc),
-                        likes, dislikes)
+                        thread_obj.likes, thread_obj.dislikes,
+                        thread_obj.likestatus)
         # Statistics on how many participants and threads this month
         participants.update(thread.participants)
         threads.append(thread)
