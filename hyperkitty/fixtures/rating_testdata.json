@@ -51,6 +51,7 @@
     "pk": 1,
     "model": "hyperkitty.tag",
     "fields": {
+        "user": 1,
         "tag": "aamir",
         "list_address": "devel@fp.o",
         "threadid": "MEESBVZAM3QKAZSTSQCEF65PS2434NYG"
@@ -59,6 +60,7 @@
     "pk": 2,
     "model": "hyperkitty.tag",
     "fields": {
+        "user": 1,
         "tag": "aamir",
         "list_address": "devel@fp.o",
         "threadid": "SOSFEEJJNEI47PDNIPZMYQAPBAGNCUII"
@@ -67,6 +69,7 @@
     "pk": 3,
     "model": "hyperkitty.tag",
     "fields": {
+        "user": 1,
         "tag": "packaging",
         "list_address": "devel@fp.o",
         "threadid": "MEESBVZAM3QKAZSTSQCEF65PS2434NYG"
