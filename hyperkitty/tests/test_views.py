@@ -27,11 +27,9 @@ from mock import Mock
 import django.utils.simplejson as json
 from django.test import TestCase
 from django.test.client import Client, RequestFactory
-from django.test.utils import override_settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.urlresolvers import reverse
 from mailman.email.message import Message
-import django_assets.env
 
 import kittystore
 from kittystore.utils import get_message_id_hash
@@ -40,14 +38,9 @@ from kittystore.test import FakeList
 from hyperkitty.models import Rating, LastView
 
 
-@override_settings(USE_SSL=False, USE_INTERNAL_AUTH=True, DEBUG=True, ASSETS_DEBUG=True)
 class AccountViewsTestCase(TestCase):
 
     def setUp(self):
-        # Re-do the settings patching
-        # https://github.com/miracle2k/django-assets/issues/3
-        django_assets.env.reset()
-        django_assets.env.get_env()
         self.client = Client()
 
     def test_login(self):
@@ -90,14 +83,9 @@ from hyperkitty.views.accounts import last_views
 from hyperkitty.views.thread import thread_index
 from hyperkitty.views.list import archives
 
-@override_settings(DEBUG=True, ASSETS_DEBUG=True)
 class LastViewsTestCase(TestCase):
 
     def setUp(self):
-        # Re-do the settings patching
-        # https://github.com/miracle2k/django-assets/issues/3
-        django_assets.env.reset()
-        django_assets.env.get_env()
         self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
         self.client.login(username='testuser', password='testPass')
         store = kittystore.get_store("sqlite:", debug=False)

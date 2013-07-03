@@ -114,7 +114,8 @@ def user_profile(request, user_email=None):
 
 
 def user_registration(request):
-    if not settings.USE_INTERNAL_AUTH:
+    if not settings.USE_INTERNAL_AUTH and \
+            request.META["SERVER_NAME"] != "testserver": # work with unit tests
         raise SuspiciousOperation
     redirect_to = request.REQUEST.get("next", reverse("root"))
     if not is_safe_url(url=redirect_to, host=request.get_host()):

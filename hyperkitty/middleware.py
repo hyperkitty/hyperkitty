@@ -17,6 +17,7 @@
 # HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Author: Aamir Khan <syst3m.w0rm@gmail.com>
+# Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
 class PaginationMiddleware(object):
