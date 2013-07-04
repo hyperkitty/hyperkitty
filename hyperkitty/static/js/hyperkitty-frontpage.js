@@ -24,11 +24,21 @@
  * List descriptions on the front page
  */
 function update_list_properties(url) {
+    // Don't try to update them all at once, there may be hundreds of lists
+    var bulksize = 5;
+    // If there is still an ajaxloader, then request the properties
+    var lists = $(".all-lists .mailinglist img.ajaxloader")
+                    .slice(0, bulksize).parents(".mailinglist");
+    if (lists.length === 0) {
+        return;
+    }
+    var listnames = $.makeArray(lists.find(".list-address").map(
+                        function() { return $(this).text(); }));
     $.ajax({
         dataType: "json",
-        url: url,
+        url: url + "?name=" + listnames.join("&name="),
         success: function(data) {
-            $(".all-lists .mailinglist").each(function() {
+            lists.each(function() {
                 var name = $(this).find(".list-address").text();
                 if (!data[name]) {
                     return;
@@ -46,7 +56,12 @@ function update_list_properties(url) {
             //alert(jqXHR.responseText);
         },
         complete: function(jqXHR, textStatus) {
-            $(".all-lists .mailinglist img.ajaxloader").remove();
+            // Request may have failed if mailman's REST server is unavailable,
+            // keep going anyway.
+            lists.find("img.ajaxloader").remove();
+            // do it again, until all lists have been populated (or at least we
+            // tried to)
+            update_list_properties(url);
         }
     });
 }

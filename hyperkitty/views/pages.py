@@ -47,6 +47,9 @@ def list_properties(request):
     """Get JSON encoded list properties"""
     store = get_store(request)
     lists = store.get_lists()
+    onlynames = request.GET.getlist("name")
+    if onlynames:
+        lists = [ l for l in lists if l.name in onlynames ]
     client = Client('%s/3.0' % settings.MAILMAN_REST_SERVER,
                     settings.MAILMAN_API_USER, settings.MAILMAN_API_PASS)
     props = {}
