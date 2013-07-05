@@ -103,7 +103,9 @@ class ReplyForm(forms.Form):
     subject = forms.CharField(label="", required=False,
             widget=forms.TextInput(attrs={ 'placeholder': 'New subject'}))
     message = forms.CharField(label="", widget=forms.Textarea)
+    attachment = forms.FileField(required=False)
 
 class PostForm(forms.Form):
     subject = forms.CharField()
     message = forms.CharField(widget=forms.Textarea)
+    attachment = forms.FileField(required=False)

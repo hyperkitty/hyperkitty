@@ -30,7 +30,7 @@ Create a new thread - {{ mlist.display_name|default:mlist.name|escapeemail }} - 
         {% endif %}
 
         <div class="new-thread-form">
-            <form method="post"
+            <form method="post" enctype="multipart/form-data"
                   action="{% url 'message_new' mlist_fqdn=mlist.name %}">
                 {% csrf_token %}
                 {{ post_form|crispy }}

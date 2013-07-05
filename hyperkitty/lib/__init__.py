@@ -105,7 +105,8 @@ def daterange(start_date, end_date):
 
 class PostingFailed(Exception): pass
 
-def post_to_list(request, mlist, subject, message, headers={}):
+def post_to_list(request, mlist, subject, message, headers={},
+                 attachments=None):
     if not mlist:
         # Make sure the list exists to avoid posting to any email addess
         raise SuspiciousOperation("I don't know this mailing-list")
@@ -117,15 +118,25 @@ def post_to_list(request, mlist, subject, message, headers={}):
                             "your message has not been sent.")
     # send the message
     headers["User-Agent"] = "HyperKitty on %s" % request.build_absolute_uri("/")
+    if not request.user.first_name and not request.user.last_name:
+        from_email = request.user.email
+    else:
+        from_email = '"%s %s" <%s>' % (request.user.first_name,
+                                       request.user.last_name,
+                                       request.user.email)
     msg = EmailMessage(
                subject=subject,
                body=message,
-               from_email='"%s %s" <%s>' %
-                   (request.user.first_name, request.user.last_name,
-                    request.user.email),
+               from_email=from_email,
                to=[mlist.name],
                headers=headers,
                )
+    # Attachments
+    if attachments:
+        if not isinstance(attachments, list):
+            attachments = [attachments]
+        for attach in attachments:
+            msg.attach(attach.name, attach.read())
     msg.send()
 
 
