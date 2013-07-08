@@ -231,6 +231,9 @@ a.reply.disabled {
 .reply-form textarea {
     width: 95%;
 }
+.reply-form p.buttons {
+    margin-top: 1em;
+}
 .reply-result {
     text-align: center;
 }
@@ -263,6 +266,24 @@ a.thread-new strong {
 .new-thread-form #id_subject,
 .new-thread-form textarea {
     width: 90%;
+}
+.new-thread-form p.buttons {
+    margin-top: 2em;
+}
+
+
+/*
+ * Attachments in replies or new threads
+ */
+
+.attach-files-template {
+    display: none;
+}
+.attach-files-add {
+    display: none;
+}
+.attach-files span {
+    display: block;
 }
 
 

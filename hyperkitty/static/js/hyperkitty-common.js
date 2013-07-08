@@ -74,6 +74,33 @@ function setup_vote(baseElem) {
 
 
 /*
+ * New messages (or replies)
+ */
+
+function setup_attachments() {
+    function add_attach_form (e) {
+        e.preventDefault();
+        var form = $(this).parents("form").first();
+        form.find(".attach-files-template")
+            .clone().removeClass("attach-files-template")
+            .appendTo(form.find(".attach-files"));
+        form.find(".attach-files span a").click(function (e) {
+            e.preventDefault();
+            $(this).parent().remove();
+            if (form.find(".attach-files input").length === 0) {
+                form.find(".attach-files-add").hide();
+                form.find(".attach-files-first").show();
+            };
+        });
+        form.find(".attach-files-first").hide();
+        form.find(".attach-files-add").show();
+    }
+    $(".attach-files-add").click(add_attach_form);
+    $(".attach-files-first").click(add_attach_form);
+}
+
+
+/*
  * Misc.
  */
 
@@ -110,4 +137,5 @@ $(document).ready(function() {
     setup_months_list();
     setup_disabled_tooltips();
     setup_flash_messages();
+    setup_attachments();
 });
