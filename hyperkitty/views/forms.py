@@ -135,3 +135,6 @@ class PostForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea)
     attachment = forms.FileField(required=False, label="",
                                  widget=AttachmentFileInput)
+
+class CategoryForm(forms.Form):
+    category = forms.ChoiceField(label="", required=False)

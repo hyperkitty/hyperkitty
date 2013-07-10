@@ -34,7 +34,7 @@ from django.utils.timezone import utc
 import robot_detection
 
 from hyperkitty.models import Tag, Favorite, LastView
-from forms import AddTagForm, ReplyForm
+from hyperkitty.views.forms import AddTagForm, ReplyForm, CategoryForm
 from hyperkitty.lib import get_months, get_store, stripped_subject
 from hyperkitty.lib.voting import set_message_votes
 
@@ -99,6 +99,12 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         else:
             fav_action = "rm"
 
+    # Category
+    categories = [ (c, c.title()) for c in store.get_categories() ] \
+                 + [("", "no categories")]
+    category_form = CategoryForm(initial={"category": thread.category or ""})
+    category_form["category"].field.choices = categories
+
     # Extract relative dates
     today = datetime.date.today()
     days_old = today - thread.starting_email.date.date()
@@ -151,6 +157,8 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'participants': thread.participants,
         'last_view': last_view,
         'unread_count': unread_count,
+        'category_form': category_form,
+        'category': thread.category,
     }
     context["participants"].sort(key=lambda x: x[0].lower())
 
@@ -286,3 +294,39 @@ def favorite(request, mlist_fqdn, threadid):
         raise SuspiciousOperation
     return HttpResponse("success", mimetype='text/plain')
 
+
+def set_category(request, mlist_fqdn, threadid):
+    """ Set the category for a given thread. """
+    if not request.user.is_authenticated():
+        return HttpResponse('You must be logged in to add a tag',
+                            content_type="text/plain", status=403)
+    if request.method != 'POST':
+        raise SuspiciousOperation
+
+    store = get_store(request)
+    categories = [ (c, c.title()) for c in store.get_categories() ] \
+                 + [("", "No categories")]
+    category_form = CategoryForm(request.POST)
+    category_form["category"].field.choices = categories
+
+    if not category_form.is_valid():
+        return HttpResponse("Error settings category: invalid data",
+                            content_type="text/plain", status=500)
+
+    category = category_form.cleaned_data["category"]
+    thread = store.get_thread(mlist_fqdn, threadid)
+    if category and category not in store.get_categories():
+        raise Http404("No such category: %s" % category)
+    if category != thread.category:
+        thread.category = category
+        store.commit()
+
+    # Now refresh the category widget
+    FakeMList = namedtuple("MailingList", ["name"])
+    context = {
+            "category_form": category_form,
+            "mlist": FakeMList(name=mlist_fqdn),
+            "threadid": threadid,
+            "category": thread.category,
+            }
+    return render(request, "threads/category.html", context)

@@ -21,6 +21,39 @@
 
 
 /*
+ * Categories
+ */
+
+function setup_category() {
+    $("#thread-category form").submit(function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: "POST",
+            //dataType: "json",
+            data : $(this).serialize(),
+            url: $(this).attr("action"),
+            success: function(data) {
+                $("#thread-category").html(data);
+                setup_category();
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                // authentication and invalid data
+                alert(jqXHR.responseText);
+            }
+        });
+    });
+    $("#thread-category a.label").click(function(e) {
+        e.preventDefault();
+        $(this).hide();
+        $("#thread-category form").show();
+    });
+    $("#thread-category form select").change(function() {
+        $(this).parents("form").first().submit();
+    });
+}
+
+
+/*
  * Tagging
  */
 
@@ -39,7 +72,6 @@ function setup_tags() {
                     e.preventDefault();
                     $(this).parents("form").first().submit();
                 });
-                console.log($(this));
                 $(this).find("#id_tag").value("");
             },
             error: function(jqXHR, textStatus, errorThrown) {

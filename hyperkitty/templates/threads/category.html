@@ -1,0 +1,14 @@
+{% load url from future %}
+
+        <a class="label {{category}}">
+            {% if category %}
+            {{ category|title }}
+            {% else %}
+            No category
+            {% endif %}
+        </a>
+        <form method="post" action="{% url 'thread_set_category' mlist_fqdn=mlist.name threadid=threadid %}">
+            {% csrf_token %}
+            {{ category_form.as_p }}
+        </form>
+

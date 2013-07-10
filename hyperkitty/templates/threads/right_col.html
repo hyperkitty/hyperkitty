@@ -38,6 +38,9 @@
         <i class="unread icon-eye-close"></i> {{ unread_count }} unread messages
         {% endif %}
     </p>
+    <div id="thread-category">
+        {% include 'threads/category.html' %}
+    </div>
     <div id="tags">
         {% include 'threads/tags.html' %}
     </div>
