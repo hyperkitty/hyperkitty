@@ -304,6 +304,9 @@ a.thread-new strong {
 .thread-category {
     padding: 0;
 }
+.thread-category a.label.disabled {
+    cursor: default;
+}
 .thread-category form {
     margin: 0;
     display: none;

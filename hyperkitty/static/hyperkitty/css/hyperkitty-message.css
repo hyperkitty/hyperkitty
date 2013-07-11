@@ -154,8 +154,9 @@
     text-align: center;
 }
 .thread-header .thread-category a.label {
-    font-size: 120%;
-    line-height: 120%;
+    padding: 0.2em 0.4em;
+    font-size: 110%;
+    line-height: 110%;
 }
 
 /* Participants */

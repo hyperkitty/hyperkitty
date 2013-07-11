@@ -45,6 +45,9 @@ function setup_category() {
     });
     $(".thread-category a.label").click(function(e) {
         e.preventDefault();
+        if ($(this).hasClass("disabled")) {
+            return;
+        }
         $(this).hide()
             .parents(".thread-category").first()
             .find("form").show();
