@@ -8,9 +8,9 @@
         <title>{% block title %}{{ app_name|title }}{% endblock %}</title>
         <meta name="author" content="" />
         <meta name="dc.language" content="en" />
-        <link rel="shortcut icon" href="{{ STATIC_URL }}img/favicon.ico" />
-        <link rel="stylesheet" media="all" href="{{ STATIC_URL }}libs/jquery/smoothness/jquery-ui-1.10.3.custom.min.css" />
-        {% assets filters="cssrewrite,cssmin", output="gen/hyperkitty.css", "libs/bootstrap/css/bootstrap.min.css", "css/hyperkitty-base.css", "css/hyperkitty-common.css", "css/hyperkitty-index.css", "css/hyperkitty-user.css", "css/hyperkitty-overview.css", "css/hyperkitty-threadslist.css", "css/hyperkitty-message.css" %}
+        <link rel="shortcut icon" href="{{ STATIC_URL }}hyperkitty/img/favicon.ico" />
+        <link rel="stylesheet" media="all" href="{{ STATIC_URL }}hyperkitty/libs/jquery/smoothness/jquery-ui-1.10.3.custom.min.css" />
+        {% assets filters="cssrewrite,cssmin", output="gen/hyperkitty.css", "hyperkitty/libs/bootstrap/css/bootstrap.min.css", "hyperkitty/css/hyperkitty-base.css", "hyperkitty/css/hyperkitty-common.css", "hyperkitty/css/hyperkitty-index.css", "hyperkitty/css/hyperkitty-user.css", "hyperkitty/css/hyperkitty-overview.css", "hyperkitty/css/hyperkitty-threadslist.css", "hyperkitty/css/hyperkitty-message.css" %}
         <link rel="stylesheet" media="all" href="{{ ASSET_URL }}" />
         {% endassets %}
         {% block additional_stylesheets %} {% endblock %}
@@ -92,9 +92,9 @@
 
         </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}libs/jquery/jquery-1.10.1.min.js"><\/script>')</script>
-    <script src="{{ STATIC_URL }}libs/jquery/jquery-ui-1.10.3.custom.min.js"></script>
-    {% assets filters="rjsmin", output="gen/hyperkitty.js", "libs/bootstrap/js/bootstrap.min.js", "libs/jquery.expander.js", "libs/d3.v2.min.js", "libs/jquery.hotkeys.js", "js/hyperkitty-common.js", "js/hyperkitty-frontpage.js", "js/hyperkitty-overview.js", "js/hyperkitty-thread.js", "js/hyperkitty-userprofile.js" %}
+    <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}hyperkitty/libs/jquery/jquery-1.10.1.min.js"><\/script>')</script>
+    <script src="{{ STATIC_URL }}hyperkitty/libs/jquery/jquery-ui-1.10.3.custom.min.js"></script>
+    {% assets filters="rjsmin", output="gen/hyperkitty.js", "hyperkitty/libs/bootstrap/js/bootstrap.min.js", "hyperkitty/libs/jquery.expander.js", "hyperkitty/libs/d3.v2.min.js", "hyperkitty/libs/jquery.hotkeys.js", "hyperkitty/js/hyperkitty-common.js", "hyperkitty/js/hyperkitty-frontpage.js", "hyperkitty/js/hyperkitty-overview.js", "hyperkitty/js/hyperkitty-thread.js", "hyperkitty/js/hyperkitty-userprofile.js" %}
     <script src="{{ ASSET_URL }}"></script>
     {% endassets %}
     {% block additionaljs %} {% endblock %}
