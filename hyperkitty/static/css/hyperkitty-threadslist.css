@@ -78,6 +78,13 @@
     display: inline;
     margin-right: 1em;
 }
+.thread-info .tags li {
+    padding: 0 0.2em 0 0.2em;
+}
+.thread-info .tags a {
+    font-size: 90%;
+}
+
 .thread-info .thread-show {
     padding-top: 2px;
     padding-bottom: 2px;
