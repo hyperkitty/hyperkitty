@@ -100,18 +100,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
             fav_action = "rm"
 
     # Category
-    categories = [ (c.name, c.name.upper())
-                   for c in ThreadCategory.objects.all() ] \
-                 + [("", "no categories")]
-    category_form = CategoryForm(initial={"category": thread.category or ""})
-    category_form["category"].field.choices = categories
-    if not thread.category:
-        category = None
-    else:
-        try:
-            category = ThreadCategory.objects.get(name=thread.category)
-        except ThreadCategory.DoesNotExist:
-            category = None
+    category, category_form = get_category_widget(request, thread.category)
 
     # Extract relative dates
     today = datetime.date.today()
@@ -312,21 +301,7 @@ def set_category(request, mlist_fqdn, threadid):
         raise SuspiciousOperation
 
     store = get_store(request)
-    categories = [ (c.name, c.name.upper())
-                   for c in ThreadCategory.objects.all() ] \
-                 + [("", "No categories")]
-    category_form = CategoryForm(request.POST)
-    category_form["category"].field.choices = categories
-
-    if not category_form.is_valid():
-        return HttpResponse("Error settings category: invalid data",
-                            content_type="text/plain", status=500)
-
-    category_name = category_form.cleaned_data["category"]
-    try:
-        category = ThreadCategory.objects.get(name=category_name)
-    except ThreadCategory.DoesNotExist:
-        raise Http404("No such category: %s" % category_name)
+    category, category_form = get_category_widget(request)
     thread = store.get_thread(mlist_fqdn, threadid)
     if category.name != thread.category:
         thread.category = category.name

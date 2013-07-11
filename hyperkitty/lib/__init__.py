@@ -29,6 +29,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from mailmanclient import MailmanConnectionError
 
 from hyperkitty.lib import mailman
+from hyperkitty.models import ThreadCategory
+from hyperkitty.views.forms import CategoryForm
 
 
 FLASH_MESSAGES = {
@@ -176,3 +178,27 @@ def paginate(objects, page_num, max_page_range=10, paginator=None):
     else:
         objects.page_range = [ p+1 for p in range(paginator.num_pages) ]
     return objects
+
+
+def get_category_widget(request, current_category=None):
+    categories = [ (c.name, c.name.upper())
+                   for c in ThreadCategory.objects.all() ] \
+                 + [("", "no categories")]
+
+    if request.method == "POST":
+        category_form = CategoryForm(request.POST)
+    else:
+        category_form = CategoryForm(initial={"category": current_category or ""})
+    category_form["category"].field.choices = categories
+    if request.method == "POST" and category_form.is_valid():
+        # is_valid() must be called after the choices have been set
+        current_category = category_form.cleaned_data["category"]
+
+    if not current_category:
+        category = None
+    else:
+        try:
+            category = ThreadCategory.objects.get(name=current_category)
+        except ThreadCategory.DoesNotExist:
+            category = None
+    return category, category_form
