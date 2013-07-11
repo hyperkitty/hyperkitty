@@ -13,6 +13,9 @@
                        href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
                        >{{ thread.starting_email.subject|strip_subject:mlist }}</a></span>
                 <span class="thread-date">{{ thread|get_date|timesince }}</span>
+                <span class="thread-category">
+                    {% include 'threads/category.html' with category=thread.category_hk category_form=thread.category_form threadid=thread.thread_id %}
+                </span>
             </div>
             <div class="thread-content">
                 {% if thread.category_tag %}

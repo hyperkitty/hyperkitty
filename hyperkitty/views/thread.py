@@ -36,6 +36,7 @@ import robot_detection
 from hyperkitty.models import Tag, Favorite, LastView, ThreadCategory
 from hyperkitty.views.forms import AddTagForm, ReplyForm, CategoryForm
 from hyperkitty.lib import get_months, get_store, stripped_subject
+from hyperkitty.lib import get_category_widget
 from hyperkitty.lib.voting import set_message_votes
 
 
@@ -303,7 +304,10 @@ def set_category(request, mlist_fqdn, threadid):
     store = get_store(request)
     category, category_form = get_category_widget(request)
     thread = store.get_thread(mlist_fqdn, threadid)
-    if category.name != thread.category:
+    if not category and thread.category:
+        thread.category = None
+        store.commit()
+    elif category and category.name != thread.category:
         thread.category = category.name
         store.commit()
 

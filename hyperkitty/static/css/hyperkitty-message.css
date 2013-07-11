@@ -150,24 +150,13 @@
 
 /* Categories */
 
-#thread-category {
-    padding: 0;
-    padding-bottom: 10px;
+.thread-header .thread-category {
     text-align: center;
 }
-#thread-category form {
-    margin: 0;
-    display: none;
-}
-#thread-category form select {
-    font-size: 90%;
-    width: 12em;
-}
-#thread-category a.label {
+.thread-header .thread-category a.label {
     font-size: 120%;
     line-height: 120%;
 }
-
 
 /* Participants */
 

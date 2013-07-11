@@ -184,3 +184,10 @@
 .type_test {
     background-color: rgb(200, 171, 55);
 }
+
+
+
+/* Category */
+.thread .thread-category {
+    float: right;
+}

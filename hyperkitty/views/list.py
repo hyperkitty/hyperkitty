@@ -33,7 +33,7 @@ from django.http import Http404
 
 from hyperkitty.models import Tag, Favorite, LastView
 from hyperkitty.lib import get_months, get_store, get_display_dates, daterange
-from hyperkitty.lib import FLASH_MESSAGES, paginate
+from hyperkitty.lib import FLASH_MESSAGES, paginate, get_category_widget
 from hyperkitty.lib.voting import get_votes, set_message_votes, set_thread_votes
 
 
@@ -106,6 +106,10 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
                                              list_address=mlist.name)
         except Tag.DoesNotExist:
             thread.tags = []
+
+        # Category
+        thread.category_hk, thread.category_form = \
+                get_category_widget(request, thread.category)
 
         # Unread status
         thread.unread = False

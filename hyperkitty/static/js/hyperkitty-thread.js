@@ -25,15 +25,16 @@
  */
 
 function setup_category() {
-    $("#thread-category form").submit(function (e) {
+    $(".thread-category form").submit(function (e) {
         e.preventDefault();
+        var widget = $(this).parents(".thread-category").first();
         $.ajax({
             type: "POST",
             //dataType: "json",
             data : $(this).serialize(),
             url: $(this).attr("action"),
             success: function(data) {
-                $("#thread-category").html(data);
+                widget.html(data);
                 setup_category();
             },
             error: function(jqXHR, textStatus, errorThrown) {
@@ -42,12 +43,13 @@ function setup_category() {
             }
         });
     });
-    $("#thread-category a.label").click(function(e) {
+    $(".thread-category a.label").click(function(e) {
         e.preventDefault();
-        $(this).hide();
-        $("#thread-category form").show();
+        $(this).hide()
+            .parents(".thread-category").first()
+            .find("form").show();
     });
-    $("#thread-category form select").change(function() {
+    $(".thread-category form select").change(function() {
         $(this).parents("form").first().submit();
     });
 }
