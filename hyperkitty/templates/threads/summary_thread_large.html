@@ -13,23 +13,8 @@
                        href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
                        >{{ thread.starting_email.subject|strip_subject:mlist }}</a></span>
                 <span class="thread-date">{{ thread|get_date|timesince }}</span>
-                <span class="thread-category">
-                    {% include 'threads/category.html' with category=thread.category_hk category_form=thread.category_form threadid=thread.thread_id %}
-                </span>
             </div>
             <div class="thread-content">
-                {% if thread.category_tag %}
-                <div class="inline-block type type_{{thread.category_tag}}">
-                    <a href="{% url 'search_tag' mlist_fqdn=mlist.name tag=thread.category_tag %}"
-                        >{{thread.category}}</a>
-                </div>
-                {% endif %}
-                {% if thread.category %}
-                <div class="inline-block type type_{{thread.category|lower}}">
-                    <a href="{% url 'search_tag' mlist_fqdn=mlist.name tag=thread.category|lower %}"
-                        >{{thread.category}}</a>
-                </div>
-                {% endif %}
                 <div class="gravatar">
                     {% if thread.starting_email.sender_email %}
                     {% gravatar thread.starting_email.sender_email 40 %}
@@ -44,6 +29,9 @@
                 </div>
             </div>
             <div class="thread-info">
+                <span class="thread-category">
+                    {% include 'threads/category.html' with category=thread.category_hk category_form=thread.category_form threadid=thread.thread_id %}
+                </span>
                 <div class="tags">
                     {% if thread.tags|length %}
                     Tags:

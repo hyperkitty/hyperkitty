@@ -6,7 +6,7 @@
             {% if category %}
             {{ category.name|upper }}
             {% else %}
-            No category
+            no category
             {% endif %}
         </a>
         <form method="post" action="{% url 'thread_set_category' mlist_fqdn=mlist.name threadid=threadid %}">

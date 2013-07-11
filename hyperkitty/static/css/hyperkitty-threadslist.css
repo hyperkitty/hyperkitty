@@ -60,13 +60,20 @@
     font-style: italic;
     font-size: 70%;
     color: rgb(128, 0, 0);
+    margin-left: 1em;
 }
 
 .thread-info {
     text-align:right;
     clear: both;
-    margin-left: 46px;
+    margin-left: 60px;
 }
+
+.thread .thread-category {
+    /*margin-left: 1em;*/
+    float: left;
+}
+
 .thread-info .tags {
     display: inline;
     margin-right: 1em;
@@ -89,7 +96,7 @@
 }
 .thread-content .thread-email {
     display: block;
-    margin-left: 46px;
+    margin-left: 60px;
     margin-bottom: 5px;
 }
 
@@ -115,7 +122,6 @@
     -moz-border-radius: 5px 5px 5px 5px;
     border-radius: 5px 5px 5px 5px;
     padding: 1em;
-    margin-left: 21px;
     display: block;
     vertical-align: top;
     white-space: pre;
@@ -183,11 +189,4 @@
 
 .type_test {
     background-color: rgb(200, 171, 55);
-}
-
-
-
-/* Category */
-.thread .thread-category {
-    float: right;
 }

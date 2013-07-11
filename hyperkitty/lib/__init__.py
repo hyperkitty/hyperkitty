@@ -183,7 +183,7 @@ def paginate(objects, page_num, max_page_range=10, paginator=None):
 def get_category_widget(request, current_category=None):
     categories = [ (c.name, c.name.upper())
                    for c in ThreadCategory.objects.all() ] \
-                 + [("", "no categories")]
+                 + [("", "no category")]
 
     if request.method == "POST":
         category_form = CategoryForm(request.POST)
