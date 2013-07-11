@@ -95,6 +95,9 @@ def user_profile(request, user_email=None):
     for fav in favorites:
         thread = store.get_thread(fav.list_address, fav.threadid)
         fav.thread = thread
+        if thread is None:
+            fav.delete() # thread has gone away?
+    favorites = [ f for f in favorites if f.thread is not None ]
 
     # Flash messages
     flash_messages = []
@@ -164,13 +167,17 @@ def last_views(request):
     last_views = paginate(last_views, request.GET.get('lvpage'))
     for last_view in last_views:
         thread = store.get_thread(last_view.list_address, last_view.threadid)
+        last_view.thread = thread
+        if thread is None:
+            last_view.delete()
+            continue
         if thread.date_active.replace(tzinfo=utc) > last_view.view_date:
             # small optimization: only query the replies if necessary
             # XXX: Storm-specific (count method)
             thread.unread = thread.replies_after(last_view.view_date).count()
         else:
             thread.unread = 0
-        last_view.thread = thread
+    last_views = [ lv for lv in last_views if lv.thread is not None ]
 
     return render(request, 'ajax/last_views.html', {
                 "last_views": last_views,
@@ -189,6 +196,9 @@ def votes(request):
     for vote in votes:
         vote.message = store.get_message_by_hash_from_list(
                 vote.list_address, vote.messageid)
+        if vote.message is None:
+            vote.delete()
+    votes = [ v for v in votes if v.message is not None ]
     return render(request, 'ajax/votes.html', {
                 "votes": votes,
             })

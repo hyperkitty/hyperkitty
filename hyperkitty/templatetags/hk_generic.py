@@ -137,6 +137,8 @@ def get_date(email_or_thread):
         date_obj = email_or_thread.date.replace(tzinfo=tz)
     elif hasattr(email_or_thread, 'date_active'):
         date_obj = email_or_thread.date_active.replace(tzinfo=utc)
+    else:
+        raise ValueError(email_or_thread)
     return date_obj
 
 
