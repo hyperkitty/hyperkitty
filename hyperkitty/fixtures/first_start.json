@@ -1,0 +1,42 @@
+[
+    {
+        "pk": 1,
+        "model": "hyperkitty.threadcategory",
+        "fields": {
+            "color": "#3a87ad",
+            "name": "announce"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "hyperkitty.threadcategory",
+        "fields": {
+            "color": "#65cdd4",
+            "name": "question"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "hyperkitty.threadcategory",
+        "fields": {
+            "color": "#e084e0",
+            "name": "schedule"
+        }
+    },
+    {
+        "pk": 4,
+        "model": "hyperkitty.threadcategory",
+        "fields": {
+            "color": "#f89406",
+            "name": "todo"
+        }
+    },
+    {
+        "pk": 5,
+        "model": "hyperkitty.threadcategory",
+        "fields": {
+            "color": "#468847",
+            "name": "policy"
+        }
+    }
+]

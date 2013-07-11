@@ -1,8 +1,9 @@
 {% load url from future %}
 
-        <a class="label {{category}}">
+        <a class="label" title="Click to edit"
+           {% if category %}style="background-color:{{category.color}}"{% endif %}>
             {% if category %}
-            {{ category|title }}
+            {{ category.name|upper }}
             {% else %}
             No category
             {% endif %}

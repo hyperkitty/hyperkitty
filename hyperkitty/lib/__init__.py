@@ -176,4 +176,3 @@ def paginate(objects, page_num, max_page_range=10, paginator=None):
     else:
         objects.page_range = [ p+1 for p in range(paginator.num_pages) ]
     return objects
-

@@ -150,28 +150,22 @@
 
 /* Categories */
 
-#thread-overview-info #thread-category {
-    padding: 10px 0;
+#thread-category {
+    padding: 0;
+    padding-bottom: 10px;
     text-align: center;
 }
-#thread-overview-info #thread-category form {
+#thread-category form {
     margin: 0;
     display: none;
 }
-#thread-overview-info #thread-category form select {
+#thread-category form select {
     font-size: 90%;
     width: 12em;
 }
-#thread-overview-info #thread-category a.label {
+#thread-category a.label {
     font-size: 120%;
     line-height: 120%;
-}
-
-#thread-category .question {
-    background-color: #f89406;
-}
-#thread-category .announce {
-    background-color: #3a87ad;
 }
 
 

@@ -106,6 +106,17 @@ to make sure the emails are correctly archived. You should not see "``Broken
 archiver: hyperkitty``" messages.
 
 
+Initial setup
+=============
+
+After installing HyperKitty for the first time, you can populate the database
+with some data that may be useful, for example a set of thread categories to
+assign to your mailing-list threads. This can be done by running the following
+command::
+
+    python hyperkitty_standalone/manage.py loaddata first_start
+
+
 Upgrading
 =========
 

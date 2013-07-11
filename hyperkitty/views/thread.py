@@ -33,7 +33,7 @@ from django.core.exceptions import SuspiciousOperation
 from django.utils.timezone import utc
 import robot_detection
 
-from hyperkitty.models import Tag, Favorite, LastView
+from hyperkitty.models import Tag, Favorite, LastView, ThreadCategory
 from hyperkitty.views.forms import AddTagForm, ReplyForm, CategoryForm
 from hyperkitty.lib import get_months, get_store, stripped_subject
 from hyperkitty.lib.voting import set_message_votes
@@ -100,10 +100,18 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
             fav_action = "rm"
 
     # Category
-    categories = [ (c, c.title()) for c in store.get_categories() ] \
+    categories = [ (c.name, c.name.upper())
+                   for c in ThreadCategory.objects.all() ] \
                  + [("", "no categories")]
     category_form = CategoryForm(initial={"category": thread.category or ""})
     category_form["category"].field.choices = categories
+    if not thread.category:
+        category = None
+    else:
+        try:
+            category = ThreadCategory.objects.get(name=thread.category)
+        except ThreadCategory.DoesNotExist:
+            category = None
 
     # Extract relative dates
     today = datetime.date.today()
@@ -158,7 +166,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'last_view': last_view,
         'unread_count': unread_count,
         'category_form': category_form,
-        'category': thread.category,
+        'category': category,
     }
     context["participants"].sort(key=lambda x: x[0].lower())
 
@@ -304,7 +312,8 @@ def set_category(request, mlist_fqdn, threadid):
         raise SuspiciousOperation
 
     store = get_store(request)
-    categories = [ (c, c.title()) for c in store.get_categories() ] \
+    categories = [ (c.name, c.name.upper())
+                   for c in ThreadCategory.objects.all() ] \
                  + [("", "No categories")]
     category_form = CategoryForm(request.POST)
     category_form["category"].field.choices = categories
@@ -313,12 +322,14 @@ def set_category(request, mlist_fqdn, threadid):
         return HttpResponse("Error settings category: invalid data",
                             content_type="text/plain", status=500)
 
-    category = category_form.cleaned_data["category"]
+    category_name = category_form.cleaned_data["category"]
+    try:
+        category = ThreadCategory.objects.get(name=category_name)
+    except ThreadCategory.DoesNotExist:
+        raise Http404("No such category: %s" % category_name)
     thread = store.get_thread(mlist_fqdn, threadid)
-    if category and category not in store.get_categories():
-        raise Http404("No such category: %s" % category)
-    if category != thread.category:
-        thread.category = category
+    if category.name != thread.category:
+        thread.category = category.name
         store.commit()
 
     # Now refresh the category widget
@@ -327,6 +338,6 @@ def set_category(request, mlist_fqdn, threadid):
             "category_form": category_form,
             "mlist": FakeMList(name=mlist_fqdn),
             "threadid": threadid,
-            "category": thread.category,
+            "category": category,
             }
     return render(request, "threads/category.html", context)

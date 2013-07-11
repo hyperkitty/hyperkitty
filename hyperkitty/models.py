@@ -24,6 +24,7 @@ from django.contrib.auth.models import User
 from django.contrib import admin
 
 import pytz
+from paintstore.fields import ColorPickerField
 
 
 
@@ -104,3 +105,23 @@ class LastView(models.Model):
                 unicode(self.user), self.view_date.isoformat())
 
 admin.site.register(LastView)
+
+
+class ThreadCategory(models.Model):
+    name = models.CharField(max_length=255, db_index=True, unique=True)
+    color = ColorPickerField()
+
+    class Meta:
+        verbose_name_plural = "Thread categories"
+
+    def __unicode__(self):
+        """Unicode representation"""
+        return u'Category "%s"' % (unicode(self.name))
+
+class ThreadCategoryAdmin(admin.ModelAdmin):
+    def save_model(self, request, obj, form, change):
+        obj.name = obj.name.lower()
+        return super(ThreadCategoryAdmin, self).save_model(
+                     request, obj, form, change)
+
+admin.site.register(ThreadCategory, ThreadCategoryAdmin)

@@ -12,3 +12,4 @@ cssmin
 mailmanclient
 robot-detection
 pytz
+django-paintstore
