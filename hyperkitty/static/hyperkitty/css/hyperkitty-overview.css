@@ -26,7 +26,7 @@
   position: relative;
   margin: auto;
   width: 540px;
-  height: 330px;
+  height: 300px;
 }
 
 #fig .axis path, #fig .axis line {
@@ -39,6 +39,9 @@
   fill: steelBlue;
 }
 
+#overview .list-stats {
+    text-align: center;
+}
 
 #overview p.thread-new {
     text-align: center;

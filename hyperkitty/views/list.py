@@ -152,6 +152,7 @@ def overview(request, mlist_fqdn=None):
 
     # Get stats for last 30 days
     today = datetime.datetime.utcnow()
+    #today -= datetime.timedelta(days=365) #debug
     # the upper boundary is excluded in the search, add one day
     end_date = today + datetime.timedelta(days=1)
     begin_date = end_date - datetime.timedelta(days=32)
@@ -204,13 +205,23 @@ def overview(request, mlist_fqdn=None):
     # Popular threads
     pop_threads = sorted([ t for t in threads if t.likes - t.dislikes > 0 ],
                          key=lambda t: t.likes - t.dislikes,
-                         reverse=True)[:5]
+                         reverse=True)
+
+    # Threads by category
+    threads_by_category = defaultdict(list)
+    for thread in active_threads:
+        if not thread.category:
+            continue
+        if len(threads_by_category[thread.category]) >= 5:
+            continue
+        threads_by_category[thread.category].append(thread)
 
     # List activity
     # Use get_messages and not get_threads to count the emails, because
     # recently active threads include messages from before the start date
     emails_in_month = store.get_messages(list_name=mlist.name,
                                          start=begin_date, end=end_date)
+    # graph
     dates = defaultdict(lambda: 0) # no activity by default
     # populate with all days before adding data.
     for single_date in daterange(begin_date, end_date):
@@ -228,26 +239,19 @@ def overview(request, mlist_fqdn=None):
                                kwargs={'mlist_fqdn': mlist.name})
     archives_baseurl = archives_baseurl.rpartition("/")[0]
 
-    # Threads by category
-    threads_by_category = {}
-    for thread in active_threads:
-        if not thread.category:
-            continue
-        if len(threads_by_category.setdefault(thread.category, [])) >= 5:
-            continue
-        threads_by_category[thread.category].append(thread)
-
     context = {
         'mlist' : mlist,
         'top_threads': top_threads[:5],
         'most_active_threads': active_threads[:5],
         'top_author': authors,
         'top_posters': top_posters,
-        'pop_threads': pop_threads,
+        'pop_threads': pop_threads[:5],
         'threads_by_category': threads_by_category,
         'months_list': get_months(store, mlist.name),
         'evolution': evolution,
         'days': days,
         'archives_baseurl': archives_baseurl,
+        'num_threads': len(threads),
+        'num_participants': len(participants),
     }
     return render(request, "overview.html", context)
