@@ -53,6 +53,39 @@
         </div>
 
         <div class="row-fluid">
+
+            <div class="span6">
+            <section id="popular-threads" class="widget">
+                <h3>Most popular discussions</h3>
+                {% for thread in pop_threads %}
+                    {% include "threads/summary_thread.html" with counter=forloop.counter %}
+                {% empty %}
+                    <p>No vote has been cast this month (yet).</p>
+                {% endfor %}
+            </section>
+            </div>
+
+            <div class="span6">
+            <section id="discussion-by-category" class="widget">
+                <h3>Discussion by category</h3>
+                {% for category, threads in threads_by_category.items %}
+                    <h4 class="label{% if forloop.first %} first{% endif %}"
+                       style="background-color:{{category.color}}"
+                       >{{ category.name|upper }}
+                    </h4>
+                    {% for thread in threads %}
+                        {% include "threads/summary_thread.html" %}
+                    {% endfor %}
+                {% empty %}
+                    <p>No category has been set this month (yet).</p>
+                {% endfor %}
+            </section>
+            </div>
+
+        </div>
+
+        <div class="row-fluid">
+
             <div class="span6">
             <section id="discussion-maker" class="widget">
                 <h3>Most active posters</h3>
@@ -74,19 +107,7 @@
                 {% endfor %}
             </section>
             </div>
-            <div class="span6">
-            <section id="popular-threads" class="widget">
-                <h3>Most popular discussions</h3>
-                {% for thread in pop_threads %}
-                    {% include "threads/summary_thread.html" with counter=forloop.counter %}
-                {% empty %}
-                    <p>No votes this month (yet).</p>
-                {% endfor %}
-            </section>
-            </div>
-        </div>
 
-        <div class="row-fluid">
             <div class="span6">
             {% if top_author %}
             <section id="discussion-maker" class="widget">
@@ -113,24 +134,6 @@
                 {% endfor %}
 
                 <h3>Tag cloud</h3>
-            </section>
-            {% endif %}
-            </div>
-
-
-            <div class="span6">
-            {% if threads_by_category %}
-            <section id="discussion-by-category" class="widget">
-                <h3>Discussion by category</h3>
-                {% for category, threads in threads_by_category.items %}
-                    <h4 class="label{% if forloop.first %} first{% endif %}"
-                       style="background-color:{{category.color}}"
-                       >{{ category.name|upper }}
-                    </h4>
-                    {% for thread in threads %}
-                        {% include "threads/summary_thread.html" %}
-                    {% endfor %}
-                {% endfor %}
             </section>
             {% endif %}
             </div>
