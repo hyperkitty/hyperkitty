@@ -250,4 +250,4 @@ def overview(request, mlist_fqdn=None):
         'days': days,
         'archives_baseurl': archives_baseurl,
     }
-    return render(request, "recent_activities.html", context)
+    return render(request, "overview.html", context)

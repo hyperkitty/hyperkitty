@@ -1,13 +1,13 @@
 /* Summary page */
 
-#recent-activities h2 {
+#overview h2 {
     font-size: 22px;
     line-height: 32px;
     margin-bottom: 0.5em;
     text-align: center;
 }
 
-#recent-activities h3 {
+#overview h3 {
     font-size: 20px;
     line-height: 28px;
     margin-bottom: 0.5em;
@@ -39,12 +39,12 @@
 }
 
 
-#recent-activities p.thread-new {
+#overview p.thread-new {
     text-align: center;
 }
 
 
-#recent-activities .widget {
+#overview .widget {
     padding: 1em;
     padding-bottom: 0;
     border: 1px solid #ddd;
@@ -54,13 +54,13 @@
     margin: 1em 0;
 }
 
-#recent-activities .thread-stats {
+#overview .thread-stats {
     margin-left: 3em;
 }
-#recent-activities .thread-stats ul {
+#overview .thread-stats ul {
     margin: 0;
 }
-#recent-activities .thread-stats .category {
+#overview .thread-stats .category {
     margin-right: 2em;
 }
 
