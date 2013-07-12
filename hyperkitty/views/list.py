@@ -200,7 +200,8 @@ def overview(request, mlist_fqdn=None):
                             "count": poster[2]})
 
     # Popular threads
-    pop_threads = sorted(threads, key=lambda t: t.likes - t.dislikes,
+    pop_threads = sorted([ t for t in threads if t.likes - t.dislikes > 0 ],
+                         key=lambda t: t.likes - t.dislikes,
                          reverse=True)[:5]
 
     # List activity

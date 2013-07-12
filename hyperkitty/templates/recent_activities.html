@@ -79,6 +79,8 @@
                 <h3>Most popular discussions</h3>
                 {% for thread in pop_threads %}
                     {% include "threads/summary_thread.html" with counter=forloop.counter %}
+                {% empty %}
+                    <p>No votes this month (yet).</p>
                 {% endfor %}
             </section>
             </div>
