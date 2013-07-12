@@ -26,10 +26,10 @@
                    title="{{ thread.subject|strip_subject:mlist|escape }}">{{ thread.subject|strip_subject:mlist|truncatesmart:"22" }}</a>
                 {% endif %}
             {% endfor %}
-            <h1>{{ subject }}</h1>
             <div class="thread-category">
                 {% include 'threads/category.html' %}
             </div>
+            <h1>{{ subject }}</h1>
         </div>
 
         <div class="row-fluid">

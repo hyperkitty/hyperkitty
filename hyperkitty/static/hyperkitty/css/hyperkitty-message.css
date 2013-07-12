@@ -27,7 +27,7 @@
     /*background-color: #f6f6f6;*/
     /*border-bottom: 1px solid #b3b3b3;*/
     margin-bottom: 6em;
-    padding: 1em 0;
+    padding: 0;
 }
 
 .thread-header h1,
@@ -40,6 +40,7 @@
 .thread-header .thread-older,
 .thread-header .thread-newer {
     display: block;
+    margin-top: 1em;
     padding-top: 38px;
     width: 160px;
     overflow: hidden;
@@ -155,8 +156,6 @@
 }
 .thread-header .thread-category a.label {
     padding: 0.2em 0.4em;
-    font-size: 110%;
-    line-height: 110%;
 }
 
 /* Participants */
