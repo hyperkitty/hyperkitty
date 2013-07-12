@@ -116,6 +116,9 @@ command::
 
     python hyperkitty_standalone/manage.py loaddata first_start
 
+Thread categories can be edited and added from the Django administration
+interface (append ``/admin`` to your base URL).
+
 
 Upgrading
 =========

@@ -233,7 +233,7 @@ def overview(request, mlist_fqdn=None):
     for thread in active_threads:
         if not thread.category:
             continue
-        if len(threads_by_category.setdefault(thread.category, [])) > 5:
+        if len(threads_by_category.setdefault(thread.category, [])) >= 5:
             continue
         threads_by_category[thread.category].append(thread)
 
