@@ -180,17 +180,29 @@ def paginate(objects, page_num, max_page_range=10, paginator=None):
     return objects
 
 
-def get_category_widget(request, current_category=None):
+def get_category_widget(request=None, current_category=None):
+    """
+    Returns the category form and the applicable category object (or None if no
+    category is set for this thread).
+
+    If current_category is not provided or None, try to deduce it from the POST
+    request.
+    if request is not provided or None, don't return the category form, return
+    None instead.
+    """
     categories = [ (c.name, c.name.upper())
                    for c in ThreadCategory.objects.all() ] \
                  + [("", "no category")]
 
-    if request.method == "POST":
-        category_form = CategoryForm(request.POST)
+    if request:
+        if request.method == "POST":
+            category_form = CategoryForm(request.POST)
+        else:
+            category_form = CategoryForm(initial={"category": current_category or ""})
+        category_form["category"].field.choices = categories
     else:
-        category_form = CategoryForm(initial={"category": current_category or ""})
-    category_form["category"].field.choices = categories
-    if request.method == "POST" and category_form.is_valid():
+        category_form = None
+    if request and request.method == "POST" and category_form.is_valid():
         # is_valid() must be called after the choices have been set
         current_category = category_form.cleaned_data["category"]
 

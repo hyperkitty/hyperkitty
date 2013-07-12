@@ -3,23 +3,16 @@
 {% load storm %}
 
         <div class="thread">
-            <span class="thread-id">#{{counter}}</span>
+            {% if counter %}<span class="thread-id">#{{counter}}</span>{% endif %}
             <span class="thread-title"><a name="{{thread.thread_id}}"
                 href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
                 >{{ thread.subject|strip_subject:mlist }}</a></span>
-            <div class="thread_stats">
+            <div class="thread-stats">
                 <ul class="inline-block">
-                    {% if thread.category_tag %}
-                    <li class="type type_{{thread.category_tag}}">
-                        <a href="{% url 'search_tag' mlist_fqdn=mlist.name tag=thread.category_tag %}"
-                            >{{thread.category}}</a>
-                    </li>
-                    {% endif %}
                     {% if thread.category %}
-                    <li class="type type_{{thread.category|lower}}">
-                        <a href="{% url 'search_tag' mlist_fqdn=mlist.name tag=thread.category|lower %}"
-                            >{{thread.category}}</a>
-                    </li>
+                    <span class="label category" style="background-color:{{thread.category.color}}">
+                        {{ thread.category.name|upper }}
+                    </span>
                     {% endif %}
                     <li class="participant">
                         {{ thread.participants|length }}

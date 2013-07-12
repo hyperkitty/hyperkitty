@@ -119,20 +119,17 @@
 
 
             <div class="span6">
-            {% if threads_per_category %}
-            <section id="discussion-by-topic" class="widget">
-                <h3>Discussion by topic the last 30 days</h3>
-                {% for category, thread in threads_per_category.items %}
-                <div>
-                    <h3 class="category type_{{category}}"> {{category}} </h3>
-                    <ul class="category_entry">
-                        {% for email in thread %}
-                        <li>
-                            {{email.title}}
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+            {% if threads_by_category %}
+            <section id="discussion-by-category" class="widget">
+                <h3>Discussion by category</h3>
+                {% for category, threads in threads_by_category.items %}
+                    <h4 class="label{% if forloop.first %} first{% endif %}"
+                       style="background-color:{{category.color}}"
+                       >{{ category.name|upper }}
+                    </h4>
+                    {% for thread in threads %}
+                        {% include "threads/summary_thread.html" %}
+                    {% endfor %}
                 {% endfor %}
             </section>
             {% endif %}

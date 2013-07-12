@@ -43,7 +43,7 @@ if settings.USE_MOCKUPS:
 
 Thread = namedtuple('Thread', [
     "thread_id", "subject", "participants", "length", "date_active",
-    "likes", "dislikes", "likestatus",
+    "likes", "dislikes", "likestatus", "category",
     ])
 
 
@@ -172,7 +172,9 @@ def overview(request, mlist_fqdn=None):
                         thread_obj.participants, len(thread_obj),
                         thread_obj.date_active.replace(tzinfo=utc),
                         thread_obj.likes, thread_obj.dislikes,
-                        thread_obj.likestatus)
+                        thread_obj.likestatus,
+                        get_category_widget(None, thread_obj.category)[0],
+                        )
         # Statistics on how many participants and threads this month
         participants.update(thread.participants)
         threads.append(thread)
@@ -226,11 +228,14 @@ def overview(request, mlist_fqdn=None):
                                kwargs={'mlist_fqdn': mlist.name})
     archives_baseurl = archives_baseurl.rpartition("/")[0]
 
-    # threads per category is the top thread titles in each category
-    if settings.USE_MOCKUPS:
-        threads_per_category = generate_thread_per_category()
-    else:
-        threads_per_category = {}
+    # Threads by category
+    threads_by_category = {}
+    for thread in active_threads:
+        if not thread.category:
+            continue
+        if len(threads_by_category.setdefault(thread.category, [])) > 5:
+            continue
+        threads_by_category[thread.category].append(thread)
 
     context = {
         'mlist' : mlist,
@@ -239,7 +244,7 @@ def overview(request, mlist_fqdn=None):
         'top_author': authors,
         'top_posters': top_posters,
         'pop_threads': pop_threads,
-        'threads_per_category': threads_per_category,
+        'threads_by_category': threads_by_category,
         'months_list': get_months(store, mlist.name),
         'evolution': evolution,
         'days': days,

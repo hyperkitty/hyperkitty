@@ -54,6 +54,17 @@
     margin: 1em 0;
 }
 
+#recent-activities .thread-stats {
+    margin-left: 3em;
+}
+#recent-activities .thread-stats ul {
+    margin: 0;
+}
+#recent-activities .thread-stats .category {
+    margin-right: 2em;
+}
+
+/*
 .category {
     font-variant: small-caps;
     font-weight: bold;
@@ -77,6 +88,7 @@
 .category_entry li {
     padding-bottom: 10px;
 }
+*/
 
 .maker {
     color: rgb(102, 102, 102);
@@ -97,4 +109,25 @@
 
 .score{
     font-weight: bold;
+}
+
+
+/* Threads by category */
+
+#discussion-by-category h4 {
+    font-size: 105%;
+    line-height: 105%;
+    margin: 1.5em 0 0.5em 0;
+}
+#discussion-by-category h4.first {
+    margin-top: 0;
+}
+#discussion-by-category .thread {
+    margin: 0 0 0 2em;
+}
+#discussion-by-category .thread-stats {
+    margin-left: 0;
+}
+#discussion-by-category .thread .category {
+    display: none;
 }
