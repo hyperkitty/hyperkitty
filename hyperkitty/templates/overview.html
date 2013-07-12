@@ -91,9 +91,11 @@
                        style="background-color:{{category.color}}"
                        >{{ category.name|upper }}
                     </h4>
+                    <ul>
                     {% for thread in threads %}
-                        {% include "threads/summary_thread.html" %}
+                        <li>{% include "threads/summary_thread.html" %}</li>
                     {% endfor %}
+                    </ul>
                 {% empty %}
                     <p>No category has been set this month (yet).</p>
                 {% endfor %}
