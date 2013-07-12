@@ -208,11 +208,13 @@ def overview(request, mlist_fqdn=None):
                          reverse=True)
 
     # Threads by category
-    threads_by_category = defaultdict(list)
+    threads_by_category = {}
     for thread in active_threads:
         if not thread.category:
             continue
-        if len(threads_by_category[thread.category]) >= 5:
+        # don't use defaultdict, use .setdefault():
+        # http://stackoverflow.com/questions/4764110/django-template-cant-loop-defaultdict
+        if len(threads_by_category.setdefault(thread.category, [])) >= 5:
             continue
         threads_by_category[thread.category].append(thread)
 
