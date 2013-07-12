@@ -11,6 +11,7 @@
     font-size: 20px;
     line-height: 28px;
     margin-bottom: 0.5em;
+    margin-top: 0;
     text-align: center;
 }
 
@@ -46,12 +47,15 @@
 
 #overview .widget {
     padding: 1em;
-    padding-bottom: 0;
     border: 1px solid #ddd;
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
     margin: 1em 0;
+}
+
+#overview .thread {
+    margin: 1.5em 0 0 0;
 }
 
 #overview .thread-stats {
@@ -118,6 +122,8 @@
     font-size: 105%;
     line-height: 105%;
     margin: 1.5em 0 0.5em 0;
+    padding-left: 1em;
+    padding-right: 1em;
 }
 #discussion-by-category h4.first {
     margin-top: 0;
