@@ -38,6 +38,7 @@ def index(request):
     lists = store.get_lists()
 
     context = {
+        'view_name': 'all_lists',
         'all_lists': lists,
         }
     return render(request, "index.html", context)

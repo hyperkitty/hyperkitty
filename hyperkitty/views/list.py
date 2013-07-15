@@ -233,6 +233,7 @@ def overview(request, mlist_fqdn=None):
     archives_baseurl = archives_baseurl.rpartition("/")[0]
 
     context = {
+        'view_name': 'overview',
         'mlist' : mlist,
         'top_threads': top_threads[:5],
         'most_active_threads': active_threads[:5],

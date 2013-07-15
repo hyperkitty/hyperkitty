@@ -17,3 +17,24 @@ ul.nav.auth {
 #search-form form {
     margin-bottom: 0;
 }
+
+.navbar .breadcrumb {
+    padding: 10px 30px;
+    margin: 0;
+    float: left;
+    background-color: transparent;
+}
+.navbar .breadcrumb > li > a {
+    color: #777777;
+    text-decoration: none;
+    text-shadow: 0 1px 0 #FFFFFF;
+}
+.navbar .breadcrumb > li > a:focus,
+.navbar .breadcrumb > li > a:hover {
+    color: #333333;
+    text-decoration: none;
+    background-color: transparent;
+}
+.navbar .breadcrumb > li > .divider {
+    color: #999999;
+}
