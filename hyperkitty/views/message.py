@@ -31,7 +31,9 @@ from django.core.exceptions import SuspiciousOperation
 from django.template import RequestContext, loader
 from django.contrib.auth.decorators import login_required
 
-from hyperkitty.lib import get_store, get_months, post_to_list, PostingFailed
+from hyperkitty.lib import get_store
+from hyperkitty.lib.view_helpers import get_months
+from hyperkitty.lib.posting import post_to_list, PostingFailed
 from hyperkitty.lib.voting import set_message_votes
 from hyperkitty.models import Rating
 from forms import ReplyForm, PostForm

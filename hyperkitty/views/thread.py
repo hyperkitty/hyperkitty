@@ -35,8 +35,8 @@ import robot_detection
 
 from hyperkitty.models import Tag, Favorite, LastView, ThreadCategory
 from hyperkitty.views.forms import AddTagForm, ReplyForm, CategoryForm
-from hyperkitty.lib import get_months, get_store, stripped_subject
-from hyperkitty.lib import get_category_widget
+from hyperkitty.lib import get_store, stripped_subject
+from hyperkitty.lib.view_helpers import get_months, get_category_widget
 from hyperkitty.lib.voting import set_message_votes
 
 

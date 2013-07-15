@@ -36,7 +36,8 @@ from social_auth.backends import SocialAuthBackend
 
 from hyperkitty.models import UserProfile, Rating, Favorite, LastView
 from hyperkitty.views.forms import RegistrationForm, UserProfileForm
-from hyperkitty.lib import get_store, FLASH_MESSAGES, paginate
+from hyperkitty.lib import get_store
+from hyperkitty.lib.view_helpers import FLASH_MESSAGES, paginate
 
 
 logger = logging.getLogger(__name__)

@@ -23,7 +23,7 @@ import datetime
 
 from django.test import TestCase
 
-from hyperkitty.lib import get_display_dates, paginate
+from hyperkitty.lib.view_helpers import get_display_dates, paginate
 
 
 class GetDisplayDatesTestCase(TestCase):
