@@ -146,6 +146,14 @@ class LastViewsTestCase(TestCase):
         self.assertContains(response, "icon-eye-close",
                             count=2, status_code=200)
 
+    def test_overview(self):
+        now = datetime.datetime.now()
+        request = self.factory.get(reverse('list_overview', args=["list@example.com"]))
+        request.user = self.user
+        response = archives(request, "list@example.com", now.year, now.month)
+        self.assertContains(response, "icon-eye-close",
+                            count=2, status_code=200)
+
 
 from hyperkitty.views.message import vote
 

@@ -31,9 +31,10 @@ from django.utils.dateformat import format as date_format
 from django.utils.timezone import utc
 from django.http import Http404
 
-from hyperkitty.models import Tag, Favorite, LastView
+from hyperkitty.models import Tag, Favorite
 from hyperkitty.lib import get_months, get_store, get_display_dates, daterange
 from hyperkitty.lib import FLASH_MESSAGES, paginate, get_category_widget
+from hyperkitty.lib import is_thread_unread
 from hyperkitty.lib.voting import get_votes, set_message_votes, set_thread_votes
 
 
@@ -43,7 +44,7 @@ if settings.USE_MOCKUPS:
 
 Thread = namedtuple('Thread', [
     "thread_id", "subject", "participants", "length", "date_active",
-    "likes", "dislikes", "likestatus", "category",
+    "likes", "dislikes", "likestatus", "category", "unread",
     ])
 
 
@@ -112,19 +113,7 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
                 get_category_widget(request, thread.category)
 
         # Unread status
-        thread.unread = False
-        if request.user.is_authenticated():
-            try:
-                last_view_obj = LastView.objects.get(
-                        list_address=mlist.name,
-                        threadid=thread.thread_id,
-                        user=request.user)
-            except LastView.DoesNotExist:
-                thread.unread = True
-            else:
-                if thread.date_active.replace(tzinfo=utc) \
-                        > last_view_obj.view_date:
-                    thread.unread = True
+        thread.unread = is_thread_unread(request, mlist.name, thread)
 
     threads = paginate(threads, request.GET.get('page'))
 
@@ -175,6 +164,7 @@ def overview(request, mlist_fqdn=None):
                         thread_obj.likes, thread_obj.dislikes,
                         thread_obj.likestatus,
                         get_category_widget(None, thread_obj.category)[0],
+                        is_thread_unread(request, mlist.name, thread_obj),
                         )
         # Statistics on how many participants and threads this month
         participants.update(thread.participants)

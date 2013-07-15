@@ -7,7 +7,7 @@
             <div class="{% if thread.favorite %}saved{% else %}notsaved{% endif %}">
                 <span class="thread-title">
                     {% if thread.unread %}
-                        <i class="unread icon-eye-close" title="Unread"></i>
+                        <i class="unread icon-eye-close" title="New messages in this thread"></i>
                     {% endif %}
                     <a name="{{thread.thread_id}}"
                        href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"

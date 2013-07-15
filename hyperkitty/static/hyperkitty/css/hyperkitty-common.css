@@ -92,6 +92,9 @@ form .buttons .submit {
     background-image: url("../img/discussion.png");
     margin-right: 2em;
 }
+i.unread {
+    vertical-align: baseline;
+}
 
 
 /*
