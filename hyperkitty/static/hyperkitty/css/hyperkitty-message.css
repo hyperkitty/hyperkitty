@@ -317,3 +317,37 @@
     border-bottom: none;
     background-color: #eee;
 }
+
+
+/*
+ * Re-attach threads
+ */
+.reattach-thread form {
+    margin-bottom: 0;
+}
+.reattach-thread form.search p {
+    line-height: 22px;
+}
+.reattach-thread form.search input {
+    margin-left: 3em;
+}
+.reattach-thread form.search input,
+.reattach-thread form.search button {
+    font-size: 12px;
+    padding: 2px 8px;
+}
+.reattach-thread form img.ajaxloader {
+    margin-left: 1em;
+}
+.reattach-thread li.manual label {
+    display: inline;
+}
+.reattach-thread li.manual input {
+    margin-bottom: 0;
+}
+.reattach-thread li.manual input[type='text'] {
+    width: 22em;
+}
+.reattach-thread p.buttons {
+    margin-top: 2em;
+}

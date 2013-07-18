@@ -50,6 +50,12 @@
             {{ addtag_form.as_p }}
         </form>
     </div>
+    {% if user.is_staff %}
+    <p><i class="icon-resize-small"></i>
+       <a href="{% url 'thread_reattach' mlist_fqdn=mlist.name threadid=threadid %}"
+          >Reattach this thread</a>
+    </p>
+    {% endif %}
     <div id="participants">
         <span id="participants_title">participants</span> ({{participants|length}})
         <ul>

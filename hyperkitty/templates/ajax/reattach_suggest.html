@@ -1,0 +1,11 @@
+{% load hk_generic %}
+
+                {% for s_thread in suggested_threads %}
+                <li><label class="radio"><input type="radio" name="parent" value="{{ s_thread.thread_id }}" />
+                    {{ s_thread.subject }}
+                    <br/>(started {{ s_thread.starting_email|get_date }}, last active: {{ s_thread|get_date }})
+                    </label>
+                </li>
+                {% empty %}
+                <li><em>(no suggestions)</em></li>
+                {% endfor %}

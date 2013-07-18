@@ -331,3 +331,33 @@ function update_thread_replies(url) {
     }
     load_more(url);
 }
+
+
+/*
+ * Re-attach threads
+ */
+function setup_reattach() {
+    $(".reattach-thread li.manual input[type='text']").focus( function() {
+        $(this).parents("li").first()
+            .find("input[type='radio']")
+            .prop("checked", true);
+    });
+    $(".reattach-thread form.search").submit(function (e) {
+        e.preventDefault();
+        var results_elem = $(this).parent().find("ul.suggestions");
+        var url = $(this).attr("action") + "?" + $(this).serialize();
+        results_elem.find("img.ajaxloader").show();
+        $.ajax({
+            url: url,
+            success: function(data) {
+                results_elem.html(data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                alert(jqXHR.responseText);
+            },
+            complete: function(jqXHR, textStatus) {
+                results_elem.find("img.ajaxloader").hide();
+            }
+        });
+    }).submit();
+}

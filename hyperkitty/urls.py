@@ -86,6 +86,10 @@ urlpatterns = patterns('hyperkitty.views',
         'thread.favorite', name='favorite'),
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/thread/(?P<threadid>\w+)/category$',
         'thread.set_category', name='thread_set_category'),
+    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/thread/(?P<threadid>\w+)/reattach$',
+        'thread.reattach', name='thread_reattach'),
+    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/thread/(?P<threadid>\w+)/reattach-suggest$',
+        'thread.reattach_suggest', name='thread_reattach_suggest'),
 
 
     # Search

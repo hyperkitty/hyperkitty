@@ -21,13 +21,14 @@
 #
 
 import datetime
+import re
 from collections import namedtuple
 
 import django.utils.simplejson as json
 
 from django.http import HttpResponse, Http404
 from django.template import RequestContext, loader
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.urlresolvers import reverse
 from django.core.exceptions import SuspiciousOperation
 from django.utils.timezone import utc
@@ -36,7 +37,8 @@ import robot_detection
 from hyperkitty.models import Tag, Favorite, LastView, ThreadCategory
 from hyperkitty.views.forms import AddTagForm, ReplyForm, CategoryForm
 from hyperkitty.lib import get_store, stripped_subject
-from hyperkitty.lib.view_helpers import get_months, get_category_widget
+from hyperkitty.lib.view_helpers import (get_months, get_category_widget,
+        FLASH_MESSAGES)
 from hyperkitty.lib.voting import set_message_votes
 
 
@@ -129,6 +131,14 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         # XXX: Storm-specific
         unread_count = thread.replies_after(last_view).count()
 
+    # Flash messages
+    flash_messages = []
+    flash_msg = request.GET.get("msg")
+    if flash_msg:
+        flash_msg = { "type": FLASH_MESSAGES[flash_msg][0],
+                      "msg": FLASH_MESSAGES[flash_msg][1] }
+        flash_messages.append(flash_msg)
+
     # TODO: eventually move to a middleware ?
     # http://djangosnippets.org/snippets/1865/
     is_bot = True
@@ -157,6 +167,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'unread_count': unread_count,
         'category_form': category_form,
         'category': category,
+        'flash_messages': flash_messages,
     }
     context["participants"].sort(key=lambda x: x[0].lower())
 
@@ -320,3 +331,75 @@ def set_category(request, mlist_fqdn, threadid):
             "category": category,
             }
     return render(request, "threads/category.html", context)
+
+
+def reattach(request, mlist_fqdn, threadid):
+    if not request.user.is_staff:
+        return HttpResponse('You must be a staff member to reattach a thread',
+                            content_type="text/plain", status=403)
+    flash_messages = []
+    store = get_store(request)
+    mlist = store.get_list(mlist_fqdn)
+    thread = store.get_thread(mlist_fqdn, threadid)
+
+    if request.method == 'POST':
+        parent_tid = request.POST.get("parent")
+        if not parent_tid:
+            parent_tid = request.POST.get("parent-manual")
+        if not parent_tid or not re.match("\w{32}", parent_tid):
+            raise ValueError("Invalid thread id, it should look like "
+                             "OUAASTM6GS4E5TEATD6R2VWMULG44NKJ")
+            flash_messages.append({"type": "warning",
+                                   "msg": "Invalid thread id, it should look "
+                                          "like OUAASTM6GS4E5TEATD6R2VWMULG44NKJ."})
+        elif parent_tid == threadid:
+            flash_messages.append({"type": "warning",
+                                   "msg": "Can't re-attach a thread to "
+                                          "itself, check your thread ID."})
+        else:
+            new_thread = store.get_thread(mlist_fqdn, parent_tid)
+            if new_thread is None:
+                flash_messages.append({"type": "warning",
+                                       "msg": "Unknown thread, check your "
+                                              "thread ID."})
+            elif thread.starting_email.date <= new_thread.starting_email.date:
+                flash_messages.append({"type": "error",
+                                       "msg": "Can't attach an older thread "
+                                              "to a newer thread."})
+            else:
+                for msg in thread.emails:
+                    store.attach_to_thread(msg, new_thread)
+                store.delete_thread(mlist_fqdn, threadid)
+                return redirect(reverse(
+                        'thread', kwargs={
+                            "mlist_fqdn": mlist_fqdn,
+                            'threadid': parent_tid,
+                        })+"?msg=attached-ok")
+
+
+    context = {
+        'mlist' : mlist,
+        'thread': thread,
+        'months_list': get_months(store, mlist.name),
+        'flash_messages': flash_messages,
+    }
+    return render(request, "reattach.html", context)
+
+
+def reattach_suggest(request, mlist_fqdn, threadid):
+    store = get_store(request)
+    thread = store.get_thread(mlist_fqdn, threadid)
+
+    default_search_query = thread.subject.lower().replace("re:", "")
+    search_query = request.GET.get("q", default_search_query)
+    search_result = store.search(search_query, mlist_fqdn, 1, 50)
+    messages = search_result["results"]
+    suggested_threads = []
+    for msg in messages:
+        if msg.thread not in suggested_threads and msg.thread_id != threadid:
+            suggested_threads.append(msg.thread)
+
+    context = {
+        'suggested_threads': suggested_threads[:10],
+    }
+    return render(request, "ajax/reattach_suggest.html", context)

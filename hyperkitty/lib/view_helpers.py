@@ -32,6 +32,7 @@ from hyperkitty.views.forms import CategoryForm
 FLASH_MESSAGES = {
     "updated-ok": ("success", "The profile was successfully updated."),
     "sent-ok": ("success", "The message has been sent successfully."),
+    "attached-ok": ("success", "Thread successfully re-attached."),
 }
 
 
