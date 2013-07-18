@@ -254,3 +254,153 @@ class ListArchivesTestCase(TestCase):
                         'month': today.month,
                 })
         self.assertEqual(response["location"], final_url)
+
+
+
+from hyperkitty.views.thread import reattach, reattach_suggest
+
+class ReattachTestCase(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
+        self.user.is_staff = True
+        self.client.login(username='testuser', password='testPass')
+        self.store = kittystore.get_store("sqlite:", debug=False)
+        ml = FakeList("list@example.com")
+        ml.subject_prefix = u"[example] "
+        # Create 2 threads
+        self.messages = []
+        for msgnum in range(2):
+            msg = Message()
+            msg["From"] = "dummy@example.com"
+            msg["Message-ID"] = "<id%d>" % (msgnum+1)
+            msg["Subject"] = "Dummy message"
+            msg.set_payload("Dummy message")
+            msg["Message-ID-Hash"] = self.store.add_to_list(ml, msg)
+            self.messages.append(msg)
+        # Factory
+        defaults = {"kittystore.store": self.store, "HTTP_USER_AGENT": "testbot"}
+        self.factory = RequestFactory(**defaults)
+
+    def test_suggestions(self):
+        threadid = self.messages[0]["Message-ID-Hash"]
+        request = self.factory.get(reverse('thread_reattach_suggest',
+                                   args=["list@example.com", threadid]))
+        msg2 = self.store.get_message_by_id_from_list("list@example.com", "id2")
+        self.store.search = Mock(return_value={"results": [msg2]})
+        response = reattach_suggest(request, "list@example.com", threadid)
+        self.store.search.assert_called_with(
+            u'dummy message', 'list@example.com', 1, 50)
+        other_threadid = self.messages[1]["Message-ID-Hash"]
+        expected = '<input type="radio" name="parent" value="%s" />' % other_threadid
+        self.assertContains(response, expected, count=1, status_code=200)
+
+    def test_reattach(self):
+        threadid1 = self.messages[0]["Message-ID-Hash"]
+        threadid2 = self.messages[1]["Message-ID-Hash"]
+        request = self.factory.post(reverse('thread_reattach',
+                                    args=["list@example.com", threadid2]),
+                                    data={"parent": threadid1})
+        request.user = self.user
+        response = reattach(request, "list@example.com", threadid2)
+        now = datetime.datetime.now()
+        threads = self.store.get_threads("list@example.com",
+                now - datetime.timedelta(days=1),
+                now + datetime.timedelta(days=1))
+        self.assertEqual(len(threads), 1)
+        self.assertEqual(threads[0].thread_id, threadid1)
+        expected_url = reverse('thread', args=["list@example.com", threadid1]) + "?msg=attached-ok"
+        self.assertEqual(response["location"], expected_url)
+
+    def test_reattach_manual(self):
+        threadid1 = self.messages[0]["Message-ID-Hash"]
+        threadid2 = self.messages[1]["Message-ID-Hash"]
+        request = self.factory.post(reverse('thread_reattach',
+                                    args=["list@example.com", threadid2]),
+                                    data={"parent": "",
+                                          "parent-manual": threadid1})
+        request.user = self.user
+        response = reattach(request, "list@example.com", threadid2)
+        now = datetime.datetime.now()
+        threads = self.store.get_threads("list@example.com",
+                now - datetime.timedelta(days=1),
+                now + datetime.timedelta(days=1))
+        self.assertEqual(len(threads), 1)
+        self.assertEqual(threads[0].thread_id, threadid1)
+        expected_url = reverse('thread', args=["list@example.com", threadid1]) + "?msg=attached-ok"
+        self.assertEqual(response["location"], expected_url)
+
+    def test_reattach_invalid(self):
+        threadid = self.messages[0]["Message-ID-Hash"]
+        request = self.factory.post(reverse('thread_reattach',
+                                    args=["list@example.com", threadid]),
+                                    data={"parent": "invalid-data"})
+        request.user = self.user
+        self.store.attach_to_thread = Mock()
+        response = reattach(request, "list@example.com", threadid)
+        self.assertFalse(self.store.attach_to_thread.called)
+        now = datetime.datetime.now()
+        threads = self.store.get_threads("list@example.com",
+                now - datetime.timedelta(days=1),
+                now + datetime.timedelta(days=1))
+        self.assertEqual(len(threads), 2)
+        errormsg = '<div class="flashmsgs"><div class="flashmsg-wrapper"><div class="alert alert-error">'
+        self.assertContains(response, '<div class="alert alert-warning">',
+                count=1, status_code=200)
+        self.assertContains(response, "Invalid thread id, it should look")
+
+    def test_reattach_on_itself(self):
+        threadid = self.messages[0]["Message-ID-Hash"]
+        request = self.factory.post(reverse('thread_reattach',
+                                    args=["list@example.com", threadid]),
+                                    data={"parent": threadid})
+        request.user = self.user
+        self.store.attach_to_thread = Mock()
+        response = reattach(request, "list@example.com", threadid)
+        self.assertFalse(self.store.attach_to_thread.called)
+        now = datetime.datetime.now()
+        threads = self.store.get_threads("list@example.com",
+                now - datetime.timedelta(days=1),
+                now + datetime.timedelta(days=1))
+        self.assertEqual(len(threads), 2)
+        errormsg = '<div class="flashmsgs"><div class="flashmsg-wrapper"><div class="alert alert-error">'
+        self.assertContains(response, '<div class="alert alert-warning">',
+                count=1, status_code=200)
+        self.assertContains(response, "Can&#39;t re-attach a thread to itself")
+
+    def test_reattach_on_unknown(self):
+        threadid = self.messages[0]["Message-ID-Hash"]
+        threadid_unknown = "L36TVP2EFFDSXGVNQJCY44W5AB2YMJ65"
+        request = self.factory.post(reverse('thread_reattach',
+                                    args=["list@example.com", threadid]),
+                                    data={"parent": threadid_unknown})
+        request.user = self.user
+        self.store.attach_to_thread = Mock()
+        response = reattach(request, "list@example.com", threadid)
+        self.assertFalse(self.store.attach_to_thread.called)
+        now = datetime.datetime.now()
+        errormsg = '<div class="flashmsgs"><div class="flashmsg-wrapper"><div class="alert alert-error">'
+        self.assertContains(response, '<div class="alert alert-warning">',
+                count=1, status_code=200)
+        self.assertContains(response, "Unknown thread")
+
+    def test_reattach_old_to_new(self):
+        threadid1 = self.messages[0]["Message-ID-Hash"]
+        threadid2 = self.messages[1]["Message-ID-Hash"]
+        request = self.factory.post(reverse('thread_reattach',
+                                    args=["list@example.com", threadid1]),
+                                    data={"parent": threadid2})
+        request.user = self.user
+        self.store.attach_to_thread = Mock()
+        response = reattach(request, "list@example.com", threadid1)
+        self.assertFalse(self.store.attach_to_thread.called)
+        now = datetime.datetime.now()
+        threads = self.store.get_threads("list@example.com",
+                now - datetime.timedelta(days=1),
+                now + datetime.timedelta(days=1))
+        self.assertEqual(len(threads), 2)
+        errormsg = '<div class="flashmsgs"><div class="flashmsg-wrapper"><div class="alert alert-error">'
+        self.assertContains(response, '<div class="alert alert-error">',
+                count=1, status_code=200)
+        self.assertContains(response, "Can&#39;t attach an older thread to a newer thread.",
+                count=1, status_code=200)

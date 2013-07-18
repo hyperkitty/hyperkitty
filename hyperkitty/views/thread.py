@@ -347,8 +347,6 @@ def reattach(request, mlist_fqdn, threadid):
         if not parent_tid:
             parent_tid = request.POST.get("parent-manual")
         if not parent_tid or not re.match("\w{32}", parent_tid):
-            raise ValueError("Invalid thread id, it should look like "
-                             "OUAASTM6GS4E5TEATD6R2VWMULG44NKJ")
             flash_messages.append({"type": "warning",
                                    "msg": "Invalid thread id, it should look "
                                           "like OUAASTM6GS4E5TEATD6R2VWMULG44NKJ."})
