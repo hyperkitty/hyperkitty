@@ -10,7 +10,7 @@ Reattach a thread - {{ mlist.display_name|default:mlist.name|escapeemail }} - {{
 
 {% block content %}
 
-<div class="row-fluid">
+<div class="row-fluid reattach-thread">
 
 {% include 'threads/month_list.html' %}
 
@@ -18,41 +18,39 @@ Reattach a thread - {{ mlist.display_name|default:mlist.name|escapeemail }} - {{
 
         <h1>Re-attach a thread to another</h1>
 
-        <div class="reattach-thread">
-            <p>Thread to re-attach:
-                <a href="{% url 'thread' mlist_fqdn=mlist.name threadid=thread.thread_id %}"
-                   >{{ thread.subject }}</a>
-                (started {{ thread.starting_email|get_date }}, last active: {{ thread|get_date }})
+        <p>Thread to re-attach:
+            <a href="{% url 'thread' mlist_fqdn=mlist.name threadid=thread.thread_id %}"
+               >{{ thread.subject }}</a>
+            (started {{ thread.starting_email|get_date }}, last active: {{ thread|get_date }})
+        </p>
+        <form action="{% url 'thread_reattach_suggest' mlist_fqdn=mlist.name threadid=thread.thread_id %}"
+              method="GET" class="search">
+            <p>Re-attach it to:
+            <span class="input-append">
+            <input type="text" name="q" placeholder="Search for the parent thread"
+                /><button type="submit" class="btn">Search</button>
+            </span>
             </p>
-            <form action="{% url 'thread_reattach_suggest' mlist_fqdn=mlist.name threadid=thread.thread_id %}"
-                  method="GET" class="search">
-                <p>Re-attach it to:
-                <span class="input-append">
-                <input type="text" name="q" placeholder="Search for the parent thread"
-                    /><button type="submit" class="btn">Search</button>
-                </span>
-                </p>
-            </form>
-            <form action="" method="POST">
-                {% csrf_token %}
-                <ul class="unstyled suggestions">
-                    <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
-                </ul>
-                <ul class="unstyled">
-                    <li class="manual">
-                        <input type="radio" name="parent" value="" />
-                        <label>this thread ID:
-                            <input type="text" name="parent-manual" size="32" placeholder="{{ thread.thread_id }}" />
-                        </label>
-                    </li>
-                </ul>
-                <p class="buttons">
-                    <button type="submit" class="btn btn-primary">Do it</button> (there's no undoing!), or
-                    <a href="{% url 'thread' mlist_fqdn=mlist.name threadid=thread.thread_id %}"
-                       >go back to the thread</a>.
-                </p>
-            </form>
-        </div>
+        </form>
+        <form action="" method="POST">
+            {% csrf_token %}
+            <ul class="unstyled suggestions">
+                <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
+            </ul>
+            <ul class="unstyled">
+                <li class="manual">
+                    <input type="radio" name="parent" value="" />
+                    <label>this thread ID:
+                        <input type="text" name="parent-manual" size="32" placeholder="{{ thread.thread_id }}" />
+                    </label>
+                </li>
+            </ul>
+            <p class="buttons">
+                <button type="submit" class="btn btn-primary">Do it</button> (there's no undoing!), or
+                <a href="{% url 'thread' mlist_fqdn=mlist.name threadid=thread.thread_id %}"
+                   >go back to the thread</a>.
+            </p>
+        </form>
 
     </div>
 

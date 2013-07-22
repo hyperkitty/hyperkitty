@@ -162,6 +162,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'fav_action': fav_action,
         'reply_form': ReplyForm(),
         'is_bot': is_bot,
+        'num_comments': len(thread),
         'participants': thread.participants,
         'last_view': last_view,
         'unread_count': unread_count,
@@ -386,10 +387,15 @@ def reattach(request, mlist_fqdn, threadid):
 
 def reattach_suggest(request, mlist_fqdn, threadid):
     store = get_store(request)
+    mlist = store.get_list(mlist_fqdn)
     thread = store.get_thread(mlist_fqdn, threadid)
 
-    default_search_query = thread.subject.lower().replace("re:", "")
-    search_query = request.GET.get("q", default_search_query)
+    default_search_query = stripped_subject(
+        mlist, thread.subject).lower().replace("re:", "")
+    search_query = request.GET.get("q")
+    if not search_query:
+        search_query = default_search_query
+    search_query = search_query.strip()
     search_result = store.search(search_query, mlist_fqdn, 1, 50)
     messages = search_result["results"]
     suggested_threads = []
@@ -398,6 +404,7 @@ def reattach_suggest(request, mlist_fqdn, threadid):
             suggested_threads.append(msg.thread)
 
     context = {
+        'mlist' : mlist,
         'suggested_threads': suggested_threads[:10],
     }
     return render(request, "ajax/reattach_suggest.html", context)

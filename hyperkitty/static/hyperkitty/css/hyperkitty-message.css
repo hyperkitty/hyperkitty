@@ -101,10 +101,10 @@
     display: none;
 }
 
-#thread-overview-info .unread {
-    margin: 0 2px 0 2px;
+#thread-overview-info i {
+    margin-right: 1px;
+    margin-left: 1px;
 }
-
 
 /* Tags */
 
@@ -322,8 +322,17 @@
 /*
  * Re-attach threads
  */
+.reattach-thread h1 {
+    text-align: center;
+    font-size: 24px;
+    line-height: 26px;
+    margin-bottom: 2em;
+}
 .reattach-thread form {
     margin-bottom: 0;
+}
+.reattach-thread form.search {
+    margin-top: 2em;
 }
 .reattach-thread form.search p {
     line-height: 22px;

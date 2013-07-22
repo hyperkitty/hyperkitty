@@ -32,6 +32,7 @@ BuildRequires:  python-cssmin
 BuildRequires:  python-mailman-client
 BuildRequires:  python-robot-detection
 BuildRequires:  pytz
+BuildRequires:  python-django-paintstore
 %if 0%{fedora} && 0%{fedora} < 18
 BuildRequires:  Django
 BuildRequires:  Django-south
@@ -52,6 +53,7 @@ Requires:       python-cssmin
 Requires:       python-mailman-client
 Requires:       python-robot-detection
 Requires:       pytz
+Requires:       python-django-paintstore
 %if 0%{fedora} && 0%{fedora} < 18
 Requires:       Django >= 1.4
 Requires:       Django-south
