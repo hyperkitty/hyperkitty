@@ -4,6 +4,8 @@
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
+ASSETS_DEBUG = DEBUG
+USE_SSL = False
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
