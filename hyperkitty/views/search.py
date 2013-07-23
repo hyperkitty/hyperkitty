@@ -22,13 +22,14 @@
 
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Page
+from django.http import Http404
 
 from hyperkitty.models import Tag
 from hyperkitty.lib import get_store
 from hyperkitty.lib.view_helpers import paginate
 from hyperkitty.lib.voting import get_votes, set_message_votes
 
-from .list import _thread_list
+from hyperkitty.views.list import _thread_list
 
 
 class SearchPaginator(Paginator):
