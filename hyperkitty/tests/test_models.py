@@ -19,7 +19,7 @@
 # Author: Aamir Khan <syst3m.w0rm@gmail.com>
 #
 
-from django.test import TestCase
+from hyperkitty.tests.utils import TestCase
 from hyperkitty.models import Rating, Tag
 
 class RatingTestCase(TestCase):

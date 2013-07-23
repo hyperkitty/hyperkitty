@@ -19,25 +19,32 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-from hyperkitty.tests.utils import TestCase
 
-from hyperkitty.templatetags.hk_generic import snip_quoted
+from django.test import TestCase as DjangoTestCase
+from django.conf import settings
 
-class SnipQuotedTestCase(TestCase):
 
-    quotemsg = "[SNIP]"
+OVERRIDE_SETTINGS = {
+    "TEMPLATE_DEBUG": True,
+    "ASSETS_DEBUG": True,
+    "USE_SSL": False,
+    "KITTYSTORE_URL": 'sqlite:',
+    "KITTYSTORE_SEARCH_INDEX": None,
+    "KITTYSTORE_DEBUG": False,
+    "USE_MOCKUPS": False,
+}
 
-    def test_quote_1(self):
-        contents = """
-On Fri, 09.11.12 11:27, Someone wrote:
-&gt; This is the first quoted line
-&gt; This is the second quoted line
-This is the response.
-"""
-        expected = """
-On Fri, 09.11.12 11:27, Someone wrote:
-<div class="quoted-switch"><a href="#">%s</a></div><div class="quoted-text"> This is the first quoted line
- This is the second quoted line </div>This is the response.
-""" % self.quotemsg
-        result = snip_quoted(contents, self.quotemsg)
-        self.assertEqual(result, expected)
+
+class TestCase(DjangoTestCase):
+
+    def _pre_setup(self):
+        super(TestCase, self)._pre_setup()
+        self._old_settings = {}
+        for key, value in OVERRIDE_SETTINGS.iteritems():
+            self._old_settings[key] = getattr(settings, key)
+            setattr(settings, key, value)
+
+    def _post_teardown(self):
+        super(TestCase, self)._post_teardown()
+        for key, value in self._old_settings.iteritems():
+            setattr(settings, key, value)

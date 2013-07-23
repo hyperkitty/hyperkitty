@@ -25,7 +25,7 @@ import datetime
 from mock import Mock
 
 import django.utils.simplejson as json
-from django.test import TestCase
+from hyperkitty.tests.utils import TestCase
 from django.test.client import Client, RequestFactory
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.urlresolvers import reverse
