@@ -2,7 +2,7 @@
 
 Name:           hyperkitty
 Version:        0.1.6
-Release:        0.1%{?dist}
+Release:        1%{?dist}
 Summary:        A web interface to access GNU Mailman v3 archives
 
 License:        GPLv3
@@ -162,6 +162,9 @@ fi
 
 
 %changelog
+* Tue Jul 23 2013 Aurelien Bompard <abompard@fedoraproject.org> - 0.1.6-1
+- version 0.1.6
+
 * Thu Mar 28 2013 Aurelien Bompard <abompard@fedoraproject.org> - 0.1.5-0.2
 - put collected static files in _localstatedir
 
