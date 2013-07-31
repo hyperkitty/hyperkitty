@@ -28,9 +28,14 @@
         </div>
         <div class="email-author inline-block">
             <span class="name"><a
-                href="{% url 'message_index' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash %}"
-                title="{{ email.subject }}"
+                href="{% url 'public_user_profile' email=email.sender_email %}"
+                title="See {{ email.sender_name|escapeemail|escape }}'s profile"
                 >{{email.sender_name|escapeemail}}</a></span>
+            <br />
+            <span class="messagelink">
+                (<a href="{% url 'message_index' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash %}"
+                    title="{{ email.subject }}">permalink</a>)
+            </span>
             {% if use_mockups %}
             <br />
             <span class="rank">

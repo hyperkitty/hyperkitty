@@ -20,6 +20,7 @@
 #
 
 import logging
+from urllib2 import HTTPError
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -29,10 +30,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.views import login as django_login_view
 from django.shortcuts import render, redirect
-from django.utils.http import is_safe_url
+from django.utils.http import is_safe_url, urlquote
 from django.utils.timezone import utc, get_current_timezone
+from django.http import Http404
 #from django.utils.translation import gettext as _
 from social_auth.backends import SocialAuthBackend
+import dateutil.parser
 
 from hyperkitty.models import UserProfile, Rating, Favorite, LastView
 from hyperkitty.views.forms import RegistrationForm, UserProfileForm
@@ -203,3 +206,73 @@ def votes(request):
     return render(request, 'ajax/votes.html', {
                 "votes": votes,
             })
+
+
+def public_profile(request, email):
+    from mailmanclient import Client, MailmanConnectionError
+    try:
+        client = Client('%s/3.0' % settings.MAILMAN_REST_SERVER,
+                        settings.MAILMAN_API_USER, settings.MAILMAN_API_PASS)
+        mm_user = client.get_user(email)
+    except HTTPError:
+        raise Http404("No user with this email: %s" % email)
+    except MailmanConnectionError:
+        class EmptyMailmanUser:
+            created_on = None
+            subscription_list_ids = []
+        mm_user = EmptyMailmanUser()
+    subscriptions = []
+    store = get_store(request)
+    # Subscriptions
+    for mlist_id in mm_user.subscription_list_ids:
+        mlist = client.get_list(mlist_id).fqdn_listname
+        # de-duplicate subscriptions
+        if mlist in [ s["list_name"] for s in subscriptions ]:
+            continue
+        email_hashes = store.get_message_hashes_by_sender(email, mlist)
+        try: # Compute the average vote value
+            votes = Rating.objects.filter(list_address=mlist,
+                                          messageid__in=email_hashes)
+        except Rating.DoesNotExist:
+            votes = []
+        likes = dislikes = 0
+        for v in votes:
+            if v.vote == 1:
+                likes += 1
+            elif v.vote == -1:
+                dislikes += 1
+        all_posts_url = "%s?list=%s&query=sender:%s" % \
+                (reverse("search"), mlist, urlquote(email))
+        likestatus = "neutral"
+        if likes - dislikes >= 10:
+            likestatus = "likealot"
+        elif likes - dislikes > 0:
+            likestatus = "like"
+        subscriptions.append({
+            "list_name": mlist,
+            "first_post": store.get_first_post(mlist, email),
+            "likes": likes,
+            "dislikes": dislikes,
+            "likestatus": likestatus,
+            "all_posts_url": all_posts_url,
+            "posts_count": len(email_hashes),
+        })
+    likes = sum([s["likes"] for s in subscriptions])
+    dislikes = sum([s["dislikes"] for s in subscriptions])
+    likestatus = "neutral"
+    if likes - dislikes >= 10:
+        likestatus = "likealot"
+    elif likes - dislikes > 0:
+        likestatus = "like"
+    context = {
+        "email": email,
+        "fullname": store.get_sender_name(email),
+        "mm_user": mm_user,
+        "creation": dateutil.parser.parse(mm_user.created_on),
+        "subscriptions": subscriptions,
+        "posts_count": sum([s["posts_count"] for s in subscriptions]),
+        "likes": likes,
+        "dislikes": dislikes,
+        "likestatus": likestatus,
+    }
+    return render(request, "user_public_profile.html", context)

@@ -50,6 +50,8 @@ urlpatterns = patterns('hyperkitty.views',
     url(r'^accounts/profile/votes$', 'accounts.votes', name='user_votes'),
     url(r'^accounts/register/$', 'accounts.user_registration', {'SSL': True}, name='user_registration'),
 
+    # Users
+    url(r'^user/(?P<email>[^/@]+@[^/@]+)/$', 'accounts.public_profile', name='public_user_profile'),
 
     # List archives and overview
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/(?P<year>\d{4})/(?P<month>\d\d?)/(?P<day>\d\d?)/$',

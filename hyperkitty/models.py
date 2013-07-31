@@ -29,14 +29,9 @@ from paintstore.fields import ColorPickerField
 
 
 class Rating(models.Model):
-    # @TODO: instead of list_address, user list model from kittystore?
     list_address = models.CharField(max_length=255, db_index=True)
-
-    # @TODO: instead of messsageid, use message model from kittystore?
     messageid = models.CharField(max_length=100, db_index=True)
-
     user = models.ForeignKey(User)
-
     vote = models.SmallIntegerField()
 
     def __unicode__(self):
@@ -65,9 +60,7 @@ class UserProfile(models.Model):
 
 
 class Tag(models.Model):
-    # @TODO: instead of list_address, user list model from kittystore?
     list_address = models.CharField(max_length=255, db_index=True)
-    # @TODO: instead of threadid, use thread model from kittystore?
     threadid = models.CharField(max_length=100, db_index=True)
     user = models.ForeignKey(User)
     tag = models.CharField(max_length=255)

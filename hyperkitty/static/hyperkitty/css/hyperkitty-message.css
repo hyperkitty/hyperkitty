@@ -199,7 +199,6 @@
 .email-header .gravatar {
     margin-right: 10px;
     display: inline-block;
-    vertical-align: middle;
 }
 
 .email-author .name{
@@ -210,6 +209,14 @@
     color: rgb(167, 169, 172);
     font-size: 80%;
     font-weight: bold;
+}
+.email-author .messagelink {
+    font-style: italic;
+    font-size: 90%;
+    color: rgb(167, 169, 172);
+}
+.email-author .messagelink a {
+    color: rgb(167, 169, 172);
 }
 
 .email-first .email-date {

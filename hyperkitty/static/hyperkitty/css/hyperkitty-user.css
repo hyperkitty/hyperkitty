@@ -91,3 +91,8 @@ table.user-data input {
     margin-left: 0;
     position: absolute;
 }
+
+
+#user-profile table.subscriptions {
+    width: auto;
+}
