@@ -6,24 +6,20 @@
 
 
 {% block title %}
-{% trans 'User Profile' %} for {{ email }} - {{ app_name|title }}
+{% trans 'User Profile' %} for {{ fullname }} - {{ app_name|title }}
 {% endblock %}
 
 {% block content %}
 
 <div id="user-profile">
 
-    <h1>User profile <small>for {{ email }}</small></h1>
+    <h1>User profile <small>for {{ fullname }}</small></h1>
 
     <table class="table table-bordered table-striped user-data">
         <tbody>
             <tr>
                 <th>{% trans 'Name:' %}</th>
                 <td>{{ fullname }}</td>
-            </tr>
-            <tr>
-                <th>{% trans 'Email:' %}</th>
-                <td>{{ email }}</td>
             </tr>
             {% if creation %}
             <tr>

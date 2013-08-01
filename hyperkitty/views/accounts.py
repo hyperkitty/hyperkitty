@@ -32,10 +32,11 @@ from django.contrib.auth.views import login as django_login_view
 from django.shortcuts import render, redirect
 from django.utils.http import is_safe_url, urlquote
 from django.utils.timezone import utc, get_current_timezone
-from django.http import Http404
+from django.http import Http404, HttpResponse
 #from django.utils.translation import gettext as _
 from social_auth.backends import SocialAuthBackend
 import dateutil.parser
+import mailmanclient
 
 from hyperkitty.models import UserProfile, Rating, Favorite, LastView
 from hyperkitty.views.forms import RegistrationForm, UserProfileForm
@@ -208,19 +209,21 @@ def votes(request):
             })
 
 
-def public_profile(request, email):
-    from mailmanclient import Client, MailmanConnectionError
+def public_profile(request, user_id):
     try:
-        client = Client('%s/3.0' % settings.MAILMAN_REST_SERVER,
-                        settings.MAILMAN_API_USER, settings.MAILMAN_API_PASS)
-        mm_user = client.get_user(email)
+        client = mailmanclient.Client('%s/3.0' %
+                    settings.MAILMAN_REST_SERVER,
+                    settings.MAILMAN_API_USER,
+                    settings.MAILMAN_API_PASS)
+        mm_user = client.get_user(user_id)
     except HTTPError:
-        raise Http404("No user with this email: %s" % email)
-    except MailmanConnectionError:
-        class EmptyMailmanUser:
-            created_on = None
-            subscription_list_ids = []
-        mm_user = EmptyMailmanUser()
+        raise Http404("No user with this ID: %s" % user_id)
+    except mailmanclient.MailmanConnectionError:
+        return HttpResponse("Can't connect to Mailman",
+                            content_type="text/plain", status=500)
+    fullname = mm_user.display_name
+    if not fullname:
+        fullname = store.get_sender_name(user_id)
     subscriptions = []
     store = get_store(request)
     # Subscriptions
@@ -229,7 +232,7 @@ def public_profile(request, email):
         # de-duplicate subscriptions
         if mlist in [ s["list_name"] for s in subscriptions ]:
             continue
-        email_hashes = store.get_message_hashes_by_sender(email, mlist)
+        email_hashes = store.get_message_hashes_by_user_id(user_id, mlist)
         try: # Compute the average vote value
             votes = Rating.objects.filter(list_address=mlist,
                                           messageid__in=email_hashes)
@@ -241,8 +244,8 @@ def public_profile(request, email):
                 likes += 1
             elif v.vote == -1:
                 dislikes += 1
-        all_posts_url = "%s?list=%s&query=sender:%s" % \
-                (reverse("search"), mlist, urlquote(email))
+        all_posts_url = "%s?list=%s&query=user_id:%s" % \
+                (reverse("search"), mlist, urlquote(user_id))
         likestatus = "neutral"
         if likes - dislikes >= 10:
             likestatus = "likealot"
@@ -250,7 +253,7 @@ def public_profile(request, email):
             likestatus = "like"
         subscriptions.append({
             "list_name": mlist,
-            "first_post": store.get_first_post(mlist, email),
+            "first_post": store.get_first_post(mlist, user_id),
             "likes": likes,
             "dislikes": dislikes,
             "likestatus": likestatus,
@@ -265,8 +268,7 @@ def public_profile(request, email):
     elif likes - dislikes > 0:
         likestatus = "like"
     context = {
-        "email": email,
-        "fullname": store.get_sender_name(email),
+        "fullname": fullname,
         "mm_user": mm_user,
         "creation": dateutil.parser.parse(mm_user.created_on),
         "subscriptions": subscriptions,
