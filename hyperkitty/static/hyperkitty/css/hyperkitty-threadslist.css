@@ -97,6 +97,9 @@
 .thread-content .gravatar {
     float: left;
 }
+.thread-content .gravatar a {
+    color: black;
+}
 .thread-content .thread-email {
     display: block;
     margin-left: 60px;

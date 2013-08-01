@@ -13,11 +13,18 @@
             </div>
             <div class="thread-content">
                 <div class="gravatar">
-                    {% if message.sender_email %}
-                    {% gravatar message.sender_email 40 %}
-                    <br />
+                    {% if message.user_id %}
+                    <a href="{% url 'public_user_profile' user_id=message.user_id %}"
+                       title="See {{ message.sender_name|escapeemail|escape }}'s profile">
                     {% endif %}
-                    {{ message.sender_name|escapeemail }}
+                        {% if message.sender_email %}
+                        {% gravatar message.sender_email 40 %}
+                        <br />
+                        {% endif %}
+                        {{ message.sender_name|escapeemail }}
+                    {% if message.user_id %}
+                    </a>
+                    {% endif %}
                 </div>
                 <div class="thread-email">
                     <span class="expander collapsed">
