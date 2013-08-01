@@ -33,7 +33,7 @@ from mailman.email.message import Message
 
 import kittystore
 from kittystore.utils import get_message_id_hash
-from kittystore.test import FakeList
+from kittystore.test import FakeList, SettingsModule
 
 from hyperkitty.models import Rating, LastView
 
@@ -88,7 +88,7 @@ class LastViewsTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
         self.client.login(username='testuser', password='testPass')
-        store = kittystore.get_store("sqlite:", debug=False)
+        store = kittystore.get_store(SettingsModule(), debug=False)
         ml = FakeList("list@example.com")
         ml.subject_prefix = u"[example] "
         # Create 3 threads
@@ -265,7 +265,7 @@ class ReattachTestCase(TestCase):
         self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
         self.user.is_staff = True
         self.client.login(username='testuser', password='testPass')
-        self.store = kittystore.get_store("sqlite:", debug=False)
+        self.store = kittystore.get_store(SettingsModule(), debug=False)
         ml = FakeList("list@example.com")
         ml.subject_prefix = u"[example] "
         # Create 2 threads

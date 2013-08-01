@@ -51,9 +51,7 @@ class KittyStoreWSGIMiddleware(object):
         except AttributeError:
             environ['kittystore.store']  = \
                     self._local.__dict__.setdefault('store',
-                        kittystore.get_store(settings.KITTYSTORE_URL,
-                                             settings.KITTYSTORE_SEARCH_INDEX,
-                                             settings.KITTYSTORE_DEBUG))
+                        kittystore.get_store(settings))
         try:
             return self._app(environ, start_response)
         finally:
@@ -77,9 +75,7 @@ class KittyStoreDjangoMiddleware(object):
         except AttributeError:
             request.environ['kittystore.store']  = \
                     self._local.__dict__.setdefault('store',
-                        kittystore.get_store(settings.KITTYSTORE_URL,
-                                             settings.KITTYSTORE_SEARCH_INDEX,
-                                             settings.KITTYSTORE_DEBUG))
+                        kittystore.get_store(settings))
 
     def process_response(self, request, response):
         if "kittystore.store" in request.environ:

@@ -45,8 +45,7 @@ class Archiver(object):
     def __init__(self):
         self.store = None
         self.base_url = None
-        self.store_url = None
-        self.store_search_index = None
+        self.settings = None # will be filled by _load_conf()
         self._load_conf()
 
     def _load_conf(self):
@@ -72,8 +71,7 @@ class Archiver(object):
         except ImportError:
             raise ImportError("Could not import Django's settings from %s"
                               % settings_path)
-        self.store_url = settings.KITTYSTORE_URL
-        self.store_search_index = settings.KITTYSTORE_SEARCH_INDEX
+        self.settings = settings
         #if path_added:
         #    sys.path.remove(settings_path)
 
@@ -112,7 +110,7 @@ class Archiver(object):
             be calculated.
         """
         if self.store is None:
-            self.store = get_store(self.store_url, search=self.store_search_index)
+            self.store = get_store(self.settings)
         msg.message_id_hash = self.store.add_to_list(mlist, msg)
         self.store.commit()
         # TODO: Update karma
