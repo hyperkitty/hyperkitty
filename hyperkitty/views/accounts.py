@@ -267,9 +267,14 @@ def public_profile(request, user_id):
         likestatus = "likealot"
     elif likes - dislikes > 0:
         likestatus = "like"
+    try:
+        email = unicode(mm_user.addresses[0])
+    except KeyError:
+        email = None
     context = {
         "fullname": fullname,
         "mm_user": mm_user,
+        "email": email,
         "creation": dateutil.parser.parse(mm_user.created_on),
         "subscriptions": subscriptions,
         "posts_count": sum([s["posts_count"] for s in subscriptions]),

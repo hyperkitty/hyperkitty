@@ -39,33 +39,33 @@
  * User profile page
  */
 
-#user-profile {
+.user-profile {
     padding: 0 2em;
 }
 
-#user-profile h1 {
+.user-profile h1 {
     margin-bottom: 1em;
 }
 
-#user-profile h3 {
+.user-profile h3 {
     margin-top: 2em;
 }
 
-#user-profile form {
+.user-profile form {
     float: left;
 }
 
-#user-profile div.gravatar {
+.user-profile div.gravatar {
     /*float: right;*/
     float: left;
     width: auto;
     font-size: 95%;
     margin-left: 4em;
 }
-#user-profile img.gravatar {
+.user-profile img.gravatar {
     width: auto;
 }
-#user-profile .gravatar p {
+.user-profile .gravatar p {
     text-align: center;
 }
 
@@ -86,13 +86,16 @@ table.user-data input {
 }
 
 
-#user-profile .ajaxloader {
+.user-profile .ajaxloader {
     margin-top: 0;
     margin-left: 0;
     position: absolute;
 }
 
 
-#user-profile table.subscriptions {
+.user-profile table.subscriptions {
     width: auto;
+}
+.user-public-profile table.user-data {
+    float: left;
 }
