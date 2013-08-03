@@ -77,7 +77,10 @@ function setup_vote(baseElem) {
  * New messages (or replies)
  */
 
-function setup_attachments() {
+function setup_attachments(baseElem) {
+    if (!baseElem) {
+        baseElem = document;
+    }
     function add_attach_form (e) {
         e.preventDefault();
         var form = $(this).parents("form").first();
@@ -95,8 +98,8 @@ function setup_attachments() {
         form.find(".attach-files-first").hide();
         form.find(".attach-files-add").show();
     }
-    $(".attach-files-add").click(add_attach_form);
-    $(".attach-files-first").click(add_attach_form);
+    $(baseElem).find(".attach-files-add").click(add_attach_form);
+    $(baseElem).find(".attach-files-first").click(add_attach_form);
 }
 
 

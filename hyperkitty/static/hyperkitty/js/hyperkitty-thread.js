@@ -145,6 +145,7 @@ function setup_favorites() {
 }
 
 
+
 /*
  * Replies
  */
@@ -297,9 +298,13 @@ function setup_unreadnavbar(element) {
 }
 
 
+
 /*
  * Thread replies list
+ * Updates the list of replies in a thread chunk-by-chunk to avoid blocking the
+ * UI
  */
+
 function update_thread_replies(url) {
     function load_more(current_url) {
         $.ajax({
@@ -315,6 +320,7 @@ function update_thread_replies(url) {
                 fold_quotes(newcontent);
                 setup_disabled_tooltips(newcontent);
                 setup_vote(newcontent);
+                setup_attachments(newcontent);
                 // load the rest if applicable
                 if (data.more_pending) {
                     load_more(url+"&offset="+data.next_offset);

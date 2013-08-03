@@ -109,8 +109,8 @@ class AttachmentFileInput(forms.FileInput):
     %(input)s <a href="#" title="%(rm_text)s">(-)</a>
 </span>
 <span class="attach-files"></span>
-<a class="attach-files-first">%(attach_first_text)s</a>
-<a class="attach-files-add">%(attach_another_text)s</a>
+<a href="#" class="attach-files-first">%(attach_first_text)s</a>
+<a href="#" class="attach-files-add">%(attach_another_text)s</a>
 """
 
     def render(self, name, value, attrs=None):
