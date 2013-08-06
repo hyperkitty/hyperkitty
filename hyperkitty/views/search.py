@@ -76,13 +76,29 @@ def search(request, page=1):
     store = get_store(request)
     query = request.GET.get("query")
     mlist_fqdn = request.GET.get("list")
+    sort_mode = request.GET.get('sort')
+
+    if mlist_fqdn is None:
+        mlist = None
+    else:
+        mlist = store.get_list(mlist_fqdn)
+        if mlist is None:
+            raise Http404("No archived mailing-list by that name.")
+
+    if not query:
+        return render(request, "search_results.html", {
+            'mlist' : mlist,
+            "query": query or "",
+            'messages': [],
+            'total': 0,
+            'sort_mode': sort_mode,
+        })
 
     try:
         page_num = int(request.GET.get('page', "1"))
     except ValueError:
         page_num = 1
 
-    sort_mode = request.GET.get('sort')
     sortedby = None
     reverse = False
     if sort_mode == "date-asc":
@@ -97,12 +113,6 @@ def search(request, page=1):
     messages = query_result["results"]
     for message in messages:
         set_message_votes(message, request.user)
-    if mlist_fqdn is None:
-        mlist = None
-    else:
-        mlist = store.get_list(mlist_fqdn)
-        if mlist is None:
-            raise Http404("No archived mailing-list by that name.")
 
     paginator = SearchPaginator(messages, 10, total)
     messages = paginate(messages, page_num, paginator=paginator)

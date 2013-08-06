@@ -61,11 +61,16 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
         </div>
 
 
-        {% for message in messages %}
-            {% include "messages/summary_message.html" %}
-        {% empty %}
-            <p>Sorry no email could be found for this query.</p>
-        {% endfor %}
+        {% if query %}
+            {% for message in messages %}
+                {% include "messages/summary_message.html" %}
+            {% empty %}
+                <p>Sorry no email could be found for this query.</p>
+            {% endfor %}
+        {% else %}
+            <p>Sorry but your query looks empty.</p>
+            <p style="font-style:italic;font-size:small;color:#ccc">these are not the messages you are looking for</p>
+        {% endif %}
 
         {% include "paginator.html" with pager=messages notbydate=True %}
 
