@@ -20,7 +20,11 @@
 #
 
 from django.conf import settings
+from django.core.urlresolvers import reverse
+from django.utils.http import urlquote
 from mailmanclient import Client
+
+from hyperkitty.models import Rating
 
 
 def subscribe(list_address, user):
@@ -35,3 +39,44 @@ def subscribe(list_address, user):
                 "%s %s" % (user.first_name, user.last_name))
         member.preferences["delivery_status"] = "by_user"
         member.preferences.save()
+
+
+def get_subscriptions(store, client, mm_user):
+    if not mm_user:
+        return []
+    subscriptions = []
+    for mlist_id in mm_user.subscription_list_ids:
+        mlist = client.get_list(mlist_id).fqdn_listname
+        # de-duplicate subscriptions
+        if mlist in [ s["list_name"] for s in subscriptions ]:
+            continue
+        email_hashes = store.get_message_hashes_by_user_id(
+                mm_user.user_id, mlist)
+        try: # Compute the average vote value
+            votes = Rating.objects.filter(list_address=mlist,
+                                          messageid__in=email_hashes)
+        except Rating.DoesNotExist:
+            votes = []
+        likes = dislikes = 0
+        for v in votes:
+            if v.vote == 1:
+                likes += 1
+            elif v.vote == -1:
+                dislikes += 1
+        all_posts_url = "%s?list=%s&query=user_id:%s" % \
+                (reverse("search"), mlist, urlquote(mm_user.user_id))
+        likestatus = "neutral"
+        if likes - dislikes >= 10:
+            likestatus = "likealot"
+        elif likes - dislikes > 0:
+            likestatus = "like"
+        subscriptions.append({
+            "list_name": mlist,
+            "first_post": store.get_first_post(mlist, mm_user.user_id),
+            "likes": likes,
+            "dislikes": dislikes,
+            "likestatus": likestatus,
+            "all_posts_url": all_posts_url,
+            "posts_count": len(email_hashes),
+        })
+    return subscriptions

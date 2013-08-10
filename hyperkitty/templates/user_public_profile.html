@@ -41,41 +41,7 @@
     <div class="clearfix"></div>
 
     <h3>Subscriptions</h3>
-    {% if subscriptions %}
-    <table class="table table-striped table-bordered table-condensed subscriptions">
-        <thead>
-            <tr>
-                <th>List</th>
-                <th>Time of first activity</th>
-                <th>First post</th>
-                <th>Posts to this list</th>
-                <th>Votes</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for sub in subscriptions %}
-            <tr>
-                <td>
-                    <a href="{% url 'list_overview' sub.list_name %}">{{ sub.list_name }}</a>
-                </td>
-                {% if sub.first_post %}
-                <td>
-                    {{ sub.first_post|get_date|date:"l, j F Y H:i:s" }}
-                    {{ sub.first_post|get_date|timesince }}
-                </td>
-                <td>{{ sub.first_post.subject }}</td>
-                <td><a href="{{ sub.all_posts_url }}">{{ sub.posts_count }} post{{ sub.posts_count|pluralize }}</a></td>
-                <td><span class="likestatus {{ sub.likestatus }}">+{{ sub.likes }}/-{{ sub.dislikes }}</span></td>
-                {% else %}
-                <td colspan="4" style="text-align:center"><em>no post yet</em></td>
-                {% endif %}
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <p><em>no subscriptions</em></p>
-    {% endif %}
+    {% include "fragments/user_subscriptions.html" %}
 
 </div>
 

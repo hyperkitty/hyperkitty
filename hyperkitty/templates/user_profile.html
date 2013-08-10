@@ -21,6 +21,7 @@
         <li><a href="#favorites">Favorites</a></li>
         <li><a href="#views">Threads you have read</a></li>
         <li><a href="#votes">Votes</a></li>
+        <li><a href="#subscriptions">Subscriptions</a></li>
     </ul>
 
     <div id="account">
@@ -37,6 +38,16 @@
                     <th>{% trans 'Email:' %}</th>
                     <td>{{ user.email }}</td>
                 </tr>
+                {% if emails %}
+                <tr>
+                    <th>{% trans 'Other emails:' %}</th>
+                    <td><ul>
+                    {% for email in emails %}
+                        <li>{{ email }}</li>
+                    {% endfor %}
+                    </ul></td>
+                </tr>
+                {% endif %}
                 {% if use_mockups %}
                 <tr>
                     <th>{% trans 'Karma:' %}</th>
@@ -89,6 +100,11 @@
     <div id="votes">
         <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
         <div class="ajaxcontent"></div>
+    </div>
+
+
+    <div id="subscriptions">
+    {% include "fragments/user_subscriptions.html" %}
     </div>
 
     </div>
