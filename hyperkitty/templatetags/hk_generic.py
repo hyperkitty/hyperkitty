@@ -67,7 +67,6 @@ def to_date(month, year):
 
 @register.filter
 def strip_page(value):
-    print repr(value), repr(value)[-2]
     if not value:
         return value
     if value.endswith('/') and value[-3] == '/':

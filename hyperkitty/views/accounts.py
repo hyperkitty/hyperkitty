@@ -221,11 +221,11 @@ def public_profile(request, user_id):
     except mailmanclient.MailmanConnectionError:
         return HttpResponse("Can't connect to Mailman",
                             content_type="text/plain", status=500)
+    store = get_store(request)
     fullname = mm_user.display_name
     if not fullname:
         fullname = store.get_sender_name(user_id)
     subscriptions = []
-    store = get_store(request)
     # Subscriptions
     for mlist_id in mm_user.subscription_list_ids:
         mlist = client.get_list(mlist_id).fqdn_listname
