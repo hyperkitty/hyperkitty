@@ -24,6 +24,7 @@ from rest_framework.exceptions import ParseError
 
 from hyperkitty.models import Tag
 from hyperkitty.lib import get_store
+from hyperkitty.lib.voting import get_votes
 
 
 class ListSerializer(serializers.Serializer):
@@ -40,6 +41,8 @@ class EmailSerializer(serializers.Serializer):
     subject = serializers.CharField()
     in_reply_to = serializers.CharField()
     date = serializers.DateTimeField()
+    likes = serializers.IntegerField()
+    dislikes = serializers.IntegerField()
 
 class EmailLinkSerializer(serializers.Serializer):
     list_name = serializers.EmailField()
@@ -83,10 +86,11 @@ class EmailResource(APIView):
 
     def get(self, request, mlist_fqdn, messageid):
         store = get_store(request)
-        email = store.get_message_by_id_from_list(mlist_fqdn, messageid)
+        email = store.get_message_by_hash_from_list(mlist_fqdn, messageid)
         if not email:
             return Response(status=404)
         else:
+            email.likes, email.dislikes, _ignore = get_votes(email.message_id_hash)
             return Response(EmailSerializer(email).data)
 
 
