@@ -128,9 +128,6 @@ def user_profile(request):
             if addr != request.user.email:
                 emails.append(addr)
 
-    # Subscriptions
-    subscriptions = get_subscriptions(store, mm_client, mm_user)
-
     # Flash messages
     flash_messages = []
     flash_msg = request.GET.get("msg")
@@ -144,7 +141,6 @@ def user_profile(request):
         'form': form,
         'emails': emails,
         'favorites': favorites,
-        'subscriptions': subscriptions,
         'flash_messages': flash_messages,
     }
     return render(request, "user_profile.html", context)
@@ -235,6 +231,25 @@ def votes(request):
     votes = [ v for v in votes if v.message is not None ]
     return render(request, 'ajax/votes.html', {
                 "votes": votes,
+            })
+
+
+@login_required
+def subscriptions(request):
+    store = get_store(request)
+    # get the Mailman user
+    try:
+        mm_client = mailmanclient.Client('%s/3.0' %
+                    settings.MAILMAN_REST_SERVER,
+                    settings.MAILMAN_API_USER,
+                    settings.MAILMAN_API_PASS)
+        mm_user = mm_client.get_user(request.user.email)
+    except (HTTPError, mailmanclient.MailmanConnectionError):
+        mm_client = mm_user = None
+    # Subscriptions
+    subscriptions = get_subscriptions(store, mm_client, mm_user)
+    return render(request, 'fragments/user_subscriptions.html', {
+                "subscriptions": subscriptions,
             })
 
 

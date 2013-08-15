@@ -23,9 +23,10 @@
 /*
  * Last viewed threads and votes in the user's profile
  */
-function update_user_profile_part(container, base_url) {
+function update_user_profile_part(container) {
     container = $(container);
-    var loader = container.prev(".ajaxloader");
+    base_url = container.attr("data-load-from");
+    var loader = container.parent().find(".ajaxloader");
     function _update(url) {
         loader.show();
         $.ajax({

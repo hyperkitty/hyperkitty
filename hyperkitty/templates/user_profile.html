@@ -93,18 +93,19 @@
 
     <div id="views">
         <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
-        <div class="ajaxcontent"></div>
+        <div class="ajaxcontent" data-load-from="{% url 'user_last_views' %}"></div>
     </div>
 
 
     <div id="votes">
         <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
-        <div class="ajaxcontent"></div>
+        <div class="ajaxcontent" data-load-from="{% url 'user_votes' %}"></div>
     </div>
 
 
     <div id="subscriptions">
-    {% include "fragments/user_subscriptions.html" %}
+        <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
+        <div class="ajaxcontent" data-load-from="{% url 'user_subscriptions' %}"></div>
     </div>
 
     </div>
@@ -118,8 +119,9 @@
     $(document).ready(function() {
         // Load the last views
         $(".tabbed").tabs();
-        update_user_profile_part("#views div.ajaxcontent", "{% url 'user_last_views' %}");
-        update_user_profile_part("#votes div.ajaxcontent", "{% url 'user_votes' %}");
+        $("div.ajaxcontent").each(function() {
+            update_user_profile_part($(this));
+        });
     });
 </script>
 

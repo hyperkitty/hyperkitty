@@ -38,3 +38,10 @@ ul.nav.auth {
 .navbar .breadcrumb > li > .divider {
     color: #999999;
 }
+
+
+/* Sometimes jQuery UI overwrites the Bootstrap values */
+
+a, .ui-widget-content a {
+  color: #0088cc;
+}
