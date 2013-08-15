@@ -6,7 +6,7 @@
         <thead>
             <tr>
                 <th>List</th>
-                <th>Time of first activity</th>
+                <th>Time since the first activity</th>
                 <th>First post</th>
                 <th>Posts to this list</th>
                 <th>Votes</th>
@@ -20,10 +20,13 @@
                 </td>
                 {% if sub.first_post %}
                 <td>
-                    {{ sub.first_post|get_date|date:"l, j F Y H:i:s" }}
-                    {{ sub.first_post|get_date|timesince }}
+                    <abbr title="{{ sub.first_post|get_date|date:"l, j F Y H:i:s"|escape }}">
+                    {{ sub.first_post|get_date|timesince }}</abbr>
                 </td>
-                <td>{{ sub.first_post.subject }}</td>
+                <td>
+                    <a href="{% url 'message_index' mlist_fqdn=sub.list_name message_id_hash=sub.first_post.message_id_hash %}"
+                        >{{ sub.first_post.subject }}</a>
+                </td>
                 <td><a href="{{ sub.all_posts_url }}">{{ sub.posts_count }} post{{ sub.posts_count|pluralize }}</a></td>
                 <td><span class="likestatus {{ sub.likestatus }}">+{{ sub.likes }}/-{{ sub.dislikes }}</span></td>
                 {% else %}

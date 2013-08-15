@@ -84,6 +84,9 @@ table.user-data label,
 table.user-data input {
     margin-bottom: 0;
 }
+table.user-data td {
+    color: #555555;
+}
 
 
 .user-profile .ajaxloader {
