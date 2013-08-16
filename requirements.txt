@@ -9,7 +9,8 @@ django-crispy-forms
 django-assets
 rjsmin
 cssmin
-mailmanclient
 robot-detection
 pytz
 django-paintstore
+# mailmanclient is not yet in PyPI
+bzr+lp:mailman.client#egg=mailmanclient

@@ -6,6 +6,20 @@ use_setuptools()
 
 from setuptools import setup, find_packages
 
+def filetolist(filepath):
+    """Turns a text file into a list (one element per line)"""
+    result = []
+    with open(filepath, "r") as f:
+        for line in f:
+            if "#" in line:
+                line = line[:line.index("#")]
+            line = line.strip()
+            if not line:
+                continue
+            result.append(line)
+    return result
+
+
 setup(
     name="HyperKitty",
     version="0.1.6",
@@ -27,5 +41,5 @@ setup(
     #packages=find_packages(exclude=["*.test", "test", "*.test.*"]),
     packages=find_packages(),
     include_package_data=True,
-    install_requires=open('requirements.txt').read(),
+    install_requires=filetolist('requirements.txt'),
     )
