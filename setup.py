@@ -6,16 +6,19 @@ use_setuptools()
 
 from setuptools import setup, find_packages
 
-def filetolist(filepath):
+def reqfile(filepath):
     """Turns a text file into a list (one element per line)"""
     result = []
+    import re
+    url_re = re.compile(".+:.+#egg=(.+)")
     with open(filepath, "r") as f:
         for line in f:
-            if "#" in line:
-                line = line[:line.index("#")]
             line = line.strip()
-            if not line:
+            if not line or line.startswith("#"):
                 continue
+            mo = url_re.match(line)
+            if mo is not None:
+                line = mo.group(1)
             result.append(line)
     return result
 
@@ -41,5 +44,5 @@ setup(
     #packages=find_packages(exclude=["*.test", "test", "*.test.*"]),
     packages=find_packages(),
     include_package_data=True,
-    install_requires=filetolist('requirements.txt'),
+    install_requires=reqfile("requirements.txt"),
     )
