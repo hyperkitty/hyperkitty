@@ -25,7 +25,7 @@ def reqfile(filepath):
 
 setup(
     name="HyperKitty",
-    version="0.1.6",
+    version="0.1.7",
     description="A web interface to access GNU Mailman v3 archives",
     long_description=open('README.rst').read(),
     author='HyperKitty Developers',
