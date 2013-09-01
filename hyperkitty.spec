@@ -1,19 +1,20 @@
 %global pypi_name HyperKitty
+%global prerel 1
 
 Name:           hyperkitty
 Version:        0.1.7
-Release:        0.1%{?dist}
+Release:        %{?prerel:0.}1%{?dist}
 Summary:        A web interface to access GNU Mailman v3 archives
 
 License:        GPLv3
 URL:            https://fedorahosted.org/hyperkitty/
-Source0:        http://pypi.python.org/packages/source/H/%{pypi_name}/%{pypi_name}-%{version}.tar.gz
+Source0:        http://pypi.python.org/packages/source/H/%{pypi_name}/%{pypi_name}-%{version}%{?prerel:dev}.tar.gz
 
 # To get SOURCE1:
 #   git clone https://github.com/hyperkitty/hyperkitty_standalone.git
 #   make sdist -C hyperkitty_standalone
 #   mv hyperkitty_standalone/dist/hyperkitty_standalone-%{version}.tar.gz .
-Source1:        hyperkitty_standalone-%{version}.tar.gz
+Source1:        hyperkitty_standalone-%{version}%{?prerel:dev}.tar.gz
 
 
 BuildArch:      noarch
@@ -71,10 +72,10 @@ The code is available from: https://github.com/hyperkitty/hyperkitty .
 The documentation can be browsed online at https://hyperkitty.readthedocs.org .
 
 %prep
-%setup -q -n %{pypi_name}-%{version} -a 1
+%setup -q -n %{pypi_name}-%{version}%{?prerel:dev} -a 1
 # Remove bundled egg-info
 rm -rf %{pypi_name}.egg-info
-mv hyperkitty_standalone-%{version} hyperkitty_standalone
+mv hyperkitty_standalone-%{version}%{?prerel:dev} hyperkitty_standalone
 # remove shebang on manage.py
 sed -i -e '1d' hyperkitty_standalone/manage.py
 # remove executable permissions on wsgi.py
@@ -146,7 +147,7 @@ rm -f hyperkitty_standalone/__init__.py
 %config(noreplace) %attr(640,root,apache) %{_sysconfdir}/%{name}/sites/default/settings.py
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/hyperkitty.conf
 %{python_sitelib}/%{name}
-%{python_sitelib}/%{pypi_name}-%{version}-py?.?.egg-info
+%{python_sitelib}/%{pypi_name}-%{version}%{?prerel:dev}-py?.?.egg-info
 %dir %{_localstatedir}/lib/%{name}
 %dir %{_localstatedir}/lib/%{name}/sites
 %dir %{_localstatedir}/lib/%{name}/sites/default
