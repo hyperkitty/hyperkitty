@@ -60,6 +60,6 @@ where:
 
 * ``URL`` is the base URL of your current Mailman 2.1 installation, typically
   the part before the ``/pipermail`` subdirectory when you're looking at your
-  current archives.
+  current archives. Make sure you remember to include the 'http://' in this string.
 * ``LIST_NAME`` is the name of the mailing-list without the domain (before the
   ``@`` sign)
