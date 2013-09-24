@@ -61,7 +61,8 @@ where:
   ``django-admin`` command)
 * ``NAME`` is the fully-qualified list name (including the ``@`` sign and the
   domain name)
-* The ``mbox_file`` arguments are the existing archives to import.
+* The ``mbox_file`` arguments are the existing archives to import. Make sure you point 
+at the *.txt version of the files and not the *.gz.
 
 If the previous archives aren't available locally, you need to download them
 from your current Mailman 2.1 installation. The ``kittystore-download21``
