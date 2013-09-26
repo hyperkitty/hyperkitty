@@ -20,6 +20,16 @@
     <section id="overview" class="span10">
 
     <section id="title">
+        <div id="breadcrumb">{% if view_name == 'all_lists' %}
+                                class="active">
+                                {% else %}
+                                ><a href="{% url 'root' %}">
+                                {% endif %}
+                                All lists
+                                {% if view_name != 'all_lists' %}
+                                </a>
+                                {% endif %}
+        </div>
         <h2>
             {% if mlist.display_name %}
                 {{ mlist.display_name }}
@@ -152,8 +162,19 @@
 {% block additionaljs %}
 
 <script type="text/javascript" >
+/*   
     $(function() {
         ajax_chart(".chart", "{% url 'list_recent_activity' mlist.name %}");
+    });
+*/
+    
+    $(function() {
+	chart(
+	    "#chart",
+	    ["{{days|join:'","'}}"],
+            {{evolution}},
+            "{{ archives_baseurl }}"
+	)
     });
 </script>
 
