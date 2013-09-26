@@ -1,53 +1,69 @@
 /* Summary page */
 
 #overview h2 {
-    font-size: 22px;
+    margin-top: 0px;
+    font-size: 28px;
     line-height: 32px;
     margin-bottom: 0.5em;
-    text-align: center;
+}
+
+#overview h2 #breadcrumb {
+    font-weight: normal;
+    font-size: 12px;
 }
 
 #overview h3 {
-    font-size: 20px;
+    font-size: 14px;
     line-height: 28px;
     margin-bottom: 0.5em;
     margin-top: 0;
-    text-align: center;
 }
 
-#graph h2 {
-    text-align: center;
-}
-#graph rect {
+#chart-data rect {
     cursor: pointer;
 }
 
-#fig {
+#fig, #chart-data {
   position: relative;
   margin: auto;
-  width: 540px;
-  height: 300px;
+  font-size: 8pt;
+  font-family: "Droid Sans", sans-serf;
+  font-color: #777;
 }
 
-#fig .axis path, #fig .axis line {
+
+#fig .axis path, #fig .axis line,
+#chart-data .axis path, #chart-data .axis line {
+/*
   fill: none;
-  stroke: #000;
+  stroke: #bbb;
   shape-rendering: geometricPrecision;
+*/
+  display: none;
 }
 
-#fig .area {
+#fig .area,
+#chart-data .bars rect {
   fill: steelBlue;
 }
 
-#overview .list-stats {
-    text-align: center;
+
+/* Next 2 blocks for grid lines */
+
+/*
+#fig .grid .tick,
+#chart-data .grid .tick {
+    stroke: lightgrey;
+    opacity: 0.3;
 }
 
-#overview p.thread-new {
-    text-align: center;
+#fig .grid path,
+#chart-data .grid path {
+    stroke-width: 0;
 }
+*/
 
-
+/*
 #overview .widget {
     padding: 1em;
     border: 1px solid #ddd;
@@ -56,6 +72,7 @@
     border-radius: 10px;
     margin: 1em 0;
 }
+*/
 
 #overview .thread {
     margin: 1.5em 0 0 0;
@@ -139,4 +156,126 @@
 }
 #discussion-by-category .thread .category {
     display: none;
+}
+
+
+section#title h2 {
+
+  margin-bottom: 0px;
+}
+
+
+section#title #description {
+  font-size: 12pt;
+  font-weight: normal;
+}
+
+section#title svg {
+  padding-top: 3px;
+  border: 1px solid #bbb;
+}
+
+section#title #chart {
+  margin-top: 2em;
+}
+
+section#title p.thread-new {
+  text-align: left;
+  margin-top: 1em;
+}
+
+section#statistics {
+  color: #555;
+}
+
+section#statistics .caption {
+  font-size: x-small;
+  color: #aaa;
+  margin-top: -.5%;
+  margin-left: .25em;
+  margin-bottom: 0px;
+}
+
+section#statistics ul {
+  list-style-type: none;
+  margin-left: 0px;
+}
+
+section#statistics li {
+  font-size: small;
+}
+
+section#statistics h3 {
+  margin-bottom: .5em;
+  margin-top: 3em;
+}
+
+#overview h3 {
+  color: #999;
+  text-transform: uppercase;
+  font-size: small;
+  font-weight: normal;
+}
+
+
+#title {
+  float: left;
+  width: 23%;
+  min-width: 20%;
+  margin-right: 2%;
+}
+
+#discussions {
+  margin-top: 3em;
+  padding-left: 1%;
+  float: right;
+  width: 74%;
+}
+
+/* this needs to be integrated into hyperkitty-threadslist.css eventually */
+div.thread {
+  border: 1px solid #e5e5e5;
+  padding: 1%;
+  margin: .5% !important;
+}
+
+.thread {
+  min-height: 1.2em;
+}
+
+.widget {
+  clear: both;
+  margin-bottom: 2em;
+}
+
+.thread ul.inline-block {
+  width: 28%;
+}
+
+.thread ul.inline-block li,
+.thread ul.inline-block span {
+  text-align: left;
+  min-width: 6.5%;
+}
+
+.thread-title {
+  width: 68%;
+  float: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 2%;
+}
+
+
+.maker-name, .maker-id {
+  font-size: small;
+}
+
+.maker-id {
+  color: #aaa;
+}
+
+.thread-id {
+  float: left;
 }
