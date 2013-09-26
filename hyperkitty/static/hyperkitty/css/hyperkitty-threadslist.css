@@ -73,6 +73,12 @@
     float: left;
 }
 
+.thread-title .category {
+  width: 15%;
+  text-align: center;
+  margin-right: 1%;
+}
+
 .thread-info .tags {
     display: inline;
     margin-right: 1em;

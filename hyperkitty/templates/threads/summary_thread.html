@@ -8,6 +8,11 @@
 		<a name="{{thread.thread_id}}"
                 href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
                 >
+		{% if thread.category %}
+                    <span class="label category" style="background-color:{{thread.category.color}}">
+                        {{ thread.category.name|upper }}
+                    </span>
+		{% endif %}
 		{% if thread.unread %}
                     <i class="unread icon-eye-close" title="New messages in this thread"></i>
                 {% endif %}
@@ -15,11 +20,6 @@
             </span>
             <div class="thread-stats">
                 <ul class="inline-block">
-                    {% if thread.category %}
-                    <span class="label category" style="background-color:{{thread.category.color}}">
-                        {{ thread.category.name|upper }}
-                    </span>
-                    {% endif %}
                     <li class="participant">
                         {{ thread.participants|length }}
                     </li>
