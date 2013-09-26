@@ -1,12 +1,5 @@
 /* Summary page */
 
-#overview h2 {
-    margin-top: 0px;
-    font-size: 28px;
-    line-height: 32px;
-    margin-bottom: 0.5em;
-}
-
 #overview h2 #breadcrumb {
     font-weight: normal;
     font-size: 12px;

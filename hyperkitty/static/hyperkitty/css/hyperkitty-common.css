@@ -325,4 +325,9 @@ a.thread-new strong {
     display: none; /* Displayed manually */
 }
 
-
+h1 {
+    margin-top: 0px;
+    font-size: 28px !important; /* override bootstrap */
+    line-height: 32px;
+    margin-bottom: 0.5em;
+}
