@@ -30,13 +30,13 @@
                                 </a>
                                 {% endif %}
         </div>
-        <h2>
+        <h1>
             {% if mlist.display_name %}
                 {{ mlist.display_name }}
             {% else %}
                 {{ mlist.name|until:"@" }}
             {% endif %}
-        </h2>
+        </h1>
         <p id="description">{{ mlist.description|default_if_none:"" }}</p>
 
         <section id="statistics">
