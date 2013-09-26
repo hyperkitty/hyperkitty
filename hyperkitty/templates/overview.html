@@ -23,11 +23,11 @@
         <div id="breadcrumb">{% if view_name == 'all_lists' %}
                                 class="active">
                                 {% else %}
-                                ><a href="{% url 'root' %}">
+                                <a href="{% url 'root' %}">
                                 {% endif %}
-                                All lists
+                                All lists 
                                 {% if view_name != 'all_lists' %}
-                                </a>
+                                </a> &gt;
                                 {% endif %}
         </div>
         <h1>
