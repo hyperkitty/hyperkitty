@@ -131,11 +131,9 @@ which serves HyperKitty (Apache HTTPd for example).
 There are two main databases in HyperKitty. The one from KittyStore and the one
 from HyperKitty itself. To update the KittyStore database, just run::
 
-    kittystore-update -s KITTYSTORE_URL
+    kittystore-updatedb -p hyperkitty_standalone -s settings
 
-where "``KITTYSTORE_URL``" is the content of the ``KITTYSTORE_URL`` variable in
-``settings.py`` (or ``settings_local.py``). This command may take a long time
-to complete, donc interrupt it.
+This command may take a long time to complete, donc interrupt it.
 
 Then, to update the HyperKitty database, run::
 

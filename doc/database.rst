@@ -26,6 +26,19 @@ The scheme may be "sqlite", "postgres", or "mysql". For example, with sqlite::
     If you're using SQLite and you're getting "Database is locked" errors, stop
     your webserver during the import.
 
+If you want to force the creation of the KittyStore database, you can run::
+
+    kittystore-updatedb -p hyperkitty_standalone -s settings
+
+and it will be created.
+
+KittyStore also uses a fulltext search engine which resides in a directory on
+the filesystem. The path to this directory must be configured in the
+``KITTYSTORE_SEARCH_INDEX`` variable. This directory should be writable by the
+user running Mailman and readable by the user running HyperKitty. It will be
+automatically created, but the creation can be forced using the
+``kittystore-updatedb`` command described above.
+
 
 Importing the current archives
 ==============================

@@ -48,8 +48,8 @@ content::
     ASSETS_AUTO_BUILD = DEBUG
     USE_SSL = False
 
-It's also recommanded to change the database access paths in the ``DATABASES``
-and ``KITTYSTORE_URL`` variables.
+It's also recommanded to change the database access paths in the ``DATABASES``,
+``KITTYSTORE_URL`` and ``KITTYSTORE_SEARCH_INDEX`` variables.
 
 If you ever want to turn the ``DEBUG`` variable to ``False`` (by removing it
 from ``settings_local.py``), you'll have to run two additional commands at
