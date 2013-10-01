@@ -44,11 +44,11 @@ function update_list_properties(url) {
                     return;
                 }
                 if (data[name]["display_name"]) {
-                    $(this).find(".list-name").text(data[name]["display_name"]);
+                    $(this).find(".list-name").html(data[name]["display_name"]);
                 }
                 if (data[name]["description"]) {
                     $(this).find(".list-description")
-                           .text(data[name]["description"]);
+                           .html(data[name]["description"]);
                 }
             });
         },
