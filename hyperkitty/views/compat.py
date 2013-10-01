@@ -62,6 +62,12 @@ def arch_month(request, list_name, year, month_name, summary_type="thread"):
 
 
 def arch_month_mbox(request, list_name, year, month_name):
+    """
+    The messages must be rebuilt before being added to the mbox file, including
+    headers and the textual content, making sure to escape email addresses.
+    """
+    return HttpResponse("Not implemented yet.",
+                        content_type="text/plain", status=500)
     store = get_store(request)
     mlist = get_list_by_name(list_name, store, request)
     if mlist is None:
