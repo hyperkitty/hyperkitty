@@ -90,3 +90,33 @@ class TimezoneMiddleware(object):
             return
         if user_profile.timezone:
             timezone.activate(user_profile.timezone)
+
+
+
+# Cache some metadata from Mailman about the logged in user
+
+from mailmanclient import Client as MailmanClient
+from mailmanclient import MailmanConnectionError
+from django.conf import settings
+
+class MailmanUserMetadata(object):
+
+    session_key = "subscribed"
+
+    def process_view(self, request, view_func, view_args, view_kwargs):
+        if not request.user.is_authenticated():
+            return
+        if not request.user.email:
+            return # Can this really happen?
+        if self.session_key in request.session:
+            return # Already set
+        client = MailmanClient('%s/3.0' %
+                    settings.MAILMAN_REST_SERVER,
+                    settings.MAILMAN_API_USER,
+                    settings.MAILMAN_API_PASS)
+        try:
+            user = client.get_user(request.user.email)
+        except MailmanConnectionError:
+            return
+        request.session[self.session_key] = \
+                [ s.address for s in user.subscriptions ]

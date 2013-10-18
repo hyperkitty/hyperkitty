@@ -40,6 +40,7 @@ from hyperkitty.lib import get_store, stripped_subject
 from hyperkitty.lib.view_helpers import (get_months, get_category_widget,
         FLASH_MESSAGES)
 from hyperkitty.lib.voting import set_message_votes
+from hyperkitty.lib.mailman import check_mlist_private
 
 
 def _get_thread_replies(request, thread, offset=1, limit=None):
@@ -73,6 +74,7 @@ def _get_thread_replies(request, thread, offset=1, limit=None):
     return emails
 
 
+@check_mlist_private
 def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     ''' Displays all the email for a given thread identifier '''
     store = get_store(request)
@@ -180,6 +182,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     return render(request, "thread.html", context)
 
 
+@check_mlist_private
 def replies(request, mlist_fqdn, threadid):
     """Get JSON encoded lists with the replies and the participants"""
     chunk_size = 5
@@ -216,6 +219,7 @@ def replies(request, mlist_fqdn, threadid):
                         mimetype='application/javascript')
 
 
+@check_mlist_private
 def tags(request, mlist_fqdn, threadid):
     """ Add or remove a tag on a given thread. """
     if not request.user.is_authenticated():
@@ -263,6 +267,7 @@ def tags(request, mlist_fqdn, threadid):
     return HttpResponse(json.dumps(response),
                         mimetype='application/javascript')
 
+@check_mlist_private
 def suggest_tags(request, mlist_fqdn, threadid):
     term = request.GET.get("term")
     current_tags = Tag.objects.filter(
@@ -277,6 +282,7 @@ def suggest_tags(request, mlist_fqdn, threadid):
     return HttpResponse(json.dumps(tags), mimetype='application/javascript')
 
 
+@check_mlist_private
 def favorite(request, mlist_fqdn, threadid):
     """ Add or remove from favorites"""
     if not request.user.is_authenticated():
@@ -305,6 +311,7 @@ def favorite(request, mlist_fqdn, threadid):
     return HttpResponse("success", mimetype='text/plain')
 
 
+@check_mlist_private
 def set_category(request, mlist_fqdn, threadid):
     """ Set the category for a given thread. """
     if not request.user.is_authenticated():
@@ -334,6 +341,7 @@ def set_category(request, mlist_fqdn, threadid):
     return render(request, "threads/category.html", context)
 
 
+@check_mlist_private
 def reattach(request, mlist_fqdn, threadid):
     if not request.user.is_staff:
         return HttpResponse('You must be a staff member to reattach a thread',
@@ -385,6 +393,7 @@ def reattach(request, mlist_fqdn, threadid):
     return render(request, "reattach.html", context)
 
 
+@check_mlist_private
 def reattach_suggest(request, mlist_fqdn, threadid):
     store = get_store(request)
     mlist = store.get_list(mlist_fqdn)

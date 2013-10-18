@@ -21,6 +21,8 @@
 #
 
 import datetime
+from tempfile import mkdtemp
+from shutil import rmtree
 
 from mock import Mock
 
@@ -30,6 +32,7 @@ from django.test.client import Client, RequestFactory
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.urlresolvers import reverse
 from mailman.email.message import Message
+from mailman.interfaces.archiver import ArchivePolicy
 
 import kittystore
 from kittystore.utils import get_message_id_hash
@@ -81,7 +84,7 @@ class AccountViewsTestCase(TestCase):
 
 from hyperkitty.views.accounts import last_views
 from hyperkitty.views.thread import thread_index
-from hyperkitty.views.list import archives
+from hyperkitty.views.list import archives, overview
 
 class LastViewsTestCase(TestCase):
 
@@ -147,12 +150,11 @@ class LastViewsTestCase(TestCase):
                             count=2, status_code=200)
 
     def test_overview(self):
-        now = datetime.datetime.now()
         request = self.factory.get(reverse('list_overview', args=["list@example.com"]))
         request.user = self.user
-        response = archives(request, "list@example.com", now.year, now.month)
+        response = overview(request, "list@example.com")
         self.assertContains(response, "icon-eye-close",
-                            count=2, status_code=200)
+                            count=4, status_code=200)
 
 
 from hyperkitty.views.message import vote
@@ -404,3 +406,80 @@ class ReattachTestCase(TestCase):
                 count=1, status_code=200)
         self.assertContains(response, "Can&#39;t attach an older thread to a newer thread.",
                 count=1, status_code=200)
+
+
+
+from django.contrib.auth.models import AnonymousUser
+from hyperkitty.views.list import archives
+from hyperkitty.views.message import index as message_view
+from hyperkitty.views.search import search as search_view
+
+class PrivateArchivesTestCase(TestCase):
+
+    def setUp(self):
+        self.tmpdir = mkdtemp(prefix="hyperkitty-testing-")
+        self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
+        #self.user.is_staff = True
+        #self.client.login(username='testuser', password='testPass')
+        settings = SettingsModule()
+        settings.KITTYSTORE_SEARCH_INDEX = self.tmpdir
+        self.store = kittystore.get_store(settings, debug=False)
+        ml = FakeList("list@example.com")
+        ml.subject_prefix = u"[example] "
+        ml.archive_policy = ArchivePolicy.private
+        msg = Message()
+        msg["From"] = "dummy@example.com"
+        msg["Message-ID"] = "<msgid>"
+        msg["Subject"] = "Dummy message"
+        msg.set_payload("Dummy message")
+        msg["Message-ID-Hash"] = self.msgid = self.store.add_to_list(ml, msg)
+        # Factory
+        defaults = {"kittystore.store": self.store,
+                    "HTTP_USER_AGENT": "testbot",
+                    "session": {}, }
+        self.factory = RequestFactory(**defaults)
+
+    def tearDown(self):
+        rmtree(self.tmpdir)
+
+    def test_month_view(self):
+        now = datetime.datetime.now()
+        request = self.factory.get(reverse('archives_with_month', args=["list@example.com", now.year, now.month]))
+        self._do_test(request, archives, ["list@example.com", now.year, now.month])
+
+    def test_overview(self):
+        request = self.factory.get(reverse('list_overview', args=["list@example.com"]))
+        self._do_test(request, overview, ["list@example.com"])
+
+    def test_thread_view(self):
+        request = self.factory.get(reverse('thread',
+                    args=["list@example.com", self.msgid]))
+        self._do_test(request, thread_index, ["list@example.com", self.msgid])
+
+    def test_message_view(self):
+        request = self.factory.get(reverse('message_index',
+                    args=["list@example.com", self.msgid]))
+        self._do_test(request, message_view, ["list@example.com", self.msgid])
+
+    def test_search_list(self):
+        request = self.factory.get(reverse('search'),
+                    {"list": "list@example.com", "query": "dummy"})
+        self._do_test(request, search_view)
+
+    def test_search_all_lists(self):
+        # When searching all lists, we only search public lists regardless of
+        # the user's subscriptions
+        request = self.factory.get(reverse('search'), {"query": "dummy"})
+        request.user = AnonymousUser()
+        response = search_view(request)
+        self.assertNotContains(response, "Dummy message", status_code=200)
+
+    def _do_test(self, request, view, view_args=[]):
+        #self.assertRaises(HttpForbidden, view, request, *view_args)
+        request.user = AnonymousUser()
+        response = view(request, *view_args)
+        self.assertEquals(response.status_code, 403)
+        request.user = self.user
+        setattr(request, "session", {"subscribed": ["list@example.com"]})
+        response = view(request, *view_args)
+        self.assertContains(response, "Dummy message", status_code=200)

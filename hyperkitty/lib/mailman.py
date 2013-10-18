@@ -19,12 +19,21 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+from __future__ import absolute_import
+
+from functools import wraps
+
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils.http import urlquote
+from django.utils.decorators import available_attrs
+from django.shortcuts import redirect, render
+from django.http import Http404
+from mailman.interfaces.archiver import ArchivePolicy
 from mailmanclient import Client
 
 from hyperkitty.models import Rating
+from hyperkitty.lib import get_store
 
 
 def subscribe(list_address, user):
@@ -80,3 +89,35 @@ def get_subscriptions(store, client, mm_user):
             "posts_count": len(email_hashes),
         })
     return subscriptions
+
+
+# View decorator: check that the list is authorized
+def check_mlist_private(func):
+    @wraps(func, assigned=available_attrs(func))
+    def inner(request, *args, **kwargs):
+        if "mlist_fqdn" in kwargs:
+            mlist_fqdn = kwargs["mlist_fqdn"]
+        else:
+            mlist_fqdn = args[0]
+        try:
+            store = get_store(request)
+        except KeyError:
+            return func(request, *args, **kwargs) # Unittesting?
+        mlist = store.get_list(mlist_fqdn)
+        if mlist is None:
+            raise Http404("No archived mailing-list by that name.")
+        #return HttpResponse(request.session.get("subscribed", "NO KEY"), content_type="text/plain")
+        if not is_mlist_authorized(request, mlist):
+            return render(request, "error-private.html", {
+                            "mlist": mlist,
+                          }, status=403)
+        return func(request, *args, **kwargs)
+    return inner
+
+def is_mlist_authorized(request, mlist):
+    if mlist.archive_policy == ArchivePolicy.private and \
+            not (request.user.is_authenticated() and
+                 hasattr(request, "session") and
+                 mlist.name in request.session.get("subscribed", [])):
+        return False
+    return True

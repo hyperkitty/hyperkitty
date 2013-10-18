@@ -37,6 +37,7 @@ from hyperkitty.lib.view_helpers import FLASH_MESSAGES, paginate, \
         get_category_widget, get_months, get_display_dates, daterange, \
         is_thread_unread
 from hyperkitty.lib.voting import set_message_votes, set_thread_votes
+from hyperkitty.lib.mailman import check_mlist_private
 
 
 if settings.USE_MOCKUPS:
@@ -49,6 +50,7 @@ Thread = namedtuple('Thread', [
     ])
 
 
+@check_mlist_private
 def archives(request, mlist_fqdn, year=None, month=None, day=None):
     if year is None and month is None:
         today = datetime.date.today()
@@ -136,6 +138,7 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
     return render(request, template_name, context)
 
 
+@check_mlist_private
 def overview(request, mlist_fqdn=None):
     if not mlist_fqdn:
         return redirect('/')
