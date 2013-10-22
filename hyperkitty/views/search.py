@@ -91,6 +91,9 @@ def search(request, page=1):
                             "mlist": mlist,
                           }, status=403)
 
+    if not store.search_index:
+        return render(request, "error-nosearch.html", {"mlist": mlist})
+
     if not query:
         return render(request, "search_results.html", {
             'mlist' : mlist,

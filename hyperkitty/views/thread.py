@@ -405,8 +405,11 @@ def reattach_suggest(request, mlist_fqdn, threadid):
     if not search_query:
         search_query = default_search_query
     search_query = search_query.strip()
-    search_result = store.search(search_query, mlist_fqdn, 1, 50)
-    messages = search_result["results"]
+    if store.search_index:
+        search_result = store.search(search_query, mlist_fqdn, 1, 50)
+        messages = search_result["results"]
+    else:
+        messages = []
     suggested_threads = []
     for msg in messages:
         if msg.thread not in suggested_threads and msg.thread_id != threadid:

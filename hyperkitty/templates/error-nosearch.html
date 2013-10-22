@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load gravatar %}
+{% load hk_generic %}
+{% load storm %}
+
+
+{% block title %}
+Error: no search engine available
+{% if mlist %}
+    - {{ mlist.display_name|default:mlist.name|escapeemail }}
+{% endif %}
+    - {{ app_name|title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="row-fluid">
+
+    <div class="span2">
+    </div>
+
+    <div class="span7">
+        <p class="text-error">
+            Sorry, the search engine is not available (it has been disabled for this site).
+        </p>
+    </div>
+
+</div>
+
+{% endblock %}
