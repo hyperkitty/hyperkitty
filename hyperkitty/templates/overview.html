@@ -40,7 +40,7 @@
 
         <div class="thread-new row">
             <a href="{% url "message_new" mlist_fqdn=mlist.name %}"
-            class="thread-new btn btn-default{% if not user.is_authenticated %} disabled" title="You must be logged-in to create a thread.{% endif %}">
+            class="btn btn-default{% if not user.is_authenticated %} disabled" title="You must be logged-in to create a thread.{% endif %}">
             <i class="fa fa-plus"></i> Start a new thread</a>
         </div>
 
@@ -49,9 +49,8 @@
 
             <div class="chart">
                 <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
-                <p id="chart-caption" class="caption">Post volume over the past <strong>30</strong> days.</p>
+                <p class="chart-caption" class="caption">Post volume over the past <strong>30</strong> days.</p>
             </div>
-
             <p class="duration-text">In the past <strong>30</strong> days:</p>
             <ul class="list-stats">
                 <li><i class="fa fa-user participant"></i>{{ mlist.recent_participants_count }} participants</li>
@@ -89,7 +88,7 @@
             {% endfor %}
         </section>
 
-        <section id="popular-threads" class="row">
+        <section id="popular-threads">
             <h3>Most popular discussions</h3>
             {% for thread in pop_threads %}
             {% include "threads/summary_thread.html" with counter=forloop.counter %}
@@ -98,57 +97,57 @@
             {% endfor %}
         </section>
 
-        <section id="top-discussion" class="row">
-                <h3>Most active discussions</h3>
-                {% for thread in top_threads %}
-                    {% include "threads/summary_thread.html" with counter=forloop.counter %}
-                {% endfor %}
-            </section>
+        <section id="top-discussion">
+            <h3>Most active discussions</h3>
+            {% for thread in top_threads %}
+                {% include "threads/summary_thread.html" with counter=forloop.counter %}
+            {% endfor %}
+        </section>
 
-            <section id="discussion-by-category" class="row">
-                <h3>Discussion by category</h3>
-                {% for category, threads in threads_by_category.items %}
-                    <h4 class="label{% if forloop.first %} first{% endif %}"
-                       style="background-color:{{category.color}}"
-                       >{{ category.name|upper }}
-                    </h4>
-                    <ul>
-                    {% for thread in threads %}
-                        <li>{% include "threads/summary_thread.html" %}</li>
-                    {% endfor %}
-                    </ul>
-                {% empty %}
-                    <p>No category has been set this month (yet).</p>
+        <section id="discussion-by-category">
+            <h3>Discussion by category</h3>
+            {% for category, threads in threads_by_category.items %}
+                <h4 class="label{% if forloop.first %} first{% endif %}"
+                   style="background-color:{{category.color}}"
+                   >{{ category.name|upper }}
+                </h4>
+                <ul>
+                {% for thread in threads %}
+                    <li>{% include "threads/summary_thread.html" %}</li>
                 {% endfor %}
-            </section>
+                </ul>
+            {% empty %}
+                <p>No category has been set this month (yet).</p>
+            {% endfor %}
+        </section>
 
-            {% if top_author %}
-            <section id="discussion-maker" class="row">
-                <h3>Prominent discussion maker</h3>
-                {% for author in top_author %}
-                <!-- Start discussion maker -->
-                <div class="maker">
-                    <div class="inline-block maker-id">
-                        #{{forloop.counter}}
-                    </div>
-                    <div class="inline-block gravatar">
-                        {% if author.email %}
-                        {% gravatar author.email 40 %}
-                        <br />
-                        {% endif %}
-                    </div>
-                    <div class="inline-block">
-                        <span class="maker-name">{{author.name}}</span>
-                        <br />
-                        <span class="score">+{{author.kudos}}</span> kudos
-                    </div>
+        {% if top_author %}
+        <section id="discussion-maker">
+            <h3>Prominent discussion maker</h3>
+            {% for author in top_author %}
+            <!-- Start discussion maker -->
+            <div class="maker">
+                <div class="inline-block maker-id">
+                    #{{forloop.counter}}
                 </div>
-                <!-- End discussion maker -->
-                {% endfor %}
+                <div class="inline-block gravatar">
+                    {% if author.email %}
+                    {% gravatar author.email 40 %}
+                    <br />
+                    {% endif %}
+                </div>
+                <div class="inline-block">
+                    <span class="maker-name">{{author.name}}</span>
+                    <br />
+                    <span class="score">+{{author.kudos}}</span> kudos
+                </div>
+            </div>
+            <!-- End discussion maker -->
+            {% endfor %}
 
-                <h3>Tag cloud</h3>
-            </section>
-            {% endif %}
+            <h3>Tag cloud</h3>
+        </section>
+        {% endif %}
 
     </div>
 
@@ -169,11 +168,10 @@
     
     $(function() {
 	chart(
-	    "#chart",
+	    ".chart",
 	    ["{{days|join:'","'}}"],
             {{evolution}},
-            "{{ archives_baseurl }}",
-            "#chart-caption"
+            "{{ archives_baseurl }}"
 	)
     });
 </script>

@@ -11,7 +11,7 @@
 
 #overview h3 {
     line-height: 1.5em;
-    margin-top: 0;
+    margin-top: 3em;
 	color: #999;
 	text-transform: uppercase;
 	font-size: small;
@@ -107,14 +107,14 @@
 }
 
 #highlights {
-	padding-left: 0px;
+	padding-left: 0;
 }
 #highlights h2 {
-  margin-bottom: 0px;
+	margin-bottom: 0;
 }
 #highlights #description {
-  font-size: 12pt;
-  font-weight: normal;
+	font-size: 12pt;
+	font-weight: normal;
 }
 
 #highlights .chart-data {
@@ -152,9 +152,9 @@ section#statistics ul {
 section#statistics li {
 	font-size: small;
 }
-section#statistics h3,
-section#discussion-maker h3 {
-	margin-top: 3em;
+
+section#most-active h3 {
+	margin-top: 0;
 }
 
 /* this needs to be integrated into hyperkitty-threadslist.css eventually */
@@ -196,17 +196,3 @@ section#discussion-maker h3 {
 #overview .category {
     margin-right: 2em;
 }
-
-/*
-#overview .thread ul.inline-block {
-  width: 28%;
-}
-*/
-
-/*
-#overview .thread ul.inline-block li,
-#overview .thread ul.inline-block span {
-	text-align: left;
-	min-width: 6.5%;
-}
-*/
