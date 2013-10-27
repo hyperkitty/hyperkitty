@@ -13,64 +13,64 @@
 
 {% block content %}
 
-<div class="row-fluid">
+<div class="container">
 
 {% include 'threads/month_list.html' %}
 
-    <section id="overview" class="span10">
+    <div id="overview" class="col-md-10">
 
-    <section id="title">
-        <div id="breadcrumb">{% if view_name == 'all_lists' %}
-                                class="active">
-                                {% else %}
-                                <a href="{% url 'root' %}">
-                                {% endif %}
-                                All lists 
-                                {% if view_name != 'all_lists' %}
-                                </a> &gt;
-                                {% endif %}
-        </div>
-        <h1>
-            {% if mlist.display_name %}
-                {{ mlist.display_name }}
-            {% else %}
-                {{ mlist.name|until:"@" }}
+    <section id="highlights" class="col-md-3">
+        <div id="breadcrumb" class="row">
+            {% if view_name != 'all_lists' %}
+            <a href="{% url 'root' %}" class="root">
             {% endif %}
-        </h1>
-        <p id="description">{{ mlist.description|default_if_none:"" }}</p>
-
-        <section id="statistics">
-
-        <div class="chart">
-            <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
+            All lists 
+            {% if view_name != 'all_lists' %}
+            </a>
+            {% endif %}
+            <h1>
+                {% if mlist.display_name %}
+                    {{ mlist.display_name }}
+                {% else %}
+                    {{ mlist.name|until:"@" }}
+                {% endif %}
+            </h1>
+            <p id="description">{{ mlist.description|default_if_none:"" }}</p>
         </div>
-        <p class="caption">Post volume over the past <strong>30</strong> days.</p>
 
-        <p class="thread-new">
+        <div class="thread-new row">
             <a href="{% url "message_new" mlist_fqdn=mlist.name %}"
             class="thread-new btn{% if not user.is_authenticated %} disabled" title="You must be logged-in to create a thread.{% endif %}">
-            <strong>+</strong> Start a new thread</a>
-        </p>
+            <span class="glyphicon glyphicon-plus">Start a new thread</a>
+        </div>
 
-        <h3>Activity Summary</h3>
-        <p>The following statistics are from the past <strong>30</strong> days:</p>
-        <ul class="list-stats">
-            <li><span class="participant">{{ mlist.recent_participants_count }} participants</span></li>
-            <li><span class="discussion">{{ mlist.recent_threads_count }} discussions</span></li>
-        </ul>
+        <section id="statistics" class="row">
+            <h3>Activity Summary</h3>
 
-        <section id="discussion-maker" class="widget">
+            <div class="chart">
+                <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
+                <p id="chart-caption" class="caption">Post volume over the past <strong>30</strong> days.</p>
+            </div>
+
+            <p class="duration-text">In the past <strong>30</strong> days:</p>
+            <ul class="list-stats">
+                <li><span class="glyphicon glyphicon-user participant">{{ mlist.recent_participants_count }} participants</span></li>
+                <li><span class="glyphicon glyphicon-comment discussion">{{ mlist.recent_threads_count }} discussions</span></li>
+            </ul>
+        </section>
+
+        <section id="discussion-maker" class="row">
             <h3>Most active posters</h3>
             {% for poster in top_posters %}
-            <div class="maker">
-            <div class="inline-block maker-id">
+            <div class="maker row">
+            <div class="maker-id col-md-1">
                 #{{forloop.counter}}
             </div>
-            <div class="inline-block gravatar">
+            <div class="gravatar col-md-2">
                 {% gravatar poster.email 40 %}
                 <br />
             </div>
-            <div class="inline-block">
+            <div class="maker-details col-md-8">
                 <span class="maker-name">{{ poster.name }}</span>
                 <span class="score">{{ poster.count }}</span> posts
             </div>
@@ -78,10 +78,9 @@
             {% endfor %}
         </section>
 
-        </section>
     </section>
 
-    <section id="discussions">
+    <section id="discussions" class="col-md-9 pull-right">
 
         <section id="most-active" class="widget">
             <h3>Recently active discussions</h3>
@@ -153,7 +152,7 @@
 
     </section>
 
-    </section>
+    </div>
 
 </div>
 
@@ -173,7 +172,8 @@
 	    "#chart",
 	    ["{{days|join:'","'}}"],
             {{evolution}},
-            "{{ archives_baseurl }}"
+            "{{ archives_baseurl }}",
+            "#chart-caption"
 	)
     });
 </script>

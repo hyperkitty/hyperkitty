@@ -5,23 +5,12 @@ body {
 }
 
 ul.nav.auth {
-    float: right;
     margin: 0;
-}
-
-#search-form {
-    float: right;
-    margin-right: 4em;
-    padding: 5px 0;
-}
-#search-form form {
-    margin-bottom: 0;
 }
 
 .navbar .breadcrumb {
-    padding: 10px 30px;
+    padding: 15px 30px 0px 30px;
     margin: 0;
-    float: left;
     background-color: transparent;
 }
 .navbar .breadcrumb > li > a {
@@ -35,8 +24,9 @@ ul.nav.auth {
     text-decoration: none;
     background-color: transparent;
 }
-.navbar .breadcrumb > li > .divider {
-    color: #999999;
+.navbar .breadcrumb>li+li:before {
+	content: ">";
+	color: rgb(153, 153, 153);
 }
 
 

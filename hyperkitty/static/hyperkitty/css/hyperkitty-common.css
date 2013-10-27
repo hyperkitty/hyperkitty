@@ -69,9 +69,11 @@ form .buttons .submit {
 
 /* Gravatar */
 .gravatar {
+/*
     vertical-align: top;
     width:40px;
     font-size: 70%;
+*/
 }
 .gravatar img {
     width: 40px;
@@ -85,16 +87,8 @@ ul.list-stats {
     padding: 0;
 }
 .participant, .discussion {
-    padding-left: 20px;
-    background: no-repeat scroll left center;
-}
-.participant {
-    background-image: url("../img/participant.png");
-    margin-right: 1em;
-}
-.discussion {
-    background-image: url("../img/discussion.png");
-    margin-right: 2em;
+	color: #BFBFBF;
+	padding-right: 0.5em;
 }
 i.unread {
     vertical-align: baseline;
@@ -150,13 +144,15 @@ form.likeform {
 
 
 /* Months list */
-
+#months-list {
+	padding-left: 0px;
+}
 #months-list h3 {
-    margin-top: 1em;
     font-size: 120%;
 }
-#months-list {
-    padding-top: 1em;
+#months-list ul {
+	list-style-type: none;
+	padding: 0px;
 }
 #months-list li.current {
     font-weight: bold;

@@ -168,7 +168,7 @@ function chart(elem_id, data, default_props) {
       //  .y0(height)
         .y(function(d) { return y(d.count); });
 
-    var svg = d3.select(elem_id).append("svg")
+    var svg = d3.select(elem_id).insert("svg", ":first-child")
 	.attr("class", "chart-data")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)

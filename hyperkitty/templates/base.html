@@ -1,5 +1,6 @@
 {% load url from future %}
 {% load assets %}
+{% load less %}
 <!DOCTYPE HTML>
 <html>
     <head>
@@ -19,93 +20,90 @@
     {% load i18n %}
 
     <body>
-        <div class="container-fluid">
-        <header class="row-fluid">
-            <div class="navbar navbar-fixed-top">
-                  <div class="navbar-inner">
-                    <div class="container-fluid">
+		<nav class="navbar navbar-fixed-top navbar-default">
+			<div class="container">
+				<!--part of the navbar that will always be present-->
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button> 
+					<a class="navbar-brand" href="{% url 'root' %}">{{ app_name|title }}</a>
+				</div>
+				<!--part of the navbar that will be collapsed on small screens-->
+				<div class="navbar-collapse collapse">
+					<ol class="navbar-left breadcrumb">
+						<li
+							{% if view_name == 'all_lists' %}
+							class="active">
+							{% else %}
+							><a href="{% url 'root' %}">
+							{% endif %}
+							All lists
+							{% if view_name != 'all_lists' %}
+							</a>
+							{% endif %}
 
-                        <ul class="nav auth">
-                        {% if user.is_authenticated %}
-                            <li><a class="mm_logout" href="{% url 'user_logout' %}?next={% url 'root' %}">Logout</a></li>
-                            <li><a href="{% url 'user_profile' %}">{{ user.username }}</a></li>
-                        {% else %}
-                            <li><a class="mm_user" href="{% url 'user_login' %}?next={{next|default:request.path|urlencode}}">Login</a></li>
-                            {% if use_internal_auth %}
-                            <li><a href="{% url 'user_registration' %}?next={{next|default:request.path|urlencode}}"> Sign Up </a></li>
-                            {% endif %}
-                        {% endif %}
-                        </ul>
+						{% if mlist %}
+						<li
+							{% if view_name == 'overview' %}
+							class="active">
+							{% else %}
+							><a href="{% url 'list_overview' mlist_fqdn=mlist.name %}">
+							{% endif %}
+							{{mlist.name}}
+							{% if view_name != 'overview' %}
+							</a>
+							{% endif %}
+						{% endif %}
 
-                        <div id="search-form" class="nav">
-                            <form name="search" method="get" action="{% url 'search' %}" class="form-search">
-                                {% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
-                                <div class="input-append">
-                                    <input name="query" type="text" class="search-query"
-                                           placeholder="Search {% if mlist %}this list{% else %}all lists{% endif %}"
-                                           {% if query %}value="{{ query }}"{% endif %}
-                                           />
-                                    <button type="submit" class="btn"><i class="icon-search"></i></button>
-                                </div>
-                            </form>
-                        </div>
+						{% if month %}
+						<li
+							{% if not subject %}
+							class="active">
+							{% else %}
+							><a href="{% url 'archives_with_month' mlist_fqdn=mlist.name year=month.year month=month.month %}">
+							{% endif %}
+							{{ month|date:"F Y" }}
+							{% if subject %}
+							</a>
+							{% endif %}
+						{% endif %}
 
+						{% if subject %}
+						<li class="active">
+							{{ subject|truncatechars:"15" }}
+						{% endif %}
 
-                        <a class="brand" href="{% url 'root' %}">{{ app_name|title }}</a>
-
-                        <ul class="breadcrumb">
-                            <li
-                                {% if view_name == 'all_lists' %}
-                                class="active">
-                                {% else %}
-                                ><a href="{% url 'root' %}">
-                                {% endif %}
-                                All lists
-                                {% if view_name != 'all_lists' %}
-                                </a>
-                                {% endif %}
-
-                            {% if mlist %}
-                            <span class="divider">&gt;</span></li>
-                            <li
-                                {% if view_name == 'overview' %}
-                                class="active">
-                                {% else %}
-                                ><a href="{% url 'list_overview' mlist_fqdn=mlist.name %}">
-                                {% endif %}
-                                {{mlist.name}}
-                                {% if view_name != 'overview' %}
-                                </a>
-                                {% endif %}
-                            {% endif %}
-
-                            {% if month %}
-                            <span class="divider">&gt;</span></li>
-                            <li
-                                {% if not subject %}
-                                class="active">
-                                {% else %}
-                                ><a href="{% url 'archives_with_month' mlist_fqdn=mlist.name year=month.year month=month.month %}">
-                                {% endif %}
-                                {{ month|date:"F Y" }}
-                                {% if subject %}
-                                </a>
-                                {% endif %}
-                            {% endif %}
-
-                            {% if subject %}
-                            <span class="divider">&gt;</span></li>
-                            <li class="active">
-                                {{ subject|truncatechars:"15" }}
-                            {% endif %}
-
-                            </li>
-                        </ul>
-
-                    </div>
-                  </div>
-            </div>
-        </header>
+						</li>
+					</ol>
+					
+					<ul class="nav navbar-nav navbar-right auth">
+					{% if user.is_authenticated %}
+						<li><a class="mm_logout" href="{% url 'user_logout' %}?next={% url 'root' %}">Logout</a></li>
+						<li><a href="{% url 'user_profile' %}">{{ user.username }}</a></li>
+					{% else %}
+						<li><a class="mm_user" href="{% url 'user_login' %}?next={{next|default:request.path|urlencode}}">Login</a></li>
+						{% if use_internal_auth %}
+						<li><a href="{% url 'user_registration' %}?next={{next|default:request.path|urlencode}}"> Sign Up </a></li>
+						{% endif %}
+					{% endif %}
+					</ul>
+					
+					<form name="search" method="get" action="{% url 'search' %}" class="navbar-form navbar-right" role="search">
+						{% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
+						<div class="form-group">
+							<input name="query" type="text" class="form-control"
+								   placeholder="Search {% if mlist %}this list{% else %}all lists{% endif %}"
+								   {% if query %}value="{{ query }}"{% endif %}
+								   />
+						</div>
+						<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+					</form>
+				</div>		
+			</div>
+		</nav>
 
         {% if flash_messages %}
         <div class="flashmsgs">
@@ -126,7 +124,6 @@
 
         {% block footer %} {% endblock %}
 
-        </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}hyperkitty/libs/jquery/jquery-1.10.1.min.js"><\/script>')</script>
     <script src="{{ STATIC_URL }}hyperkitty/libs/jquery/jquery-ui-1.10.3.custom.min.js"></script>
