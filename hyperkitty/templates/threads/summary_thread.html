@@ -2,32 +2,36 @@
 {% load hk_generic %}
 {% load storm %}
 
-        <div class="thread">
-            <span class="thread-title">
-                {% if counter %}<span class="thread-id">#{{counter}}</span>{% endif %}
-                <a name="{{thread.thread_id}}"
-                   href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
-                   >
-                    {% if thread.category_widget %}
-                    <span class="label category" style="background-color:{{thread.category_widget.color}}">
-                        {{ thread.category_widget.name|upper }}
-                    </span>
-                    {% endif %}
-                    {% if thread.unread %}
-                    <i class="unread icon-eye-close" title="New messages in this thread"></i>
-                    {% endif %}
-                    {{ thread.subject|strip_subject:mlist }}
-                </a>
+<article class="thread row">
+    <div class="thread-title-info thread-title col-md-8 pull-left">
+        {% if counter %}<span class="thread-id">#{{counter}}</span>{% endif %}
+        <a name="{{thread.thread_id}}"
+           href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
+           >
+            {% if thread.category_widget %}
+            <span class="label category" style="background-color:{{thread.category_widget.color}}">
+                {{ thread.category_widget.name|upper }}
             </span>
-            <div class="thread-stats">
-                <ul class="inline-block">
-                    <li class="participant">
-                        {{ thread.participants_count }}
-                    </li>
-                    <li class="discussion">
-                        {{ thread|length }}
-                    </li>
-                    <span class="likestatus {{ thread.likestatus }}">+{{ thread.likes }}/-{{ thread.dislikes }}</span>
-                </ul>
-            </div>
-        </div>
+            {% endif %}
+            {% if thread.unread %}
+            <i class="fa fa-envelope" title="New messages in this thread"></i>
+            {% endif %}
+            <span class="thread-title">{{ thread.subject|strip_subject:mlist }}</span>
+        </a>
+    </div>
+    <div class="thread-stats col-md-4 pull-right">
+        <ul class="list-inline">
+            <li>
+                <i class="fa fa-user participant"></i>
+                {{ thread.participants_count }}
+            </li>
+            <li>
+                <i class="fa fa-comment discussion"></i>
+                {{ thread|length }}
+            </li>
+            <li>
+                <i class="{{ thread.likestatus }}"></i>+{{ thread.likes }}/-{{ thread.dislikes }}
+            </li>
+        </ul>
+    </div>
+</article>

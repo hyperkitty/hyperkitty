@@ -88,7 +88,8 @@ ul.list-stats {
 }
 .participant, .discussion {
 	color: #BFBFBF;
-	padding-right: 0.5em;
+	line-height: 1em;
+	vertical-align: middle;
 }
 i.unread {
     vertical-align: baseline;
@@ -98,7 +99,6 @@ i.unread {
 /*
  * Like / dislike
  */
-
 form.likeform {
     display: inline;
     margin: 0;
@@ -110,9 +110,16 @@ form.likeform {
     margin-right: 1.5em;
     font-weight: bold;
 }
-
-.neutral {
-    background: url("../img/neutral.png") no-repeat scroll left;
+.neutral:before {
+    /*background: url("../img/neutral.png") no-repeat scroll left;*/
+	content: "\f11a";
+    font-family: FontAwesome;
+    font-style: normal;
+	font-size: 18px;
+    text-decoration: inherit;
+    padding-right: 0.25em;
+    line-height: 1em;
+    vertical-align: middle;
 }
 .like {
     background: url("../img/like.png") no-repeat scroll left;

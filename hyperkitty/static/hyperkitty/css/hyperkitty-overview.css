@@ -29,20 +29,6 @@
 }
 */
 
-#overview .thread {
-    margin: 1.5em 0 0 0;
-}
-
-#overview .thread-stats {
-    margin-left: 3em;
-}
-#overview .thread-stats ul {
-    margin: 0;
-}
-#overview .thread-stats .category {
-    margin-right: 2em;
-}
-
 /*
 .category {
     font-variant: small-caps;
@@ -98,6 +84,7 @@
   float: right;
   width: 74%;
 */
+
 }
 #discussion-by-category h4 {
     font-size: 105%;
@@ -119,22 +106,22 @@
     display: none;
 }
 
-section#highlights {
+#highlights {
 	padding-left: 0px;
 }
-section#highlights h2 {
+#highlights h2 {
   margin-bottom: 0px;
 }
-section#highlights #description {
+#highlights #description {
   font-size: 12pt;
   font-weight: normal;
 }
 
-section#highlights .chart-data {
+#highlights .chart-data {
   padding-top: 3px;
   border: 1px solid #bbb;
 }
-section#highlights .chart {
+#highlights .chart {
   /*margin-top: 2em;*/
   height: 60px;
 }
@@ -150,6 +137,9 @@ section#statistics .caption {
 	font-size: x-small;
 	color: #aaa;
 	margin-top: -0.75em;
+}
+section#statistics i {
+	padding-right: 0.5em;
 }
 section#statistics p {
 	padding-top: 0.75em;
@@ -168,7 +158,7 @@ section#discussion-maker h3 {
 }
 
 /* this needs to be integrated into hyperkitty-threadslist.css eventually */
-#overview div.thread {
+#overview article.thread {
   border: 1px solid #e5e5e5;
   padding: 1%;
   margin: .5%;
@@ -178,40 +168,45 @@ section#discussion-maker h3 {
   min-height: 1.2em;
 }
 
+/*
 #overview .widget {
   clear: both;
   margin-bottom: 2em;
 }
+*/
 
+#overview .thread-title-info {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	padding: 0.5em;
+}
+#overview .thread-stats {
+    padding: 0.5em 0;
+}
+#overview .thread-stats ul {
+	text-align: right;
+	margin: 0;
+	line-height: 1em;
+}
+#overview .thread-stats ul li {
+	padding-right: 0.5em;
+}
+
+#overview .category {
+    margin-right: 2em;
+}
+
+/*
 #overview .thread ul.inline-block {
   width: 28%;
 }
+*/
 
+/*
 #overview .thread ul.inline-block li,
 #overview .thread ul.inline-block span {
-  text-align: left;
-  min-width: 6.5%;
+	text-align: left;
+	min-width: 6.5%;
 }
-
-#overview .thread-title {
-  width: 68%;
-  float: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-right: 2%;
-}
-
-#overview .thread-id {
-  float: left;
-}
-
-#overview .maker-name {
-  display: block !important;
-  max-width: 152px !important;
-  word-wrap: break-word !important;
-}
-
-#overview .maker .gravatar {
-  padding-right: 5px;
-}
+*/

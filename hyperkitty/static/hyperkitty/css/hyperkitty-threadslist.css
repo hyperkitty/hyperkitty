@@ -40,7 +40,13 @@
  */
 
 .thread {
+/*
     margin: 2em 0 2em 0;
+*/
+}
+
+.thread-title {
+    font-weight: bold;
 }
 
 .thread-id {
@@ -49,10 +55,6 @@
     color: rgb(102, 102, 102);
     vertical-align: top;
     padding-right: 10px;
-}
-
-.thread-title {
-    font-weight: bold;
 }
 
 .thread-date {

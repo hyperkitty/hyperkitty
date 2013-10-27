@@ -19,7 +19,7 @@
 
     <div id="overview" class="col-md-10">
 
-    <section id="highlights" class="col-md-3">
+    <div id="highlights" class="col-md-3">
         <div id="breadcrumb" class="row">
             {% if view_name != 'all_lists' %}
             <a href="{% url 'root' %}" class="root">
@@ -40,8 +40,8 @@
 
         <div class="thread-new row">
             <a href="{% url "message_new" mlist_fqdn=mlist.name %}"
-            class="thread-new btn{% if not user.is_authenticated %} disabled" title="You must be logged-in to create a thread.{% endif %}">
-            <span class="glyphicon glyphicon-plus">Start a new thread</a>
+            class="thread-new btn btn-default{% if not user.is_authenticated %} disabled" title="You must be logged-in to create a thread.{% endif %}">
+            <i class="fa fa-plus"></i> Start a new thread</a>
         </div>
 
         <section id="statistics" class="row">
@@ -54,8 +54,8 @@
 
             <p class="duration-text">In the past <strong>30</strong> days:</p>
             <ul class="list-stats">
-                <li><span class="glyphicon glyphicon-user participant">{{ mlist.recent_participants_count }} participants</span></li>
-                <li><span class="glyphicon glyphicon-comment discussion">{{ mlist.recent_threads_count }} discussions</span></li>
+                <li><i class="fa fa-user participant"></i>{{ mlist.recent_participants_count }} participants</li>
+                <li><i class="fa fa-comment discussion"></i>{{ mlist.recent_threads_count }} discussions</li>
             </ul>
         </section>
 
@@ -63,33 +63,33 @@
             <h3>Most active posters</h3>
             {% for poster in top_posters %}
             <div class="maker row">
-            <div class="maker-id col-md-1">
-                #{{forloop.counter}}
-            </div>
-            <div class="gravatar col-md-2">
-                {% gravatar poster.email 40 %}
-                <br />
-            </div>
-            <div class="maker-details col-md-8">
-                <span class="maker-name">{{ poster.name }}</span>
-                <span class="score">{{ poster.count }}</span> posts
-            </div>
+                <div class="maker-id col-md-1">
+                    #{{forloop.counter}}
+                </div>
+                <div class="gravatar col-md-2">
+                    {% gravatar poster.email 40 %}
+                    <br />
+                </div>
+                <div class="maker-details col-md-8">
+                    <span class="maker-name">{{ poster.name }}</span>
+                    <span class="score">{{ poster.count }}</span> posts
+                </div>
             </div>
             {% endfor %}
         </section>
 
-    </section>
+    </div>
 
-    <section id="discussions" class="col-md-9 pull-right">
+    <div id="discussions" class="col-md-9 pull-right">
 
-        <section id="most-active" class="widget">
+        <section id="most-active">
             <h3>Recently active discussions</h3>
             {% for thread in most_active_threads %}
             {% include "threads/summary_thread.html"  %} <!-- cut - with counter=forloop.counter -->
             {% endfor %}
         </section>
 
-        <section id="popular-threads" class="widget">
+        <section id="popular-threads" class="row">
             <h3>Most popular discussions</h3>
             {% for thread in pop_threads %}
             {% include "threads/summary_thread.html" with counter=forloop.counter %}
@@ -98,14 +98,14 @@
             {% endfor %}
         </section>
 
-        <section id="top-discussion" class="widget">
+        <section id="top-discussion" class="row">
                 <h3>Most active discussions</h3>
                 {% for thread in top_threads %}
                     {% include "threads/summary_thread.html" with counter=forloop.counter %}
                 {% endfor %}
             </section>
 
-            <section id="discussion-by-category" class="widget">
+            <section id="discussion-by-category" class="row">
                 <h3>Discussion by category</h3>
                 {% for category, threads in threads_by_category.items %}
                     <h4 class="label{% if forloop.first %} first{% endif %}"
@@ -123,7 +123,7 @@
             </section>
 
             {% if top_author %}
-            <section id="discussion-maker" class="widget">
+            <section id="discussion-maker" class="row">
                 <h3>Prominent discussion maker</h3>
                 {% for author in top_author %}
                 <!-- Start discussion maker -->
@@ -150,7 +150,7 @@
             </section>
             {% endif %}
 
-    </section>
+    </div>
 
     </div>
 
