@@ -88,8 +88,10 @@ ul.list-stats {
 }
 .participant, .discussion {
 	color: #BFBFBF;
-	line-height: 1em;
-	vertical-align: middle;
+	font-size: 18px;
+    padding-right: 0.25em;
+    line-height: 1em;
+    vertical-align: middle;
 }
 i.unread {
     vertical-align: baseline;
@@ -152,14 +154,14 @@ form.likeform {
 
 /* Months list */
 #months-list {
-	padding-left: 0px;
+	padding-left: 0;
 }
 #months-list h3 {
     font-size: 120%;
 }
 #months-list ul {
 	list-style-type: none;
-	padding: 0px;
+	padding: 0;
 }
 #months-list li.current {
     font-weight: bold;
@@ -334,9 +336,9 @@ a.thread-new strong {
 }
 
 h1 {
-    margin-top: 0px;
-    font-size: 28px !important; /* override bootstrap */
-    line-height: 32px;
+    margin-top: 0;
+    font-size: 2em; /* override bootstrap */
+    /*line-height: 32px;*/
     margin-bottom: 0.5em;
 }
 

@@ -22,11 +22,11 @@
     <div id="highlights" class="col-md-3">
         <div id="breadcrumb" class="row">
             {% if view_name != 'all_lists' %}
-            <a href="{% url 'root' %}" class="root">
+            <small><a href="{% url 'root' %}" class="root">
             {% endif %}
-            All lists 
+            All lists
             {% if view_name != 'all_lists' %}
-            </a>
+            </a></small>
             {% endif %}
             <h1>
                 {% if mlist.display_name %}
@@ -35,9 +35,8 @@
                     {{ mlist.name|until:"@" }}
                 {% endif %}
             </h1>
-            <p id="description">{{ mlist.description|default_if_none:"" }}</p>
+            <small><p id="description">{{ mlist.description|default_if_none:"" }}</p></small>
         </div>
-
         <div class="thread-new row">
             <a href="{% url "message_new" mlist_fqdn=mlist.name %}"
             class="btn btn-default{% if not user.is_authenticated %} disabled" title="You must be logged-in to create a thread.{% endif %}">
@@ -52,9 +51,15 @@
                 <p class="chart-caption" class="caption">Post volume over the past <strong>30</strong> days.</p>
             </div>
             <p class="duration-text">In the past <strong>30</strong> days:</p>
-            <ul class="list-stats">
-                <li><i class="fa fa-user participant"></i>{{ mlist.recent_participants_count }} participants</li>
-                <li><i class="fa fa-comment discussion"></i>{{ mlist.recent_threads_count }} discussions</li>
+            <ul class="list-unstyled list-stats">
+                <li class="item">
+                    <i class="fa fa-user participant"></i>
+                    <span class="info">{{ mlist.recent_participants_count }} participants</span>
+                </li>
+                <li class="item">
+                    <i class="fa fa-comment discussion"></i>
+                    <span class="info">{{ mlist.recent_threads_count }} discussions</span>
+                </li>
             </ul>
         </section>
 
@@ -62,16 +67,16 @@
             <h3>Most active posters</h3>
             {% for poster in top_posters %}
             <div class="maker row">
-                <div class="maker-id col-md-1">
-                    #{{forloop.counter}}
+                <div class="col-md-1">
+                    <small class="maker-id"><strong>#{{forloop.counter}}</strong></small>
                 </div>
                 <div class="gravatar col-md-2">
                     {% gravatar poster.email 40 %}
                     <br />
                 </div>
                 <div class="maker-details col-md-8">
-                    <span class="maker-name">{{ poster.name }}</span>
-                    <span class="score">{{ poster.count }}</span> posts
+                    <small class="maker-name"><strong>{{ poster.name }}</strong></small>
+                    <strong>{{ poster.count }}</strong> posts
                 </div>
             </div>
             {% endfor %}

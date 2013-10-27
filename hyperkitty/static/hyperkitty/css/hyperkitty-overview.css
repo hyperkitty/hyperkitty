@@ -1,14 +1,5 @@
 /* Summary page */
 
-#overview #breadcrumb {
-    font-weight: normal;
-    font-size: 12px;
-}
-#overview #breadcrumb .root:after {
-	content: ">";
-	color: #000;
-}
-
 #overview h3 {
     line-height: 1.5em;
     margin-top: 3em;
@@ -28,7 +19,6 @@
     margin: 1em 0;
 }
 */
-
 /*
 .category {
     font-variant: small-caps;
@@ -55,66 +45,12 @@
 }
 */
 
-.maker {
-    color: rgb(102, 102, 102);
-    padding-bottom: 20px;
-}
-.maker-id, .maker-name {
-    font-weight: bold;
-    font-size: 115%;
-    vertical-align: top;
-    padding-right: 3px;
-}
-.maker-details {
-	margin-left: 5px;
-}
-.maker-id {
-  color: #aaa;
-}
-.score{
-    font-weight: bold;
-}
-
-
-/* Threads by category */
-#discussions {
-/*
-  margin-top: 3em;
-  padding-left: 1%;
-  float: right;
-  width: 74%;
-*/
-
-}
-#discussion-by-category h4 {
-    font-size: 105%;
-    line-height: 105%;
-    margin: 1.5em 0 0.5em 0;
-    padding-left: 1em;
-    padding-right: 1em;
-}
-#discussion-by-category h4.first {
-    margin-top: 0;
-}
-#discussion-by-category .thread {
-    margin: 0 0 0 0.5em;
-}
-#discussion-by-category .thread-stats {
-    margin-left: 0;
-}
-#discussion-by-category .thread .category {
-    display: none;
-}
-
 #highlights {
 	padding-left: 0;
 }
-#highlights h2 {
-	margin-bottom: 0;
-}
-#highlights #description {
-	font-size: 12pt;
-	font-weight: normal;
+#highlights #breadcrumb .root:after {
+	content: ">";
+	color: #000;
 }
 
 #highlights .chart-data {
@@ -126,54 +62,50 @@
   height: 60px;
 }
 
-section#highlights .thread-new span {
-	padding-right: 0.5em;
-}
-
-section#statistics {
+#statistics {
 	color: #555;
 }
-section#statistics .caption {
+#statistics .chart-caption {
 	font-size: x-small;
-	color: #aaa;
-	margin-top: -0.75em;
+	margin-top: -0.25em;
 }
-section#statistics i {
-	padding-right: 0.5em;
-}
-section#statistics p {
-	padding-top: 0.75em;
+#statistics .duration-text {
 	margin-bottom: 0.25em;
 }
-section#statistics ul {
-	list-style-type: none;
+#statistics .list-stats {
 	padding-left: 1em;
 }
-section#statistics li {
-	font-size: small;
+#statistics .list-stats .item {
+	display: table-row;
+}
+#statistics .list-stats .item > * {
+	display: table-cell;
+}
+#statistics .list-stats i {
+	font-size: 1.14em;
 }
 
-section#most-active h3 {
+.maker {
+    color: rgb(102, 102, 102);
+    padding-bottom: 1.43em;
+}
+.maker-details {
+	margin-left: 0.5em;
+}
+.maker-id {
+  color: #aaa;
+}
+
+#most-active h3 {
 	margin-top: 0;
 }
 
 /* this needs to be integrated into hyperkitty-threadslist.css eventually */
-#overview article.thread {
-  border: 1px solid #e5e5e5;
-  padding: 1%;
-  margin: .5%;
+#discussions .thread {
+	border: 1px solid #e5e5e5;
+	margin: 0.25em 0;
+	min-height: 1.2em;
 }
-
-#overview .thread {
-  min-height: 1.2em;
-}
-
-/*
-#overview .widget {
-  clear: both;
-  margin-bottom: 2em;
-}
-*/
 
 #overview .thread-title-info {
 	white-space: nowrap;
@@ -195,4 +127,25 @@ section#most-active h3 {
 
 #overview .category {
     margin-right: 2em;
+}
+
+/* Threads by category */
+#discussion-by-category h4 {
+    font-size: 105%;
+    line-height: 105%;
+    margin: 1.5em 0 0.5em 0;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+#discussion-by-category h4.first {
+    margin-top: 0;
+}
+#discussion-by-category .thread {
+    margin: 0 0 0 0.5em;
+}
+#discussion-by-category .thread-stats {
+    margin-left: 0;
+}
+#discussion-by-category .thread .category {
+    display: none;
 }
