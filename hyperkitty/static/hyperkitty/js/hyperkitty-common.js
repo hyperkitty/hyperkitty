@@ -293,7 +293,7 @@ function setup_flash_messages() {
 
 $(document).ready(function() {
     setup_vote();
-    setup_months_list();
+    //~ setup_months_list();
     setup_disabled_tooltips();
     setup_flash_messages();
     setup_attachments();
