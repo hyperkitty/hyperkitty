@@ -290,6 +290,7 @@ class ReattachTestCase(TestCase):
                                    args=["list@example.com", threadid]))
         msg2 = self.store.get_message_by_id_from_list("list@example.com", "id2")
         self.store.search = Mock(return_value={"results": [msg2]})
+        self.store.search_index = True
         response = reattach_suggest(request, "list@example.com", threadid)
         self.store.search.assert_called_with(
             u'dummy message', 'list@example.com', 1, 50)
