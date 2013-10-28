@@ -7,20 +7,21 @@ body {
 ul.nav.auth {
     margin: 0;
 }
-
+.navbar-header {
+	padding-left: 0;
+}
 .navbar .breadcrumb {
-    padding: 15px 30px 0px 30px;
+    padding: 1em 2em 0 0;
     margin: 0;
     background-color: transparent;
 }
 .navbar .breadcrumb > li > a {
-    color: #777777;
+    color: #777;
     text-decoration: none;
-    text-shadow: 0 1px 0 #FFFFFF;
 }
 .navbar .breadcrumb > li > a:focus,
 .navbar .breadcrumb > li > a:hover {
-    color: #333333;
+    color: #333;
     text-decoration: none;
     background-color: transparent;
 }
@@ -28,7 +29,6 @@ ul.nav.auth {
 	content: ">";
 	color: rgb(153, 153, 153);
 }
-
 
 /* Sometimes jQuery UI overwrites the Bootstrap values */
 

@@ -30,7 +30,8 @@
                 {{ thread|length }}
             </li>
             <li>
-                <i class="{{ thread.likestatus }}"></i>+{{ thread.likes }}/-{{ thread.dislikes }}
+                <i class="likestatus {{ thread.likestatus }}"></i>
+                <strong>+{{ thread.likes }}/-{{ thread.dislikes }}</strong>
             </li>
         </ul>
     </div>

@@ -72,9 +72,6 @@
 #statistics .duration-text {
 	margin-bottom: 0.25em;
 }
-#statistics .list-stats {
-	padding-left: 1em;
-}
 #statistics .list-stats .item {
 	display: table-row;
 }
@@ -82,7 +79,7 @@
 	display: table-cell;
 }
 #statistics .list-stats i {
-	font-size: 1.14em;
+	padding-right: 0.25em;
 }
 
 .maker {
@@ -118,11 +115,8 @@
 }
 #overview .thread-stats ul {
 	text-align: right;
-	margin: 0;
+	margin: 0.2em 0 0;
 	line-height: 1em;
-}
-#overview .thread-stats ul li {
-	padding-right: 0.5em;
 }
 
 #overview .category {

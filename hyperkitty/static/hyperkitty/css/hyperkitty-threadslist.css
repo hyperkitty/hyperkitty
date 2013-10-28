@@ -39,22 +39,16 @@
  * Thread view
  */
 
-.thread {
-/*
-    margin: 2em 0 2em 0;
-*/
-}
-
 .thread-title {
-    font-weight: bold;
+	font-weight: bold;
+    color: #0088cc;
 }
 
 .thread-id {
-    font-weight: bold;
-    font-size: 125%;
+	font-size: 125%;
     color: rgb(102, 102, 102);
     vertical-align: top;
-    padding-right: 10px;
+    padding-right: 0.3em;
 }
 
 .thread-date {

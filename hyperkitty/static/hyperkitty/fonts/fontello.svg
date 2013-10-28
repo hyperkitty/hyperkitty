@@ -1,0 +1,14 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg">
+<metadata>Copyright (C) 2013 by original authors @ fontello.com</metadata>
+<defs>
+<font id="fontello" horiz-adv-x="1000" >
+<font-face font-family="fontello" font-weight="400" font-stretch="normal" units-per-em="1000" ascent="850" descent="-150" />
+<missing-glyph horiz-adv-x="1000" />
+<glyph glyph-name="emo-happy" unicode="&#xe801;" d="m261 800c-60 0-109-65-109-144c0-80 49-145 109-145s110 65 110 145c0 79-49 144-110 144z m477 0c-61 0-110-65-110-144c0-80 49-145 110-145c60 0 110 65 110 145c0 79-50 144-110 144z m208-599c-13 0-27-5-37-16c-4-4-8-8-12-12c-111-109-253-164-396-165c-142-2-285 50-396 155l-3 3l-12 12c-21 21-54 20-75-1c-20-21-20-55 1-76c3-4 8-8 14-14l3-3c132-124 301-186 469-184c169 1 337 67 468 195c5 5 9 10 14 14c20 22 20 56-1 77c-10 10-23 15-37 15z" horiz-adv-x="999" />
+<glyph glyph-name="emo-displeased" unicode="&#xe802;" d="m171 800c-61 0-110-65-110-144c0-80 49-145 110-145s109 65 109 145c0 79-49 144-109 144z m476 0c-61 0-110-65-110-144c0-80 49-145 110-145c61 0 110 65 110 145c0 79-49 144-110 144z m-594-447c-18 0-36-10-46-27c-15-26-6-59 20-74l709-379c26-15 59-6 74 20c15 26 6 59-20 74l-709 379c-9 5-18 7-28 7z" horiz-adv-x="817" />
+<glyph glyph-name="emo-grin" unicode="&#xe803;" d="m197 801c-61 0-110-64-110-144c0-80 49-144 110-144s109 64 109 144c0 79-49 144-109 144z m476 0c-60 0-109-64-109-144c0-80 49-144 109-144c61 0 110 64 110 144c0 79-49 144-110 144z m144-480l-765 0c-29-1-52-25-52-54c3-200 238-351 422-354c186-3 442 156 448 355c0 29-24 53-53 53z m-700-106l634 0c-62-121-190-201-331-197c-130 4-246 83-303 197z" horiz-adv-x="870" />
+</font>
+</defs>
+</svg>
