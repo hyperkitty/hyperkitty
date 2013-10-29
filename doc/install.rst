@@ -87,7 +87,7 @@ To receive incoming emails from Mailman, you must add the follwing lines to
     [archiver.hyperkitty]
     class: hyperkitty.archiver.Archiver
     enable: yes
-    configuration: /path/to/hyperkitty_standalone/setup.py
+    configuration: /path/to/hyperkitty_standalone/settings.py
 
 .. warning::
     The user that Mailman runs under (unually "mailman") must be able to read
