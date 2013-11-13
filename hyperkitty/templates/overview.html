@@ -25,7 +25,7 @@
 	
 	    <section id="statistics">
 	
-		<div id="chart"></div>
+		<div id="chart" data-chart-values="{{ evolution|to_json }}"></div>
 		<p class="caption">Post volume over the past <strong>30</strong> days.</p>
 		
 		<p class="thread-new">
@@ -37,8 +37,8 @@
 		<h3>Activity Summary</h3>
 		<p>The following statistics are from the past <strong>30</strong> days:</p>
 		<ul class="list-stats">
-		    <li><span class="participant">{{ num_participants }} participants</span></li>
-		    <li><span class="discussion">{{ num_threads }} discussions</span></li>
+		    <li><span class="participant">{{ mlist.recent_participants_count }} participants</span></li>
+		    <li><span class="discussion">{{ mlist.recent_threads_count }} discussions</span></li>
 		</ul>
 
 		<section id="discussion-maker" class="widget">
@@ -145,24 +145,11 @@
 {% block additionaljs %}
 
 <script type="text/javascript" >
-/*   
     $(function() {
-        activity_graph(
-            "#fig",
-            ["{{days|join:'","'}}"],
-            {{evolution}},
-            "{{ archives_baseurl }}"
-        )
-    });
-*/
-    
-    $(function() {
-	chart(
-	    "#chart",
-	    ["{{days|join:'","'}}"],
-            {{evolution}},
-            "{{ archives_baseurl }}"
-	)
+        $("#chart").each(function() {
+            chart($(this).get(0),
+                  $.parseJSON($(this).attr("data-chart-values")));
+        });
     });
 </script>
 

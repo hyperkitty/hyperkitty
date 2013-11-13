@@ -8,9 +8,9 @@
 		<a name="{{thread.thread_id}}"
                 href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
                 >
-		{% if thread.category %}
-                    <span class="label category" style="background-color:{{thread.category.color}}">
-                        {{ thread.category.name|upper }}
+		{% if thread.category_widget %}
+                    <span class="label category" style="background-color:{{thread.category_widget.color}}">
+                        {{ thread.category_widget.name|upper }}
                     </span>
 		{% endif %}
 		{% if thread.unread %}
@@ -21,10 +21,10 @@
             <div class="thread-stats">
                 <ul class="inline-block">
                     <li class="participant">
-                        {{ thread.participants|length }}
+                        {{ thread.participants_count }}
                     </li>
                     <li class="discussion">
-                        {{ thread.length }}
+                        {{ thread|length }}
                     </li>
                     <span class="likestatus {{ thread.likestatus }}">+{{ thread.likes }}/-{{ thread.dislikes }}</span>
                 </ul>

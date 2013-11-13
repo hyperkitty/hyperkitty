@@ -35,7 +35,7 @@ from hyperkitty.models import Tag, Favorite
 from hyperkitty.lib import get_store
 from hyperkitty.lib.view_helpers import FLASH_MESSAGES, paginate, \
         get_category_widget, get_months, get_display_dates, daterange, \
-        is_thread_unread
+        is_thread_unread, get_recent_list_activity
 from hyperkitty.lib.voting import set_message_votes, set_thread_votes
 from hyperkitty.lib.mailman import check_mlist_private
 
@@ -43,11 +43,6 @@ from hyperkitty.lib.mailman import check_mlist_private
 if settings.USE_MOCKUPS:
     from hyperkitty.lib.mockup import generate_top_author, generate_thread_per_category
 
-
-Thread = namedtuple('Thread', [
-    "thread_id", "subject", "participants", "length", "date_active",
-    "likes", "dislikes", "likestatus", "category", "unread",
-    ])
 
 
 @check_mlist_private
@@ -77,6 +72,9 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         "list_title": list_title.capitalize(),
         "no_results_text": no_results_text,
     }
+    if day is None:
+        month_activity = mlist.get_month_activity(int(year), int(month))
+        extra_context["participants"] = month_activity.participants_count
     return _thread_list(request, mlist, threads, extra_context=extra_context)
 
 
@@ -87,7 +85,8 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
 
     participants = set()
     for thread in threads:
-        participants.update(thread.participants)
+        if "participants" not in extra_context:
+            participants.update(thread.participants)
 
         # Votes
         set_thread_votes(thread, request.user)
@@ -143,39 +142,25 @@ def overview(request, mlist_fqdn=None):
     if not mlist_fqdn:
         return redirect('/')
 
-    # Get stats for last 30 days
-    today = datetime.datetime.utcnow()
-    #today -= datetime.timedelta(days=365) #debug
-    # the upper boundary is excluded in the search, add one day
-    end_date = today + datetime.timedelta(days=1)
-    begin_date = end_date - datetime.timedelta(days=32)
-
     store = get_store(request)
     mlist = store.get_list(mlist_fqdn)
     if mlist is None:
         raise Http404("No archived mailing-list by that name.")
+    begin_date, end_date = mlist.get_recent_dates()
     threads_result = store.get_threads(
             list_name=mlist.name, start=begin_date, end=end_date)
 
     threads = []
-    participants = set()
     for thread_obj in threads_result:
         # Votes
         set_thread_votes(thread_obj, request.user)
-        thread = Thread(thread_obj.thread_id, thread_obj.subject,
-                        thread_obj.participants, len(thread_obj),
-                        thread_obj.date_active.replace(tzinfo=utc),
-                        thread_obj.likes, thread_obj.dislikes,
-                        thread_obj.likestatus,
-                        get_category_widget(None, thread_obj.category)[0],
-                        is_thread_unread(request, mlist.name, thread_obj),
-                        )
-        # Statistics on how many participants and threads this month
-        participants.update(thread.participants)
-        threads.append(thread)
+        thread_obj.category_widget = get_category_widget(
+                None, thread_obj.category)[0]
+        thread_obj.unread = is_thread_unread(request, mlist.name, thread_obj)
+        threads.append(thread_obj)
 
     # top threads are the one with the most answers
-    top_threads = sorted(threads, key=lambda t: t.length, reverse=True)
+    top_threads = sorted(threads, key=lambda t: len(t), reverse=True)
 
     # active threads are the ones that have the most recent posting
     active_threads = sorted(threads, key=lambda t: t.date_active, reverse=True)
@@ -212,25 +197,9 @@ def overview(request, mlist_fqdn=None):
             continue
         threads_by_category[thread.category].append(thread)
 
-    # List activity
-    # Use get_messages and not get_threads to count the emails, because
-    # recently active threads include messages from before the start date
-    emails_in_month = store.get_messages(list_name=mlist.name,
-                                         start=begin_date, end=end_date)
-    # graph
-    dates = defaultdict(lambda: 0) # no activity by default
-    # populate with all days before adding data.
-    for single_date in daterange(begin_date, end_date):
-        dates[single_date.strftime("%Y-%m-%d")] = 0
+    # List activity graph
+    evolution = get_recent_list_activity(store, mlist)
 
-    for email in emails_in_month:
-        date_str = email.date.strftime("%Y-%m-%d")
-        dates[date_str] = dates[date_str] + 1
-    days = dates.keys()
-    days.sort()
-    evolution = [dates[d] for d in days]
-    if not evolution:
-        evolution.append(0)
     archives_baseurl = reverse("archives_latest",
                                kwargs={'mlist_fqdn': mlist.name})
     archives_baseurl = archives_baseurl.rpartition("/")[0]
@@ -246,9 +215,6 @@ def overview(request, mlist_fqdn=None):
         'threads_by_category': threads_by_category,
         'months_list': get_months(store, mlist.name),
         'evolution': evolution,
-        'days': days,
         'archives_baseurl': archives_baseurl,
-        'num_threads': len(threads),
-        'num_participants': len(participants),
     }
     return render(request, "overview.html", context)

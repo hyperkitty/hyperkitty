@@ -33,6 +33,7 @@ function form_to_json(form) {
 }
 
 
+
 /*
  * Voting
  */
@@ -73,6 +74,7 @@ function setup_vote(baseElem) {
 }
 
 
+
 /*
  * New messages (or replies)
  */
@@ -103,6 +105,136 @@ function setup_attachments(baseElem) {
 }
 
 
+
+/*
+ * Recent activity bar chart
+ */
+function chart(elem_id, data, default_props) {
+    /* Function for grid lines, for x-axis */
+    function make_x_axis() {
+	return d3.svg.axis()
+	    .scale(x)
+	    .orient("bottom")
+	    .ticks(d3.time.days, 1)
+    }
+
+    /* Function for grid lines, for y-axis */
+    function make_y_axis() {
+	return d3.svg.axis()
+	    .scale(y)
+	    .orient("left")
+	    .ticks(5)
+    }
+    if (typeof default_props === "undefined") {
+        default_props = {};
+    }
+
+    var props = {width: 250, height: 50};
+    $.extend(props, default_props);
+    var margin = {top: 0, right: 0, bottom: 0, left: 0},
+        width = props.width - margin.left - margin.right,
+        height = props.height - margin.top - margin.bottom;
+
+    var w = Math.floor(width / data.length);
+
+    var format_in = d3.time.format("%Y-%m-%d");
+    var format_out = d3.time.format("");
+
+    var x = d3.time.scale()
+        .range([0, width]);
+
+    var y = d3.scale.linear()
+        .range([height, 0]);
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+	.tickSize(0,0) // change to 2,2 for ticks
+        .tickFormat(format_out)
+        .ticks(d3.time.days, 1);
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left")
+	.tickSize(0,0) // change to 4,3 for ticks
+        .ticks("") // change to 2 for y-axis tick labels
+        .tickSubdivide(1);
+
+    var area = d3.svg.area()
+        .x(function(d) { return x(d.date); })
+      //  .y0(height)
+        .y(function(d) { return y(d.count); });
+
+    var svg = d3.select(elem_id).append("svg")
+	.attr("id", "chart-data")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    data.forEach(function(d) {
+        d.date = format_in.parse(d.date);
+        d.count = parseInt(d.count);
+    });
+
+    x.domain(d3.extent(data, function(d) { return d.date; }));
+    y.domain([0, d3.max(data, function(d) { return d.count; })]);
+
+
+    /* Draw the grid lines, for x-axis */
+    svg.append("g")
+	.attr("class", "grid")
+	.attr("Transform", "translate(0, " + height + ")")
+	.call(make_x_axis()
+	    .tickSize(height, 0, 0)
+	    .tickFormat("")
+	)
+
+    /* Draw the grid lines, for y-axis */
+    svg.append("g")
+	.attr("class", "grid")
+	.call(make_y_axis()
+	    .tickSize(-width, 0, 0)
+	    .tickFormat("")
+	)
+
+    svg.append("g").attr("class","bars").selectAll("rect")
+	    .data(data)
+	.enter().append("rect")
+	    .attr("x", function(d) { return x(d.date); })
+	    //.attr("y0", height)
+	    .attr("y", function(d) { return y(d.count); })
+	    .attr("width", w)
+	    .attr("height", function(d) { return height - y(d.count); });
+
+    /* draw x-axis */
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      /*.selectAll("text")
+        .attr("y", -5)
+        .attr("x", -30)
+        .attr("transform", function(d) {
+            return "rotate(-90)"
+            });*/
+
+    /* Y-axis label */
+    svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    /*.append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 0)
+      .attr("x", 0 - height/2)
+      .attr("dy", "-3em")
+      .style("text-anchor", "middle")
+      .style("fill", "#777")
+        .text("Messages"); */
+}
+
+
+
 /*
  * Misc.
  */
@@ -129,6 +261,7 @@ function setup_disabled_tooltips(baseElem) {
 function setup_flash_messages() {
     $('.flashmsgs .alert-success').delay(3000).fadeOut('slow');
 }
+
 
 
 /*

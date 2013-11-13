@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load url from future %}
 {% load i18n %}
+{% load hk_generic %}
 
 
 {% block title %}
@@ -9,34 +10,84 @@
 
 {% block content %}
 
-<div class="all-lists">
+<div class="row-fluid all-lists">
 
-<h1 class="lists">{% trans 'Available lists' %}</h1>
+<div class="span2 lists-menu">
+    <h2>{% trans 'Lists' %}</h2>
+    <ul>
+        <li><a href="{% url 'root' %}">All</a></li>
+        <li><a href="{% url 'root' %}?sort=active">Most active</a></li>
+        <li><a href="{% url 'root' %}?sort=popular">Most popular</a></li>
+    </ul>
+</div>
 
-<div class="row-fluid">
+<div class="span10">
+
+<h1>{% trans 'Available lists' %}</h1>
+
+{% if all_lists %}
+<table class="lists table">
+    <thead>
+        <tr><th>List</th><th>Description</th><th>Activity in the past 30 days</th></tr>
+    </thead>
+    <tbody>
 {% for mlist in all_lists %}
-<div class="span3">
-    <a href="{% url 'list_overview' mlist_fqdn=mlist.name %}" class="mailinglist">
-        <p class="list-name">
-            {% if mlist.display_name %}
-                {{ mlist.display_name }}
-            {% else %}
-                {{ mlist.name }}
-            {% endif %}
-        </p>
-        <p class="list-address">{{ mlist.name }}</p>
-        <p class="list-description"></p>
-        <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
-    </a>
-</div>
-{% if forloop.counter|divisibleby:"4" %}
-</div>
-<div class="row-fluid">
-{% endif %}
-{% empty %}
-<p>No archived list yet.</p>
+        <tr
+           {% if mlist.is_private %}
+           class="private"
+           {% elif mlist.recent_threads_count == 0 %}
+           class="inactive"
+           {% endif %}
+           >
+            <td>
+                <a href="{% url 'list_overview' mlist_fqdn=mlist.name %}"
+                   class="list-name">
+                    {% if mlist.display_name %}
+                        {{ mlist.display_name }}
+                    {% else %}
+                        {{ mlist.name|until:"@" }}
+                    {% endif %}
+                </a>
+               {% if mlist.is_private %}
+               <span class="list-tags">private</span>
+               {% elif mlist.recent_threads_count == 0 %}
+               <span class="list-tags">inactive</span>
+               {% endif %}
+                <br />
+                <a href="{% url 'list_overview' mlist_fqdn=mlist.name %}"
+                   class="list-address">
+                    {{ mlist.name }}
+                </a>
+            </td>
+            <td class="list-description"></td>
+            <td class="activity">
+                <div class="chart" data-chart-values="{{ mlist.evolution|to_json }}"></div>
+                <ul class="list-stats">
+                    <li><span class="participant">
+                        {% if mlist.can_view %}
+                        {{ mlist.recent_participants_count }}
+                        {% else %}
+                        ...
+                        {% endif %}
+                        participants</span></li>
+                    <li><span class="discussion">
+                        {% if mlist.can_view %}
+                        {{ mlist.recent_threads_count }}
+                        {% else %}
+                        ...
+                        {% endif %}
+                        discussions</span></li>
+                </ul>
+            </td>
+        </tr>
 {% endfor %}
-</div>
+    </tbody>
+</table>
+{% else %}
+<p>No archived list yet.</p>
+{% endif %}
+
+</div> <!-- right column -->
 
 </div>
 
@@ -46,10 +97,13 @@
 
 {% block additionaljs %}
 
-<script type="text/javascript">
-    $(document).ready(function() {
-        // Load the properties
-        update_list_properties("{% url 'list_properties' %}");
+<script>
+    $(function() {
+        $("div.chart").each(function() {
+            chart($(this).get(0),
+                  $.parseJSON($(this).attr("data-chart-values")),
+                  {height: 30});
+        });
     });
 </script>
 

@@ -170,3 +170,28 @@ def is_thread_unread(request, mlist_name, thread):
                     > last_view_obj.view_date:
                 unread = True
     return unread
+
+
+def get_recent_list_activity(store, mlist):
+    """Return the number of emails posted in the last 30 days"""
+    begin_date, end_date = mlist.get_recent_dates()
+    days = daterange(begin_date, end_date)
+
+    # Use get_messages and not get_threads to count the emails, because
+    # recently active threads include messages from before the start date
+    emails_in_month = store.get_messages(list_name=mlist.name,
+                                         start=begin_date, end=end_date)
+    # graph
+    emails_per_date = {}
+    # populate with all days before adding data.
+    for day in days:
+        emails_per_date[day.strftime("%Y-%m-%d")] = 0
+    # now count the emails
+    for email in emails_in_month:
+        date_str = email.date.strftime("%Y-%m-%d")
+        if date_str not in emails_per_date:
+            continue # outside the range
+        emails_per_date[date_str] += 1
+    # return the proper format for the javascript chart function
+    return [ {"date": d, "count": emails_per_date[d]}
+             for d in sorted(emails_per_date) ]

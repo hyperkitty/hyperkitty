@@ -22,49 +22,47 @@
 
 
 import urllib2
+import datetime
+from collections import defaultdict
 
 import django.utils.simplejson as json
 
 from django.shortcuts import render
 from django.conf import settings
 from django.http import HttpResponse
-from mailmanclient import Client
+from mailmanclient import Client, MailmanConnectionError
+from mailman.interfaces.archiver import ArchivePolicy
 
 from hyperkitty.lib import get_store
+from hyperkitty.lib.view_helpers import get_recent_list_activity
+from hyperkitty.lib.mailman import is_mlist_authorized
 
 
 def index(request):
     store = get_store(request)
     lists = store.get_lists()
+    for mlist in lists:
+        if mlist.archive_policy != ArchivePolicy.private:
+            mlist.is_private = False
+            mlist.can_view = True
+        else:
+            mlist.is_private = True
+            if is_mlist_authorized(request, mlist):
+                mlist.can_view = True
+            else:
+                mlist.can_view = False
+        if mlist.can_view:
+            mlist.evolution = get_recent_list_activity(store, mlist)
+
+    # sorting
+    sort_mode = request.GET.get('sort')
+    if sort_mode == "active":
+        lists.sort(key=lambda l: l.recent_threads_count)
+    elif sort_mode == "popular":
+        lists.sort(key=lambda l: l.recent_participants_count)
 
     context = {
         'view_name': 'all_lists',
         'all_lists': lists,
         }
     return render(request, "index.html", context)
-
-
-def list_properties(request):
-    """Get JSON encoded list properties"""
-    store = get_store(request)
-    lists = store.get_lists()
-    onlynames = request.GET.getlist("name")
-    if onlynames:
-        lists = [ l for l in lists if l.name in onlynames ]
-    client = Client('%s/3.0' % settings.MAILMAN_REST_SERVER,
-                    settings.MAILMAN_API_USER, settings.MAILMAN_API_PASS)
-    props = {}
-    for ml in lists:
-        try:
-            mm_list = client.get_list(ml.name)
-        except urllib2.HTTPError:
-            continue
-        props[ml.name] = {
-            "display_name": mm_list.display_name,
-            "description": mm_list.settings["description"],
-        }
-        # Update KittyStore if necessary
-        if ml.display_name != mm_list.display_name:
-            ml.display_name = mm_list.display_name
-    return HttpResponse(json.dumps(props),
-                        mimetype='application/javascript')

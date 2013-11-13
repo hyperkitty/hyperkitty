@@ -38,9 +38,7 @@ from hyperkitty.views import TextTemplateView
 
 urlpatterns = patterns('hyperkitty.views',
     # Index
-    url(r'^/$', 'index.index', name='index'),
-    url(r'^$', 'index.index', name='root'),
-    url(r'^lists-properties$', 'index.list_properties', name='list_properties'),
+    url(r'^/?$', 'index.index', name='root'),
 
     # Account
     url(r'^accounts/login/$', 'accounts.login_view', {'template_name': 'login.html', 'SSL': True}, name='user_login'),

@@ -22,6 +22,7 @@
 import datetime
 import re
 
+import django.utils.simplejson as json
 from dateutil.tz import tzoffset
 from django import template
 from django.utils.datastructures import SortedDict
@@ -204,3 +205,13 @@ def add_to_query_string(context, *args, **kwargs):
     for key, value in new_qs_elements.iteritems():
         qs[key] = value
     return qs.urlencode()
+
+
+@register.filter
+def until(value, limit):
+    return value.partition(limit)[0]
+
+
+@register.filter
+def to_json(value):
+    return json.dumps(value)

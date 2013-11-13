@@ -6,32 +6,79 @@
     clear: both;
 }
 
-h1.lists {
+
+.all-lists .lists-menu h2 {
+    font-size: 100%;
+    line-height: 100%;
+    font-weight: bold;
+    color: #666;
+    text-transform: uppercase;
+    margin: 0;
+    margin-bottom: 1em;
+    padding: 0;
+}
+.all-lists .lists-menu ul {
+    list-style-type: none;
+    margin-left: 1em;
+}
+.all-lists .lists-menu li {
+    margin: 0.5em 0;
+}
+
+.all-lists h1.lists {
     margin-bottom: 0.5em;
 }
 
-.all-lists .list-name {
+.all-lists table.lists th {
+    color: #999;
+    text-transform: uppercase;
+    font-size: small;
+    font-weight: normal;
+}
+.all-lists table.lists tbody tr {
+    border: 1px solid #ccc;
+    margin: 0.2em 0;
+}
+.all-lists table.lists td {
+    vertical-align: middle;
+    padding: 5px 8px;
+    margin-bottom: 5px;
+}
+.all-lists table.lists .list-name {
     font-size: 120%;
     color: black;
     font-weight: bold;
 }
-.all-lists .list-address {
-    font-size: 90%;
+.all-lists table.lists .list-tags {
+    font-size: 80%;
+    color: #999;
     font-style: italic;
 }
-.all-lists a {
-    display: block;
-    padding: 2em;
-    margin: 1em auto;
-    overflow: hidden;
-    border: 1px solid #ccc;
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-    color: black;
+.all-lists table.lists .list-address {
+    font-size: 90%;
 }
-.all-lists a:hover {
-    text-decoration: none;
+.all-lists table.lists td.activity {
+    width: 260px;
+}
+.all-lists table.lists ul.list-stats {
+    margin: 0;
+    text-align: center;
+}
+.all-lists table.lists ul.list-stats li {
+    display: inline;
+    font-size: 85%;
+}
+
+.all-lists table.lists tr.private {
+    background-color: #e6f2f5;
+}
+.all-lists table.lists tr.private .list-name {
+    color: #2e6c83;
+}
+
+.all-lists table.lists tr.inactive {
     background-color: #eee;
-    color: black;
+}
+.all-lists table.lists tr.inactive .list-name {
+    color: #999;
 }
