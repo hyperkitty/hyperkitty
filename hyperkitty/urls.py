@@ -111,11 +111,15 @@ urlpatterns = patterns('hyperkitty.views',
         SearchResource.as_view(), name="api_search"),
     url(r'^api/tag\/', TagResource.as_view(), name="api_tag"),
 
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    # Errors
+    url(r'^error/schemaupgrade$',
+        TemplateView.as_view(template_name="errors/schemaupgrade.html"),
+        name="error_schemaupgrade"),
 
     # Admin
     url(r'^admin/', include(admin.site.urls), {"SSL": True}),
+    # Uncomment the admin/doc line below to enable admin documentation:
+    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Robots.txt
     url(r'^robots\.txt$', TextTemplateView.as_view(template_name="robots.txt")),

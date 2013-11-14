@@ -128,7 +128,7 @@ from HyperKitty itself. To update the KittyStore database, just run::
 
     kittystore-updatedb -p hyperkitty_standalone -s settings
 
-This command may take a long time to complete, donc interrupt it.
+This command may take a long time to complete, don't interrupt it.
 
 Then, to update the HyperKitty database, run::
 

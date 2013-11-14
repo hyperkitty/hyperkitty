@@ -91,7 +91,7 @@ class LastViewsTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
         self.client.login(username='testuser', password='testPass')
-        store = kittystore.get_store(SettingsModule(), debug=False)
+        store = kittystore.get_store(SettingsModule(), debug=False, auto_create=True)
         ml = FakeList("list@example.com")
         ml.subject_prefix = u"[example] "
         # Create 3 threads
@@ -267,7 +267,7 @@ class ReattachTestCase(TestCase):
         self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
         self.user.is_staff = True
         self.client.login(username='testuser', password='testPass')
-        self.store = kittystore.get_store(SettingsModule(), debug=False)
+        self.store = kittystore.get_store(SettingsModule(), debug=False, auto_create=True)
         ml = FakeList("list@example.com")
         ml.subject_prefix = u"[example] "
         # Create 2 threads
@@ -424,7 +424,7 @@ class PrivateArchivesTestCase(TestCase):
         #self.client.login(username='testuser', password='testPass')
         settings = SettingsModule()
         settings.KITTYSTORE_SEARCH_INDEX = self.tmpdir
-        self.store = kittystore.get_store(settings, debug=False)
+        self.store = kittystore.get_store(settings, debug=False, auto_create=True)
         ml = FakeList("list@example.com")
         ml.subject_prefix = u"[example] "
         ml.archive_policy = ArchivePolicy.private

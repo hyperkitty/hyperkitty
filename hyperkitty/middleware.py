@@ -20,6 +20,10 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+
+from django.conf import settings
+
+
 class PaginationMiddleware(object):
     """
     Inserts a variable representing the current page onto the request object if
@@ -33,9 +37,52 @@ class PaginationMiddleware(object):
 
 
 
+# KittyStore
+
+from threading import local
+from django.shortcuts import redirect
+from django.core.urlresolvers import reverse
+import kittystore
+
+class KittyStoreDjangoMiddleware(object):
+    """Django middleware.
+    Add KittyStore object in environ['kittystore.store']. Each thread contains
+    own store.
+    Inspired by http://pypi.python.org/pypi/middlestorm
+    """
+
+    def __init__(self):
+        """Create Django middleware."""
+        self._local = local()
+
+    def process_request(self, request):
+        if request.path == reverse("error_schemaupgrade"):
+            return # Display the error page
+        try:
+            request.environ['kittystore.store']  = self._local.store
+        except AttributeError:
+            try:
+                store = kittystore.get_store(settings)
+            except kittystore.SchemaUpgradeNeeded:
+                return redirect("error_schemaupgrade")
+            else:
+                request.environ['kittystore.store']  = \
+                        self._local.__dict__.setdefault('store', store)
+
+    def process_response(self, request, response):
+        if "kittystore.store" in request.environ:
+            # kittystore.store could be absent on automatic redirects for ex.
+            request.environ['kittystore.store'].commit()
+            #request.environ['kittystore.store'].close()
+        return response
+
+    def process_exception(self, request, exception):
+        request.environ['kittystore.store'].rollback()
+
+
+
 # http://stackoverflow.com/questions/2799450/django-https-for-just-login-page
 
-from django.conf import settings
 from django.http import HttpResponsePermanentRedirect
 
 SSL = 'SSL'
@@ -97,7 +144,6 @@ class TimezoneMiddleware(object):
 
 from mailmanclient import Client as MailmanClient
 from mailmanclient import MailmanConnectionError
-from django.conf import settings
 
 class MailmanUserMetadata(object):
 

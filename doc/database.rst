@@ -13,8 +13,7 @@ created using the following command::
     python hyperkitty_standalone/manage.py syncdb
     python hyperkitty_standalone/manage.py migrate hyperkitty
 
-KittyStore's database will be created automatically on first access, but you
-still need to configure its URI. The syntax is as follows::
+KittyStore's database is configured using an URI. The syntax is as follows::
 
     KITTYSTORE_URL = "scheme://username:password@hostname:port/database_name"
 
@@ -26,18 +25,14 @@ The scheme may be "sqlite", "postgres", or "mysql". For example, with sqlite::
     If you're using SQLite and you're getting "Database is locked" errors, stop
     your webserver during the import.
 
-If you want to force the creation of the KittyStore database, you can run::
-
-    kittystore-updatedb -p hyperkitty_standalone -s settings
-
-and it will be created.
-
 KittyStore also uses a fulltext search engine which resides in a directory on
 the filesystem. The path to this directory must be configured in the
 ``KITTYSTORE_SEARCH_INDEX`` variable. This directory should be writable by the
-user running Mailman and readable by the user running HyperKitty. It will be
-automatically created, but the creation can be forced using the
-``kittystore-updatedb`` command described above.
+user running Mailman and readable by the user running HyperKitty (usually your
+webserver). It will be automatically created when the regular KittyStore
+database is created. The command to create the KittyStore database is::
+
+    kittystore-updatedb -p hyperkitty_standalone -s settings
 
 
 Importing the current archives
@@ -62,7 +57,7 @@ where:
 * ``NAME`` is the fully-qualified list name (including the ``@`` sign and the
   domain name)
 * The ``mbox_file`` arguments are the existing archives to import. Make sure you point 
-at the *.txt version of the files and not the *.gz.
+at the ``*.txt`` version of the files and not the ``*.gz``.
 
 If the previous archives aren't available locally, you need to download them
 from your current Mailman 2.1 installation. The ``kittystore-download21``
