@@ -336,3 +336,44 @@ h1 {
     line-height: 32px;
     margin-bottom: 0.5em;
 }
+
+
+
+/*
+ * Activity chart
+ */
+.chart-data {
+    font-size: 8pt;
+    font-family: "Droid Sans", sans-serif;
+    font-color: #777;
+    position: relative;
+    margin: auto;
+    padding-top: 3px;
+}
+
+.chart-data .axis path, .chart-data .axis line {
+/*
+    fill: none;
+    stroke: #bbb;
+    shape-rendering: geometricPrecision;
+*/
+    display: none;
+}
+
+.chart-data .bars rect {
+    fill: steelBlue;
+}
+
+
+/* Next 2 blocks for grid lines */
+
+/*
+.chart-data .grid .tick {
+    stroke: lightgrey;
+    opacity: 0.3;
+}
+
+.chart-data .grid path {
+    stroke-width: 0;
+}
+*/

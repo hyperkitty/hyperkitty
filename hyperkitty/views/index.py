@@ -57,12 +57,15 @@ def index(request):
     # sorting
     sort_mode = request.GET.get('sort')
     if sort_mode == "active":
-        lists.sort(key=lambda l: l.recent_threads_count)
+        lists.sort(key=lambda l: l.recent_threads_count, reverse=True)
     elif sort_mode == "popular":
-        lists.sort(key=lambda l: l.recent_participants_count)
+        lists.sort(key=lambda l: l.recent_participants_count, reverse=True)
+    else:
+        sort_mode = None
 
     context = {
         'view_name': 'all_lists',
         'all_lists': lists,
+        'sort_mode': sort_mode,
         }
     return render(request, "index.html", context)

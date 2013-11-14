@@ -12,50 +12,6 @@
     margin-top: 0;
 }
 
-#chart-data rect {
-    cursor: pointer;
-}
-
-#fig, #chart-data {
-  position: relative;
-  margin: auto;
-  font-size: 8pt;
-  font-family: "Droid Sans", sans-serf;
-  font-color: #777;
-}
-
-
-#fig .axis path, #fig .axis line,
-#chart-data .axis path, #chart-data .axis line {
-/*
-  fill: none;
-  stroke: #bbb;
-  shape-rendering: geometricPrecision;
-*/
-  display: none;
-}
-
-#fig .area,
-#chart-data .bars rect {
-  fill: steelBlue;
-}
-
-
-/* Next 2 blocks for grid lines */
-
-/*
-#fig .grid .tick,
-#chart-data .grid .tick {
-    stroke: lightgrey;
-    opacity: 0.3;
-}
-
-#fig .grid path,
-#chart-data .grid path {
-    stroke-width: 0;
-}
-*/
-
 /*
 #overview .widget {
     padding: 1em;
@@ -163,13 +119,11 @@ section#title #description {
   font-weight: normal;
 }
 
-section#title svg {
-  padding-top: 3px;
-  border: 1px solid #bbb;
-}
-
-section#title #chart {
+section#title .chart {
   margin-top: 2em;
+}
+section#title .chart-data {
+  border: 1px solid #bbb;
 }
 
 section#title p.thread-new {

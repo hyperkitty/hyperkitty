@@ -24,6 +24,9 @@
 .all-lists .lists-menu li {
     margin: 0.5em 0;
 }
+.all-lists .lists-menu span.active {
+    font-weight: bold;
+}
 
 .all-lists h1.lists {
     margin-bottom: 0.5em;
@@ -35,15 +38,32 @@
     font-size: small;
     font-weight: normal;
 }
-.all-lists table.lists tbody tr {
+
+.all-lists table.lists tbody tr.list {
     border: 1px solid #ccc;
-    margin: 0.2em 0;
 }
+.all-lists table.lists tbody tr.list:hover {
+    cursor: pointer;
+    color: white;
+    background-color: #0088cc;
+}
+.all-lists table.lists tbody tr.list:hover a {
+    color: white;
+}
+.all-lists table.lists tbody tr.list:hover .chart-data .bars rect {
+    fill: white;
+}
+
+.all-lists table.lists tr.spacer td {
+    height: 0.5em;
+    padding: 0;
+}
+
 .all-lists table.lists td {
     vertical-align: middle;
     padding: 5px 8px;
-    margin-bottom: 5px;
 }
+
 .all-lists table.lists .list-name {
     font-size: 120%;
     color: black;

@@ -109,6 +109,7 @@ function setup_attachments(baseElem) {
 /*
  * Recent activity bar chart
  */
+
 function chart(elem_id, data, default_props) {
     /* Function for grid lines, for x-axis */
     function make_x_axis() {
@@ -166,7 +167,7 @@ function chart(elem_id, data, default_props) {
         .y(function(d) { return y(d.count); });
 
     var svg = d3.select(elem_id).append("svg")
-	.attr("id", "chart-data")
+	.attr("class", "chart-data")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
@@ -198,7 +199,7 @@ function chart(elem_id, data, default_props) {
 	    .tickFormat("")
 	)
 
-    svg.append("g").attr("class","bars").selectAll("rect")
+    svg.append("g").attr("class", "bars").selectAll("rect")
 	    .data(data)
 	.enter().append("rect")
 	    .attr("x", function(d) { return x(d.date); })
