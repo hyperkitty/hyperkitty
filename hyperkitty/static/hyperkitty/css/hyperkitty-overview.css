@@ -117,7 +117,7 @@
     font-weight: bold;
     font-size: 115%;
     vertical-align: top;
-    padding-right: 20px;
+    padding-right: 3px;
 }
 
 .maker .gravatar {
@@ -272,3 +272,14 @@ div.thread {
 .thread-id {
   float: left;
 }
+
+.maker-name {
+  display: block !important;
+  max-width: 152px !important;
+  word-wrap: break-word !important;
+}
+
+.maker .gravatar {
+  padding-right: 5px;
+}
+
