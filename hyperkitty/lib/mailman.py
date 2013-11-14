@@ -108,7 +108,7 @@ def check_mlist_private(func):
             raise Http404("No archived mailing-list by that name.")
         #return HttpResponse(request.session.get("subscribed", "NO KEY"), content_type="text/plain")
         if not is_mlist_authorized(request, mlist):
-            return render(request, "error-private.html", {
+            return render(request, "errors/private.html", {
                             "mlist": mlist,
                           }, status=403)
         return func(request, *args, **kwargs)
