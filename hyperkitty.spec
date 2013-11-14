@@ -64,6 +64,10 @@ Requires:       python-django >= 1.4
 Requires:       python-django-south
 %endif
 
+# Scriptlets
+Requires(post): policycoreutils-python
+Requires(postun): policycoreutils-python
+
 
 %description
 HyperKitty is an open source Django application under development. It aims at
@@ -139,6 +143,14 @@ rm -f hyperkitty_standalone/__init__.py
     collectstatic --noinput >/dev/null || :
 %{__python} %{_sysconfdir}/%{name}/sites/default/manage.py \
     assets build --parse-templates &>/dev/null || :
+semanage fcontext -a -t httpd_sys_content_t "%{_localstatedir}/lib/%{name}/sites(/.*)?" 2>/dev/null || :
+restorecon -R %{_localstatedir}/lib/%{name}/sites || :
+
+%postun
+if [ $1 -eq 0 ] ; then  # final removal
+semanage fcontext -d -t httpd_sys_content_t "%{_localstatedir}/lib/%{name}/sites(/.*)?" 2>/dev/null || :
+fi
+
 
 
 %files
