@@ -179,16 +179,16 @@ def get_recent_list_activity(store, mlist):
 
     # Use get_messages and not get_threads to count the emails, because
     # recently active threads include messages from before the start date
-    emails_in_month = store.get_messages(list_name=mlist.name,
-                                         start=begin_date, end=end_date)
+    emails_in_month = store.get_message_dates(
+            list_name=mlist.name, start=begin_date, end=end_date)
     # graph
     emails_per_date = {}
     # populate with all days before adding data.
     for day in days:
         emails_per_date[day.strftime("%Y-%m-%d")] = 0
     # now count the emails
-    for email in emails_in_month:
-        date_str = email.date.strftime("%Y-%m-%d")
+    for email_date in emails_in_month:
+        date_str = email_date.strftime("%Y-%m-%d")
         if date_str not in emails_per_date:
             continue # outside the range
         emails_per_date[date_str] += 1
