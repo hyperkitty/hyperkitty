@@ -28,6 +28,7 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render
 from django.core.urlresolvers import reverse
 from django.core.exceptions import SuspiciousOperation
+from django.core.cache import cache
 from django.template import RequestContext, loader
 from django.contrib.auth.decorators import login_required
 
@@ -130,6 +131,10 @@ def vote(request, mlist_fqdn, message_id_hash):
     else:
         v.vote = value
         v.save()
+
+    # Invalidate the cache for the thread votes
+    cache.delete("list:%s:thread:%s:votes"
+                 % (mlist_fqdn, message.thread.thread_id))
 
     # Extract all the votes for this message to refresh it
     set_message_votes(message, request.user)

@@ -20,6 +20,7 @@
 #
 
 
+from django.core.cache import cache
 from hyperkitty.models import Rating
 
 
@@ -59,9 +60,16 @@ def set_message_votes(message, user=None):
 
 
 def set_thread_votes(thread, user=None):
-    total = 0
-    # XXX: 1 SQL request per thread, possible optimization here
-    likes, dislikes, myvote = get_votes(thread.email_id_hashes)
+    total = myvote = 0
+    likes = dislikes = None
+    cache_key = "list:%s:thread:%s:votes" % (thread.list_name, thread.thread_id)
+    if user is None or not user.is_authenticated():
+        likes, dislikes = cache.get(cache_key, (None, None))
+        myvote = 0
+    if likes is None or dislikes is None:
+        # XXX: 1 SQL request per thread, possible optimization here
+        likes, dislikes, myvote = get_votes(thread.email_id_hashes)
+        cache.set(cache_key, (likes, dislikes))
     total = likes + dislikes
     try:
         thread.likes = likes / total
