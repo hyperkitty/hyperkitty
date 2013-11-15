@@ -41,6 +41,7 @@ from hyperkitty.lib.mailman import is_mlist_authorized
 def index(request):
     store = get_store(request)
     lists = store.get_lists()
+    now = datetime.datetime.now()
     for mlist in lists:
         if mlist.archive_policy != ArchivePolicy.private:
             mlist.is_private = False
@@ -53,6 +54,11 @@ def index(request):
                 mlist.can_view = False
         if mlist.can_view:
             mlist.evolution = get_recent_list_activity(store, mlist)
+        if mlist.created_at and \
+                now - mlist.created_at <= datetime.timedelta(days=30):
+            mlist.is_new = True
+        else:
+            mlist.is_new = False
 
     # sorting
     sort_mode = request.GET.get('sort')
@@ -60,6 +66,8 @@ def index(request):
         lists.sort(key=lambda l: l.recent_threads_count, reverse=True)
     elif sort_mode == "popular":
         lists.sort(key=lambda l: l.recent_participants_count, reverse=True)
+    elif sort_mode == "creation":
+        lists.sort(key=lambda l: l.created_at, reverse=True)
     else:
         sort_mode = None
 

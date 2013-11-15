@@ -36,6 +36,13 @@
             <a href="{% url 'root' %}?sort=popular">{% trans 'Most popular' %}</a>
            {% endif %}
         </li>
+        <li>
+           {% if sort_mode == "creation" %}
+           <span class="active">{% trans 'Newest' %}</span>
+           {% else %}
+            <a href="{% url 'root' %}?sort=creation">{% trans 'Newest' %}</a>
+           {% endif %}
+        </li>
     </ul>
 </div>
 
@@ -47,6 +54,8 @@
         <small>({% trans 'most active first' %})</small>
     {% elif sort_mode == 'popular' %}
         <small>({% trans 'most popular first' %})</small>
+    {% elif sort_mode == 'creation' %}
+        <small>({% trans 'newest first' %})</small>
     {% endif %}
 </h1>
 
@@ -69,6 +78,9 @@
            {% endif %}
            ">
             <td>
+               {% if mlist.is_new %}
+                <span class="new label">{% trans 'new' %}</span>
+               {% endif %}
                 <a href="{% url 'list_overview' mlist_fqdn=mlist.name %}"
                    class="list-name">
                     {% if mlist.display_name %}

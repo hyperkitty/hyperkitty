@@ -102,3 +102,9 @@
 .all-lists table.lists tr.inactive .list-name {
     color: #999;
 }
+
+.all-lists table.lists tr span.new {
+    font-size: 78%;
+    text-transform: uppercase;
+    margin-right: 0.5em;
+}
