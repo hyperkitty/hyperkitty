@@ -89,7 +89,7 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
             participants.update(thread.participants)
 
         # Votes
-        set_thread_votes(thread, request.user)
+        set_thread_votes(thread)
 
         # Favorites
         thread.favorite = False
@@ -153,7 +153,7 @@ def overview(request, mlist_fqdn=None):
     threads = []
     for thread_obj in threads_result:
         # Votes
-        set_thread_votes(thread_obj, request.user)
+        set_thread_votes(thread_obj)
         thread_obj.category_widget = get_category_widget(
                 None, thread_obj.category)[0]
         thread_obj.unread = is_thread_unread(request, mlist.name, thread_obj)

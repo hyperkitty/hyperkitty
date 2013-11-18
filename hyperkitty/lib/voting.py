@@ -59,26 +59,19 @@ def set_message_votes(message, user=None):
     #    message.likestatus = "dislike"
 
 
-def set_thread_votes(thread, user=None):
-    total = myvote = 0
+def set_thread_votes(thread):
     likes = dislikes = None
     cache_key = "list:%s:thread:%s:votes" % (thread.list_name, thread.thread_id)
-    if user is None or not user.is_authenticated():
-        likes, dislikes = cache.get(cache_key, (None, None))
-        myvote = 0
+    likes, dislikes = cache.get(cache_key, (None, None))
     if likes is None or dislikes is None:
         # XXX: 1 SQL request per thread, possible optimization here
-        likes, dislikes, myvote = get_votes(thread.email_id_hashes)
+        likes, dislikes, _myvote = get_votes(thread.email_id_hashes)
         cache.set(cache_key, (likes, dislikes))
-    total = likes + dislikes
-    try:
-        thread.likes = likes / total
-    except ZeroDivisionError:
-        thread.likes = 0
-    try:
-        thread.dislikes = dislikes / total
-    except ZeroDivisionError:
-        thread.dislikes = 0
+    # How should thread likes and dislikes be counted?
+    #thread.likes = likes / thread.emails_count
+    #thread.dislikes = dislikes / thread.emails_count
+    thread.likes = likes
+    thread.dislikes = dislikes
     thread.likestatus = "neutral"
     if thread.likes - thread.dislikes >= 10:
         thread.likestatus = "likealot"
