@@ -180,32 +180,32 @@ section#statistics h3 {
 }
 
 /* this needs to be integrated into hyperkitty-threadslist.css eventually */
-div.thread {
+#overview div.thread {
   border: 1px solid #e5e5e5;
   padding: 1%;
-  margin: .5% !important;
+  margin: .5%;
 }
 
-.thread {
+#overview .thread {
   min-height: 1.2em;
 }
 
-.widget {
+#overview .widget {
   clear: both;
   margin-bottom: 2em;
 }
 
-.thread ul.inline-block {
+#overview .thread ul.inline-block {
   width: 28%;
 }
 
-.thread ul.inline-block li,
-.thread ul.inline-block span {
+#overview .thread ul.inline-block li,
+#overview .thread ul.inline-block span {
   text-align: left;
   min-width: 6.5%;
 }
 
-.thread-title {
+#overview .thread-title {
   width: 68%;
   float: left;
   white-space: nowrap;
@@ -215,25 +215,24 @@ div.thread {
 }
 
 
-.maker-name, .maker-id {
+#overview .maker-name, .maker-id {
   font-size: small;
 }
 
-.maker-id {
+#overview .maker-id {
   color: #aaa;
 }
 
-.thread-id {
+#overview .thread-id {
   float: left;
 }
 
-.maker-name {
+#overview .maker-name {
   display: block !important;
   max-width: 152px !important;
   word-wrap: break-word !important;
 }
 
-.maker .gravatar {
+#overview .maker .gravatar {
   padding-right: 5px;
 }
-
