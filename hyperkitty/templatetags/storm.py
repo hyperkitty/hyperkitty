@@ -33,3 +33,7 @@ def count(expr):
 @register.filter(name="strip_subject")
 def strip_subject(subject, mlist):
     return stripped_subject(mlist, subject)
+
+@register.filter(name="shorten_list_name")
+def shorten_list_name(mlist):
+    return mlist.name.title().split('@')[0]
