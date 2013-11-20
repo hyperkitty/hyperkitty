@@ -20,8 +20,14 @@
     <section id="overview" class="span10">
 	
 	<section id="title">
-	    <h2>{{ mlist.display_name }}</h2>
-	    <p id="description">{{ mlist.description}}</p>
+	    <h2>
+            {% if mlist.display_name %}
+                {{ mlist.display_name }}
+            {% else %}
+                {{ mlist.name|until:"@" }}
+            {% endif %}
+        </h2>
+	    <p id="description">{{ mlist.description|default_if_none:"" }}</p>
 	
 	    <section id="statistics">
 	
