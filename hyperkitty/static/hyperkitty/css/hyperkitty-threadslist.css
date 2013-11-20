@@ -53,7 +53,6 @@
 
 .thread-title {
     font-weight: bold;
-    font-size: 125%;
 }
 
 .thread-date {
@@ -72,6 +71,12 @@
 .thread .thread-category {
     /*margin-left: 1em;*/
     float: left;
+}
+
+.thread-title .category {
+  width: 15%;
+  text-align: center;
+  margin-right: 1%;
 }
 
 .thread-info .tags {

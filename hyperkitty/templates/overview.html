@@ -18,66 +18,71 @@
 {% include 'threads/month_list.html' %}
 
     <section id="overview" class="span10">
+	
+	<section id="title">
+	    <h2>{{ mlist.display_name }}</h2>
+	    <p id="description">{{ mlist.description}}</p>
+	
+	    <section id="statistics">
+	
+		<div id="chart"></div>
+		<p class="caption">Post volume over the past <strong>30</strong> days.</p>
+		
+		<p class="thread-new">
+		    <a href="{% url "message_new" mlist_fqdn=mlist.name %}"
+		    class="thread-new btn{% if not user.is_authenticated %} disabled" title="You must be logged-in to create a thread.{% endif %}">
+		    <strong>+</strong> Start a new thread</a>
+		</p>
 
-        <section id="graph">
-            <h2>Activities on the list over the last 30 days</h2>
-        <ul class="list-stats inline">
-            <li><span class="participant">{{ num_participants }} participants</span></li>
-            <li><span class="discussion">{{ num_threads }} discussions</span></li>
-        </ul>
+		<h3>Activity Summary</h3>
+		<p>The following statistics are from the past <strong>30</strong> days:</p>
+		<ul class="list-stats">
+		    <li><span class="participant">{{ num_participants }} participants</span></li>
+		    <li><span class="discussion">{{ num_threads }} discussions</span></li>
+		</ul>
 
-            <div id="fig" />
-        </section>
+		<section id="discussion-maker" class="widget">
+		    <h3>Most active posters</h3>
+		    {% for poster in top_posters %}
+		    <div class="maker">
+			<div class="inline-block maker-id">
+			    #{{forloop.counter}}
+			</div>
+			<div class="inline-block gravatar">
+			    {% gravatar poster.email 40 %}
+			    <br />
+			</div>
+			<div class="inline-block">
+			    <span class="maker-name">{{ poster.name }}</span>
+			    <span class="score">{{ poster.count }}</span> posts
+			</div>
+		    </div>
+		    {% endfor %}
+		</section>
 
-        <p class="thread-new">
-            <a href="{% url "message_new" mlist_fqdn=mlist.name %}"
-               class="thread-new btn{% if not user.is_authenticated %} disabled" title="You must be logged-in to create a thread.{% endif %}"
-               ><strong>+</strong> Start a new thread</a>
-        </p>
+		<!--  <div id="fig"></div> -->
+	    </section>
+	</section>
 
-        <div class="row-fluid">
-            <div class="span6"> <!-- Column 1 -->
+	<section id="discussions">
 
-            <section id="most-active" class="widget">
-                <h3>Recently active discussions</h3>
-                {% for thread in most_active_threads %}
-                    {% include "threads/summary_thread.html" with counter=forloop.counter %}
-                {% endfor %}
-            </section>
+		<section id="most-active" class="widget">
+		    <h3>Recently active discussions</h3>
+		    {% for thread in most_active_threads %}
+			{% include "threads/summary_thread.html"  %} <!-- cut - with counter=forloop.counter -->
+		    {% endfor %}
+		</section>
 
-            <section id="popular-threads" class="widget">
-                <h3>Most popular discussions</h3>
-                {% for thread in pop_threads %}
-                    {% include "threads/summary_thread.html" with counter=forloop.counter %}
-                {% empty %}
-                    <p>No vote has been cast this month (yet).</p>
-                {% endfor %}
-            </section>
+		<section id="popular-threads" class="widget">
+		    <h3>Most popular discussions</h3>
+		    {% for thread in pop_threads %}
+			{% include "threads/summary_thread.html" with counter=forloop.counter %}
+		    {% empty %}
+			<p>No vote has been cast this month (yet).</p>
+		    {% endfor %}
+		</section>
 
-            <section id="discussion-maker" class="widget">
-                <h3>Most active posters</h3>
-                {% for poster in top_posters %}
-                <div class="maker">
-                    <div class="inline-block maker-id">
-                        #{{forloop.counter}}
-                    </div>
-                    <div class="inline-block gravatar">
-                        {% gravatar poster.email 40 %}
-                        <br />
-                    </div>
-                    <div class="inline-block">
-                        <span class="maker-name">{{ poster.name }}</span>
-                        <br />
-                        <span class="score">{{ poster.count }}</span> posts
-                    </div>
-                </div>
-                {% endfor %}
-            </section>
-
-            </div>
-            <div class="span6"> <!-- Column 2 -->
-
-            <section id="top-discussion" class="widget">
+		<section id="top-discussion" class="widget">
                 <h3>Most active discussions</h3>
                 {% for thread in top_threads %}
                     {% include "threads/summary_thread.html" with counter=forloop.counter %}
@@ -129,8 +134,7 @@
             </section>
             {% endif %}
 
-            </div>
-        </div>
+	</section>
 
     </section>
 
@@ -141,6 +145,7 @@
 {% block additionaljs %}
 
 <script type="text/javascript" >
+/*   
     $(function() {
         activity_graph(
             "#fig",
@@ -148,6 +153,16 @@
             {{evolution}},
             "{{ archives_baseurl }}"
         )
+    });
+*/
+    
+    $(function() {
+	chart(
+	    "#chart",
+	    ["{{days|join:'","'}}"],
+            {{evolution}},
+            "{{ archives_baseurl }}"
+	)
     });
 </script>
 
