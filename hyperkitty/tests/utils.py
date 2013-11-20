@@ -32,6 +32,7 @@ OVERRIDE_SETTINGS = {
     "KITTYSTORE_SEARCH_INDEX": None,
     "KITTYSTORE_DEBUG": False,
     "USE_MOCKUPS": False,
+    "ROOT_URLCONF": "hyperkitty.urls",
 }
 
 
