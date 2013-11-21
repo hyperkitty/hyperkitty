@@ -42,6 +42,7 @@ def index(request):
     store = get_store(request)
     lists = store.get_lists()
     now = datetime.datetime.now()
+    initials = set()
     for mlist in lists:
         if mlist.archive_policy != ArchivePolicy.private:
             mlist.is_private = False
@@ -59,6 +60,7 @@ def index(request):
             mlist.is_new = True
         else:
             mlist.is_new = False
+        initials.add(mlist.name[0])
 
     # sorting
     sort_mode = request.GET.get('sort')
@@ -74,6 +76,7 @@ def index(request):
     context = {
         'view_name': 'all_lists',
         'all_lists': lists,
+        'initials': sorted(list(initials)),
         'sort_mode': sort_mode,
         }
     return render(request, "index.html", context)

@@ -7,7 +7,7 @@
 }
 
 
-.all-lists .lists-menu h2 {
+.all-lists .side-menu h2 {
     font-size: 100%;
     line-height: 100%;
     font-weight: bold;
@@ -17,15 +17,46 @@
     margin-bottom: 1em;
     padding: 0;
 }
-.all-lists .lists-menu ul {
+.all-lists .side-menu ul {
     list-style-type: none;
     margin-left: 1em;
 }
-.all-lists .lists-menu li {
+.all-lists .side-menu li {
     margin: 0.5em 0;
 }
 .all-lists .lists-menu span.active {
     font-weight: bold;
+}
+.all-lists div.lists {
+    padding-right: 4em;
+}
+.all-lists .initials {
+    right: 0;
+    right: -3em; /* there will be an animation to 0 */
+    position: absolute;
+    text-align: center;
+    margin-top: 3em;
+    border: 1px solid #bbb;
+    border-right: 0;
+    background-color: #f8f8f8;
+}
+.all-lists .initials h2 {
+    font-size: 18pt;
+    margin-bottom: 0.2em;
+}
+.all-lists .initials ul {
+    margin: 0;
+}
+.all-lists .initials ul li {
+    margin: 0;
+}
+.all-lists .initials ul a {
+    display: block;
+    padding: 0.5em 1em;
+}
+.all-lists .initials ul a:hover {
+    background-color: #ddd;
+    text-decoration: none;
 }
 
 .all-lists h1.lists {
@@ -79,6 +110,9 @@
 }
 .all-lists table.lists td.activity {
     width: 260px;
+}
+.all-lists table.lists .chart {
+    height: 35px;
 }
 .all-lists table.lists ul.list-stats {
     margin: 0;

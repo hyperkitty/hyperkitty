@@ -12,7 +12,7 @@
 
 <div class="row-fluid all-lists">
 
-<div class="span2 lists-menu">
+<div class="span2 side-menu lists-menu">
     <h2>{% trans 'Lists' %}</h2>
     <ul>
         <li>
@@ -46,7 +46,7 @@
     </ul>
 </div>
 
-<div class="span10">
+<div class="span10 lists">
 
 <h1>
     {% trans 'Available lists' %}
@@ -78,22 +78,23 @@
            {% endif %}
            ">
             <td>
-               {% if mlist.is_new %}
-                <span class="new label">{% trans 'new' %}</span>
-               {% endif %}
-                <a href="{% url 'list_overview' mlist_fqdn=mlist.name %}"
-                   class="list-name">
-                    {% if mlist.display_name %}
-                        {{ mlist.display_name }}
-                    {% else %}
-                        {{ mlist.name|until:"@" }}
-                    {% endif %}
-                </a>
-               {% if mlist.is_private %}
-               <span class="list-tags">private</span>
-               {% elif mlist.recent_threads_count == 0 %}
-               <span class="list-tags">inactive</span>
-               {% endif %}
+                {% ifchanged mlist.name|first %}<a name="{{ mlist.name|first }}" />{% endifchanged %}
+                {% if mlist.is_new %}
+                 <span class="new label">{% trans 'new' %}</span>
+                {% endif %}
+                 <a href="{% url 'list_overview' mlist_fqdn=mlist.name %}"
+                    class="list-name">
+                     {% if mlist.display_name %}
+                         {{ mlist.display_name }}
+                     {% else %}
+                         {{ mlist.name|until:"@" }}
+                     {% endif %}
+                 </a>
+                {% if mlist.is_private %}
+                <span class="list-tags">private</span>
+                {% elif mlist.recent_threads_count == 0 %}
+                <span class="list-tags">inactive</span>
+                {% endif %}
                 <br />
                 <span class="list-address">
                     {{ mlist.name }}
@@ -130,7 +131,18 @@
 <p>No archived list yet.</p>
 {% endif %}
 
-</div> <!-- right column -->
+</div> <!-- middle column -->
+
+{% if all_lists|length > 10 %}
+<div class="side-menu initials">
+    <h2>&#8628;</h2>
+    <ul>
+        {% for letter in initials %}
+        <li><a href="#{{ letter }}">{{ letter|upper }}</a></li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
 
 </div>
 
@@ -149,6 +161,13 @@
         });
         $("table.lists tr.list").click(function(e) {
             document.location.href = $(this).find("a.list-name").attr("href");
+        });
+        $(".initials").animate({ right: 0 }, {duration: 600});
+        // Override the scrolling because we have a fixed header
+        $(".initials a").click(function (e) {
+            e.preventDefault();
+            var target = $("a[name="+$(this).attr("href").substring(1)+"]");
+            $(window).scrollTop(target.offset().top - 70);
         });
     });
 </script>
