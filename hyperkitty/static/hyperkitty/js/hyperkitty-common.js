@@ -130,6 +130,8 @@ function chart(elem_id, data, default_props) {
         default_props = {};
     }
 
+    if (!data) { return; }
+
     var props = {width: 250, height: 50};
     $.extend(props, default_props);
     var margin = {top: 0, right: 0, bottom: 0, left: 0},

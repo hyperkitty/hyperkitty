@@ -107,14 +107,14 @@
                 <ul class="list-stats">
                     <li><span class="participant">
                         {% if mlist.can_view %}
-                        {{ mlist.recent_participants_count }}
+                        {{ mlist.recent_participants_count|default_if_none:"..." }}
                         {% else %}
                         ...
                         {% endif %}
                         participants</span></li>
                     <li><span class="discussion">
                         {% if mlist.can_view %}
-                        {{ mlist.recent_threads_count }}
+                        {{ mlist.recent_threads_count|default_if_none:"..." }}
                         {% else %}
                         ...
                         {% endif %}
