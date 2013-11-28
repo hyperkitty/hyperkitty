@@ -42,6 +42,10 @@ BuildRequires:  python-django
 BuildRequires:  python-django-south
 %endif
 
+# SELinux
+BuildRequires:  checkpolicy, selinux-policy-devel, /usr/share/selinux/devel/policyhelp
+BuildRequires:  hardlink
+
 Requires:       django-gravatar2
 Requires:       django-social-auth >= 0.7.1
 Requires:       django-rest-framework >= 2.2.0
@@ -64,16 +68,30 @@ Requires:       python-django >= 1.4
 Requires:       python-django-south
 %endif
 
-# Scriptlets
-Requires(post): policycoreutils-python
-Requires(postun): policycoreutils-python
-
 
 %description
 HyperKitty is an open source Django application under development. It aims at
 providing a web interface to access GNU Mailman archives.
 The code is available from: https://github.com/hyperkitty/hyperkitty .
 The documentation can be browsed online at https://hyperkitty.readthedocs.org .
+
+
+%package selinux
+%global selinux_variants mls targeted
+Summary:        SELinux policy module for %{name}
+Requires:       %{name} = %{version}-%{release}
+%{!?_selinux_policy_version: %global _selinux_policy_version %(sed -e 's,.*selinux-policy-\\([^/]*\\)/.*,\\1,' /usr/share/selinux/devel/policyhelp 2>/dev/null)}
+%if "%{_selinux_policy_version}" != ""
+Requires:      selinux-policy >= %{_selinux_policy_version}
+%endif
+
+Requires(post):   /usr/sbin/semodule, /sbin/restorecon, /sbin/fixfiles, %{name}
+Requires(postun): /usr/sbin/semodule, /sbin/restorecon, /sbin/fixfiles, %{name}
+
+%description selinux
+This is the SELinux module for %{name}, install it if you are using SELinux.
+
+
 
 %prep
 %setup -q -n %{pypi_name}-%{version}%{?prerel:dev} -a 1
@@ -88,6 +106,13 @@ chmod -x hyperkitty_standalone/wsgi.py
 # installed (find_package won't find it). It's empty anyway.
 rm -f hyperkitty_standalone/__init__.py
 
+# SELinux
+mkdir SELinux
+echo '%{_localstatedir}/lib/%{name}/sites(/.*)? system_u:object_r:httpd_sys_content_t:s0' \
+    > SELinux/%{name}.fc
+# remember to bump the following version if the policy is updated
+echo "policy_module(%{name}, 1.0)" > SELinux/%{name}.te
+
 
 %build
 %{__python} setup.py build
@@ -96,6 +121,15 @@ rm -f hyperkitty_standalone/__init__.py
 sphinx-build doc html
 # remove the sphinx-build leftovers
 rm -rf html/.{doctrees,buildinfo}
+
+# SELinux
+cd SELinux
+for selinuxvariant in %{selinux_variants}; do
+  make NAME=${selinuxvariant} -f /usr/share/selinux/devel/Makefile
+  mv %{name}.pp %{name}.pp.${selinuxvariant}
+  make NAME=${selinuxvariant} -f /usr/share/selinux/devel/Makefile clean
+done
+cd -
 
 
 %install
@@ -129,6 +163,22 @@ sed -i -e 's,/path/to/rw,%{_localstatedir}/lib/%{name}/sites/default/db,g' \
     %{buildroot}%{_sysconfdir}/%{name}/sites/default/settings.py
 touch --reference hyperkitty_standalone/settings.py \
     %{buildroot}%{_sysconfdir}/%{name}/sites/default/settings.py
+# Cron job
+mkdir -p %{buildroot}%{_sysconfdir}/cron.daily
+sed -e 's,/path/to/hyperkitty_standalone,%{_sysconfdir}/%{name}/sites/default,g' \
+    hyperkitty_standalone/hyperkitty.cron \
+    > %{buildroot}%{_sysconfdir}/cron.daily/%{name}
+touch --reference hyperkitty_standalone/hyperkitty.cron \
+    %{buildroot}%{_sysconfdir}/cron.daily/%{name}
+
+# SELinux
+for selinuxvariant in %{selinux_variants}; do
+  install -d %{buildroot}%{_datadir}/selinux/${selinuxvariant}
+  install -p -m 644 SELinux/%{name}.pp.${selinuxvariant} \
+    %{buildroot}%{_datadir}/selinux/${selinuxvariant}/%{name}.pp
+done
+/usr/sbin/hardlink -cv %{buildroot}%{_datadir}/selinux
+
 
 
 %check
@@ -143,21 +193,33 @@ rm -f hyperkitty_standalone/__init__.py
     collectstatic --noinput >/dev/null || :
 %{__python} %{_sysconfdir}/%{name}/sites/default/manage.py \
     assets build --parse-templates &>/dev/null || :
-semanage fcontext -a -t httpd_sys_content_t "%{_localstatedir}/lib/%{name}/sites(/.*)?" 2>/dev/null || :
-restorecon -R %{_localstatedir}/lib/%{name}/sites || :
 
-%postun
-if [ $1 -eq 0 ] ; then  # final removal
-semanage fcontext -d -t httpd_sys_content_t "%{_localstatedir}/lib/%{name}/sites(/.*)?" 2>/dev/null || :
+
+%post selinux
+for selinuxvariant in %{selinux_variants}; do
+  /usr/sbin/semodule -s ${selinuxvariant} -i \
+    %{_datadir}/selinux/${selinuxvariant}/%{name}.pp &> /dev/null || :
+done
+/sbin/fixfiles -R %{name} restore || :
+/sbin/restorecon -R %{_localstatedir}/lib/%{name} || :
+
+%postun selinux
+if [ $1 -eq 0 ] ; then
+  for selinuxvariant in %{selinux_variants}; do
+    /usr/sbin/semodule -s ${selinuxvariant} -r %{name} &> /dev/null || :
+  done
+  /sbin/fixfiles -R %{name} restore || :
+  [ -d %{_localstatedir}/lib/%{name} ]  && \
+    /sbin/restorecon -R %{_localstatedir}/lib/%{name} &> /dev/null || :
 fi
-
 
 
 %files
 %doc html README.rst COPYING.txt
 %config(noreplace) %{_sysconfdir}/%{name}
 %config(noreplace) %attr(640,root,apache) %{_sysconfdir}/%{name}/sites/default/settings.py
-%config(noreplace) %{_sysconfdir}/httpd/conf.d/hyperkitty.conf
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/%{name}.conf
+%config(noreplace) %{_sysconfdir}/cron.daily/%{name}
 %{python_sitelib}/%{name}
 %{python_sitelib}/%{pypi_name}-%{version}%{?prerel:dev}-py?.?.egg-info
 %dir %{_localstatedir}/lib/%{name}
@@ -166,8 +228,18 @@ fi
 %dir %{_localstatedir}/lib/%{name}/sites/default/static
 %attr(755,apache,apache) %{_localstatedir}/lib/%{name}/sites/default/db
 
+%files selinux
+%defattr(-,root,root,0755)
+%doc SELinux/*
+%{_datadir}/selinux/*/%{name}.pp
+
 
 %changelog
+* Mon Nov 25 2013 Aurelien Bompard <abompard@fedoraproject.org> - 0.1.7-0.1
+- add SELinux policy module, according to:
+  http://fedoraproject.org/wiki/SELinux_Policy_Modules_Packaging_Draft
+- add a cron job to refresh KittyStore's cache
+
 * Thu Aug 15 2013 Aurelien Bompard <abompard@fedoraproject.org> - 0.1.7-0.1
 - don't remove the static files cache on uninstall (it may have local
   modifications)
