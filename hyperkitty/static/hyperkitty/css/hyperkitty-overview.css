@@ -120,7 +120,8 @@ section#title #description {
 }
 
 section#title .chart {
-  margin-top: 2em;
+  margin-top: 1.5em;
+  height: 60px;
 }
 section#title .chart-data {
   border: 1px solid #bbb;
@@ -128,7 +129,7 @@ section#title .chart-data {
 
 section#title p.thread-new {
   text-align: left;
-  margin-top: 1em;
+  margin-top: 2em;
 }
 
 section#statistics {

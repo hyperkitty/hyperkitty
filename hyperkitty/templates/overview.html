@@ -31,8 +31,9 @@
 
 	    <section id="statistics">
 
-		<div id="chart">
-        </div>
+		<div class="chart">
+			<img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
+		</div>
 		<p class="caption">Post volume over the past <strong>30</strong> days.</p>
 
 		<p class="thread-new">
@@ -152,7 +153,7 @@
 
 <script type="text/javascript" >
     $(function() {
-        ajax_chart("#chart", "{% url 'list_recent_activity' mlist.name %}");
+        ajax_chart(".chart", "{% url 'list_recent_activity' mlist.name %}");
     });
 </script>
 
