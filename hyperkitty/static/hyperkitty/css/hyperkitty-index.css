@@ -7,6 +7,8 @@
 }
 
 
+/* sides */
+
 .all-lists .side-menu h2 {
     font-size: 100%;
     line-height: 100%;
@@ -27,9 +29,25 @@
 .all-lists .lists-menu span.active {
     font-weight: bold;
 }
-.all-lists div.lists {
-    padding-right: 4em;
+
+
+/* title */
+
+.all-lists h1.lists {
+    margin-bottom: 0.5em;
 }
+
+.all-lists p.hide-switches label {
+    display: inline;
+    margin-right: 2em;
+}
+.all-lists p.hide-switches input {
+    margin: 0;
+}
+
+
+/* initials */
+
 .all-lists .initials {
     right: 0;
     right: -3em; /* there will be an animation to 0 */
@@ -59,8 +77,11 @@
     text-decoration: none;
 }
 
-.all-lists h1.lists {
-    margin-bottom: 0.5em;
+
+/* main content */
+
+.all-lists div.lists {
+    padding-right: 4em;
 }
 
 .all-lists table.lists th {

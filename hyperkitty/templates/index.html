@@ -59,6 +59,11 @@
     {% endif %}
 </h1>
 
+<p class="hide-switches">
+    <label><input type="checkbox" value="inactive" /> Hide inactive</label>
+    <label><input type="checkbox" value="private" /> Hide private</label>
+</p>
+
 {% if all_lists %}
 <table class="lists table">
     <thead>
@@ -168,6 +173,14 @@
             e.preventDefault();
             var target = $("a[name="+$(this).attr("href").substring(1)+"]");
             $(window).scrollTop(target.offset().top - 70);
+        });
+        $(".hide-switches input").click(function() {
+            var target = $("table.lists tr.list."+$(this).val());
+            if ($(this).prop("checked")) {
+                target.hide();
+            } else {
+                target.show();
+            }
         });
     });
 </script>
