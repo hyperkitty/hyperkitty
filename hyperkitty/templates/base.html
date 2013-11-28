@@ -130,7 +130,7 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}hyperkitty/libs/jquery/jquery-1.10.1.min.js"><\/script>')</script>
     <script src="{{ STATIC_URL }}hyperkitty/libs/jquery/jquery-ui-1.10.3.custom.min.js"></script>
-    {% assets filters="rjsmin", output="gen/hyperkitty.js", "hyperkitty/libs/bootstrap/js/bootstrap.min.js", "hyperkitty/libs/jquery.expander.js", "hyperkitty/libs/d3.v2.min.js", "hyperkitty/libs/jquery.hotkeys.js", "hyperkitty/js/hyperkitty-common.js", "hyperkitty/js/hyperkitty-thread.js", "hyperkitty/js/hyperkitty-userprofile.js" %}
+    {% assets filters="rjsmin", output="gen/hyperkitty.js", "hyperkitty/libs/bootstrap/js/bootstrap.min.js", "hyperkitty/libs/jquery.expander.js", "hyperkitty/libs/d3.v2.min.js", "hyperkitty/libs/jquery.hotkeys.js", "hyperkitty/js/hyperkitty-common.js", "hyperkitty/js/hyperkitty-index.js", "hyperkitty/js/hyperkitty-thread.js", "hyperkitty/js/hyperkitty-userprofile.js" %}
     <script src="{{ ASSET_URL }}"></script>
     {% endassets %}
     {% block additionaljs %} {% endblock %}

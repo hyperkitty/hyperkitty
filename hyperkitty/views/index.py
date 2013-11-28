@@ -34,7 +34,6 @@ from mailmanclient import Client, MailmanConnectionError
 from mailman.interfaces.archiver import ArchivePolicy
 
 from hyperkitty.lib import get_store
-from hyperkitty.lib.view_helpers import get_recent_list_activity
 from hyperkitty.lib.mailman import is_mlist_authorized
 
 
@@ -53,8 +52,6 @@ def index(request):
                 mlist.can_view = True
             else:
                 mlist.can_view = False
-        if mlist.can_view:
-            mlist.evolution = get_recent_list_activity(store, mlist)
         if mlist.created_at and \
                 now - mlist.created_at <= datetime.timedelta(days=30):
             mlist.is_new = True

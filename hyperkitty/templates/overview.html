@@ -18,7 +18,7 @@
 {% include 'threads/month_list.html' %}
 
     <section id="overview" class="span10">
-	
+
 	<section id="title">
 	    <h2>
             {% if mlist.display_name %}
@@ -28,12 +28,13 @@
             {% endif %}
         </h2>
 	    <p id="description">{{ mlist.description|default_if_none:"" }}</p>
-	
+
 	    <section id="statistics">
-	
-		<div id="chart" data-chart-values="{{ evolution|to_json }}"></div>
+
+		<div id="chart">
+        </div>
 		<p class="caption">Post volume over the past <strong>30</strong> days.</p>
-		
+
 		<p class="thread-new">
 		    <a href="{% url "message_new" mlist_fqdn=mlist.name %}"
 		    class="thread-new btn{% if not user.is_authenticated %} disabled" title="You must be logged-in to create a thread.{% endif %}">
@@ -151,10 +152,7 @@
 
 <script type="text/javascript" >
     $(function() {
-        $("#chart").each(function() {
-            chart($(this).get(0),
-                  $.parseJSON($(this).attr("data-chart-values")));
-        });
+        ajax_chart("#chart", "{% url 'list_recent_activity' mlist.name %}");
     });
 </script>
 

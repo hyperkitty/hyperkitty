@@ -135,6 +135,10 @@
 .all-lists table.lists .chart {
     height: 35px;
 }
+.all-lists table.lists .chart .ajaxloader {
+    margin: 0 auto;
+    padding-top: 5px;
+}
 .all-lists table.lists ul.list-stats {
     margin: 0;
     text-align: center;

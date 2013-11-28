@@ -23,13 +23,14 @@
 import datetime
 from collections import namedtuple, defaultdict
 
+import django.utils.simplejson as json
 from django.shortcuts import redirect, render
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils import formats
 from django.utils.dateformat import format as date_format
 from django.utils.timezone import utc
-from django.http import Http404
+from django.http import Http404, HttpResponse
 
 from hyperkitty.models import Tag, Favorite
 from hyperkitty.lib import get_store
@@ -197,13 +198,6 @@ def overview(request, mlist_fqdn=None):
             continue
         threads_by_category[thread.category].append(thread)
 
-    # List activity graph
-    evolution = get_recent_list_activity(store, mlist)
-
-    archives_baseurl = reverse("archives_latest",
-                               kwargs={'mlist_fqdn': mlist.name})
-    archives_baseurl = archives_baseurl.rpartition("/")[0]
-
     context = {
         'view_name': 'overview',
         'mlist' : mlist,
@@ -214,7 +208,14 @@ def overview(request, mlist_fqdn=None):
         'pop_threads': pop_threads[:5],
         'threads_by_category': threads_by_category,
         'months_list': get_months(store, mlist.name),
-        'evolution': evolution,
-        'archives_baseurl': archives_baseurl,
     }
     return render(request, "overview.html", context)
+
+
+@check_mlist_private
+def recent_activity(request, mlist_fqdn):
+    store = get_store(request)
+    mlist = store.get_list(mlist_fqdn)
+    evolution = get_recent_list_activity(store, mlist)
+    return HttpResponse(json.dumps({"evolution": evolution}),
+                        mimetype='application/javascript')

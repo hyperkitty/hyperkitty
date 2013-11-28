@@ -61,6 +61,8 @@ urlpatterns = patterns('hyperkitty.views',
         'list.archives', name='archives_latest'),
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/$',
         'list.overview', name='list_overview'),
+    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/recent-activity$',
+        'list.recent_activity', name='list_recent_activity'),
 
     # Message
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/message/(?P<message_id_hash>\w+)/$',

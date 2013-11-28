@@ -237,6 +237,26 @@ function chart(elem_id, data, default_props) {
 }
 
 
+function ajax_chart(elem, url, props) {
+    elem = $(elem);
+    $.ajax({
+        dataType: "json",
+        url: url,
+        success: function(data) {
+            chart(elem.get(0), data.evolution, props);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            //alert(jqXHR.responseText);
+        },
+        complete: function(jqXHR, textStatus) {
+            // if the list is private we have no info, remove the img anyway
+            elem.find("img.ajaxloader").remove();
+        }
+    });
+}
+
+
+
 
 /*
  * Misc.

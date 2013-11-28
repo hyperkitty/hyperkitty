@@ -109,7 +109,9 @@
                 {{ mlist.description|default_if_none:"" }}
             </td>
             <td class="activity">
-                <div class="chart" data-chart-values="{{ mlist.evolution|to_json }}"></div>
+                <div class="chart">
+                    <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
+                </div>
                 <ul class="list-stats">
                     <li><span class="participant">
                         {% if mlist.can_view %}
@@ -159,29 +161,7 @@
 
 <script>
     $(function() {
-        $("div.chart").each(function() {
-            chart($(this).get(0),
-                  $.parseJSON($(this).attr("data-chart-values")),
-                  {height: 30});
-        });
-        $("table.lists tr.list").click(function(e) {
-            document.location.href = $(this).find("a.list-name").attr("href");
-        });
-        $(".initials").animate({ right: 0 }, {duration: 600});
-        // Override the scrolling because we have a fixed header
-        $(".initials a").click(function (e) {
-            e.preventDefault();
-            var target = $("a[name="+$(this).attr("href").substring(1)+"]");
-            $(window).scrollTop(target.offset().top - 70);
-        });
-        $(".hide-switches input").click(function() {
-            var target = $("table.lists tr.list."+$(this).val());
-            if ($(this).prop("checked")) {
-                target.hide();
-            } else {
-                target.show();
-            }
-        });
+        setup_index("{% url 'list_recent_activity' 'PLACEHOLDER@PLACEHOLDER' %}");
     });
 </script>
 
