@@ -29,11 +29,13 @@ from django.utils.http import urlquote
 from django.utils.decorators import available_attrs
 from django.shortcuts import redirect, render
 from django.http import Http404
+from django.core.cache import cache
 from mailman.interfaces.archiver import ArchivePolicy
 from mailmanclient import Client
 
 from hyperkitty.models import Rating
 from hyperkitty.lib import get_store
+from hyperkitty.lib.voting import get_votes
 
 
 def subscribe(list_address, user):
@@ -59,19 +61,14 @@ def get_subscriptions(store, client, mm_user):
         # de-duplicate subscriptions
         if mlist in [ s["list_name"] for s in subscriptions ]:
             continue
-        email_hashes = store.get_message_hashes_by_user_id(
-                mm_user.user_id, mlist)
-        try: # Compute the average vote value
-            votes = Rating.objects.filter(list_address=mlist,
-                                          messageid__in=email_hashes)
-        except Rating.DoesNotExist:
-            votes = []
-        likes = dislikes = 0
-        for v in votes:
-            if v.vote == 1:
-                likes += 1
-            elif v.vote == -1:
-                dislikes += 1
+        cache_key = "user:%s:list:%s:votes" % (mm_user.user_id, mlist)
+        likes, dislikes, posts_count = cache.get(cache_key, (None, None, None))
+        if likes is None or dislikes is None or posts_count is None:
+            email_hashes = store.get_message_hashes_by_user_id(
+                    mm_user.user_id, mlist)
+            likes, dislikes, _myvote = get_votes(mlist, email_hashes)
+            posts_count = len(email_hashes)
+            cache.set(cache_key, (likes, dislikes, posts_count))
         all_posts_url = "%s?list=%s&query=user_id:%s" % \
                 (reverse("search"), mlist, urlquote(mm_user.user_id))
         likestatus = "neutral"
@@ -86,7 +83,7 @@ def get_subscriptions(store, client, mm_user):
             "dislikes": dislikes,
             "likestatus": likestatus,
             "all_posts_url": all_posts_url,
-            "posts_count": len(email_hashes),
+            "posts_count": posts_count,
         })
     return subscriptions
 
