@@ -26,7 +26,7 @@ from django.core.cache import cache
 
 from hyperkitty.models import Rating
 from hyperkitty.lib.view_helpers import get_display_dates, paginate
-from hyperkitty.lib.voting import get_votes, set_thread_votes
+from hyperkitty.lib.voting import set_thread_votes
 
 from hyperkitty.tests.utils import TestCase
 
@@ -154,3 +154,20 @@ class VotingTestCase(TestCase):
         self.assertEqual(self.thread.likes, 10)
         self.assertEqual(self.thread.dislikes, 0)
         self.assertEqual(self.thread.likestatus, "likealot")
+
+    def test_same_msgid_different_lists(self):
+        thread_1 = DummyThread()
+        thread_1.list_name = "test1@example.com"
+        thread_2 = DummyThread()
+        thread_2.list_name = "test2@example.com"
+        thread_1.email_id_hashes = thread_2.email_id_hashes = ["msgid"]
+        Rating(list_address="test1@example.com", messageid="msgid",
+               user=self.user, vote=1).save()
+        Rating(list_address="test2@example.com", messageid="msgid",
+               user=self.user, vote=1).save()
+        set_thread_votes(thread_1)
+        self.assertEqual(thread_1.likes, 1)
+        self.assertEqual(thread_1.dislikes, 0)
+        set_thread_votes(thread_2)
+        self.assertEqual(thread_2.likes, 1)
+        self.assertEqual(thread_2.dislikes, 0)

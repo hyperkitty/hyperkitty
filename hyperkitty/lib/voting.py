@@ -24,14 +24,16 @@ from django.core.cache import cache
 from hyperkitty.models import Rating
 
 
-def get_votes(msgid, user=None):
+def get_votes(mlist_fqdn, msgid, user=None):
     """Extract all the votes for this message"""
     likes = dislikes = myvote = 0
     try:
         if isinstance(msgid, basestring):
-            votes = Rating.objects.filter(messageid=msgid)
+            votes = Rating.objects.filter(
+                        list_address=mlist_fqdn, messageid=msgid)
         elif isinstance(msgid, list):
-            votes = Rating.objects.filter(messageid__in=msgid)
+            votes = Rating.objects.filter(
+                        list_address=mlist_fqdn, messageid__in=msgid)
     except Rating.DoesNotExist:
         votes = {}
     for vote in votes:
@@ -49,7 +51,7 @@ def get_votes(msgid, user=None):
 def set_message_votes(message, user=None):
     # Extract all the votes for this message
     message.likes, message.dislikes, message.myvote = \
-            get_votes(message.message_id_hash, user)
+            get_votes(message.list_name, message.message_id_hash, user)
     message.likestatus = "neutral"
     if message.likes - message.dislikes >= 10:
         message.likestatus = "likealot"
@@ -65,7 +67,7 @@ def set_thread_votes(thread):
     likes, dislikes = cache.get(cache_key, (None, None))
     if likes is None or dislikes is None:
         # XXX: 1 SQL request per thread, possible optimization here
-        likes, dislikes, _myvote = get_votes(thread.email_id_hashes)
+        likes, dislikes, _myvote = get_votes(thread.list_name, thread.email_id_hashes)
         cache.set(cache_key, (likes, dislikes))
     # How should thread likes and dislikes be counted?
     #thread.likes = likes / thread.emails_count

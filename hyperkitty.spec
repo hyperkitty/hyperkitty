@@ -108,7 +108,7 @@ rm -f hyperkitty_standalone/__init__.py
 
 # SELinux
 mkdir SELinux
-echo '%{_localstatedir}/lib/%{name}/sites(/.*)? system_u:object_r:httpd_sys_content_t:s0' \
+echo '%{_localstatedir}/lib/%{name}/sites(/.*)? gen_context(system_u:object_r:httpd_sys_content_t,s0)' \
     > SELinux/%{name}.fc
 # remember to bump the following version if the policy is updated
 echo "policy_module(%{name}, 1.0)" > SELinux/%{name}.te

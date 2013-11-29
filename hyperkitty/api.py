@@ -90,7 +90,7 @@ class EmailResource(APIView):
         if not email:
             return Response(status=404)
         else:
-            email.likes, email.dislikes, _ignore = get_votes(email.message_id_hash)
+            email.likes, email.dislikes, _ignore = get_votes(mlist_fqdn, email.message_id_hash)
             return Response(EmailSerializer(email).data)
 
 
