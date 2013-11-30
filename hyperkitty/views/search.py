@@ -134,6 +134,3 @@ def search(request, page=1):
         'sort_mode': sort_mode,
     }
     return render(request, "search_results.html", context)
-
-
-

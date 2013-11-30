@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load gravatar %}
+{% load hk_generic %}
+
+
+{% block title %}
+Messages by {{ fullname }}{% if mlist %} - {{ mlist.display_name|default:mlist.name|escapeemail }} {% endif %} - {{ app_name|title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="row-fluid">
+
+<div id="months-list" class="span2"> </div>
+
+    <div id="thread-list" class="span8">
+
+        <div class="thread-list-header page-header">
+            {% if mlist %}
+            <h1>Messages by {{ fullname }}
+                <small>in {{ mlist.display_name|default:mlist.name|escapeemail }}</small>
+            </h1>
+            {% else %}
+            <h1>Messages by {{ fullname }}</h1>
+            {% endif %}
+            <ul class="thread-list-info">
+                {% if mlist.display_name %}
+                <li class="list-address">
+                    {{ mlist.name|escapeemail }}
+                </li>
+                {% endif %}
+                <li class="discussion">
+                    {{ messages.paginator.count }} messages
+                </li>
+                <li>
+                    <a href="{% url 'public_user_profile' user_id=user_id %}">
+                        Back to {{ fullname }}'s profile
+                    </a>
+                </li>
+            </ul>
+
+        </div>
+
+        {% for message in messages %}
+            {% include "messages/summary_message.html" %}
+        {% empty %}
+            <p>Sorry no email could be found by this user.</p>
+        {% endfor %}
+
+        {% include "paginator.html" with pager=messages %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block additionaljs %}
+<script>
+$(document).ready(function() {
+    $('span.expander').expander({
+        slicePoint: 500,
+        userCollapseText : '\n[View Less]',
+        expandText : '\n[View More]',
+        beforeExpand: function() {
+            $(this).removeClass("collapsed");
+            $(this).addClass("expanded");
+        },
+        onCollapse: function() {
+            $(this).removeClass("expanded");
+            $(this).addClass("collapsed");
+        }
+    });
+});
+</script>
+{% endblock %}

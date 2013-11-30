@@ -42,7 +42,8 @@ from hyperkitty.models import UserProfile, Rating, Favorite, LastView
 from hyperkitty.views.forms import RegistrationForm, UserProfileForm
 from hyperkitty.lib import get_store
 from hyperkitty.lib.view_helpers import FLASH_MESSAGES, paginate
-from hyperkitty.lib.mailman import get_subscriptions
+from hyperkitty.lib.mailman import get_subscriptions, is_mlist_authorized
+from hyperkitty.lib.voting import set_message_votes
 
 
 logger = logging.getLogger(__name__)
@@ -294,3 +295,55 @@ def public_profile(request, user_id):
         "likestatus": likestatus,
     }
     return render(request, "user_public_profile.html", context)
+
+
+def posts(request, user_id):
+    store = get_store(request)
+    mlist_fqdn = request.GET.get("list")
+    sort_mode = request.GET.get('sort')
+    if mlist_fqdn is None:
+        mlist = None
+        return HttpResponse("Not implemented yet", status=500)
+    else:
+        mlist = store.get_list(mlist_fqdn)
+        if mlist is None:
+            raise Http404("No archived mailing-list by that name.")
+        if not is_mlist_authorized(request, mlist):
+            return render(request, "errors/private.html", {
+                            "mlist": mlist,
+                          }, status=403)
+
+    # Get the user's full name
+    try:
+        client = mailmanclient.Client('%s/3.0' %
+                    settings.MAILMAN_REST_SERVER,
+                    settings.MAILMAN_API_USER,
+                    settings.MAILMAN_API_PASS)
+        mm_user = client.get_user(user_id)
+    except HTTPError:
+        raise Http404("No user with this ID: %s" % user_id)
+    except mailmanclient.MailmanConnectionError:
+        fullname = None
+    else:
+        fullname = mm_user.display_name
+    if not fullname:
+        fullname = store.get_sender_name(user_id)
+
+    # Get the messages and paginate them
+    messages = store.get_messages_by_user_id(user_id, mlist_fqdn)
+    try:
+        page_num = int(request.GET.get('page', "1"))
+    except ValueError:
+        page_num = 1
+    messages = paginate(messages, page_num)
+
+    for message in messages:
+        set_message_votes(message, request.user)
+
+    context = {
+        'user_id': user_id,
+        'mlist' : mlist,
+        'messages': messages,
+        'fullname': fullname,
+    }
+    return render(request, "user_posts.html", context)

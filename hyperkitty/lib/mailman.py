@@ -69,8 +69,8 @@ def get_subscriptions(store, client, mm_user):
             likes, dislikes, _myvote = get_votes(mlist, email_hashes)
             posts_count = len(email_hashes)
             cache.set(cache_key, (likes, dislikes, posts_count))
-        all_posts_url = "%s?list=%s&query=user_id:%s" % \
-                (reverse("search"), mlist, urlquote(mm_user.user_id))
+        all_posts_url = "%s?list=%s" % \
+                (reverse("user_posts", mm_user.user_id), mlist)
         likestatus = "neutral"
         if likes - dislikes >= 10:
             likestatus = "likealot"
