@@ -41,7 +41,8 @@ import mailmanclient
 from hyperkitty.models import UserProfile, Rating, Favorite, LastView
 from hyperkitty.views.forms import RegistrationForm, UserProfileForm
 from hyperkitty.lib import get_store
-from hyperkitty.lib.view_helpers import FLASH_MESSAGES, paginate
+from hyperkitty.lib.view_helpers import FLASH_MESSAGES
+from hyperkitty.lib.paginator import paginate
 from hyperkitty.lib.mailman import get_subscriptions, is_mlist_authorized
 from hyperkitty.lib.voting import set_message_votes
 

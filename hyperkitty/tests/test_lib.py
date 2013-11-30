@@ -25,8 +25,9 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.core.cache import cache
 
 from hyperkitty.models import Rating
-from hyperkitty.lib.view_helpers import get_display_dates, paginate
+from hyperkitty.lib.view_helpers import get_display_dates
 from hyperkitty.lib.voting import set_thread_votes
+from hyperkitty.lib.paginator import paginate
 
 from hyperkitty.tests.utils import TestCase
 

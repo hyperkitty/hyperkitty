@@ -34,9 +34,10 @@ from django.http import Http404, HttpResponse
 
 from hyperkitty.models import Tag, Favorite
 from hyperkitty.lib import get_store
-from hyperkitty.lib.view_helpers import FLASH_MESSAGES, paginate, \
+from hyperkitty.lib.view_helpers import FLASH_MESSAGES, \
         get_category_widget, get_months, get_display_dates, daterange, \
         is_thread_unread, get_recent_list_activity
+from hyperkitty.lib.paginator import paginate
 from hyperkitty.lib.voting import set_message_votes, set_thread_votes
 from hyperkitty.lib.mailman import check_mlist_private
 

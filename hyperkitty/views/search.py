@@ -26,7 +26,7 @@ from django.http import Http404
 
 from hyperkitty.models import Tag
 from hyperkitty.lib import get_store
-from hyperkitty.lib.view_helpers import paginate
+from hyperkitty.lib.paginator import paginate
 from hyperkitty.lib.voting import set_message_votes
 
 from hyperkitty.views.list import _thread_list
