@@ -325,9 +325,9 @@ class ReattachTestCase(TestCase):
         request.user = self.user
         response = reattach(request, "list@example.com", threadid2)
         now = datetime.datetime.now()
-        threads = self.store.get_threads("list@example.com",
+        threads = list(self.store.get_threads("list@example.com",
                 now - datetime.timedelta(days=1),
-                now + datetime.timedelta(days=1))
+                now + datetime.timedelta(days=1)))
         self.assertEqual(len(threads), 1)
         self.assertEqual(threads[0].thread_id, threadid1)
         expected_url = reverse('thread', args=["list@example.com", threadid1]) + "?msg=attached-ok"
@@ -343,9 +343,9 @@ class ReattachTestCase(TestCase):
         request.user = self.user
         response = reattach(request, "list@example.com", threadid2)
         now = datetime.datetime.now()
-        threads = self.store.get_threads("list@example.com",
+        threads = list(self.store.get_threads("list@example.com",
                 now - datetime.timedelta(days=1),
-                now + datetime.timedelta(days=1))
+                now + datetime.timedelta(days=1)))
         self.assertEqual(len(threads), 1)
         self.assertEqual(threads[0].thread_id, threadid1)
         expected_url = reverse('thread', args=["list@example.com", threadid1]) + "?msg=attached-ok"
@@ -361,9 +361,9 @@ class ReattachTestCase(TestCase):
         response = reattach(request, "list@example.com", threadid)
         self.assertFalse(self.store.attach_to_thread.called)
         now = datetime.datetime.now()
-        threads = self.store.get_threads("list@example.com",
+        threads = list(self.store.get_threads("list@example.com",
                 now - datetime.timedelta(days=1),
-                now + datetime.timedelta(days=1))
+                now + datetime.timedelta(days=1)))
         self.assertEqual(len(threads), 2)
         errormsg = '<div class="flashmsgs"><div class="flashmsg-wrapper"><div class="alert alert-error">'
         self.assertContains(response, '<div class="alert alert-warning">',
@@ -380,9 +380,9 @@ class ReattachTestCase(TestCase):
         response = reattach(request, "list@example.com", threadid)
         self.assertFalse(self.store.attach_to_thread.called)
         now = datetime.datetime.now()
-        threads = self.store.get_threads("list@example.com",
+        threads = list(self.store.get_threads("list@example.com",
                 now - datetime.timedelta(days=1),
-                now + datetime.timedelta(days=1))
+                now + datetime.timedelta(days=1)))
         self.assertEqual(len(threads), 2)
         errormsg = '<div class="flashmsgs"><div class="flashmsg-wrapper"><div class="alert alert-error">'
         self.assertContains(response, '<div class="alert alert-warning">',
@@ -416,9 +416,9 @@ class ReattachTestCase(TestCase):
         response = reattach(request, "list@example.com", threadid1)
         self.assertFalse(self.store.attach_to_thread.called)
         now = datetime.datetime.now()
-        threads = self.store.get_threads("list@example.com",
+        threads = list(self.store.get_threads("list@example.com",
                 now - datetime.timedelta(days=1),
-                now + datetime.timedelta(days=1))
+                now + datetime.timedelta(days=1)))
         self.assertEqual(len(threads), 2)
         errormsg = '<div class="flashmsgs"><div class="flashmsg-wrapper"><div class="alert alert-error">'
         self.assertContains(response, '<div class="alert alert-error">',

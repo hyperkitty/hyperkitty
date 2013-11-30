@@ -85,6 +85,8 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
         raise Http404("No archived mailing-list by that name.")
     store = get_store(request)
 
+    threads = paginate(threads, request.GET.get('page'))
+
     participants = set()
     for thread in threads:
         if "participants" not in extra_context:
@@ -118,8 +120,6 @@ def _thread_list(request, mlist, threads, template_name='thread_list.html', extr
 
         # Unread status
         thread.unread = is_thread_unread(request, mlist.name, thread)
-
-    threads = paginate(threads, request.GET.get('page'))
 
     flash_messages = []
     flash_msg = request.GET.get("msg")
