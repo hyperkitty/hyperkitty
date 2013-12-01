@@ -179,14 +179,12 @@ class MessageViewsTestCase(TestCase):
         self.user = User.objects.create_user(
                 'testuser', 'test@example.com', 'testPass')
         # Fake KittStore
-        class FakeThread(object):
-            thread_id = None
         class FakeMessage(object):
             def __init__(self, h):
                 self.message_id_hash = h
                 self.list_name = "list@example.com"
-                self.thread = FakeThread()
-                self.thread.thread_id = h
+                self.thread_id = h
+                self.user_id = None
         self.store = Mock()
         self.store.get_message_by_hash_from_list.side_effect = \
                 lambda l, h: FakeMessage(h)

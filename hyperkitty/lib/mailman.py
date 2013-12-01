@@ -61,16 +61,17 @@ def get_subscriptions(store, client, mm_user):
         # de-duplicate subscriptions
         if mlist in [ s["list_name"] for s in subscriptions ]:
             continue
+        posts_count = store.get_message_count_by_user_id(
+                mm_user.user_id, mlist)
         cache_key = "user:%s:list:%s:votes" % (mm_user.user_id, mlist)
-        likes, dislikes, posts_count = cache.get(cache_key, (None, None, None))
+        likes, dislikes = cache.get(cache_key, (None, None))
         if likes is None or dislikes is None or posts_count is None:
             email_hashes = store.get_message_hashes_by_user_id(
                     mm_user.user_id, mlist)
             likes, dislikes, _myvote = get_votes(mlist, email_hashes)
-            posts_count = len(email_hashes)
-            cache.set(cache_key, (likes, dislikes, posts_count))
+            cache.set(cache_key, (likes, dislikes))
         all_posts_url = "%s?list=%s" % \
-                (reverse("user_posts", mm_user.user_id), mlist)
+                (reverse("user_posts", args=[mm_user.user_id]), mlist)
         likestatus = "neutral"
         if likes - dislikes >= 10:
             likestatus = "likealot"

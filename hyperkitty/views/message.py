@@ -132,9 +132,11 @@ def vote(request, mlist_fqdn, message_id_hash):
         v.vote = value
         v.save()
 
-    # Invalidate the cache for the thread votes
+    # Invalidate the cache for the thread and user votes
     cache.delete("list:%s:thread:%s:votes"
-                 % (mlist_fqdn, message.thread.thread_id))
+                 % (mlist_fqdn, message.thread_id))
+    if message.user_id:
+        cache.delete("user:%s:list:%s:votes" % (user_id, mlist_fqdn))
 
     # Extract all the votes for this message to refresh it
     set_message_votes(message, request.user)
