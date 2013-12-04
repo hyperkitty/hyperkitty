@@ -23,9 +23,10 @@ import datetime
 
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.cache import cache
+from django.http import HttpRequest
 
 from hyperkitty.models import Rating
-from hyperkitty.lib.view_helpers import get_display_dates
+from hyperkitty.lib.view_helpers import get_display_dates, show_mlist
 from hyperkitty.lib.voting import set_thread_votes
 from hyperkitty.lib.paginator import paginate
 
@@ -172,3 +173,44 @@ class VotingTestCase(TestCase):
         set_thread_votes(thread_2)
         self.assertEqual(thread_2.likes, 1)
         self.assertEqual(thread_2.dislikes, 0)
+
+
+#
+# view_helpers.show_mlist()
+#
+
+class FakeKSList(object):
+    def __init__(self, name):
+        self.name = name
+
+class ShowMlistTestCase(TestCase):
+
+    def _do_test(self, listdomain, vhost, expected):
+        mlist = FakeKSList("test@%s" % listdomain)
+        req = HttpRequest()
+        req.META["HTTP_HOST"] = vhost
+        self.assertEqual(show_mlist(mlist, req), expected)
+
+    def test_same_domain(self):
+        self._do_test("example.com", "example.com", True)
+        self._do_test("lists.example.com", "lists.example.com", True)
+
+    def test_web_subdomain(self):
+        self._do_test("example.com", "www.example.com", True)
+        self._do_test("example.com", "lists.example.com", True)
+
+    def test_mail_subdomain(self):
+        self._do_test("lists.example.com", "example.com", True)
+
+    def test_different_subdomains(self):
+        self._do_test("lists.example.com", "archives.example.com", True)
+
+    def test_different_domains(self):
+        self._do_test("example.com", "another-example.com", False)
+        self._do_test("lists.example.com", "archives.another-example.com", False)
+
+    def test_single_component_domain(self):
+        self._do_test("intranet", "intranet", True)
+
+    def test_different_single_component_domain(self):
+        self._do_test("intranet", "extranet", False)

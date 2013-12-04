@@ -34,13 +34,15 @@ from mailmanclient import Client, MailmanConnectionError
 from mailman.interfaces.archiver import ArchivePolicy
 
 from hyperkitty.lib import get_store
+from hyperkitty.lib.view_helpers import show_mlist
 from hyperkitty.lib.mailman import is_mlist_authorized
 
 
 def index(request):
-    store = get_store(request)
-    lists = store.get_lists()
     now = datetime.datetime.now()
+    store = get_store(request)
+    lists = [ l for l in store.get_lists()
+              if not settings.FILTER_VHOST or show_mlist(l, request) ]
     initials = set()
     for mlist in lists:
         if mlist.archive_policy != ArchivePolicy.private:

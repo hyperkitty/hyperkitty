@@ -156,3 +156,10 @@ def get_recent_list_activity(store, mlist):
     # return the proper format for the javascript chart function
     return [ {"date": d, "count": emails_per_date[d]}
              for d in sorted(emails_per_date) ]
+
+
+def show_mlist(mlist, request):
+    def get_domain(host):
+        return ".".join(host.split(".")[-2:])
+    return (get_domain(mlist.name.partition("@")[2])
+            == get_domain(request.get_host()))
