@@ -12,6 +12,7 @@ created using the following command::
 
     python hyperkitty_standalone/manage.py syncdb
     python hyperkitty_standalone/manage.py migrate hyperkitty
+    python hyperkitty_standalone/manage.py migrate social_auth
 
 KittyStore's database is configured using an URI. The syntax is as follows::
 
