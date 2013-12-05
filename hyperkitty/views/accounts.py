@@ -138,12 +138,19 @@ def user_profile(request):
                       "msg": FLASH_MESSAGES[flash_msg][1] }
         flash_messages.append(flash_msg)
 
+    # Extract the gravatar_url used by django_gravatar2.  The site
+    # administrator could alternatively set this to http://cdn.libravatar.org/
+    gravatar_url = getattr(settings, 'GRAVATAR_URL', 'http://www.gravatar.com')
+    gravatar_shortname = '.'.join(gravatar_url.split('.')[-2:]).strip('/')
+
     context = {
         'user_profile' : user_profile,
         'form': form,
         'emails': emails,
         'favorites': favorites,
         'flash_messages': flash_messages,
+        'gravatar_url': gravatar_url,
+        'gravatar_shortname': gravatar_shortname,
     }
     return render(request, "user_profile.html", context)
 
