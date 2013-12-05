@@ -90,14 +90,15 @@ SSL = 'SSL'
 class SSLRedirect(object):
 
     def process_view(self, request, view_func, view_args, view_kwargs):
-        secure = view_kwargs.pop(SSL, False)
-        if request.user.is_authenticated():
-            secure = True
+        want_secure = view_kwargs.pop(SSL, False)
         if not settings.USE_SSL: # User-disabled (e.g: development server)
-            secure = False
+            return # but after having removed the 'SSL' kwarg
 
-        if not secure == self._is_secure(request):
-            return self._redirect(request, secure)
+        if request.user.is_authenticated():
+            want_secure = True
+
+        if not want_secure == self._is_secure(request):
+            return self._redirect(request, want_secure)
 
     def _is_secure(self, request):
         if request.is_secure():
