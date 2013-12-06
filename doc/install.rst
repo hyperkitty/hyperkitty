@@ -70,8 +70,12 @@ And reload Apache. We're almost ready. But you need to collect the static files
 from HyperKitty (which resides somewhere on your pythonpath) to be able to
 serve them from the site directory. All you have to do is run::
 
-    python hyperkitty_standalone/manage.py collectstatic
-    python hyperkitty_standalone/manage.py assets build --parse-templates
+    django-admin collectstatic --pythonpath hyperkitty_standalone --settings settings
+    django-admin assets --pythonpath hyperkitty_standalone --settings settings build --parse-templates
+
+.. note::
+    Your ``django-admin`` command may be called ``django-admin.py`` depending
+    on your installation method.
 
 These static files will be collected in the ``hyperkitty_standalone/static``
 directory and served by Apache. You should now be all set. Try accessing
@@ -109,7 +113,7 @@ with some data that may be useful, for example a set of thread categories to
 assign to your mailing-list threads. This can be done by running the following
 command::
 
-    python hyperkitty_standalone/manage.py loaddata first_start
+    django-admin loaddata --pythonpath hyperkitty_standalone --settings settings first_start
 
 Thread categories can be edited and added from the Django administration
 interface (append ``/admin`` to your base URL).
@@ -137,8 +141,8 @@ This command may take a long time to complete, don't interrupt it.
 
 Then, to update the HyperKitty database, run::
 
-    python hyperkitty_standalone/manage.py syncdb
-    python hyperkitty_standalone/manage.py migrate hyperkitty
+    django-admin syncdb  --pythonpath hyperkitty_standalone --settings settings
+    django-admin migrate --pythonpath hyperkitty_standalone --settings settings
 
 After those commands complete, your database will be updated, you can start
 your webserver again, and restart Mailman (to take the KittyStore upgrade into

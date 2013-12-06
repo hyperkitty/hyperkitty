@@ -10,9 +10,8 @@ access URLs in ``hyperkitty_standalone/settings.py`` (or
 ``hyperkitty_standalone/settings_local.py``). HyperKitty's database can be
 created using the following command::
 
-    python hyperkitty_standalone/manage.py syncdb
-    python hyperkitty_standalone/manage.py migrate hyperkitty
-    python hyperkitty_standalone/manage.py migrate social_auth
+    django-admin syncdb  --pythonpath hyperkitty_standalone --settings settings
+    django-admin migrate --pythonpath hyperkitty_standalone --settings settings
 
 KittyStore's database is configured using an URI. The syntax is as follows::
 

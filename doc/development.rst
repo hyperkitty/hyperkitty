@@ -55,10 +55,14 @@ If you ever want to turn the ``DEBUG`` variable to ``False`` (by removing it
 from ``settings_local.py``), you'll have to run two additional commands at
 first and each time you change the static files::
 
-    python hyperkitty_standalone/manage.py collectstatic
-    python hyperkitty_standalone/manage.py assets build --parse-templates
+    django-admin collectstatic --pythonpath hyperkitty_standalone --settings settings
+    django-admin assets --pythonpath hyperkitty_standalone --settings settings build --parse-templates
 
 But for development purposes, it's better to keep ``DEBUG = True``.
+
+.. note::
+    Your ``django-admin`` command may be called ``django-admin.py`` depending
+    on your installation method.
 
 
 .. Setting up the databases
@@ -72,8 +76,7 @@ Running HyperKitty
 If you're coding on HyperKitty, you can use Django's integrated web server.
 It can be run with the following command::
 
-    cd hyperkitty_standalone
-    python manage.py runserver
+    django-admin runserver --pythonpath hyperkitty_standalone --settings settings
 
 .. warning::
     You should use the development server only locally. While it's possible to
@@ -86,7 +89,7 @@ Testing
 
 Use the following command::
 
-    python hyperkitty_standalone/manage.py test hyperkitty
+    django-admin test --pythonpath hyperkitty_standalone --settings settings hyperkitty
 
 All test modules reside in the ``hyperkitty/tests`` directory
 and this is where you should put your own tests, too. To make the django test
