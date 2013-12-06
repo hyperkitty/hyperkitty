@@ -219,4 +219,4 @@ def recent_activity(request, mlist_fqdn):
     mlist = store.get_list(mlist_fqdn)
     evolution = get_recent_list_activity(store, mlist)
     return HttpResponse(json.dumps({"evolution": evolution}),
-                        mimetype='application/javascript')
+                        content_type='application/javascript')

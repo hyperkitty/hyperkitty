@@ -216,7 +216,7 @@ def replies(request, mlist_fqdn, threadid):
         response["more_pending"] = True
         response["next_offset"] = offset + chunk_size
     return HttpResponse(json.dumps(response),
-                        mimetype='application/javascript')
+                        content_type='application/javascript')
 
 
 @check_mlist_private
@@ -265,7 +265,7 @@ def tags(request, mlist_fqdn, threadid):
 
     response = {"tags": [ t.tag for t in tags ], "html": html}
     return HttpResponse(json.dumps(response),
-                        mimetype='application/javascript')
+                        content_type='application/javascript')
 
 @check_mlist_private
 def suggest_tags(request, mlist_fqdn, threadid):
@@ -279,7 +279,7 @@ def suggest_tags(request, mlist_fqdn, threadid):
         tags = Tag.objects.all()
     tags = tags.exclude(tag__in=current_tags).values_list("tag", flat=True)
     tags = [ t.encode("utf8") for t in tags ]
-    return HttpResponse(json.dumps(tags), mimetype='application/javascript')
+    return HttpResponse(json.dumps(tags), content_type='application/javascript')
 
 
 @check_mlist_private
@@ -308,7 +308,7 @@ def favorite(request, mlist_fqdn, threadid):
             fav.delete()
     else:
         raise SuspiciousOperation
-    return HttpResponse("success", mimetype='text/plain')
+    return HttpResponse("success", content_type='text/plain')
 
 
 @check_mlist_private

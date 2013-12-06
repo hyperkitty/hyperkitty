@@ -149,7 +149,7 @@ def vote(request, mlist_fqdn, message_id_hash):
     result = { "like": message.likes, "dislike": message.dislikes,
                "html": html, }
     return HttpResponse(json.dumps(result),
-                        mimetype='application/javascript')
+                        content_type='application/javascript')
 
 
 @login_required
@@ -194,7 +194,7 @@ def reply(request, mlist_fqdn, message_id_hash):
     result = {"result": "The reply has been sent successfully.",
               "message_html": html}
     return HttpResponse(json.dumps(result),
-                        mimetype="application/javascript")
+                        content_type="application/javascript")
 
 
 @login_required
