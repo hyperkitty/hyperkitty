@@ -165,19 +165,8 @@
 {% block additionaljs %}
 
 <script type="text/javascript" >
-/*   
     $(function() {
         ajax_chart(".chart", "{% url 'list_recent_activity' mlist.name %}");
-    });
-*/
-    
-    $(function() {
-	chart(
-	    ".chart",
-	    ["{{days|join:'","'}}"],
-            {{evolution}},
-            "{{ archives_baseurl }}"
-	)
     });
 </script>
 
