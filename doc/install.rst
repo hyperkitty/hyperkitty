@@ -118,11 +118,6 @@ command::
 Thread categories can be edited and added from the Django administration
 interface (append ``/admin`` to your base URL).
 
-HyperKitty includes a cache to speed up database access, and it is recommended to setup a periodic task (cron job) to refresh that cache. The following command should be run once a day::
-
-    kittystore-refresh-cache -p {path-to-hyperkitty_standalone} -s settings_admin
-
-For example, you can put it in a script in your ``/etc/cron.daily`` directory.
 
 Upgrading
 =========
@@ -147,6 +142,20 @@ Then, to update the HyperKitty database, run::
 After those commands complete, your database will be updated, you can start
 your webserver again, and restart Mailman (to take the KittyStore upgrade into
 account).
+
+
+Maintenance
+===========
+
+HyperKitty imports some properties from Mailman, like the list description, its
+privacy status, etc. This import is done and refreshed on each message arrival.
+If you change some properties in Mailman and you want to manually refresh them
+in HyperKitty, you can run the following command::
+
+    kittystore-sync-mailman -p {path-to-hyperkitty_standalone} -s settings
+
+This command will refresh list properties and user IDs, and may take several
+minutes to complete.
 
 
 License
