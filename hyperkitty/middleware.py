@@ -143,6 +143,7 @@ class TimezoneMiddleware(object):
 
 # Cache some metadata from Mailman about the logged in user
 
+from urllib2 import HTTPError
 from mailmanclient import Client as MailmanClient
 from mailmanclient import MailmanConnectionError
 
@@ -163,7 +164,7 @@ class MailmanUserMetadata(object):
                     settings.MAILMAN_API_PASS)
         try:
             user = client.get_user(request.user.email)
-        except MailmanConnectionError:
+        except (MailmanConnectionError, HTTPError):
             return
         request.session[self.session_key] = \
                 [ s.address for s in user.subscriptions ]
