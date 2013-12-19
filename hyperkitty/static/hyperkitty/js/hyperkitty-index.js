@@ -47,7 +47,8 @@ function setup_index(url_template) {
     $(".all-lists table.lists tr.list").each(function() {
         var listelem = $(this);
         var listname = $.trim(listelem.find(".list-address").text());
-        var url = url_template.replace(/PLACEHOLDER@PLACEHOLDER/, listname);
+        url_template = url_template.replace(/@/, "%40"); // Django 1.5 compatibility, it did not escape the url tag
+        var url = url_template.replace(/PLACEHOLDER%40PLACEHOLDER/, listname);
         ajax_chart(listelem.find("div.chart"), url, {height: 30});
     });
 }
