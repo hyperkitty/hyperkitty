@@ -31,9 +31,9 @@
                 {% if email.user_id %}
                 <a href="{% url 'public_user_profile' user_id=email.user_id %}"
                    title="See {{ email.sender_name|escapeemail|escape }}'s profile"
-                   >{{email.sender_name|escapeemail}}</a>
+                   >{{email.sender_name|default:"(no name)"|escapeemail}}</a>
                 {% else %}
-                   {{email.sender_name|escapeemail}}
+                   {{email.sender_name|default:"(no name)"|escapeemail}}
                 {% endif %}
             </span>
             <br />
