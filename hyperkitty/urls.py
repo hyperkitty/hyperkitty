@@ -22,7 +22,7 @@
 
 from django.conf.urls import patterns, include, url
 from django.views.generic.base import TemplateView
-from hyperkitty.api import ListResource, EmailResource, ThreadResource, SearchResource
+from hyperkitty.api import ListResource, EmailResource, ThreadResource
 from hyperkitty.api import TagResource
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
@@ -110,8 +110,6 @@ urlpatterns = patterns('hyperkitty.views',
         EmailResource.as_view(), name="api_email"),
     url(r'^api/thread\/(?P<mlist_fqdn>[^/@]+@[^/@]+)\/(?P<threadid>.*)/',
         ThreadResource.as_view(), name="api_thread"),
-    url(r'^api/search\/(?P<mlist_fqdn>[^/@]+@[^/@]+)\/(?P<field>.*)\/(?P<keyword>.*)/',
-        SearchResource.as_view(), name="api_search"),
     url(r'^api/tag\/', TagResource.as_view(), name="api_tag"),
 
     # Errors

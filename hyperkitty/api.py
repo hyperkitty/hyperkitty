@@ -108,32 +108,6 @@ class ThreadResource(APIView):
             return Response(ThreadSerializer(thread).data)
 
 
-class SearchResource(APIView):
-    """ Resource used to search the archives using the REST API.
-    """
-
-    def get(self, request, mlist_fqdn, field, keyword):
-        fields = ['Subject', 'Content', 'SubjectContent', 'From']
-        if field not in fields:
-            raise ParseError(detail="Unknown field: " + field + ". Supported fields are " + ", ".join(fields))
-
-        store = get_store(request)
-        threads = None
-        if field == 'Subject':
-            threads = store.search_list_for_subject(mlist_fqdn, keyword)
-        elif field == 'Content':
-            threads = store.search_list_for_content(mlist_fqdn, keyword)
-        elif field == 'SubjectContent':
-            threads = store.search_list_for_content_subject(mlist_fqdn, keyword)
-        elif field == 'From':
-            threads = store.search_list_for_sender(mlist_fqdn, keyword)
-
-        if not threads:
-            return Response(status=404)
-        else:
-            return Response(EmailSerializer(threads, many=True).data)
-
-
 class TagResource(APIView):
     """
     Resource used to retrieve tags from the database using the REST API.
