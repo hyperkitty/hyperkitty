@@ -263,6 +263,12 @@ def subscriptions(request):
 
 
 def public_profile(request, user_id):
+    class FakeMailmanUser(object):
+        display_name = None
+        created_on = None
+        addresses = []
+        subscription_list_ids = []
+    store = get_store(request)
     try:
         client = mailmanclient.Client('%s/3.0' %
                     settings.MAILMAN_REST_SERVER,
@@ -272,9 +278,13 @@ def public_profile(request, user_id):
     except HTTPError:
         raise Http404("No user with this ID: %s" % user_id)
     except mailmanclient.MailmanConnectionError:
-        return HttpResponse("Can't connect to Mailman",
-                            content_type="text/plain", status=500)
-    store = get_store(request)
+        db_user = store.get_user(user_id)
+        if db_user is None:
+            return HttpResponse("Can't connect to Mailman",
+                                content_type="text/plain", status=500)
+        mm_user = FakeMailmanUser()
+        mm_user.display_name = list(db_user.senders)[0].name
+        mm_user.addresses = db_user.addresses
     fullname = mm_user.display_name
     if not fullname:
         fullname = store.get_sender_name(user_id)
@@ -291,11 +301,15 @@ def public_profile(request, user_id):
         email = unicode(mm_user.addresses[0])
     except KeyError:
         email = None
+    if mm_user.created_on is not None:
+        creation = dateutil.parser.parse(mm_user.created_on)
+    else:
+        creation = None
     context = {
         "fullname": fullname,
         "mm_user": mm_user,
         "email": email,
-        "creation": dateutil.parser.parse(mm_user.created_on),
+        "creation": creation,
         "subscriptions": subscriptions,
         "posts_count": sum([s["posts_count"] for s in subscriptions]),
         "likes": likes,
