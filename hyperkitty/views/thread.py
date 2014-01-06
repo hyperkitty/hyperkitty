@@ -172,7 +172,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'category': category,
         'flash_messages': flash_messages,
     }
-    context["participants"].sort(key=lambda x: x[0].lower())
+    context["participants"].sort(key=lambda p: p.name.lower())
 
     if is_bot:
         # Don't rely on AJAX to load the replies

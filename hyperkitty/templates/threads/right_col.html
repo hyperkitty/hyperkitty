@@ -61,10 +61,10 @@
     <div id="participants">
         <span id="participants_title">participants</span> ({{participants|length}})
         <ul>
-            {% for name, email in participants %}
+            {% for participant in participants %}
             <li>
-                {% gravatar email 20 %}
-                {{ name|escapeemail }}
+                {% gravatar participant.email 20 %}
+                {{ participant.name|escapeemail }}
             </li>
             {% endfor %}
         </ul>
