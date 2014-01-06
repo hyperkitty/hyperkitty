@@ -12,7 +12,10 @@
                     <a name="{{thread.thread_id}}"
                        href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
                        >{{ thread.starting_email.subject|strip_subject:mlist }}</a></span>
-                <span class="thread-date">{{ thread|get_date|timesince }}</span>
+                <span class="thread-date"
+                      title="{{ thread|get_date|date:"l, j F Y H:i:s" }}">
+                    {{ thread|get_date|timesince }}
+                </span>
             </div>
             <div class="thread-content">
                 <div class="gravatar">
