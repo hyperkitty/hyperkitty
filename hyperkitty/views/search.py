@@ -27,7 +27,6 @@ from django.http import Http404
 from hyperkitty.models import Tag
 from hyperkitty.lib import get_store
 from hyperkitty.lib.paginator import paginate
-from hyperkitty.lib.voting import set_message_votes
 
 from hyperkitty.views.list import _thread_list
 from hyperkitty.lib.mailman import check_mlist_private, is_mlist_authorized
@@ -121,7 +120,8 @@ def search(request, page=1):
     total = query_result["total"]
     messages = query_result["results"]
     for message in messages:
-        set_message_votes(message, request.user)
+        message.myvote = message.get_vote_by_user_id(
+                request.session.get("user_id"))
 
     paginator = SearchPaginator(messages, 10, total)
     messages = paginate(messages, page_num, paginator=paginator)

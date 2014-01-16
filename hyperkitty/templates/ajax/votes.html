@@ -16,19 +16,19 @@
             <tbody>
             {% for vote in votes %}
                 <tr>
-                    <td>{{ vote.list_address }}</td>
-                    <td><a href="{% url 'message_index' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}"
+                    <td>{{ vote.list_name }}</td>
+                    <td><a href="{% url 'message_index' mlist_fqdn=vote.list_name message_id_hash=vote.message.message_id_hash %}"
                             >{{ vote.message.subject }}</a></td>
                     <td>{{ vote.message.sender_name }}</td>
                     <td>{{ vote.message|get_date|date:"l, j F Y H:i:s" }}</td>
                     <td>
                         <form method="post" class="likeform"
-                              action="{% url 'message_vote' mlist_fqdn=vote.list_address message_id_hash=vote.messageid %}">
+                              action="{% url 'message_vote' mlist_fqdn=vote.list_name message_id_hash=vote.message.message_id_hash %}">
                             {% csrf_token %}
                             <input type="hidden" name="vote" value="0" />
-                            {% if vote.vote == 1 %}
+                            {% if vote.value == 1 %}
                             <span class="youlike">You like it
-                            {% elif vote.vote == -1 %}
+                            {% elif vote.value == -1 %}
                             <span class="youdislike">You dislike it
                             {% endif %}
                             (<a href="#cancelvote" class="cancel">cancel</a>)</span>

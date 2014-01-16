@@ -33,9 +33,7 @@ from django.core.cache import cache
 from mailman.interfaces.archiver import ArchivePolicy
 from mailmanclient import Client
 
-from hyperkitty.models import Rating
 from hyperkitty.lib import get_store
-from hyperkitty.lib.voting import get_votes
 
 
 def subscribe(list_address, user):
@@ -55,6 +53,7 @@ def subscribe(list_address, user):
 def get_subscriptions(store, client, mm_user):
     if not mm_user:
         return []
+    ks_user = store.get_user(mm_user.user_id)
     subscriptions = []
     for mlist_id in mm_user.subscription_list_ids:
         mlist = client.get_list(mlist_id).fqdn_listname
@@ -63,13 +62,7 @@ def get_subscriptions(store, client, mm_user):
             continue
         posts_count = store.get_message_count_by_user_id(
                 mm_user.user_id, mlist)
-        cache_key = "user:%s:list:%s:votes" % (mm_user.user_id, mlist)
-        likes, dislikes = cache.get(cache_key, (None, None))
-        if likes is None or dislikes is None or posts_count is None:
-            email_hashes = store.get_message_hashes_by_user_id(
-                    mm_user.user_id, mlist)
-            likes, dislikes, _myvote = get_votes(mlist, email_hashes)
-            cache.set(cache_key, (likes, dislikes))
+        likes, dislikes = ks_user.get_votes_in_list(mlist)
         all_posts_url = "%s?list=%s" % \
                 (reverse("user_posts", args=[mm_user.user_id]), mlist)
         likestatus = "neutral"

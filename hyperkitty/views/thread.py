@@ -39,7 +39,6 @@ from hyperkitty.views.forms import AddTagForm, ReplyForm, CategoryForm
 from hyperkitty.lib import get_store, stripped_subject
 from hyperkitty.lib.view_helpers import (get_months, get_category_widget,
         FLASH_MESSAGES)
-from hyperkitty.lib.voting import set_message_votes
 from hyperkitty.lib.mailman import check_mlist_private
 
 
@@ -65,7 +64,7 @@ def _get_thread_replies(request, thread, offset=1, limit=None):
     emails = list(emails)
     for email in emails:
         # Extract all the votes for this message
-        set_message_votes(email, request.user)
+        email.myvote = email.get_vote_by_user_id(request.session.get("user_id"))
         if sort_mode == "thread":
             email.level = email.thread_depth - 1 # replies start ragged left
             if email.level > 5:
@@ -84,7 +83,8 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     prev_thread, next_thread = store.get_thread_neighbors(mlist_fqdn, threadid)
 
     sort_mode = request.GET.get("sort", "thread")
-    set_message_votes(thread.starting_email, request.user)
+    thread.starting_email.myvote = thread.starting_email.get_vote_by_user_id(
+            request.session.get("user_id"))
 
     # Tags
     tag_form = AddTagForm()

@@ -24,7 +24,6 @@ from rest_framework.exceptions import ParseError
 
 from hyperkitty.models import Tag
 from hyperkitty.lib import get_store
-from hyperkitty.lib.voting import get_votes
 
 
 class ListSerializer(serializers.Serializer):
@@ -90,7 +89,6 @@ class EmailResource(APIView):
         if not email:
             return Response(status=404)
         else:
-            email.likes, email.dislikes, _ignore = get_votes(mlist_fqdn, email.message_id_hash)
             return Response(EmailSerializer(email).data)
 
 

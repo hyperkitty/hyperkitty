@@ -33,6 +33,7 @@ OVERRIDE_SETTINGS = {
     "KITTYSTORE_DEBUG": False,
     "USE_MOCKUPS": False,
     "ROOT_URLCONF": "hyperkitty.urls",
+    "CACHES": {},
 }
 
 

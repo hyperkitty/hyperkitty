@@ -35,9 +35,7 @@ from django.contrib.auth.decorators import login_required
 from hyperkitty.lib import get_store
 from hyperkitty.lib.view_helpers import get_months
 from hyperkitty.lib.posting import post_to_list, PostingFailed
-from hyperkitty.lib.voting import set_message_votes
 from hyperkitty.lib.mailman import check_mlist_private
-from hyperkitty.models import Rating
 from forms import ReplyForm, PostForm
 
 
@@ -52,7 +50,7 @@ def index(request, mlist_fqdn, message_id_hash):
     if message is None:
         raise Http404
     message.sender_email = message.sender_email.strip()
-    set_message_votes(message, request.user)
+    message.myvote = message.get_vote_by_user_id(request.session.get("user_id"))
     mlist = store.get_list(mlist_fqdn)
 
     context = {
@@ -93,13 +91,16 @@ def attachment(request, mlist_fqdn, message_id_hash, counter, filename):
 
 @check_mlist_private
 def vote(request, mlist_fqdn, message_id_hash):
-    """ Add a rating to a given message identified by messageid. """
+    """ Vote for or against a given message identified by messageid. """
     if request.method != 'POST':
         raise SuspiciousOperation
 
     if not request.user.is_authenticated():
         return HttpResponse('You must be logged in to vote',
                             content_type="text/plain", status=403)
+    if "user_id" not in request.session:
+        return HttpResponse("Could not find or create your user ID in Mailman",
+                            content_type="text/plain", status=500)
 
     store = get_store(request)
     message = store.get_message_by_hash_from_list(mlist_fqdn, message_id_hash)
@@ -107,39 +108,10 @@ def vote(request, mlist_fqdn, message_id_hash):
         raise Http404
 
     value = int(request.POST['vote'])
-    if value not in [-1, 0, 1]:
-        raise SuspiciousOperation
-
-    # Checks if the user has already voted for a this message.
-    try:
-        v = Rating.objects.get(user=request.user, messageid=message_id_hash,
-                               list_address=mlist_fqdn)
-        if v.vote == value:
-            return HttpResponse("You've already cast this vote",
-                                content_type="text/plain", status=403)
-    except Rating.DoesNotExist:
-        if value != 0:
-            v = Rating(list_address=mlist_fqdn, messageid=message_id_hash,
-                       vote=value)
-            v.user = request.user
-        else:
-            return HttpResponse("There is no vote to cancel",
-                                content_type="text/plain", status=500)
-
-    if value == 0:
-        v.delete()
-    else:
-        v.vote = value
-        v.save()
-
-    # Invalidate the cache for the thread and user votes
-    cache.delete("list:%s:thread:%s:votes"
-                 % (mlist_fqdn, message.thread_id))
-    if message.user_id:
-        cache.delete("user:%s:list:%s:votes" % (user_id, mlist_fqdn))
+    message.vote(value, request.session["user_id"])
 
     # Extract all the votes for this message to refresh it
-    set_message_votes(message, request.user)
+    message.myvote = message.get_vote_by_user_id(request.session.get("user_id"))
     t = loader.get_template('messages/like_form.html')
     html = t.render(RequestContext(request, {
             "object": message,

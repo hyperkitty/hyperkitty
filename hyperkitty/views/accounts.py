@@ -38,13 +38,12 @@ from social_auth.backends import SocialAuthBackend
 import dateutil.parser
 import mailmanclient
 
-from hyperkitty.models import UserProfile, Rating, Favorite, LastView
+from hyperkitty.models import UserProfile, Favorite, LastView
 from hyperkitty.views.forms import RegistrationForm, UserProfileForm
 from hyperkitty.lib import get_store
 from hyperkitty.lib.view_helpers import FLASH_MESSAGES
 from hyperkitty.lib.paginator import paginate
 from hyperkitty.lib.mailman import get_subscriptions, is_mlist_authorized
-from hyperkitty.lib.voting import set_message_votes
 
 
 logger = logging.getLogger(__name__)
@@ -226,18 +225,11 @@ def last_views(request):
 @login_required
 def votes(request):
     store = get_store(request)
-    # Votes
-    try:
-        votes = Rating.objects.filter(user=request.user)
-    except Rating.DoesNotExist:
-        votes = []
-    votes = paginate(votes, request.GET.get('vpage'))
-    for vote in votes:
-        vote.message = store.get_message_by_hash_from_list(
-                vote.list_address, vote.messageid)
-        if vote.message is None:
-            vote.delete()
-    votes = [ v for v in votes if v.message is not None ]
+    if "user_id" not in request.session:
+        return HttpResponse("Could not find or create your user ID in Mailman",
+                            content_type="text/plain", status=500)
+    user = store.get_user(request.session["user_id"])
+    votes = paginate(user.votes, request.GET.get('vpage'))
     return render(request, 'ajax/votes.html', {
                 "votes": votes,
             })
@@ -360,7 +352,8 @@ def posts(request, user_id):
     messages = paginate(messages, page_num)
 
     for message in messages:
-        set_message_votes(message, request.user)
+        message.myvote = message.get_vote_by_user_id(
+                request.session.get("user_id"))
 
     context = {
         'user_id': user_id,

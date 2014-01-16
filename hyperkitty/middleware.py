@@ -58,15 +58,17 @@ class KittyStoreDjangoMiddleware(object):
     def process_request(self, request):
         if request.path == reverse("error_schemaupgrade"):
             return # Display the error page
+        if "kittystore.store" in request.environ:
+            return # Already set, for example by unit tests
         try:
-            request.environ['kittystore.store']  = self._local.store
+            request.environ['kittystore.store'] = self._local.store
         except AttributeError:
             try:
                 store = kittystore.get_store(settings)
             except kittystore.SchemaUpgradeNeeded:
                 return redirect("error_schemaupgrade")
             else:
-                request.environ['kittystore.store']  = \
+                request.environ['kittystore.store'] = \
                         self._local.__dict__.setdefault('store', store)
 
     def process_response(self, request, response):
@@ -156,7 +158,7 @@ class MailmanUserMetadata(object):
             return
         if not request.user.email:
             return # Can this really happen?
-        if self.session_key in request.session:
+        if "subscribed" in request.session and "user_id" in request.session:
             return # Already set
         client = MailmanClient('%s/3.0' %
                     settings.MAILMAN_REST_SERVER,
@@ -164,7 +166,13 @@ class MailmanUserMetadata(object):
                     settings.MAILMAN_API_PASS)
         try:
             user = client.get_user(request.user.email)
-        except (MailmanConnectionError, HTTPError):
+        except MailmanConnectionError:
             return
-        request.session[self.session_key] = \
+        except HTTPError, err:
+            if err.code == 404:
+                user = client.create_user(request.user.email, "")
+            else:
+                return
+        request.session["user_id"] = user.user_id
+        request.session["subscribed"] = \
                 [ s.address for s in user.subscriptions ]

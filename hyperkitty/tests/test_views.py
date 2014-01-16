@@ -38,7 +38,7 @@ import kittystore
 from kittystore.utils import get_message_id_hash
 from kittystore.test import FakeList, SettingsModule
 
-from hyperkitty.models import Rating, LastView
+from hyperkitty.models import LastView
 
 from hyperkitty.views.accounts import user_profile, user_registration
 
@@ -106,6 +106,10 @@ class LastViewsTestCase(TestCase):
         self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
         self.client.login(username='testuser', password='testPass')
         store = kittystore.get_store(SettingsModule(), debug=False, auto_create=True)
+        self.client.defaults = {"kittystore.store": store,
+                                "HTTP_USER_AGENT": "testbot",
+                                }
+        # Create test data
         ml = FakeList("list@example.com")
         ml.subject_prefix = u"[example] "
         # Create 3 threads
@@ -130,14 +134,9 @@ class LastViewsTestCase(TestCase):
         msg4["In-Reply-To"] = "<id3>"
         msg4.set_payload("Dummy message")
         store.add_to_list(ml, msg4)
-        # Factory
-        defaults = {"kittystore.store": store, "HTTP_USER_AGENT": "testbot"}
-        self.factory = RequestFactory(**defaults)
 
     def test_profile(self):
-        request = self.factory.get(reverse('user_last_views'))
-        request.user = self.user
-        response = last_views(request)
+        response = self.client.get(reverse('user_last_views'))
         self.assertContains(response, "<td>dummy@example.com</td>",
                             count=2, status_code=200, html=True)
 
@@ -145,10 +144,8 @@ class LastViewsTestCase(TestCase):
         responses = []
         for msgnum in range(3):
             threadid = get_message_id_hash("<id%d>" % (msgnum+1))
-            request = self.factory.get(reverse('thread',
-                        args=["list@example.com", threadid]))
-            request.user = self.user
-            response = thread_index(request, "list@example.com", threadid)
+            response = self.client.get(reverse('thread', args=(
+                        "list@example.com", threadid)))
             responses.append(response)
         # There's always one icon in the right column, so all counts are +1
         self.assertContains(responses[0], "icon-eye-close", count=2, status_code=200)
@@ -157,16 +154,13 @@ class LastViewsTestCase(TestCase):
 
     def test_thread_list(self):
         now = datetime.datetime.now()
-        request = self.factory.get(reverse('archives_with_month', args=["list@example.com", now.year, now.month]))
-        request.user = self.user
-        response = archives(request, "list@example.com", now.year, now.month)
+        response = self.client.get(reverse('archives_with_month', args=(
+                    "list@example.com", now.year, now.month)))
         self.assertContains(response, "icon-eye-close",
                             count=2, status_code=200)
 
     def test_overview(self):
-        request = self.factory.get(reverse('list_overview', args=["list@example.com"]))
-        request.user = self.user
-        response = overview(request, "list@example.com")
+        response = self.client.get(reverse('list_overview', args=["list@example.com"]))
         self.assertContains(response, "icon-eye-close",
                             count=4, status_code=200)
 
@@ -178,74 +172,78 @@ class MessageViewsTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
                 'testuser', 'test@example.com', 'testPass')
-        # Fake KittStore
-        class FakeMessage(object):
-            def __init__(self, h):
-                self.message_id_hash = h
-                self.list_name = "list@example.com"
-                self.thread_id = h
-                self.user_id = None
-        self.store = Mock()
-        self.store.get_message_by_hash_from_list.side_effect = \
-                lambda l, h: FakeMessage(h)
-        defaults = {"kittystore.store": self.store}
-        self.factory = RequestFactory(**defaults)
+        self.client.login(username='testuser', password='testPass')
+        # use a temp variable below because self.client.session is actually a
+        # property which returns a new instance en each call :-/
+        session = self.client.session
+        session["user_id"] = u"testuser"
+        session.save()
+        self.store = kittystore.get_store(SettingsModule(),
+                                          debug=False, auto_create=True)
+        self.client.defaults = {"kittystore.store": self.store,
+                                "HTTP_USER_AGENT": "testbot",
+                                }
+        # Create a dummy message to test on
+        ml = FakeList("list@example.com")
+        msg = Message()
+        msg["From"] = "dummy@example.com"
+        msg["Message-ID"] = "<msg>"
+        msg.set_payload("Dummy message")
+        self.store.add_to_list(ml, msg)
 
 
     def test_vote_up(self):
-        request = self.factory.post("/vote", {"vote": "1"})
-        request.user = self.user
-        resp = vote(request, 'list@example.com', '123')
+        url = reverse('message_vote', args=("list@example.com",
+                      get_message_id_hash("msg")))
+        resp = self.client.post(url, {"vote": "1"})
         self.assertEqual(resp.status_code, 200)
-        v = Rating.objects.get(user=self.user, messageid="123",
-                               list_address='list@example.com')
-        self.assertEqual(v.vote, 1)
         result = json.loads(resp.content)
         self.assertEqual(result["like"], 1)
         self.assertEqual(result["dislike"], 0)
 
 
     def test_vote_down(self):
-        request = self.factory.post("/vote", {"vote": "-1"})
-        request.user = self.user
-        resp = vote(request, 'list@example.com', '123')
+        url = reverse('message_vote', args=("list@example.com",
+                      get_message_id_hash("msg")))
+        resp = self.client.post(url, {"vote": "-1"})
         self.assertEqual(resp.status_code, 200)
-        v = Rating.objects.get(user=self.user, messageid="123",
-                               list_address='list@example.com')
-        self.assertEqual(v.vote, -1)
         result = json.loads(resp.content)
         self.assertEqual(result["like"], 0)
         self.assertEqual(result["dislike"], 1)
 
 
     def test_vote_cancel(self):
-        v = Rating(list_address="list@example.com", messageid="m1", vote=1)
-        v.user = self.user
-        v.save()
-        v = Rating(list_address="list@example.com", messageid="m2", vote=-1)
-        v.user = self.user
-        v.save()
-        for msg in ["m1", "m2"]:
-            request = self.factory.post("/vote", {"vote": "0"})
-            request.user = self.user
-            resp = vote(request, 'list@example.com', msg)
+        ml = FakeList("list@example.com")
+        msg = Message()
+        msg["From"] = "dummy@example.com"
+        msg["Message-ID"] = "<msg1>"
+        msg.set_payload("Dummy message")
+        self.store.add_to_list(ml, msg)
+        msg.replace_header("Message-ID", "<msg2>")
+        self.store.add_to_list(ml, msg)
+        msg1 = self.store.get_message_by_id_from_list("list@example.com", "msg1")
+        msg1.vote(1, u"testuser")
+        msg2 = self.store.get_message_by_id_from_list("list@example.com", "msg2")
+        msg2.vote(-1, u"testuser")
+        self.assertEqual(msg1.likes, 1)
+        self.assertEqual(msg2.dislikes, 1)
+        for msg in (msg1, msg2):
+            url = reverse('message_vote', args=("list@example.com",
+                          msg.message_id_hash))
+            resp = self.client.post(url, {"vote": "0"})
             self.assertEqual(resp.status_code, 200)
-            try:
-                Rating.objects.get(user=self.user, messageid=msg,
-                                   list_address='list@example.com')
-            except Rating.DoesNotExist:
-                pass
-            else:
-                self.fail("Vote for msg %s should have been deleted" % msg)
+            self.assertEqual(msg.likes, 0)
+            self.assertEqual(msg.dislikes, 0)
             result = json.loads(resp.content)
             self.assertEqual(result["like"], 0)
             self.assertEqual(result["dislike"], 0)
 
 
     def test_unauth_vote(self):
-        request = self.factory.post("/vote", {"vote": "1"})
-        request.user = AnonymousUser()
-        resp = vote(request, 'list@example.com', '123')
+        self.client.logout()
+        url = reverse('message_vote', args=("list@example.com",
+                      get_message_id_hash("msg")))
+        resp = self.client.post(url, {"vote": "1"})
         self.assertEqual(resp.status_code, 403)
 
 
