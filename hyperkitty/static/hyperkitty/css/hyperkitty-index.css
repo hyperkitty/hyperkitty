@@ -157,6 +157,7 @@
 
 .all-lists table.lists tr.inactive {
     background-color: #eee;
+    display: none;
 }
 .all-lists table.lists tr.inactive .list-name {
     color: #999;
