@@ -48,6 +48,13 @@
 
 <div class="span10 lists">
 
+{% if all_lists|length > 10 %}
+<div class="filter-lists">
+    <input name="filter" type="text" class="search-query input-medium" id="focusedInput"
+           placeholder="{% trans 'Filter list names' %}" />
+</div>
+{% endif %}
+
 <h1>
     {% trans 'Available lists' %}
     {% if sort_mode == 'active' %}
@@ -60,6 +67,7 @@
 </h1>
 
 {% if all_lists %}
+
 <p class="hide-switches">
     <label><input type="checkbox" value="inactive" checked="checked" /> Hide inactive</label>
     <label><input type="checkbox" value="private" /> Hide private</label>

@@ -44,6 +44,10 @@
 .all-lists p.hide-switches input {
     margin: 0;
 }
+.all-lists .filter-lists {
+    float: right;
+    margin-top: 1em;
+}
 
 
 /* initials */

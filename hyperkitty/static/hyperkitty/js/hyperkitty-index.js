@@ -34,6 +34,23 @@ function setup_index(url_template) {
         }
     });
 
+    // Filter
+    $(".filter-lists input").change(function() {
+        var filter = $(this).val().toLowerCase();
+        $("table.lists tr.list").each(function() {
+            var list_name = $(this).find("a.list-name").text();
+            var list_addr = $(this).find("a.list-address").text();
+            if (list_name.indexOf(filter) >= 0 || list_addr.indexOf(filter) >= 0) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    }).keyup(function() {
+        // fire the above change event after every letter
+        $(this).change();
+    }).focus();
+
     // Initials
     $(".initials").animate({ right: 0 }, {duration: 600});
     // Override the scrolling because we have a fixed header
