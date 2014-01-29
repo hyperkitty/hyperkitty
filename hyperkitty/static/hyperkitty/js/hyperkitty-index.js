@@ -25,27 +25,39 @@ function setup_index(url_template) {
     $("table.lists tr.list").click(function(e) {
         document.location.href = $(this).find("a.list-name").attr("href");
     });
-    $(".hide-switches input").click(function() {
-        var target = $("table.lists tr.list."+$(this).val());
-        if ($(this).prop("checked")) {
-            target.hide();
-        } else {
-            target.show();
-        }
-    });
 
     // Filter
-    $(".filter-lists input").change(function() {
-        var filter = $(this).val().toLowerCase();
+    function filter_lists() {
+        var hide_by_class = {};
+        $(".hide-switches input").each(function() {
+            var cls = $(this).val();
+            hide_by_class[cls] = $(this).prop("checked");
+        });
+        var filter = $.trim($(".filter-lists input").val().toLowerCase());
         $("table.lists tr.list").each(function() {
-            var list_name = $(this).find("a.list-name").text();
-            var list_addr = $(this).find("a.list-address").text();
-            if (list_name.indexOf(filter) >= 0 || list_addr.indexOf(filter) >= 0) {
-                $(this).show();
-            } else {
+            var list_name = $.trim($(this).find("a.list-name").text());
+            var list_addr = $.trim($(this).find("a.list-address").text());
+            var must_hide = false;
+            if (filter && list_name.indexOf(filter) === -1
+                       && list_addr.indexOf(filter) === -1) {
+                must_hide = true;
+            }
+            for (cls in hide_by_class) {
+                if ($(this).hasClass(cls) && hide_by_class[cls]) {
+                    must_hide = true;
+                }
+            }
+            if (must_hide) {
                 $(this).hide();
+            } else {
+                $(this).show();
             }
         });
+    }
+    $(".hide-switches input").click(filter_lists);
+    $(".filter-lists input").change(function() {
+        // reset status according to the "hide" checkboxes
+        filter_lists();
     }).keyup(function() {
         // fire the above change event after every letter
         $(this).change();
