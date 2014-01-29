@@ -111,7 +111,7 @@ def vote(request, mlist_fqdn, message_id_hash):
     message.vote(value, request.session["user_id"])
 
     # Extract all the votes for this message to refresh it
-    message.myvote = message.get_vote_by_user_id(request.session.get("user_id"))
+    message.myvote = message.get_vote_by_user_id(request.session["user_id"])
     t = loader.get_template('messages/like_form.html')
     html = t.render(RequestContext(request, {
             "object": message,

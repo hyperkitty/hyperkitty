@@ -4,10 +4,10 @@
           action="{% url 'message_vote' mlist_fqdn=object.list_name message_id_hash=message_id_hash %}">
     {% csrf_token %}
     <span class="likestatus {{ object.likestatus }}">+{{ object.likes }}/-{{ object.dislikes }}</span>
-    {% if object.myvote == 1 %}
+    {% if object.myvote and object.myvote.value == 1 %}
     <span class="youlike">You like it
         (<a href="#cancelvote" class="vote" data-vote="0">cancel</a>)</span>
-    {% elif object.myvote == -1 %}
+    {% elif object.myvote and object.myvote.value == -1 %}
     <span class="youdislike">You dislike it
         (<a href="#cancelvote" class="vote" data-vote="0">cancel</a>)</span>
     {% else %}
