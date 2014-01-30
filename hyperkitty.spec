@@ -1,5 +1,5 @@
 %global pypi_name HyperKitty
-%global prerel 1
+#%%global prerel 1
 
 Name:           hyperkitty
 Version:        0.1.7

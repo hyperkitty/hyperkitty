@@ -2,6 +2,17 @@
 News / Changelog
 ================
 
+0.1.7
+=====
+(2014-01-30)
+
+Many significant changes, mostly on:
+* The caching system
+* The user page
+* The front page
+* The list overview page
+
+
 0.1.5
 =====
 (2013-05-18)
