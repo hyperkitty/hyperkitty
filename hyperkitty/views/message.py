@@ -28,7 +28,6 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render
 from django.core.urlresolvers import reverse
 from django.core.exceptions import SuspiciousOperation
-from django.core.cache import cache
 from django.template import RequestContext, loader
 from django.contrib.auth.decorators import login_required
 

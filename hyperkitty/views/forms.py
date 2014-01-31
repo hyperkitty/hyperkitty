@@ -24,7 +24,7 @@ from django import forms
 from django.core import validators
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext, ugettext_lazy
+from django.utils.translation import ugettext_lazy
 
 from hyperkitty.models import UserProfile
 

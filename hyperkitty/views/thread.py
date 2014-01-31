@@ -34,8 +34,8 @@ from django.core.exceptions import SuspiciousOperation
 from django.utils.timezone import utc
 import robot_detection
 
-from hyperkitty.models import Tag, Favorite, LastView, ThreadCategory
-from hyperkitty.views.forms import AddTagForm, ReplyForm, CategoryForm
+from hyperkitty.models import Tag, Favorite, LastView
+from hyperkitty.views.forms import AddTagForm, ReplyForm
 from hyperkitty.lib import get_store, stripped_subject
 from hyperkitty.lib.view_helpers import (get_months, get_category_widget,
         FLASH_MESSAGES)

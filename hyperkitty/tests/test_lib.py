@@ -21,8 +21,6 @@
 
 import datetime
 
-from django.contrib.auth.models import User, AnonymousUser
-from django.core.cache import cache
 from django.http import HttpRequest
 
 from hyperkitty.lib.view_helpers import get_display_dates, show_mlist

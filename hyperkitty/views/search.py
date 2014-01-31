@@ -21,7 +21,7 @@
 
 
 from django.shortcuts import render
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Page
+from django.core.paginator import Paginator, Page
 from django.http import Http404
 
 from hyperkitty.models import Tag

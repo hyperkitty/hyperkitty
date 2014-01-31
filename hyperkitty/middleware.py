@@ -127,7 +127,6 @@ class SSLRedirect(object):
 
 from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist
-from hyperkitty.models import UserProfile
 
 class TimezoneMiddleware(object):
 

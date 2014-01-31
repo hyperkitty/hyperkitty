@@ -25,11 +25,9 @@ from functools import wraps
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.utils.http import urlquote
 from django.utils.decorators import available_attrs
-from django.shortcuts import redirect, render
+from django.shortcuts import render
 from django.http import Http404
-from django.core.cache import cache
 from mailman.interfaces.archiver import ArchivePolicy
 from mailmanclient import Client
 

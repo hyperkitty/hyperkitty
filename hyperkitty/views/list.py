@@ -21,7 +21,6 @@
 #
 
 import datetime
-from collections import namedtuple, defaultdict
 
 import django.utils.simplejson as json
 from django.shortcuts import redirect, render
@@ -29,20 +28,19 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils import formats
 from django.utils.dateformat import format as date_format
-from django.utils.timezone import utc
 from django.http import Http404, HttpResponse
 
 from hyperkitty.models import Tag, Favorite
 from hyperkitty.lib import get_store
 from hyperkitty.lib.view_helpers import FLASH_MESSAGES, \
-        get_category_widget, get_months, get_display_dates, daterange, \
+        get_category_widget, get_months, get_display_dates, \
         is_thread_unread, get_recent_list_activity
 from hyperkitty.lib.paginator import paginate
 from hyperkitty.lib.mailman import check_mlist_private
 
 
 if settings.USE_MOCKUPS:
-    from hyperkitty.lib.mockup import generate_top_author, generate_thread_per_category
+    from hyperkitty.lib.mockup import generate_top_author
 
 
 

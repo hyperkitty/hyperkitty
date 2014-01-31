@@ -20,7 +20,6 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import serializers
-from rest_framework.exceptions import ParseError
 
 from hyperkitty.models import Tag
 from hyperkitty.lib import get_store

@@ -314,7 +314,6 @@ def public_profile(request, user_id):
 def posts(request, user_id):
     store = get_store(request)
     mlist_fqdn = request.GET.get("list")
-    sort_mode = request.GET.get('sort')
     if mlist_fqdn is None:
         mlist = None
         return HttpResponse("Not implemented yet", status=500)

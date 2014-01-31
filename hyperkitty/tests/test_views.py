@@ -28,7 +28,7 @@ from mock import Mock
 
 import django.utils.simplejson as json
 from hyperkitty.tests.utils import TestCase
-from django.test.client import Client, RequestFactory
+from django.test.client import RequestFactory
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.urlresolvers import reverse
 from mailman.email.message import Message
@@ -96,9 +96,7 @@ class AccountViewsTestCase(TestCase):
         # @TODO: Try to register a user and verify its working
 
 
-from hyperkitty.views.accounts import last_views
 from hyperkitty.views.thread import thread_index
-from hyperkitty.views.list import archives, overview
 
 class LastViewsTestCase(TestCase):
 
@@ -164,8 +162,6 @@ class LastViewsTestCase(TestCase):
         self.assertContains(response, "icon-eye-close",
                             count=4, status_code=200)
 
-
-from hyperkitty.views.message import vote
 
 class MessageViewsTestCase(TestCase):
 
@@ -361,7 +357,6 @@ class ReattachTestCase(TestCase):
                 now - datetime.timedelta(days=1),
                 now + datetime.timedelta(days=1)))
         self.assertEqual(len(threads), 2)
-        errormsg = '<div class="flashmsgs"><div class="flashmsg-wrapper"><div class="alert alert-error">'
         self.assertContains(response, '<div class="alert alert-warning">',
                 count=1, status_code=200)
         self.assertContains(response, "Invalid thread id, it should look")
@@ -380,7 +375,6 @@ class ReattachTestCase(TestCase):
                 now - datetime.timedelta(days=1),
                 now + datetime.timedelta(days=1)))
         self.assertEqual(len(threads), 2)
-        errormsg = '<div class="flashmsgs"><div class="flashmsg-wrapper"><div class="alert alert-error">'
         self.assertContains(response, '<div class="alert alert-warning">',
                 count=1, status_code=200)
         self.assertContains(response, "Can&#39;t re-attach a thread to itself")
@@ -395,8 +389,6 @@ class ReattachTestCase(TestCase):
         self.store.attach_to_thread = Mock()
         response = reattach(request, "list@example.com", threadid)
         self.assertFalse(self.store.attach_to_thread.called)
-        now = datetime.datetime.now()
-        errormsg = '<div class="flashmsgs"><div class="flashmsg-wrapper"><div class="alert alert-error">'
         self.assertContains(response, '<div class="alert alert-warning">',
                 count=1, status_code=200)
         self.assertContains(response, "Unknown thread")
@@ -416,7 +408,6 @@ class ReattachTestCase(TestCase):
                 now - datetime.timedelta(days=1),
                 now + datetime.timedelta(days=1)))
         self.assertEqual(len(threads), 2)
-        errormsg = '<div class="flashmsgs"><div class="flashmsg-wrapper"><div class="alert alert-error">'
         self.assertContains(response, '<div class="alert alert-error">',
                 count=1, status_code=200)
         self.assertContains(response, "Can&#39;t attach an older thread to a newer thread.",
@@ -424,8 +415,7 @@ class ReattachTestCase(TestCase):
 
 
 
-from django.contrib.auth.models import AnonymousUser
-from hyperkitty.views.list import archives
+from hyperkitty.views.list import archives, overview
 from hyperkitty.views.message import index as message_view
 from hyperkitty.views.search import search as search_view
 

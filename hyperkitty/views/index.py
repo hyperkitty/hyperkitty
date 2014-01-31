@@ -21,16 +21,10 @@
 #
 
 
-import urllib2
 import datetime
-from collections import defaultdict
-
-import django.utils.simplejson as json
 
 from django.shortcuts import render
 from django.conf import settings
-from django.http import HttpResponse
-from mailmanclient import Client, MailmanConnectionError
 from mailman.interfaces.archiver import ArchivePolicy
 
 from hyperkitty.lib import get_store
