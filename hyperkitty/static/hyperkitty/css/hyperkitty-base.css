@@ -20,3 +20,15 @@ nav {
 ul.auth a:last-child {
     padding-right: 0; /* will be flush with right margin */
 }
+/* override bootstrap color for search button */
+nav .input-group-addon {
+    background: inherit;
+}
+/* hack: forces search box to appear on one line in navbar in larger screens */
+/* hack: we need extra .input-group to force search box to appear on one line in smaller screens */
+/* note: any pixel-based width will allow hack to work */
+@media (min-width: 768px) {
+    nav .input-group {
+        width: 200px;
+    }
+}

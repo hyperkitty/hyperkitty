@@ -30,7 +30,10 @@
                     <span class="icon-bar"></span>
                 </button> 
                 <a class="navbar-brand" id="archives-name" href="{% url 'root' %}">{{ app_name|title }}</a>
-                <ul class="nav navbar-nav nav-pills">
+            </div> <!-- /navbar-header -->
+
+            <div class="navbar-collapse collapse"> <!--part of navbar that's collapsed on small screens-->
+                <ul class="nav navbar-nav nav-stacked nav-pills">
                     <li {% if view_name == 'all_lists' or '/list' in request.path %}
                         class="active">
                         {% else %}
@@ -60,9 +63,6 @@
                         <a href="{% url 'users' %}">Users</a>
                     </li>
                 </ul>
-            </div> <!-- /navbar-header -->
-
-            <div class="navbar-collapse collapse"> <!--part of navbar that's collapsed on small screens-->
                 <ul class="nav navbar-nav navbar-right auth">
                 {% if user.is_authenticated %}
                     <li><a class="mm_logout" href="{% url 'user_logout' %}?next={% url 'root' %}">Logout</a></li>
@@ -70,20 +70,23 @@
                 {% else %}
                     <li><a class="mm_user" href="{% url 'user_login' %}?next={{next|default:request.path|urlencode}}">Login</a></li>
                     {% if use_internal_auth %}
-                    <li><a href="{% url 'user_registration' %}?next={{next|default:request.path|urlencode}}"> Sign Up </a></li>
+                        <li><a href="{% url 'user_registration' %}?next={{next|default:request.path|urlencode}}"> Sign Up </a></li>
                     {% endif %}
                 {% endif %}
                 </ul>
 
-                <form name="search" method="get" action="{% url 'search' %}" class="navbar-form navbar-right" role="search">
+                <form neam="search" method="get" action="{% url 'search' %}" class="navbar-form navbar-right" role="search">
                     {% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
                     <div class="form-group">
-                        <input name="query" type="text" class="form-control"
-                               placeholder="Search {% if mlist %}this list{% else %}all lists{% endif %}"
-                               {% if query %}value="{{ query }}"{% endif %}
-                               />
+                        <div class="input-group">
+                            <input name="query" type="text" class="form-control"
+                                   placeholder="Search {% if mlist %}this list{% else %}all lists{% endif %}"
+                                   {% if query %}value="{{ query }}"{% endif %}
+                                   />
+                            <a href="#" class="input-group-addon"><span class="glyphicon glyphicon-search"></span></a>
+                        </div>
                     </div>
-                    <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+                    
                 </form>
             </div> <!--/navbar-collapse -->
         </div> <!-- /container for navbar -->
