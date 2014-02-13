@@ -2,6 +2,30 @@
  * Classes common to two or more pages, but not all (those go to base.css)
  */
 
+/* embedding font icons */
+@font-face {
+    font-family: 'icomoon';
+    src:url('../libs/icomoon/fonts/icomoon.eot');
+    src:url('../libs/icomoon/fonts/icomoon.eot?#iefix') format('embedded-opentype'),
+        url('../libs/icomoon/fonts/icomoon.ttf') format('truetype'),
+        url('../libs/icomoon/fonts/icomoon.woff') format('woff'),
+        url('../libs/icomoon/fonts/icomoon.svg#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.icomoon {
+    font-family: 'icomoon';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering */
+    -webkit-font-smoothing: antialiased;
+}
 
 .right {
     text-align: right;
