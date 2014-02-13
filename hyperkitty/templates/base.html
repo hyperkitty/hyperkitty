@@ -20,114 +20,98 @@
     {% load i18n %}
 
     <body>
-        <div class="container-fluid">
-        <header class="row-fluid">
-            <div class="navbar navbar-fixed-top">
-                  <div class="navbar-inner">
-                    <div class="container-fluid">
 
-                        <ul class="nav auth">
-                        {% if user.is_authenticated %}
-                            <li><a class="mm_logout" href="{% url 'user_logout' %}?next={% url 'root' %}">Logout</a></li>
-                            <li><a href="{% url 'user_profile' %}">{{ user.username }}</a></li>
+    <nav class="navbar navbar-fixed-top navbar-default">
+        <div class="container">
+            <div class="navbar-header col-md"> <!--part of navbar that's always present-->
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button> 
+                <a class="navbar-brand" id="archives-name" href="{% url 'root' %}">{{ app_name|title }}</a>
+                <ul class="nav navbar-nav nav-pills">
+                    <li {% if view_name == 'all_lists' or '/list' in request.path %}
+                        class="active">
                         {% else %}
-                            <li><a class="mm_user" href="{% url 'user_login' %}?next={{next|default:request.path|urlencode}}">Login</a></li>
-                            {% if use_internal_auth %}
-                            <li><a href="{% url 'user_registration' %}?next={{next|default:request.path|urlencode}}"> Sign Up </a></li>
-                            {% endif %}
+                        >
                         {% endif %}
-                        </ul>
+                        <a href="{% url 'root' %}">Lists</a>
+                    </li>
+                    <li {% if '/categories' in request.path %}
+                        class="active">
+                        {% else %}
+                        >
+                        {% endif %}
+                        <a href="{% url 'categories_overview' %}">Categories</a>
+                    </li>
+                    <li {% if '/tags' in request.path %}
+                        class="active">
+                        {% else %}
+                        >
+                        {% endif %}
+                        <a href="{% url 'tags_overview' %}">Tags</a>
+                    </li>
+                    <li {% if '/users' in request.path %}
+                        class="active">
+                        {% else %}
+                        >
+                        {% endif %}
+                        <a href="{% url 'users' %}">Users</a>
+                    </li>
+                </ul>
+            </div> <!-- /navbar-header -->
 
-                        <div id="search-form" class="nav">
-                            <form name="search" method="get" action="{% url 'search' %}" class="form-search">
-                                {% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
-                                <div class="input-append">
-                                    <input name="query" type="text" class="search-query"
-                                           placeholder="Search {% if mlist %}this list{% else %}all lists{% endif %}"
-                                           {% if query %}value="{{ query }}"{% endif %}
-                                           />
-                                    <button type="submit" class="btn"><i class="icon-search"></i></button>
-                                </div>
-                            </form>
-                        </div>
-
-
-                        <a class="brand" href="{% url 'root' %}">{{ app_name|title }}</a>
-
-                        <ul class="breadcrumb">
-                            <li
-                                {% if view_name == 'all_lists' %}
-                                class="active">
-                                {% else %}
-                                ><a href="{% url 'root' %}">
-                                {% endif %}
-                                All lists
-                                {% if view_name != 'all_lists' %}
-                                </a>
-                                {% endif %}
-
-                            {% if mlist %}
-                            <span class="divider">&gt;</span></li>
-                            <li
-                                {% if view_name == 'overview' %}
-                                class="active">
-                                {% else %}
-                                ><a href="{% url 'list_overview' mlist_fqdn=mlist.name %}">
-                                {% endif %}
-                                {{mlist.name}}
-                                {% if view_name != 'overview' %}
-                                </a>
-                                {% endif %}
-                            {% endif %}
-
-                            {% if month %}
-                            <span class="divider">&gt;</span></li>
-                            <li
-                                {% if not subject %}
-                                class="active">
-                                {% else %}
-                                ><a href="{% url 'archives_with_month' mlist_fqdn=mlist.name year=month.year month=month.month %}">
-                                {% endif %}
-                                {{ month|date:"F Y" }}
-                                {% if subject %}
-                                </a>
-                                {% endif %}
-                            {% endif %}
-
-                            {% if subject %}
-                            <span class="divider">&gt;</span></li>
-                            <li class="active">
-                                {{ subject|truncatechars:"15" }}
-                            {% endif %}
-
-                            </li>
-                        </ul>
-
-                    </div>
-                  </div>
-            </div>
-        </header>
-
-        {% if flash_messages %}
-        <div class="flashmsgs">
-            {% for flash_msg in flash_messages %}
-            <div class="flashmsg-wrapper">
-                <div class="alert alert-{{ flash_msg.type }}">
-                    {% if flash_msg.type != "success" %}
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <div class="navbar-collapse collapse"> <!--part of navbar that's collapsed on small screens-->
+                <ul class="nav navbar-nav navbar-right auth">
+                {% if user.is_authenticated %}
+                    <li><a class="mm_logout" href="{% url 'user_logout' %}?next={% url 'root' %}">Logout</a></li>
+                    <li><a href="{% url 'user_profile' %}">{{ user.username|truncatechars:"35" }}</a></li>
+                {% else %}
+                    <li><a class="mm_user" href="{% url 'user_login' %}?next={{next|default:request.path|urlencode}}">Login</a></li>
+                    {% if use_internal_auth %}
+                    <li><a href="{% url 'user_registration' %}?next={{next|default:request.path|urlencode}}"> Sign Up </a></li>
                     {% endif %}
-                    {{ flash_msg.msg }}
-                </div>
+                {% endif %}
+                </ul>
+
+                <form name="search" method="get" action="{% url 'search' %}" class="navbar-form navbar-right" role="search">
+                    {% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
+                    <div class="form-group">
+                        <input name="query" type="text" class="form-control"
+                               placeholder="Search {% if mlist %}this list{% else %}all lists{% endif %}"
+                               {% if query %}value="{{ query }}"{% endif %}
+                               />
+                    </div>
+                    <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+                </form>
+            </div> <!--/navbar-collapse -->
+        </div> <!-- /container for navbar -->
+    </nav>
+
+    {% if flash_messages %}
+    <div class="flashmsgs">
+    {% for flash_msg in flash_messages %}
+        <div class="flashmsg-wrapper">
+            <div class="alert alert-{{ flash_msg.type }}">
+            {% if flash_msg.type != "success" %}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            {% endif %}
+            {{ flash_msg.msg }}
             </div>
-            {% endfor %}
         </div>
-        {% endif %}
+    {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="container">
 
         {% block content %} {% endblock %}
 
         {% block footer %} {% endblock %}
 
-        </div>
+    </div> <!-- /container for content -->
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}hyperkitty/libs/jquery/jquery-1.10.1.min.js"><\/script>')</script>
     <script src="{{ STATIC_URL }}hyperkitty/libs/jquery/jquery-ui-1.10.3.custom.min.js"></script>
