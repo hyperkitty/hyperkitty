@@ -88,11 +88,19 @@
         font-size: 90%;
     }
 
+    // charts, show x-axis on index page
     .chart {
         height: 35px;
         .ajaxloader {
             margin: 0 auto;
             padding-top: 0.5em;
+        }
+        .x.axis path, x.axis line {
+            display: inline;
+            stroke: @row-border-color;
+            stroke-width: 1px;
+            shape-rendering: crispEdges;
+            fill: none;
         }
     }
 
