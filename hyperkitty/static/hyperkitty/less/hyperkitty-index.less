@@ -147,11 +147,27 @@
         }
         a {
             display: block;
-            padding: 0.5em 1em;
+            padding: 0.25em 1em;
             &:hover {
                 background-color: @link-hover-color;
                 text-decoration: none;
             }
         }
+    }
+}
+
+.back-to-top {
+    &:extend(.bordered);
+    position: fixed;
+    bottom: 2em;
+    right: 0px;
+    text-decoration: none;
+    color: black;
+    background-color: @navbar-color;
+    font-size: smaller;
+    padding: 1em;
+    display: none;
+    &:hover {    
+        background-color: @link-hover-color;
     }
 }

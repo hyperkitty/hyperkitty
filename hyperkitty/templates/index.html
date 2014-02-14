@@ -47,107 +47,113 @@
 </div> <!-- /side-menu, left-->
 
 <div class="col-md-10 lists">
+    <div class="row col-md-12">
 
-{% if all_lists|length > 10 %}
-<div class="filter-lists pull-right">
-    <input name="filter" type="text" class="form-control" id="focusedInput"
-           placeholder="{% trans 'Filter list names' %}"
-           />
-</div> 
-
-{% endif %}
-
-<h1>
-    {% trans 'Available lists' %}
-    {% if sort_mode == 'active' %}
-        <small>({% trans 'most active first' %})</small>
-    {% elif sort_mode == 'popular' %}
-        <small>({% trans 'most popular first' %})</small>
-    {% elif sort_mode == 'creation' %}
-        <small>({% trans 'newest first' %})</small>
+    {% if all_lists|length > 10 %}
+    <div class="filter-lists pull-right">
+        <input name="filter" type="text" class="form-control" id="focusedInput"
+               placeholder="{% trans 'Filter list names' %}"
+               />
+    </div> 
+    
     {% endif %}
-</h1>
+    
+    <h1>
+        {% trans 'Available lists' %}
+        {% if sort_mode == 'active' %}
+            <small>({% trans 'most active first' %})</small>
+        {% elif sort_mode == 'popular' %}
+            <small>({% trans 'most popular first' %})</small>
+        {% elif sort_mode == 'creation' %}
+            <small>({% trans 'newest first' %})</small>
+        {% endif %}
+    </h1>
 
-{% if all_lists %}
+    {% if all_lists %}
+    
+    <p class="hide-switches">
+        <label><input type="checkbox" value="inactive" checked="checked" /> Hide inactive</label>
+        <label><input type="checkbox" value="private" /> Hide private</label>
+    </p>
+    
+    <table class="lists table">
+        <thead>
+            <tr>
+                <th class="col-md-3">{% trans 'List' %}</th>
+                <th class="col-md-6">{% trans 'Description' %}</th>
+                <th class="col-md-3">{% trans 'Activity in the past 30 days' %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for mlist in all_lists %}
+            <tr class="list
+               {% if mlist.is_private %}
+               private
+               {% elif mlist.recent_threads_count == 0 %}
+               inactive
+               {% endif %}
+               ">
+                <td>
+                    {% ifchanged mlist.name|first %}<a name="{{ mlist.name|first }}" />{% endifchanged %}
+                    {% if mlist.is_new %}
+                     <span class="new label label-default">{% trans 'new' %}</span>
+                    {% endif %}
+                     <a href="{% url 'list_overview' mlist_fqdn=mlist.name %}"
+                        class="list-name">
+                         {% if mlist.display_name %}
+                             {{ mlist.display_name }}
+                         {% else %}
+                             {{ mlist.name|until:"@" }}
+                         {% endif %}
+                     </a>
+                    {% if mlist.is_private %}
+                    <span class="list-tags">private</span>
+                    {% elif mlist.recent_threads_count == 0 %}
+                    <span class="list-tags">inactive</span>
+                    {% endif %}
+                    <br />
+                    <span class="list-address">
+                        {{ mlist.name }}
+                    </span>
+                </td>
+                <td class="list-description">
+                    {{ mlist.description|default_if_none:"" }}
+                </td>
+                <td class="activity">
+                    <div class="chart">
+                        <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
+                    </div>
+                    <ul class="list-stats">
+                        <li><span class="participant">
+                            {% if mlist.can_view %}
+                            {{ mlist.recent_participants_count|default_if_none:"..." }}
+                            {% else %}
+                            ...
+                            {% endif %}
+                            participants</span></li>
+                        <li><span class="discussion">
+                            {% if mlist.can_view %}
+                            {{ mlist.recent_threads_count|default_if_none:"..." }}
+                            {% else %}
+                            ...
+                            {% endif %}
+                            discussions</span></li>
+                    </ul>
+                </td>
+            </tr>
+            <tr class="spacer"><td colspan="3"></td></tr>
+        {% endfor %}
+        </tbody>
+    </table> <!-- /table, main-content -->
+    {% else %}
+    <p>No archived list yet.</p>
+    {% endif %}
 
-<p class="hide-switches">
-    <label><input type="checkbox" value="inactive" checked="checked" /> Hide inactive</label>
-    <label><input type="checkbox" value="private" /> Hide private</label>
-</p>
-
-<table class="lists table">
-    <thead>
-        <tr>
-            <th class="col-md-3">{% trans 'List' %}</th>
-            <th class="col-md-6">{% trans 'Description' %}</th>
-            <th class="col-md-3">{% trans 'Activity in the past 30 days' %}</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for mlist in all_lists %}
-        <tr class="list
-           {% if mlist.is_private %}
-           private
-           {% elif mlist.recent_threads_count == 0 %}
-           inactive
-           {% endif %}
-           ">
-            <td>
-                {% ifchanged mlist.name|first %}<a name="{{ mlist.name|first }}" />{% endifchanged %}
-                {% if mlist.is_new %}
-                 <span class="new label label-default">{% trans 'new' %}</span>
-                {% endif %}
-                 <a href="{% url 'list_overview' mlist_fqdn=mlist.name %}"
-                    class="list-name">
-                     {% if mlist.display_name %}
-                         {{ mlist.display_name }}
-                     {% else %}
-                         {{ mlist.name|until:"@" }}
-                     {% endif %}
-                 </a>
-                {% if mlist.is_private %}
-                <span class="list-tags">private</span>
-                {% elif mlist.recent_threads_count == 0 %}
-                <span class="list-tags">inactive</span>
-                {% endif %}
-                <br />
-                <span class="list-address">
-                    {{ mlist.name }}
-                </span>
-            </td>
-            <td class="list-description">
-                {{ mlist.description|default_if_none:"" }}
-            </td>
-            <td class="activity">
-                <div class="chart">
-                    <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
-                </div>
-                <ul class="list-stats">
-                    <li><span class="participant">
-                        {% if mlist.can_view %}
-                        {{ mlist.recent_participants_count|default_if_none:"..." }}
-                        {% else %}
-                        ...
-                        {% endif %}
-                        participants</span></li>
-                    <li><span class="discussion">
-                        {% if mlist.can_view %}
-                        {{ mlist.recent_threads_count|default_if_none:"..." }}
-                        {% else %}
-                        ...
-                        {% endif %}
-                        discussions</span></li>
-                </ul>
-            </td>
-        </tr>
-        <tr class="spacer"><td colspan="3"></td></tr>
-    {% endfor %}
-    </tbody>
-</table> <!-- /table, main-content -->
-{% else %}
-<p>No archived list yet.</p>
-{% endif %}
-
+    </div> <!-- /row, for lists -->
+    
+    <div class="row">
+        <img class="col-md-offset-5" alt="HyperKitty" src="{{STATIC_URL}}hyperkitty/img/logo.png" />
+    </div>
 </div> <!-- /lists -->
 
 {% if all_lists|length > 10 %}
@@ -158,16 +164,12 @@
         <li><a href="#{{ letter }}">{{ letter|upper }}</a></li>
         {% endfor %}
     </ul>
+    <a href="#" class="back-to-top"><span class="glyphicon glyphicon-arrow-up"></span></a>
 </div> <!-- /side-menu, right -->
 {% endif %}
 
-<div class="row">
-    <div class="col-md-12">
-    <img alt="HyperKitty" src="{{STATIC_URL}}hyperkitty/img/logo.png" />
-    </div>
-</div>
 
-</div> <!-- /row -->
+</div> <!-- /row, outer-wrapper -->
 
 {% endblock %}
 
