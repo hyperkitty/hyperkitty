@@ -12,7 +12,7 @@
 
 <div class="row all-lists">
 
-<div class="col-md-2 side-menu lists-menu">
+<div class="col-md-2 col-lg-1 side-menu lists-menu">
     <h2>{% trans 'Lists' %}</h2>
     <ul class="list-unstyled">
         <li>
@@ -46,7 +46,7 @@
     </ul>
 </div> <!-- /side-menu, left-->
 
-<div class="col-md-10 lists">
+<div class="col-md-10 col-lg-11 lists">
     <div class="row col-md-12">
 
     {% if all_lists|length > 10 %}
@@ -54,6 +54,18 @@
         <input name="filter" type="text" class="form-control" id="focusedInput"
                placeholder="{% trans 'Filter list names' %}"
                />
+        <div class="dropdown">
+            <button class="btn dropdown-toggle sr-only" type="button" id="dropdownMenu" data-toggle="dropdown">
+              Dropdown
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">All</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Most active</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Most popular</a></li>
+              <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Newest</a></li>
+            </ul>
+        </div>
     </div> 
     
     {% endif %}
@@ -123,7 +135,7 @@
                     <div class="chart">
                         <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
                     </div>
-                    <ul class="list-stats">
+                    <ul class="list-stats list-unstyled">
                         <li><span class="participant">
                             {% if mlist.can_view %}
                             {{ mlist.recent_participants_count|default_if_none:"..." }}
