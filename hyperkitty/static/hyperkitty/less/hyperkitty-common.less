@@ -1,38 +1,9 @@
-@heading-color: #666;
-@subheading-color: #999;
-@row-border-color: #ccc;
-@row-side-gutter: 0.5em;
-@row-hover-color: #0088cc;
-@navbar-color: #f8f8f8;
-@link-hover-color: #ddd;
-@link-color: #08c;
+/*
+ * Classes common to two or more pages, but not all (those go to base.css)
+ */
 
 nav {
     background-color: @navbar-color;
-}
-
-.heading {
-    font-size: 100%;
-    line-height: 100%;
-    font-weight: bold;
-    color: @heading-color;
-    text-transform: uppercase;
-}
-
-.small-caps {
-    color: @subheading-color;
-    text-transform: uppercase;
-    font-size: small;
-    font-weight: normal;
-}
-
-.bordered {
-    border: 1px solid @row-border-color;
-}
-
-.labels {
-    font-size: 78%;
-    text-transform: uppercase;
 }
 
 // override potential browser default styles
@@ -40,9 +11,357 @@ ul {
     padding-left: 0;
 }
 
-// rounded corners
-.border-radius(@radius: 5px) {
-    -webkit-border-radius: @radius;
-    -moz-border-radius: @radius;
-    border-radius: @radius;
+h1 {
+    margin-top: 0px;
+    font-size: 28px !important; /* override bootstrap */
+    line-height: 32px;
+    margin-bottom: 0.5em;
+}
+
+.right {
+    text-align: right;
+}
+
+.icon-container {
+    padding-left: 20px;
+    background: no-repeat scroll left center;
+}
+
+// from Bootstrap's alert class
+.errorlist {
+    list-style-type: none;
+    margin: 0 0 20px 0;
+    padding: 8px 35px 8px 14px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    border: 1px solid #eed3d7;
+    -webkit-border-radius: 4px;
+       -moz-border-radius: 4px;
+            border-radius: 4px;
+    color: #b94a48;
+    background-color: #f2dede;
+}
+
+// Flash messages 
+.flashmsgs {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    .flashmsg-wrapper {
+        display: block;
+    }
+    .alert {
+        display: inline-block;
+    }
+}
+
+//=== Forms (replies, registration, ...) ==/
+form .buttons .submit {
+    /* leave some space before the cancel button/link */
+    margin-right: 1em;
+}
+
+
+//=== Favorites ==/
+.saved {
+    &:extend(.icon-container);
+    background-image: url("../img/saved.png");
+}
+.notsaved {
+    &:extend(.icon-container);
+    background-image: url("../img/notsaved.png");
+}
+
+
+//=== Gravatar ==/
+.gravatar {
+    vertical-align: top;
+    width:40px;
+    font-size: 70%;
+
+    img {
+        width: 40px;
+    }
+}
+
+
+//== On thread list, overview page and list directory */
+ul.list-stats {
+    margin: 0;
+    padding: 0;
+}
+.participant {
+    &:extend(.icon-container);
+    background-image: url("../img/participant.png");
+    margin-right: 1em;
+}
+.discussion {
+    &:extend(.icon-container);
+    background-image: url("../img/discussion.png");
+    margin-right: 2em;
+}
+i.unread {
+    vertical-align: baseline;
+}
+
+
+//=== Like / dislike ==/
+form.likeform {
+    display: inline;
+    margin: 0;
+    margin-right: 1em;
+    padding: 0;
+}
+.likestatus {
+    padding-left: 20px;
+    margin-right: 1.5em;
+    font-weight: bold;
+}
+.neutral {
+    background: url("../img/neutral.png") no-repeat scroll left;
+}
+.like {
+    background: url("../img/like.png") no-repeat scroll left;
+}
+.likealot {
+    background: url("../img/likealot.png") no-repeat scroll left;
+}
+.youlike,
+.youdislike {
+    padding-left: 15px;
+    margin-left: 0.5em;
+}
+.youlike {
+    background: url("../img/youlike.png") no-repeat scroll left;
+}
+.youdislike {
+    background: url("../img/youdislike.png") no-repeat scroll left;
+}
+.youlike.disabled {
+  background: url("../img/youlike-disabled.png") no-repeat scroll left;
+  color: #999;
+}
+.youdislike.disabled {
+  background: url("../img/youdislike-disabled.png") no-repeat scroll left;
+  color: #999;
+}
+
+
+//=== Months list ===/
+#months-list {
+    padding-top: 1em;
+    h3 {
+        margin-top: 1em;
+        font-size: 120%;
+    }
+    li.current {
+        font-weight: bold;
+    }
+}
+
+
+//=== Attachments ==/
+p.attachments {
+    margin-bottom: 0;
+    font-weight: bold;
+}
+a.attachments {
+    padding-left: 18px;
+    background: url("../img/mail-attachment.png") no-repeat scroll left;
+}
+.email-info div.attachments {
+    display: inline;
+    padding: 0 1em;
+}
+.email-info .attachments ul.attachments-list {
+    display: none;
+    position: absolute;
+    margin-left: 0;
+    padding-right: 0.5em;
+    border: 1px solid #aaa;
+    border-top: none;
+    z-index: 1;
+}
+.even .email-info .attachments ul.attachments-list {
+    background-color: rgb(246, 246, 246);
+}
+.odd .email-info .attachments ul.attachments-list {
+    background-color: rgb(238, 238, 238);
+}
+.email-info .attachments ul.attachments-list li {
+    list-style-position: inside;
+    padding-left: 0.5em;
+}
+
+
+//=== Replies ===/
+a.reply {
+    background: url("../img/reply.png") no-repeat left center;
+    padding-left: 20px;
+    margin-left: 1em;
+
+    .disabled {
+        background: url("../img/reply-disabled.png") no-repeat left center;
+        color: #999;
+    }
+}
+.reply-form {
+    display: none;
+    padding-top: 1em;
+
+    p.reply-tools {
+        margin-bottom: 0.7em;
+
+        label {
+            display: inline;
+            font-size: 90%;
+            margin-left: 1.5em;
+        }
+
+        input {
+            margin-top: 0;
+            margin-right: 0.1em;
+        }
+    }
+
+    p {
+        margin: 0;
+    }
+
+    #id_subject,
+    textarea {
+        width: 95%;
+    }
+
+    p.buttons {
+        margin-top: 1em;
+    }
+}
+.reply-result {
+    text-align: center;
+    .alert {
+        display: inline-block;
+    }
+    .alert-success {
+        margin-bottom: 0;
+    }
+    .alert-error {
+        white-space: pre;
+        text-align: left;
+    }
+}
+
+
+//=== New thread ===/
+a.thread-new strong {
+    font-size: 150%;
+    font-weight: bold;
+    margin-right: 0.2em;
+}
+.new-thread-form {
+    margin-left: 2em;
+
+    #id_subject,
+    textarea {
+        width: 90%;
+    }
+
+    p.buttons {
+        margin-top: 2em;
+    }
+}
+
+
+//=== Attachments in replies or new threads ===/
+.attach-files-template {
+    display: none;
+}
+.attach-files-add {
+    display: none;
+}
+.attach-files span {
+    display: block;
+}
+
+
+//=== AJAX ===/
+.ajaxloader {
+    display: block;
+    margin: 1em auto;
+}
+.ui-autocomplete-loading {
+    background: white url('../img/ajax-loader.gif') right center no-repeat;
+}
+
+
+//=== Categories ===/
+.thread-category {
+    padding: 0;
+    a.label.disabled {
+        cursor: default;
+    }
+    form {
+        margin: 0;
+        display: none;
+
+        p {
+            margin: 0;
+        }
+
+        select {
+            font-size: 90%;
+            width: 12em;
+            margin: 0;
+        }
+
+        .errorlist {
+            display: none; /* Displayed manually */
+        }
+    }
+}
+
+
+//=== Activity chart ===/
+.chart-font {
+    font-size: 8pt;
+    font-family: "Droid Sans", sans-serif;
+    font-color: #777;
+}
+.chart-data {
+    &:extend(.chart-font);
+    position: relative;
+    margin: auto;
+    padding-top: 3px;
+    // default behavior is to hide axes
+    .axis path, .chart-data .axis line {
+        display: none;
+    }
+    .bars rect {
+        fill: steelBlue;
+    }
+}
+
+
+//=== Font icon ===/
+@font-face {
+    font-family: 'icomoon';
+    src:url('../libs/icomoon/fonts/icomoon.eot');
+    src:url('../libs/icomoon/fonts/icomoon.eot?#iefix') format('embedded-opentype'),
+        url('../libs/icomoon/fonts/icomoon.ttf') format('truetype'),
+        url('../libs/icomoon/fonts/icomoon.woff') format('woff'),
+        url('../libs/icomoon/fonts/icomoon.svg#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+.icomoon {
+    font-family: 'icomoon';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+
+    /* Better Font Rendering */
+    -webkit-font-smoothing: antialiased;
 }
