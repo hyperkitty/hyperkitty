@@ -1,5 +1,6 @@
 {% load url from future %}
 {% load assets %}
+{% load compress %}
 <!DOCTYPE HTML>
 <html>
     <head>
@@ -15,6 +16,13 @@
         {% assets filters="cssrewrite,cssmin", output="gen/hyperkitty.css", "hyperkitty/css/hyperkitty-base.css", "hyperkitty/css/hyperkitty-common.css", "hyperkitty/css/hyperkitty-index.css", "hyperkitty/css/hyperkitty-user.css", "hyperkitty/css/hyperkitty-overview.css", "hyperkitty/css/hyperkitty-threadslist.css", "hyperkitty/css/hyperkitty-message.css" %}
         <link rel="stylesheet" media="all" href="{{ ASSET_URL }}" />
         {% endassets %}
+        {% if debug %} 
+        <link rel="stylesheet/less" type="text/css" media="all" href="{{ STATIC_URL }}hyperkitty/less/hyperkitty.less" />
+        {% else %}
+        {% compress css %}
+        <link rel="stylesheet" type="text/less" media="all" href="{{ STATIC_URL }}hyperkitty/less/hyperkitty.less" />
+        {% endcompress %}
+        {% endif %}
         {% block additional_stylesheets %} {% endblock %}
     </head>
     {% load i18n %}
@@ -75,7 +83,7 @@
                 {% endif %}
                 </ul>
 
-                <form neam="search" method="get" action="{% url 'search' %}" class="navbar-form navbar-right" role="search">
+                <form name="search" method="get" action="{% url 'search' %}" class="navbar-form navbar-right" role="search">
                     {% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
                     <div class="form-group">
                         <div class="input-group">
@@ -118,6 +126,9 @@
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}hyperkitty/libs/jquery/jquery-1.10.1.min.js"><\/script>')</script>
     <script src="{{ STATIC_URL }}hyperkitty/libs/jquery/jquery-ui-1.10.3.custom.min.js"></script>
+    {% if debug %}
+    <script src="{{ STATIC_URL }}hyperkitty/libs/less/less-1.6.3.min.js"></script>
+    {% endif %}
     {% assets filters="rjsmin", output="gen/hyperkitty.js", "hyperkitty/libs/bootstrap/js/bootstrap.min.js", "hyperkitty/libs/jquery.expander.js", "hyperkitty/libs/d3.v2.min.js", "hyperkitty/libs/jquery.hotkeys.js", "hyperkitty/js/hyperkitty-common.js", "hyperkitty/js/hyperkitty-index.js", "hyperkitty/js/hyperkitty-thread.js", "hyperkitty/js/hyperkitty-userprofile.js" %}
     <script src="{{ ASSET_URL }}"></script>
     {% endassets %}

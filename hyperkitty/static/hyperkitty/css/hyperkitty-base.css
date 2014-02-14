@@ -1,13 +1,13 @@
 body {
     position: relative;
-    padding-top: 70px; /* floating navbar's height */
+    padding-top: 75px;/* floating navbar's height */
     background-color: white;
 }
 
 /* Sometimes jQuery UI overwrites the Bootstrap values */
 
 a {
-  color: #0088cc;
+    color: #0088cc;
 }
 
 

@@ -401,3 +401,10 @@ h1 {
     stroke-width: 0;
 }
 */
+
+/* for large monitors, use more whitespace */
+@media (min-width: 1620px) {
+    .container {
+        width: 1580px;
+    }
+}

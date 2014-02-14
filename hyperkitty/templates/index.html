@@ -10,11 +10,11 @@
 
 {% block content %}
 
-<div class="row-fluid all-lists">
+<div class="row all-lists">
 
-<div class="span2 side-menu lists-menu">
+<div class="col-md-2 side-menu lists-menu">
     <h2>{% trans 'Lists' %}</h2>
-    <ul>
+    <ul class="list-unstyled">
         <li>
             {% if not sort_mode %}
             <span class="active">{% trans 'All' %}</span>
@@ -44,15 +44,17 @@
            {% endif %}
         </li>
     </ul>
-</div>
+</div> <!-- /side-menu, left-->
 
-<div class="span10 lists">
+<div class="col-md-10 lists">
 
 {% if all_lists|length > 10 %}
-<div class="filter-lists">
-    <input name="filter" type="text" class="search-query input-medium" id="focusedInput"
-           placeholder="{% trans 'Filter list names' %}" />
-</div>
+<div class="filter-lists pull-right">
+    <input name="filter" type="text" class="form-control" id="focusedInput"
+           placeholder="{% trans 'Filter list names' %}"
+           />
+</div> 
+
 {% endif %}
 
 <h1>
@@ -76,13 +78,13 @@
 <table class="lists table">
     <thead>
         <tr>
-            <th>{% trans 'List' %}</th>
-            <th>{% trans 'Description' %}</th>
-            <th>{% trans 'Activity in the past 30 days' %}</th>
+            <th class="col-md-3">{% trans 'List' %}</th>
+            <th class="col-md-6">{% trans 'Description' %}</th>
+            <th class="col-md-3">{% trans 'Activity in the past 30 days' %}</th>
         </tr>
     </thead>
     <tbody>
-{% for mlist in all_lists %}
+    {% for mlist in all_lists %}
         <tr class="list
            {% if mlist.is_private %}
            private
@@ -93,7 +95,7 @@
             <td>
                 {% ifchanged mlist.name|first %}<a name="{{ mlist.name|first }}" />{% endifchanged %}
                 {% if mlist.is_new %}
-                 <span class="new label">{% trans 'new' %}</span>
+                 <span class="new label label-default">{% trans 'new' %}</span>
                 {% endif %}
                  <a href="{% url 'list_overview' mlist_fqdn=mlist.name %}"
                     class="list-name">
@@ -139,29 +141,33 @@
             </td>
         </tr>
         <tr class="spacer"><td colspan="3"></td></tr>
-{% endfor %}
+    {% endfor %}
     </tbody>
-</table>
+</table> <!-- /table, main-content -->
 {% else %}
 <p>No archived list yet.</p>
 {% endif %}
 
-</div> <!-- middle column -->
+</div> <!-- /lists -->
 
 {% if all_lists|length > 10 %}
 <div class="side-menu initials">
     <h2>&#8628;</h2>
-    <ul>
+    <ul class="list-unstyled">
         {% for letter in initials %}
         <li><a href="#{{ letter }}">{{ letter|upper }}</a></li>
         {% endfor %}
     </ul>
-</div>
+</div> <!-- /side-menu, right -->
 {% endif %}
 
+<div class="row">
+    <div class="col-md-12">
+    <img alt="HyperKitty" src="{{STATIC_URL}}hyperkitty/img/logo.png" />
+    </div>
 </div>
 
-<img id="logo" alt="HyperKitty" src="{{STATIC_URL}}hyperkitty/img/logo.png" />
+</div> <!-- /row -->
 
 {% endblock %}
 

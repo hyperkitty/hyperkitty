@@ -1,0 +1,37 @@
+@heading-color: #666;
+@subheading-color: #999;
+@row-border-color: #ccc;
+@row-side-gutter: 0.5em;
+@row-hover-color: #0088cc;
+@navbar-color: #f8f8f8;
+@link-hover-color: #ddd;
+
+nav {
+    background-color: @navbar-color;
+}
+
+.heading {
+    font-size: 100%;
+    line-height: 100%;
+    font-weight: bold;
+    color: @heading-color;
+    text-transform: uppercase;
+}
+.small-caps {
+    color: @subheading-color;
+    text-transform: uppercase;
+    font-size: small;
+    font-weight: normal;
+}
+.bordered {
+    border: 1px solid @row-border-color;
+}
+.labels {
+    font-size: 78%;
+    text-transform: uppercase;
+}
+
+// override potential browser default styles
+ul {
+    padding-left: 0;
+}
