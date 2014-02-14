@@ -1,0 +1,57 @@
+// floating navbar's height
+@navbar-height: 75px;
+@navbar-hover-color: #e7e7e7;
+
+body {
+    position: relative;
+    padding-top: @navbar-height;
+    background-color: white;
+}
+
+// Sometimes jQuery UI overwrites the Bootstrap values
+a {
+    color: @link-color;
+}
+
+//=== NAVBAR
+nav {
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    // general links
+    ul.nav-pills {
+        .active {
+            padding-top: 2px;
+        }
+        li:hover {
+            background-color: @navbar-hover-color;
+            -webkit-border-radius: 5px;
+        }
+    }
+
+    // login/logout
+    ul.auth a:last-child {
+        padding-right: 0; /* flush with right margin */
+    }
+
+    // override bootstrap color for search button
+    .input-group-addon {
+        background: inherit;
+    }
+}
+
+// hack: forces search box to appear on one line in navbar in larger screens
+// hack: we need extra .input-group to force search box to appear on one line in smaller screens
+// note: any pixel-based width will allow hack to work
+@media (min-width: 768px) {
+    nav .input-group {
+        width: 200px;
+    }
+}
+// add hover shading for login/logout when on smaller screens
+@media (max-width: 767px) {
+    li:hover {
+        background-color: @navbar-hover-color;
+        -webkit-border-radius: 5px;
+    }
+}
