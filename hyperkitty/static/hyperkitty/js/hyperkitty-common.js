@@ -286,8 +286,8 @@ function setup_flash_messages() {
 }
 
 function setup_back_to_top_link(offset, duration) {
-    // default scroll to top animation will last half a second
-    duration = (typeof duration !== 'undefined' ? duration : 500);
+    // default scroll to top animation will last 1/4 secs
+    duration = (typeof duration !== 'undefined' ? duration : 250);
     $(window).scroll(function() {
         if ($(this).scrollTop() > offset) {
             $(".back-to-top").fadeIn(duration);

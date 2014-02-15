@@ -78,8 +78,6 @@ function setup_index(url_template) {
         var target = $("a[name="+$(this).attr("href").substring(1)+"]");
         $(window).scrollTop(target.offset().top - 80); //80 is a bit more than header height
     });
-    
-    
 
     // Update list graphs
     $(".all-lists table.lists tr.list").each(function() {
