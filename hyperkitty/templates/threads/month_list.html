@@ -1,16 +1,31 @@
 {% load url from future %}
 {% load hk_generic %}
 
-<div id="months-list" class="col-md-2">
-    {% for year, months in months_list|sort %}
-    <h3>{{ year }}</h3>
-    <ul>
-        {% for ar_month in months %}
-        <li class="{% if month and year == month.year and ar_month == month.month %}current{% endif %}">
-            <a href="{% url 'archives_with_month' year=year mlist_fqdn=mlist.name month=ar_month %}"
-               >{{ ar_month|monthtodate:year|date:"F" }}</a>
-        </li>
+<div class="col-md-2">
+    <div class="panel-group" id="months-list">
+        {% for year, months in months_list|sort %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#months-list" href="#collapse{{forloop.counter0}}">
+                        {{ year }}
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse{{forloop.counter0}}" class="panel-collapse {% if forloop.counter == 1 %}in{% else %}collapse{% endif %}">
+                <div class="panel-body">
+                    <ul class="list-unstyled">
+                        {% for ar_month in months %}
+                        <li class="{% if month and year == month.year and ar_month == month.month %}current{% endif %}">
+                            <a href="{% url 'archives_with_month' year=year mlist_fqdn=mlist.name month=ar_month %}"
+                               >{{ ar_month|monthtodate:year|date:"F" }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
         {% endfor %}
-    </ul>
-    {% endfor %}
+    </div>
 </div>
+

@@ -262,16 +262,6 @@ function ajax_chart(elem, url, props) {
  * Misc.
  */
 
-function setup_months_list() {
-    var current = $("#months-list li.current").parent().prev();
-    if (!current.length) {
-        current = 0; // overview or search
-    } else {
-        current = current.prevAll("h3").length;
-    }
-    $("#months-list").accordion({ collapsible: true, active: current });
-}
-
 function setup_disabled_tooltips(baseElem) {
     if (!baseElem) {
         baseElem = document;
@@ -307,7 +297,6 @@ function setup_back_to_top_link(offset, duration) {
 
 $(document).ready(function() {
     setup_vote();
-    setup_months_list();
     setup_disabled_tooltips();
     setup_flash_messages();
     setup_attachments();
