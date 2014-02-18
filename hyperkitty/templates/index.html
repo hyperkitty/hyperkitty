@@ -48,7 +48,7 @@
     <h1 class="col-tn-12 col-xs-5">
         {% trans 'Available lists' %}
     </h1>
-    <div class="sort-type col-tn-7 col-xs-4">
+    <div class="sort-type col-tn-7 col-xs-4 hidden-sm hidden-md hidden-lg">
         <h1>
         {% if sort_mode == 'active' %}
             <small>({% trans 'most active first' %})</small>
@@ -61,7 +61,7 @@
         {% endif %}
         </h1>
     </div>
-    <div class="btn-group pull-right col-tn-5 col-xs-3">
+    <div class="btn-group pull-right col-tn-5 col-xs-3 hidden-sm hidden-md hidden-lg">
         <button type="button" class="btn btn-sm btn-default dropdown-toggle pull-right" data-toggle="dropdown">
             {% trans 'Sort by' %} <span class="caret"></span>
         </button>
@@ -83,7 +83,7 @@
 </div> <!--/row, for title & header -->
     
 <div class="row filter-lists">
-    <div class="col-tn-12 col-xs-7 col-lg-8 col-md-8 col-sm-7">
+    <div class="col-tn-12 col-xs-7 col-md-8">
             {% if all_lists %}
             <p class="hide-switches">
                 <label><input type="checkbox" value="inactive" checked="checked" /> Hide inactive</label>
@@ -91,7 +91,7 @@
             </p>
             {% endif %}
     </div>
-    <div class="col-tn-12 col-xs-5 col-lg-2 col-md-3 col-sm-5">
+    <div class="pull-right col-tn-12 col-xs-5 col-md-3">
         {% if all_lists|length > 10 %}
         <input name="filter" type="text" class="form-control" id="focusedInput"
                placeholder="{% trans 'Filter list names' %}"
@@ -135,7 +135,7 @@
                         <br />
                         <span class="list-description">{{ mlist.description|default_if_none:"" }}</span>
                         <span class="list-address hidden">{{ mlist.name }}</span>
-                        <div class="chart ">
+                        <div class="chart">
                             <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
                         </div>
                         <ul class="list-stats list-unstyled">
@@ -172,16 +172,16 @@
     </div>
 </div> <!-- /row, for lists --> 
 
-<div class="row lists hidden-tn hidden-xs hidden-sm">
+<div class="row lists hidden-tn hidden-xs">
     <div class="col-sm-12">
         {% if all_lists %}     
         <table class="lists table">
             <!-- headings only shown in screens >= 480px -->
             <thead class="hidden-xs">
                 <tr>
-                    <th class="col-lg-3 col-md-3 col-sm-6 col-xs-6">{% trans 'List' %}</th>
-                    <th class="col-lg-6 col-md-6 hidden-sm hidden-xs">{% trans 'Description' %}</th>
-                    <th class="col-lg-3 col-md-3 col-sm-6 col-xs-6">{% trans 'Activity in the past 30 days' %}</th>
+                    <th class="col-sm-6 col-md-3 col-lg-3">{% trans 'List' %}</th>
+                    <th class="hidden-sm col-md-6 col-lg-6">{% trans 'Description' %}</th>
+                    <th class="col-sm-6 col-md-3 col-lg-3">{% trans 'Activity in the past 30 days' %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -217,7 +217,7 @@
                             {{ mlist.name }}
                         </span>
                     </td>
-                    <td class="list-descriptionhidden-sm hidden-xs">
+                    <td class="list-description hidden-sm">
                         {{ mlist.description|default_if_none:"" }}
                     </td>
                     <td class="activity">
@@ -247,8 +247,8 @@
                     </td>
                 </tr>
                 <tr class="spacer">
-                    <td class="hidden-sm hidden-xs" colspan="3"></td>
-                    <td class="hidden-lg hidden-md" colspan="2"></td>
+                    <td class="hidden-sm" colspan="3"></td>
+                    <td class="hidden-md hidden-lg" colspan="2"></td>
                 </tr>
             {% endfor %}
             </tbody>
@@ -274,7 +274,7 @@
 </div> <!-- /row, for lists -->
 
 <div class="row">
-    <img class="logo col-tn-offset-2 col-lg-offset-5 col-md-offset-5 col-sm-offset-4 col-xs-offset-3" alt="HyperKitty" src="{{STATIC_URL}}hyperkitty/img/logo.png" />
+    <img class="logo col-tn-offset-2 col-xs-offset-3 col-sm-offset-4 col-md-offset-4 col-lg-offset-5" alt="HyperKitty" src="{{STATIC_URL}}hyperkitty/img/logo.png" />
 </div>
 
 </div> <!-- /all-lists, outer-wrapper -->

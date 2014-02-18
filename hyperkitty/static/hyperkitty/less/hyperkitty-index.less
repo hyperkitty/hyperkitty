@@ -147,7 +147,6 @@
         li {
             display: inline;
             font-size: 85%;
-            padding-right: 1.5em;
         }
     }
 
@@ -184,7 +183,6 @@
     right: -3em; /* there will be an animation to 0 */
     position: absolute;
     text-align: center;
-    //margin-top: 110px;
     margin-top: 35px;
     background-color: @navbarColor;
     h2 {
@@ -225,8 +223,8 @@
 
 // at screens <= 610px, convert to a different layout
 // rows are too long, so only display some info (list name, list stats)
-// remove initial side menu
-@media (max-width: @screen-sm) {
+// remove initials side menu
+@media (max-width: @screen-xs-max) {
     .all-lists .row {
         margin-right: 0;
     }
@@ -235,7 +233,7 @@
     }
 }
 // force header onto 1 row by removing extra padding/gutter
-@media (max-width: @screen-sm) and (min-width: @screen-xs) {
+@media (max-width: @screen-xs-max) and (min-width: @screen-xs) {
     .all-lists .header {
         h1 {
             padding-right: 0;
@@ -273,34 +271,3 @@
         }
     }
 }
-//@media (max-width: 610px) and (min-width: 480px) {
-//    .all-lists table.lists {
-//        .chart {
-//            display: inline-block;
-//        }
-//        ul.list-stats {
-//            text-align: left;
-//            padding-left: 1em;
-//            display: inline-block;
-//            position: absolute;
-//            li {
-//                display: block !important;
-//            }
-//        }
-//        .participant {
-//            padding-left: 0;
-//        }
-//    }
-//    .all-lists .logo {
-//        
-//    }
-//}
-//
-//@media (min-width: 611px) {
-//    .all-lists table.condensed-table {
-//        display: none;
-//    }
-//    .all-lists table.full-table {
-//        display: inherit !important;
-//    }
-//}
