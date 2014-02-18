@@ -1,11 +1,16 @@
+@rightMargin: 4em; // space for side menu of initials
+
 //=== TITLE
 .all-lists {
-    h1.lists {
-        margin-bottom: 0.5em;
+    // allow space for alphabetical lookup on right side
+    .row {
+        margin-right: @rightMargin;
     }
 
     p.hide-switches {
-        label {
+        margin: 0;
+        padding-top: 0.5em;
+        label:first-child {
             display: inline;
             margin-right: 2em;
         }
@@ -15,38 +20,71 @@
     }
 
     .filter-lists {
-        margin-top: 38px;
+        padding-bottom: 20px;
+    }
+
+    hr {
+        margin-top: 0;
+        margin-right: @rightMargin;
     }
 }
 
-//=== LEFT SIDE MENU
-.all-lists .side-menu {
-    h2 {
-        &:extend(.heading);
-        margin: 0;
-        margin-bottom: 1em;
-        padding: 0;
+//=== NAV SIDE MENU
+@headerNavPadding: 7px;
+
+.all-lists {
+    .header {
+        position: relative;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+        h1 {
+            margin-bottom: 0;
+            small {
+                font-size: 60%;
+            }
+        }
+        .sort-type {
+            margin-top: -3px;
+        }
     }
-    ul {
-        margin-left: 1em;
+    nav {
+        padding-top: 0;
+        background-color: white;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        ul {
+            margin-bottom: 0;
+            padding-bottom: @headerNavPadding;
+        }
+        .active {
+            font-weight: bold;
+            border-bottom: 4px solid @rowHoverColor;
+            padding-bottom: @headerNavPadding + 5;
+        }
+        a {
+            color: black;
+            border-bottom: 4px solid transparent;
+        }
     }
-    li {
-        margin: 0.5em 0;
-    }
-    span.active {
-        font-weight: bold;
+    .dropdown-toggle {
+        margin-left: 25px !important; // override bootstrap defaults
     }
 }
 
 //=== MAIN CONTENT
-// allow space for alphabetical lookup on right side
-.all-lists div.lists {
-    padding-right: 4em;
-}
 // table of lists
+.all-lists .table-responsive {
+    border: none;
+}
+.all-lists .condensed-table {
+    display: none;
+}
 .all-lists table.lists {
     th {
         &:extend(.small-caps);
+        border-bottom: none;
     }
 
     tr.list {
@@ -54,7 +92,7 @@
         &:hover {
             cursor: pointer;
             color: white;
-            background-color: @row-hover-color;
+            background-color: @rowHoverColor;
             a {
                 color: white;
             }
@@ -81,7 +119,7 @@
     }
     .list-tags {
         font-size: 80%;
-        color: @subheading-color;
+        color: @subheadingColor;
         font-style: italic;
     }
     .list-address {
@@ -97,7 +135,7 @@
         }
         .x.axis path, x.axis line {
             display: inline;
-            stroke: @row-border-color;
+            stroke: @rowBorderColor;
             stroke-width: 1px;
             shape-rendering: crispEdges;
             fill: none;
@@ -109,6 +147,7 @@
         li {
             display: inline;
             font-size: 85%;
+            padding-right: 1.5em;
         }
     }
 
@@ -123,7 +162,7 @@
         background-color: #eee;
         display: none;
        .list-name {
-            color: @subheading-color;
+            color: @subheadingColor;
         }
     }
 
@@ -132,6 +171,9 @@
         &:extend(.labels);
         margin-right: 0.5em;
     }
+}
+.participant {
+    padding-left: 10px;
 }
 
 //=== RIGHT SIDE MENU
@@ -142,8 +184,9 @@
     right: -3em; /* there will be an animation to 0 */
     position: absolute;
     text-align: center;
-    margin-top: 110px;
-    background-color: @navbar-color;
+    //margin-top: 110px;
+    margin-top: 35px;
+    background-color: @navbarColor;
     h2 {
         font-size: 18px;
         margin-bottom: 0.2em;
@@ -157,7 +200,7 @@
             display: block;
             padding: 0.25em 1em;
             &:hover {
-                background-color: @link-hover-color;
+                background-color: @linkHoverColor;
                 text-decoration: none;
             }
         }
@@ -171,11 +214,93 @@
     right: 0px;
     text-decoration: none;
     color: black;
-    background-color: @navbar-color;
+    background-color: @navbarColor;
     font-size: smaller;
     padding: 1em;
     display: none;
     &:hover {    
-        background-color: @link-hover-color;
+        background-color: @linkHoverColor;
     }
 }
+
+// at screens <= 610px, convert to a different layout
+// rows are too long, so only display some info (list name, list stats)
+// remove initial side menu
+@media (max-width: @screen-sm) {
+    .all-lists .row {
+        margin-right: 0;
+    }
+    .all-lists .initials {
+        .hidden();
+    }
+}
+// force header onto 1 row by removing extra padding/gutter
+@media (max-width: @screen-sm) and (min-width: @screen-xs) {
+    .all-lists .header {
+        h1 {
+            padding-right: 0;
+        }
+        .sort-type {
+            padding-right: 0;
+            padding-left: 2px;
+            font-size: 55%;
+            margin-top: 0;
+        }
+        .btn-group {
+            padding-left: 0;
+        }
+    }
+    .all-lists .filter-lists {
+        p.hide-switches label:first-child {
+            margin-right: 1em;
+        }
+    }
+    .participant {
+        padding-left: 0;
+    }
+    
+    .all-lists table.lists {
+        .chart {
+            display: inline-block;
+        }
+        ul.list-stats {
+            display: inline-block;
+            padding-left: 8px;
+            li {
+                padding-right: 0;
+                display: block;
+            }
+        }
+    }
+}
+//@media (max-width: 610px) and (min-width: 480px) {
+//    .all-lists table.lists {
+//        .chart {
+//            display: inline-block;
+//        }
+//        ul.list-stats {
+//            text-align: left;
+//            padding-left: 1em;
+//            display: inline-block;
+//            position: absolute;
+//            li {
+//                display: block !important;
+//            }
+//        }
+//        .participant {
+//            padding-left: 0;
+//        }
+//    }
+//    .all-lists .logo {
+//        
+//    }
+//}
+//
+//@media (min-width: 611px) {
+//    .all-lists table.condensed-table {
+//        display: none;
+//    }
+//    .all-lists table.full-table {
+//        display: inherit !important;
+//    }
+//}

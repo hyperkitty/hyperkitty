@@ -3,7 +3,7 @@
  */
 
 nav {
-    background-color: @navbar-color;
+    background-color: @navbarColor;
 }
 
 // override potential browser default styles
@@ -86,19 +86,26 @@ form .buttons .submit {
 
 
 //== On thread list, overview page and list directory */
+@fontIconSpacer: 3px;
 ul.list-stats {
     margin: 0;
     padding: 0;
 }
-.participant {
-    &:extend(.icon-container);
-    background-image: url("../img/participant.png");
-    margin-right: 1em;
+.participant:before {
+    content: "\e609";
+    color: #BFBFBF;
+    font-size: 1.14em;
+    line-height: 1em;
+    vertical-align: middle;
+    padding-right: @fontIconSpacer;
 }
-.discussion {
-    &:extend(.icon-container);
-    background-image: url("../img/discussion.png");
-    margin-right: 2em;
+.discussion:before {
+    content: "\e607";
+    color: #BFBFBF;
+    font-size: 1.14em;
+    line-height: 1em;
+    vertical-align: middle;
+    padding-right: @fontIconSpacer;
 }
 i.unread {
     vertical-align: baseline;

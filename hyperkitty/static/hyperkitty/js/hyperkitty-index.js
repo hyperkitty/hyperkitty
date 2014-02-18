@@ -85,6 +85,7 @@ function setup_index(url_template) {
         var listname = $.trim(listelem.find(".list-address").text());
         url_template = url_template.replace(/@/, "%40"); // Django 1.5 compatibility, it did not escape the url tag
         var url = url_template.replace(/PLACEHOLDER%40PLACEHOLDER/, listname);
-        ajax_chart(listelem.find("div.chart"), url, {height: 30});
+        // only load data for visible charts
+        ajax_chart(listelem.find("div.chart:visible"), url, {height: 30});
     });
 }

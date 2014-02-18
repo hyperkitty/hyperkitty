@@ -68,11 +68,12 @@
 // Columns, offsets, pushes, and pulls for extra small devices like
 // smartphones.
 
-@media t(min-width: @screen-xs-min) {
-    .make-grid(@grid-columns, xs, width);
-    .make-grid(@grid-columns, xs, pull);
-    .make-grid(@grid-columns, xs, push);
-    .make-grid(@grid-columns, xs, offset);
+@media (min-width: @screen-xs-min) {
+  .make-grid-columns-float(xs);
+  .make-grid(@grid-columns, xs, width);
+  .make-grid(@grid-columns, xs, pull);
+  .make-grid(@grid-columns, xs, push);
+  .make-grid(@grid-columns, xs, offset);
 }
 
 

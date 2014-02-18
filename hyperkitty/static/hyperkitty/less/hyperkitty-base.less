@@ -1,16 +1,16 @@
 // floating navbar's height
-@navbar-height: 75px;
-@navbar-hover-color: #e7e7e7;
+@navbarHeight: 75px;
+@navbarHoverColor: #e7e7e7;
 
 body {
     position: relative;
-    padding-top: @navbar-height;
+    padding-top: @navbarHeight;
     background-color: white;
 }
 
 // Sometimes jQuery UI overwrites the Bootstrap values
 a {
-    color: @link-color;
+    color: @linkColor;
 }
 
 //=== NAVBAR
@@ -22,10 +22,6 @@ nav {
     ul.nav-pills {
         .active {
             padding-top: 2px;
-        }
-        li:hover {
-            background-color: @navbar-hover-color;
-            .border-radius(5px);
         }
     }
 
@@ -46,12 +42,5 @@ nav {
 @media (min-width: 768px) {
     nav .input-group {
         width: 200px;
-    }
-}
-// add hover shading for login/logout when on smaller screens
-@media (max-width: 767px) {
-    li:hover {
-        background-color: @navbar-hover-color;
-        -webkit-border-radius: 5px;
     }
 }

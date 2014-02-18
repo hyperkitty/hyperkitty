@@ -1,29 +1,32 @@
-@heading-color: #666;
-@subheading-color: #999;
-@row-border-color: #ccc;
-@row-side-gutter: 0.5em;
-@row-hover-color: #0088cc;
-@navbar-color: #f8f8f8;
-@link-hover-color: #ddd;
-@link-color: #08c;
+/*
+ * Variables common to two or more pages
+ */
+@headingColor: #666;
+@subheadingColor: #999;
+@rowBorderColor: #ccc;
+@rowSideGutter: 0.5em;
+@rowHoverColor: #08c;
+@navbarColor: #f8f8f8;
+@linkHoverColor: #ddd;
+@linkColor: #08c;
 
 .heading {
     font-size: 100%;
     line-height: 100%;
     font-weight: bold;
-    color: @heading-color;
+    color: @headingColor;
     text-transform: uppercase;
 }
 
 .small-caps {
-    color: @subheading-color;
+    color: @subheadingColor;
     text-transform: uppercase;
     font-size: small;
     font-weight: normal;
 }
 
 .bordered {
-    border: 1px solid @row-border-color;
+    border: 1px solid @rowBorderColor;
 }
 
 .labels {
@@ -31,12 +34,7 @@
     text-transform: uppercase;
 }
 
-// rounded corners
-.border-radius(@radius: 5px) {
-    -webkit-border-radius: @radius;
-    -moz-border-radius: @radius;
-    border-radius: @radius;
-}
+// === NEW GRIDS ===
 
 // for large monitors, use more whitespace
 @media (min-width: 1620px) {
