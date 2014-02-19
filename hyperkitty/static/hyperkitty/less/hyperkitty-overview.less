@@ -20,6 +20,11 @@
             top: -75px;
         }
     }
+
+    .nav .dropdown-header {
+        padding-left: 0;
+        padding-right: 0;
+    }
 }
 
 .overview section#title {
@@ -114,5 +119,24 @@
     }
     .score{
         font-weight: bold;
+    }
+}
+
+// tiny screen:
+// nav-tabs: less padding, smaller dropdowns, right-align last dropdown
+@media (max-width: @screen-tn) {
+    .overview .nav-tabs {
+        >li a {
+            padding-left: 7px;
+            padding-right: 7px;
+        }
+        #navbarDiscussionsDrop ~ .dropdown-menu {
+            min-width: 110px;
+        }
+        #navbarMonthsListDrop ~ .dropdown-menu {
+            min-width: 90px;
+            left: inherit;
+            right: 0;
+        }
     }
 }

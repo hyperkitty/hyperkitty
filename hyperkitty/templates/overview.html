@@ -17,7 +17,7 @@
 
 {% include 'threads/month_list.html' %}
 
-<div class="overview col-tn-12 col-md-10" data-spy="scroll" data-target=".navbar-example">
+<div class="overview col-tn-12 col-md-10">
     <div class="row">
 
     <div class="col-tn-12">
@@ -57,21 +57,7 @@
                 </ul>
             </li>
             <li class="dropdown">
-                <a href="" id="navbarDiscussionsDrop" class="dropdown-toggle" data-toggle="dropdown">Past <b class="caret"></b></a>
-                <ul class="dropdown-menu" role="menu" aria-labelledby="navbarDiscussionsDrop">
-                    <li>
-                        <a href="#most-recent" tabindex="-1">most recent</a>
-                    </li>
-                    <li>
-                        <a href="#most-popular" tabindex="-1">most popular</a>
-                    </li>
-                    <li>
-                        <a href="#most-active" tabindex="-1">most active</a>
-                    </li>
-                    <li>
-                        <a href="#by-category" tabindex="-1">by category</a>
-                    </li>
-                </ul>
+                {% include 'threads/month_list.html' with show_dropdown=True %}
             </li>
         </ul>
     </div> <!-- /container, title/description & navbar -->

@@ -1,6 +1,23 @@
 {% load url from future %}
 {% load hk_generic %}
 
+{% if show_dropdown %}
+<a href="" id="navbarMonthsListDrop" class="dropdown-toggle" data-toggle="dropdown">Past <b class="caret"></b></a>
+<ul class="dropdown-menu right" role="menu" aria-labelledby="navbarMonthsListDrop">
+    {% for year, months in months_list|sort %}
+    <li role="presentation" class="dropdown-header disabled">
+        <a href="">----- {{ year }} -----</a>
+    </li>
+    {% for ar_month in months %}
+    <li>
+        <a href="{% url 'archives_with_month' year=year mlist_fqdn=mlist.name month=ar_month %}"
+           >{{ ar_month|monthtodate:year|date:"F" }}</a>
+    </li>
+    {% endfor %}
+    {% endfor %}
+</ul>
+
+{% else %}
 <div class="hidden-tn hidden-xs col-md-2">
     <div class="panel-group" id="months-list">
         {% for year, months in months_list|sort %}
@@ -28,8 +45,4 @@
         {% endfor %}
     </div>
 </div>
-
-<div class="col-tn-2">
-    
-</div>
-
+{% endif %}
