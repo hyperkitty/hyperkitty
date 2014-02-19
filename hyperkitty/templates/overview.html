@@ -17,7 +17,7 @@
 
 {% include 'threads/month_list.html' %}
 
-<div class="overview col-tn-12 col-md-10">
+<div class="overview col-tn-12 col-sm-10 col-md-10">
     <div class="row">
 
     <div class="col-tn-12">
@@ -64,44 +64,64 @@
 
     <div class="col-tn-12">
         <a id="home"></a>
-        <form name="search" method="get" action="{% url 'search' %}" class="searchbar col-tn-6" role="search">
+        <form name="search" method="get" action="{% url 'search' %}" class="searchbar col-tn-6 hidden-sm hidden-md hidden-lg" role="search">
             {% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
             <input name="query" type="text" class="form-control"
                    placeholder="Search this list"
                    {% if query %}value="{{ query }}"{% endif %}
                    />
         </form>
-        <div class="right thread-new col-tn-6" {% if not user.is_authenticated %}title="You must be logged-in to create a thread."{% endif %}>
+        <div class="thread-new col-tn-6 col-sm-4" {% if not user.is_authenticated %}title="You must be logged-in to create a thread."{% endif %}>
             <a href="{% url "message_new" mlist_fqdn=mlist.name %}"
                 class="btn btn-default{% if not user.is_authenticated %} disabled{% endif %}">
                 <i class="fa fa-plus"></i>
                <span class="hidden-tn hidden-xs">Start a n</span><span class="hidden-sm hidden-md hidden-lg">N</span>ew thread
             </a>
         </div>
-        <section id="flagged">
-            <h3>Discussions You've Flagged</h3>
-            {% for thread in most_active_threads %}
-            {% include "threads/summary_thread.html"  %} <!-- cut - with counter=forloop.counter -->
-            {% endfor %}
-        </section>
-        <section id="posted-to">
-            <h3>Discussions You've Posted to</h3>
-            {% for thread in most_active_threads %}
-            {% include "threads/summary_thread.html"  %} <!-- cut - with counter=forloop.counter -->
-            {% endfor %}
-        </section>
+        <div class="col-sm-8">
+            <section id="flagged">
+                <h3>Discussions You've Flagged</h3>
+                {% for thread in flagged_threads|slice:":5" %}
+                    {% include "threads/summary_thread.html"  %} <!-- cut - with counter=forloop.counter -->
+                {% empty %}
+                    <p>You have not flagged any discussions yet (yet).</p>
+                {% endfor %}
+                {% if flagged_threads|length > 5 %}
+                    <div class="bordered more-threads">
+                        <a href="">More... {{ flagged_threads|length}}</a>
+                    </div>
+                {% endif %}
+            </section>
+            <section id="posted-to">
+                <h3>Discussions You've Posted to</h3>
+                {% for thread in threads_posted_to|slice:":5" %}
+                    {% include "threads/summary_thread.html"  %} <!-- cut - with counter=forloop.counter -->
+                    {% empty %}
+                    <p>You have not posted to this list (yet).</p>
+                {% endfor %}
+                {% if threads_posted_to|length > 5 %}
+                    <div class="bordered more-threads">
+                        <a href="">More...</a>
+                    </div>
+                {% endif %}
+            </section>
+        </div>
     </div> <!-- /home, search (tiny/xs screens), new thread, favorited/flagged threads -->
 
     <div class="discussions col-tn-12">
         <div class="anchor-link">
             <a id="most-recent"></a>
         </div>
-        <!--<a id="most-recent"></a>-->
         <section id="most-recent">
             <h3>Recently active discussions</h3>
-            {% for thread in most_active_threads %}
-            {% include "threads/summary_thread.html"  %} <!-- cut - with counter=forloop.counter -->
+            {% for thread in most_active_threads|slice:":5" %}
+                {% include "threads/summary_thread.html"  %} <!-- cut - with counter=forloop.counter -->
             {% endfor %}
+            {% if most_active_threads|length > 5 %}
+                <div class="bordered more-threads">
+                    <a href="">More...</a>
+                </div>
+            {% endif %}
         </section>
 
         <div class="anchor-link">
@@ -109,11 +129,16 @@
         </div>
         <section id="most-popular">
             <h3>Most popular discussions</h3>
-            {% for thread in pop_threads %}
-            {% include "threads/summary_thread.html" with counter=forloop.counter %}
+            {% for thread in pop_threads|slice:":5" %}
+                {% include "threads/summary_thread.html" with counter=forloop.counter %}
             {% empty %}
-            <p>No vote has been cast this month (yet).</p>
+                <p>No vote has been cast this month (yet).</p>
             {% endfor %}
+            {% if pop_threads|length > 5 %}
+                <div class="bordered more-threads">
+                    <a href="">More...</a>
+                </div>
+            {% endif %}
         </section>
 
         <div class="anchor-link">
@@ -121,9 +146,14 @@
         </div>
         <section id="most-active">
             <h3>Most active discussions</h3>
-            {% for thread in top_threads %}
+            {% for thread in top_threads|slice:":5" %}
                 {% include "threads/summary_thread.html" with counter=forloop.counter %}
             {% endfor %}
+            {% if top_threads|length > 5 %}
+                <div class="bordered more-threads">
+                    <a href="">More...</a>
+                </div>
+            {% endif %}
         </section>
 
         <div class="anchor-link">
@@ -137,9 +167,16 @@
                    >{{ category.name|upper }}
                 </h4>
                 <ul>
-                {% for thread in threads %}
+                {% for thread in threads|slice:":5" %}
                     <li>{% include "threads/summary_thread.html" %}</li>
                 {% endfor %}
+                {% if threads|length > 5 %}
+                    <li>
+                        <div class="bordered more-threads">
+                            <a href="">More...</a>
+                        </div>
+                    </li>
+            {% endif %}
                 </ul>
             {% empty %}
                 <p>No category has been set this month (yet).</p>

@@ -167,6 +167,8 @@ def overview(request, mlist_fqdn=None):
         authors.reverse()
     else:
         authors = []
+        flagged_threads = []
+        threads_posted_to = []
 
     # Top posters
     top_posters = []
@@ -194,13 +196,15 @@ def overview(request, mlist_fqdn=None):
     context = {
         'view_name': 'overview',
         'mlist' : mlist,
-        'top_threads': top_threads[:5],
-        'most_active_threads': active_threads[:5],
+        'top_threads': top_threads[:6],
+        'most_active_threads': active_threads[:6],
         'top_author': authors,
         'top_posters': top_posters,
-        'pop_threads': pop_threads[:5],
+        'pop_threads': pop_threads[:6],
         'threads_by_category': threads_by_category,
         'months_list': get_months(store, mlist.name),
+        'flagged_threads': flagged_threads[:6],
+        'threads_posted_to': threads_posted_to[:6],
     }
     return render(request, "overview.html", context)
 

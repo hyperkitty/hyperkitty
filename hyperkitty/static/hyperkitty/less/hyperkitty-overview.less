@@ -150,6 +150,9 @@
             text-align: left;
         }
     }
+    .thread-new {
+        text-align: right;
+    }
     .overview .back-to-top {
         .hidden();
     }
@@ -158,5 +161,20 @@
 @media (max-width: @screen-xs-max) and (min-width: 540px) {
     .overview .back-to-top {
         display: none;
+    }
+    .thread-new {
+        text-align: right;
+    }
+}
+// small screens & up (>=768px)
+// thread titles now only take up 1 line max;
+@media (min-width: @screen-sm) {
+    .overview {
+        .thread-new {
+            padding-top: 0;
+        }
+        .thread .thread-title {
+            max-height: 2em;
+        }
     }
 }
