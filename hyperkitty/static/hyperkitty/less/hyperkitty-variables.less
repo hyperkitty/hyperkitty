@@ -24,6 +24,12 @@
     font-weight: normal;
 }
 
+.small-bolded-text {
+    font-weight: bold;
+    font-size: small;
+    vertical-align: top;
+}
+
 .bordered {
     border: 1px solid @rowBorderColor;
 }
@@ -33,7 +39,18 @@
     text-transform: uppercase;
 }
 
-// === NEW GRIDS ===
+// typical hover behavior for table rows
+.row-hover {
+    cursor: pointer;
+    color: white;
+    background-color: @rowHoverColor;
+}
+.row-link-hover {
+    color: white;
+}
+.row-chart-hover {
+    fill: white;
+}
 
 // for large monitors, use more whitespace
 @media (min-width: 1620px) {

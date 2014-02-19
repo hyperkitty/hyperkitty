@@ -92,14 +92,12 @@
     tr.list {
         &:extend(.bordered);
         &:hover {
-            cursor: pointer;
-            color: white;
-            background-color: @rowHoverColor;
+            &:extend(.row-hover);
             a {
-                color: white;
+                &:extend(.row-link-hover);
             }
             .chart-data .bars rect {
-                fill: white;
+                &:extend(.row-chart-hover);
             }
         }
     }
@@ -145,10 +143,8 @@
     }
 
     ul.list-stats {
-        margin: 0;
-        li {
-            display: inline;
-            font-size: 85%;
+        li:first-child {
+            padding-right: 1em;
         }
     }
     .participant {

@@ -26,11 +26,6 @@ h1 {
     display: inline-block;
 }
 
-.icon-container {
-    padding-left: 20px;
-    background: no-repeat scroll left center;
-}
-
 // from Bootstrap's alert class
 .errorlist {
     list-style-type: none;
@@ -59,14 +54,12 @@ h1 {
     }
 }
 
-//=== Forms (replies, registration, ...) ==/
-form .buttons .submit {
-    /* leave some space before the cancel button/link */
-    margin-right: 1em;
+//=== Favorites ==/
+.icon-container {
+    padding-left: 20px;
+    background: no-repeat scroll left center;
 }
 
-
-//=== Favorites ==/
 .saved {
     &:extend(.icon-container);
     background-image: url("../img/saved.png");
@@ -87,13 +80,25 @@ form .buttons .submit {
         width: 40px;
     }
 }
+.maker-id {
+    &:extend(.small-bolded-text);
+    color: @subheadingColor;
+}
+.maker-name  {
+    &:extend(.small-bolded-text);
+}
 
-
-//== On thread list, overview page and list directory */
-@fontIconSpacer: 3px;
+//== font icons (participant, discussion, unread) ===/
+//@fontIconSpacer: 3px;
 ul.list-stats {
     margin: 0;
-    padding: 0;
+    li {
+        display: inline;
+        font-size: smaller;
+    }
+    li+li {
+        padding-left: 0.75em;
+    }
 }
 .participant:before {
     content: "\e609";
@@ -101,7 +106,7 @@ ul.list-stats {
     font-size: 1.14em;
     line-height: 1em;
     vertical-align: middle;
-    padding-right: @fontIconSpacer;
+    //padding-right: @fontIconSpacer;
 }
 .discussion:before {
     content: "\e607";
@@ -109,7 +114,7 @@ ul.list-stats {
     font-size: 1.14em;
     line-height: 1em;
     vertical-align: middle;
-    padding-right: @fontIconSpacer;
+    //padding-right: @fontIconSpacer;
 }
 i.unread {
     vertical-align: baseline;
@@ -124,18 +129,25 @@ form.likeform {
     padding: 0;
 }
 .likestatus {
-    padding-left: 20px;
-    margin-right: 1.5em;
     font-weight: bold;
 }
-.neutral {
-    background: url("../img/neutral.png") no-repeat scroll left;
+.neutral:before {
+    content: "\e600";
+    font-size: 16px;
+    line-height: 1em;
+    vertical-align: middle;
 }
-.like {
-    background: url("../img/like.png") no-repeat scroll left;
+.like:before {
+    content: '\e602';
+    font-size: 16px;
+    line-height: 1em;
+    vertical-align: middle;
 }
-.likealot {
-    background: url("../img/likealot.png") no-repeat scroll left;
+.likealot:before {
+    content: '\e601';
+    font-size: 16px;
+    line-height: 1em;
+    vertical-align: middle;
 }
 .youlike,
 .youdislike {
@@ -163,7 +175,7 @@ form.likeform {
     padding-top: 1em;
     h3 {
         margin-top: 1em;
-        font-size: 120%;
+        font-size: larger;
     }
     li.current {
         font-weight: bold;
