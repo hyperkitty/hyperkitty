@@ -239,6 +239,11 @@ function chart(elem_id, data, default_props) {
 
 function ajax_chart(elem, url, props) {
     elem = $(elem);
+    // if there's already a chart drawn, remove it and then redraw
+    // this would occur when resizing the browser
+    if (elem.find("svg.chart-data")) {
+        elem.find("svg.chart-data").remove();
+    }
     $.ajax({
         dataType: "json",
         url: url,
