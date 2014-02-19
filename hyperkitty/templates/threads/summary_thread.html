@@ -19,11 +19,13 @@
         {{ thread.subject|strip_subject:mlist }}</a>
             </span>
             <div class="thread-stats">
-                <ul class="inline-block">
-                    <li class="participant">
+                <ul class="list-inline list-unstyled">
+                    <li>
+                        <i class="icomoon participant"></i>
                         {{ thread.participants_count }}
                     </li>
-                    <li class="discussion">
+                    <li>
+                        <i class="icomoon discussion"></i>
                         {{ thread|length }}
                     </li>
                     <span class="likestatus {{ thread.likestatus }}">+{{ thread.likes }}/-{{ thread.dislikes }}</span>

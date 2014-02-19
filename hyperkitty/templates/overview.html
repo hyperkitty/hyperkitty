@@ -17,62 +17,64 @@
 
 {% include 'threads/month_list.html' %}
 
-    <section id="overview" class="col-md-10">
+<div class="overview col-md-10">
+    <div class="row">
 
-    <section id="title">
-        <h2>
-            {% if mlist.display_name %}
-                {{ mlist.display_name }}
-            {% else %}
-                {{ mlist.name|until:"@" }}
-            {% endif %}
-        </h2>
-        <p id="description">{{ mlist.description|default_if_none:"" }}</p>
+    <div class="col-md-3">
+        <section id="title">
+            <h2>
+                {% if mlist.display_name %}
+                    {{ mlist.display_name }}
+                {% else %}
+                    {{ mlist.name|until:"@" }}
+                {% endif %}
+            </h2>
+            <p id="description">{{ mlist.description|default_if_none:"" }}</p>
 
-        <section id="statistics">
+            <section id="statistics">
 
-        <div class="chart">
-            <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
-        </div>
-        <p class="caption">Post volume over the past <strong>30</strong> days.</p>
+                <div class="chart">
+                    <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
+                </div>
+                <p class="caption">Post volume over the past <strong>30</strong> days.</p>
+        
+                <div class="thread-new" {% if not user.is_authenticated %}title="You must be logged-in to create a thread."{% endif %}>
+                    <a href="{% url "message_new" mlist_fqdn=mlist.name %}"
+                    class="thread-new btn btn-default{% if not user.is_authenticated %} disabled{% endif %}">
+                    <strong>+</strong> Start a new thread</a>
+                </div>
 
-        <p class="thread-new">
-            <a href="{% url "message_new" mlist_fqdn=mlist.name %}"
-            class="thread-new btn{% if not user.is_authenticated %} disabled" title="You must be logged-in to create a thread.{% endif %}">
-            <strong>+</strong> Start a new thread</a>
-        </p>
+                <h3>Activity Summary</h3>
+                <p>The following statistics are from the past <strong>30</strong> days:</p>
+                <ul class="list-stats">
+                    <li><i class="icomoon participant"></i>{{ mlist.recent_participants_count }} participants</li>
+                    <li><i class="icomoon discussion"></i>{{ mlist.recent_threads_count }} discussions</li>
+                </ul>
 
-        <h3>Activity Summary</h3>
-        <p>The following statistics are from the past <strong>30</strong> days:</p>
-        <ul class="list-stats">
-            <li><span class="participant">{{ mlist.recent_participants_count }} participants</span></li>
-            <li><span class="discussion">{{ mlist.recent_threads_count }} discussions</span></li>
-        </ul>
+                <section id="discussion-maker" class="widget">
+                    <h3>Most active posters</h3>
+                    {% for poster in top_posters %}
+                    <div class="maker">
+                        <div class="inline-block maker-id">
+                            #{{forloop.counter}}
+                        </div>
+                        <div class="inline-block gravatar">
+                            {% gravatar poster.email 40 %}
+                            <br />
+                        </div>
+                        <div class="inline-block">
+                            <span class="maker-name">{{ poster.name }}</span>
+                            <span class="score">{{ poster.count }}</span> posts
+                        </div>
+                    </div>
+                    {% endfor %}
+                </section>
 
-        <section id="discussion-maker" class="widget">
-            <h3>Most active posters</h3>
-            {% for poster in top_posters %}
-            <div class="maker">
-            <div class="inline-block maker-id">
-                #{{forloop.counter}}
-            </div>
-            <div class="inline-block gravatar">
-                {% gravatar poster.email 40 %}
-                <br />
-            </div>
-            <div class="inline-block">
-                <span class="maker-name">{{ poster.name }}</span>
-                <span class="score">{{ poster.count }}</span> posts
-            </div>
-            </div>
-            {% endfor %}
+            </section>
         </section>
+    </div> <!-- /middle column, for list stats -->
 
-        </section>
-    </section>
-
-    <section id="discussions">
-
+    <div class="discussions col-md-9">
         <section id="most-active" class="widget">
             <h3>Recently active discussions</h3>
             {% for thread in most_active_threads %}
@@ -140,12 +142,13 @@
                 <h3>Tag cloud</h3>
             </section>
             {% endif %}
+    </div> <!-- /right column, for thread lists -->
 
-    </section>
+    </div> <!-- /row, container for 2-column content -->
 
-    </section>
+</div> <!-- /overview, main content -->
 
-</div>
+</div> <!-- /row, outer container -->
 
 {% endblock %}
 
