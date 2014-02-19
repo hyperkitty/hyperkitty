@@ -122,7 +122,7 @@
     }
 }
 
-// tiny screen:
+// tiny screen (<=320px):
 // nav-tabs: less padding, smaller dropdowns, right-align last dropdown
 @media (max-width: @screen-tn) {
     .overview .nav-tabs {
@@ -138,5 +138,25 @@
             left: inherit;
             right: 0;
         }
+    }
+}
+// xs screen (<=540px): more padding/spacing in nav-tabs
+@media (max-width: 539px) {
+    .overview .nav-tabs {
+        .dropdown-menu {
+            min-width: 120px;
+        }
+        #navbarMonthsListDrop ~ .dropdown-menu {
+            text-align: left;
+        }
+    }
+    .overview .back-to-top {
+        .hidden();
+    }
+}
+// xs screen (540-768px): add back-to-top link
+@media (max-width: @screen-xs-max) and (min-width: 540px) {
+    .overview .back-to-top {
+        display: none;
     }
 }

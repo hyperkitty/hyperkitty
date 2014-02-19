@@ -280,9 +280,9 @@ function setup_back_to_top_link(offset, duration) {
     duration = (typeof duration !== 'undefined' ? duration : 250);
     $(window).scroll(function() {
         if ($(this).scrollTop() > offset) {
-            $(".back-to-top").fadeIn(duration);
+            $(".back-to-top").stop().fadeIn(duration);
         } else {
-            $(".back-to-top").fadeOut(duration);
+            $(".back-to-top").stop().fadeOut(duration);
         }
     });
     $(".back-to-top").click(function(e) {

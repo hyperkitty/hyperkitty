@@ -211,6 +211,8 @@
 
     </div> <!-- /row, container for home, overview, & thread lists -->
 
+    <a href="#" class="back-to-top hidden-sm hidden-md hidden-lg"><span class="glyphicon glyphicon-arrow-up"></span></a>
+
 </div> <!-- /overview, main content -->
 
 </div> <!-- /row, outer container -->
@@ -222,6 +224,8 @@
 <script type="text/javascript" >
     $(function() {
         ajax_chart(".chart", "{% url 'list_recent_activity' mlist.name %}");
+        // Back to top link
+        setup_back_to_top_link(220); // set offset to 250 for link to appear
     });
 </script>
 
