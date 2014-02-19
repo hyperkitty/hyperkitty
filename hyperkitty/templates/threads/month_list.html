@@ -1,7 +1,7 @@
 {% load url from future %}
 {% load hk_generic %}
 
-<div class="col-md-2">
+<div class="hidden-tn hidden-xs col-md-2">
     <div class="panel-group" id="months-list">
         {% for year, months in months_list|sort %}
         <div class="panel panel-default">
@@ -27,5 +27,9 @@
         </div>
         {% endfor %}
     </div>
+</div>
+
+<div class="col-tn-2">
+    
 </div>
 

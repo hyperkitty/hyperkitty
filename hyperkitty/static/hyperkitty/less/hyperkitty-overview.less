@@ -1,193 +1,118 @@
 // Overview page (List overview)
 
 .overview {
-    h2 #breadcrumb {
-    font-weight: normal;
-    font-size: 12px;
-    }
-    .overview h3 {
-        font-size: 14px;
+    h3 {
+        &:extend(.small-caps);
         line-height: 28px;
         margin-bottom: 0.5em;
         margin-top: 0;
-        color: #999;
-        text-transform: uppercase;
-        font-size: small;
-        font-weight: normal;
-      }
+    }
 
+    .searchbar,
+    .thread-new {
+        padding: 1em 0;
+    }
+
+    .anchor-link {
+        position: relative;
+        a {
+            position: absolute;
+            top: -75px;
+        }
+    }
+}
+
+.overview section#title {
+    h2 {
+        margin-top: 5px;
+        margin-bottom: 0px;
+    }
+    #description {
+        font-size: smaller;
+        font-weight: normal;
+    }
 }
 
 .overview .thread {
-    margin: 1.5em 0 0 0;
-}
-
-.overview .thread-stats {
-    margin-left: 3em;
-    ul {
-        margin: 0;
+    .thread-title {
+        line-height: 1.25em;
+        max-height: 3em;
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
     }
-    .category {
-        margin-right: 2em;
+    .list-stats {
+        margin-bottom: 0.5em;
     }
 }
 
-.maker {
-    color: rgb(102, 102, 102);
-    padding-right: 10px;
-    padding-bottom: 20px;
-    .gravatar {
-        padding-right: 20px;
+// spacing between sections
+.overview {
+    section+section,
+    .discussions,
+    .discussions > section,
+    .stats,
+    .stats > section {
+        padding-top: 10px;
     }
 }
 
-.overview .maker-name {
-  display: block !important;
-  max-width: 152px !important;
-  word-wrap: break-word !important;
-}
-
-.overview .maker .gravatar {
-  padding-right: 5px;
-}
-.maker-id, .maker-name {
-    font-weight: bold;
-    font-size: 115%;
-    vertical-align: top;
-    padding-right: 3px;
-}
-
-.score{
-    font-weight: bold;
-}
-
-.overview .maker-name,
-.maker-id {
-  font-size: small;
-}
-
-.overview .maker-id {
-  color: #aaa;
-}
-
-/* Threads by category */
-#discussion-by-category h4 {
+// Threads by category
+.discussion-by-category h4 {
     font-size: 105%;
     line-height: 105%;
     margin: 1.5em 0 0.5em 0;
     padding-left: 1em;
     padding-right: 1em;
-}
-#discussion-by-category h4.first {
-    margin-top: 0;
-}
-#discussion-by-category .thread {
-    margin: 0 0 0 0.5em;
-}
-#discussion-by-category .thread-stats {
-    margin-left: 0;
-}
-#discussion-by-category .thread .category {
-    display: none;
-}
 
-#title {
-  float: left;
-  //width: 23%;
-  min-width: 20%;
-  margin-right: 2%;
-}
-
-#discussions {
-  margin-top: 3em;
-  padding-left: 1%;
-  float: right;
-  width: 74%;
-}
-
-section#title {
-    h2 {
-        margin-bottom: 0px;
+    h4.first {
+        margin-top: 0;
     }
-    #description {
-        font-size: 12pt;
-        font-weight: normal;
+    .thread {
+        margin: 0 0 0 0.5em;
     }
-    .chart {
-        margin-top: 1.5em;
-        height: 60px;
+    .thread-stats {
+        margin-left: 0;
     }
-    .chart-data {
-        border: 1px solid #bbb;
-    }
-    p.thread-new {
-        text-align: left;
-        margin-top: 2em;
+    .thread .category {
+        display: none;
     }
 }
 
-section#statistics {
-    color: #555;
+.overview .stats {
     .caption {
         font-size: x-small;
-        color: #aaa;
-        margin-top: -.5%;
+        color: @subheadingColor;
         margin-left: .25em;
         margin-bottom: 0px;
     }
-    ul {
-        list-style-type: none;
-        margin-left: 0px;
-        li {
-            font-size: small;
+    .chart-data {
+        &:extend(.bordered);
+    }
+    .list-stats {
+        padding-bottom: 10px;
+        i {
+            padding-right: 5px;
         }
     }
-    
-    h3 {
-        margin-bottom: .5em;
-        margin-top: 3em;
+    .duration-text {
+        margin-top: 0.5em;
+        margin-bottom: 0.25em;
     }
 }
 
+.overview .maker {
+    padding-right: 10px;
+    padding-bottom: 20px;
 
-
-/* this needs to be integrated into hyperkitty-threadslist.css eventually */
-.overview div.thread {
-  border: 1px solid #e5e5e5;
-  padding: 1%;
-  margin: .5%;
+    .gravatar {
+        padding-right: 5px;
+    }
+    .maker-name {
+        display: block !important;
+        max-width: 152px !important;
+        word-wrap: break-word !important;
+    }
+    .score{
+        font-weight: bold;
+    }
 }
-
-.overview .thread {
-  min-height: 1.2em;
-}
-
-.overview .widget {
-  clear: both;
-  margin-bottom: 2em;
-}
-
-.overview .thread ul.inline-block {
-  width: 28%;
-}
-
-.overview .thread ul.inline-block li,
-.overview .thread ul.inline-block span {
-  text-align: left;
-  min-width: 6.5%;
-}
-
-.overview .thread-title {
-  width: 68%;
-  float: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-right: 2%;
-}
-
-.overview .thread-id {
-  float: left;
-}
-
-
