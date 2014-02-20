@@ -208,11 +208,11 @@
                 <div class="inline-block maker-id col-tn-1">
                     #{{forloop.counter}}
                 </div>
-                <div class="inline-block gravatar col-tn-3 col-xs-4 col-sm-3">
+                <div class="inline-block gravatar col-tn-3 col-xs-4 col-md-3">
                     {% gravatar poster.email 40 %}
                     <br />
                 </div>
-                <div class="gravatar-details inline-block col-tn-7 col-xs-6 col-sm-7">
+                <div class="gravatar-details inline-block col-tn-7 col-xs-6 col-md-7">
                     <ul class="list-unstyled">
                         <li><span class="maker-name">{{ poster.name }}</span></li>
                         <li><span class="score">{{ poster.count }}</span> posts</li>
@@ -231,13 +231,13 @@
                 <div class="inline-block maker-id col-tn-1">
                     #{{forloop.counter}}
                 </div>
-                <div class="inline-block gravatar col-tn-3 col-xs-4 col-sm-3">
+                <div class="inline-block gravatar col-tn-3 col-xs-4 col-md-3">
                     {% if author.email %}
                     {% gravatar author.email 40 %}
                     <br />
                     {% endif %}
                 </div>
-                <div class="gravatar-details inline-block col-tn-7 col-xs-6 col-sm-7">
+                <div class="gravatar-details inline-block col-tn-7 col-xs-6 col-md-7">
                     <ul class="list-unstyled">
                         <li><span class="maker-name">{{ author.name }}</span></li>
                         <li><span class="score">+{{author.kudos}}</span> kudos</li>
