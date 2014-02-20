@@ -115,3 +115,16 @@
   .make-grid(@grid-columns, lg, push);
   .make-grid(@grid-columns, lg, offset);
 }
+
+
+// Extra large grid
+//
+// Columns, offsets, pushes, and pulls for the large desktop device range.
+
+@media (min-width: @screen-xl-min) {
+  .make-grid-columns-float(xl);
+  .make-grid(@grid-columns, xl, width);
+  .make-grid(@grid-columns, xl, pull);
+  .make-grid(@grid-columns, xl, push);
+  .make-grid(@grid-columns, xl, offset);
+}

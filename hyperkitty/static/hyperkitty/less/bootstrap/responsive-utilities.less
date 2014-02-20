@@ -58,6 +58,13 @@
     .responsive-visibility();
   }
 }
+.visible-xl {
+  .responsive-invisibility();
+
+  @media (min-width: @screen-xl-min) {
+    .responsive-visibility();
+  }
+}
 
 .hidden-tn {
   @media (max-width: @screen-tn-max) {
@@ -81,6 +88,11 @@
 }
 .hidden-lg {
   @media (min-width: @screen-lg-min) {
+    .responsive-invisibility();
+  }
+}
+.hidden-xl {
+  @media (min-width: @screen-xl-min) {
     .responsive-invisibility();
   }
 }
