@@ -73,12 +73,14 @@ h1 {
 //=== Gravatar ==/
 .gravatar {
     vertical-align: top;
-    width:40px;
     font-size: 70%;
-
     img {
-        width: 40px;
+        .square(60px);
     }
+}
+.gravatar-details {
+    padding-left: 5px;
+    padding-right: 0;
 }
 .maker-id {
     &:extend(.small-bolded-text);
@@ -89,7 +91,6 @@ h1 {
 }
 
 //== font icons (participant, discussion, unread) ===/
-//@fontIconSpacer: 3px;
 ul.list-stats {
     margin: 0;
     li {
@@ -106,7 +107,6 @@ ul.list-stats {
     font-size: 1.14em;
     line-height: 1em;
     vertical-align: middle;
-    //padding-right: @fontIconSpacer;
 }
 .discussion:before {
     content: "\e607";
@@ -114,7 +114,6 @@ ul.list-stats {
     font-size: 1.14em;
     line-height: 1em;
     vertical-align: middle;
-    //padding-right: @fontIconSpacer;
 }
 i.unread {
     vertical-align: baseline;

@@ -82,7 +82,7 @@
             <section id="flagged">
                 <h3>Discussions You've Flagged</h3>
                 {% for thread in flagged_threads|slice:":5" %}
-                    {% include "threads/summary_thread.html"  %} <!-- cut - with counter=forloop.counter -->
+                    {% include "threads/summary_thread.html"  %}
                 {% empty %}
                     <p>You have not flagged any discussions (yet).</p>
                 {% endfor %}
@@ -95,7 +95,7 @@
             <section id="posted-to">
                 <h3>Discussions You've Posted to</h3>
                 {% for thread in threads_posted_to|slice:":5" %}
-                    {% include "threads/summary_thread.html"  %} <!-- cut - with counter=forloop.counter -->
+                    {% include "threads/summary_thread.html"  %}
                     {% empty %}
                     <p>You have not posted to this list (yet).</p>
                 {% endfor %}
@@ -106,7 +106,7 @@
                 {% endif %}
             </section>
         </div>
-    </div> <!-- /home, search (tiny/xs screens), new thread, favorited/flagged threads -->
+    </div> <!-- /home, search (tiny/xs screens), new thread, personalized threads lists -->
 
     <div class="discussions col-tn-12 col-sm-8 col-sm-push-4">
         <div class="anchor-link">
@@ -115,7 +115,7 @@
         <section id="most-recent">
             <h3>Recently active discussions</h3>
             {% for thread in most_active_threads|slice:":5" %}
-                {% include "threads/summary_thread.html"  %} <!-- cut - with counter=forloop.counter -->
+                {% include "threads/summary_thread.html"  %}
             {% endfor %}
             {% if most_active_threads|length > 5 %}
                 <div class="bordered more-threads">
@@ -195,55 +195,60 @@
         </div>
 
         <p class="duration-text">The following statistics are from the past <strong>30</strong> days:</p>
-        <ul class="list-stats">
+        <ul class="list-stats list-unstyled">
             <li><i class="icomoon participant"></i>{{ mlist.recent_participants_count }} participants</li>
             <li><i class="icomoon discussion"></i>{{ mlist.recent_threads_count }} discussions</li>
         </ul>
 
-        <section id="discussion-maker" class="widget">
+        <div class="row">
+        <section id="most-active-poster" class="col-tn-12 col-xs-6">
             <h3>Most active posters</h3>
             {% for poster in top_posters %}
-            <div class="maker">
-                <div class="inline-block maker-id">
+            <div class="maker row">
+                <div class="inline-block maker-id col-xs-1">
                     #{{forloop.counter}}
                 </div>
-                <div class="inline-block gravatar">
+                <div class="inline-block gravatar col-xs-4">
                     {% gravatar poster.email 40 %}
                     <br />
                 </div>
-                <div class="inline-block">
-                    <span class="maker-name">{{ poster.name }}</span>
-                    <span class="score">{{ poster.count }}</span> posts
+                <div class="gravatar-details inline-block col-xs-6">
+                    <ul class="list-unstyled">
+                        <li><span class="maker-name">{{ poster.name }}</span></li>
+                        <li><span class="score">{{ poster.count }}</span> posts</li>
+                    </ul>
                 </div>
             </div>
             {% endfor %}
-        </section>
             
-        {% if top_author %}
-        <section id="discussion-maker" class="widget">
-            <h3>Prominent discussion maker</h3>
-            {% for author in top_author %}
-            <!-- Start discussion maker -->
-            <div class="maker">
-                <div class="inline-block maker-id">
+        </section>
+
+        {% if top_posters %}
+        <section id="discussion-maker" class="col-tn-12 col-xs-6">
+            <h3>Prominent posters</h3>
+            {% for author in top_posters %}
+            <div class="maker row">
+                <div class="inline-block maker-id col-xs-1">
                     #{{forloop.counter}}
                 </div>
-                <div class="inline-block gravatar">
+                <div class="inline-block gravatar col-xs-4">
                     {% if author.email %}
                     {% gravatar author.email 40 %}
                     <br />
                     {% endif %}
                 </div>
-                <div class="inline-block">
-                    <span class="maker-name">{{author.name}}</span>
-                    <br />
-                    <span class="score">+{{author.kudos}}</span> kudos
+                <div class="gravatar-details inline-block col-xs-6">
+                    <ul class="list-unstyled">
+                        <li><span class="maker-name">{{ author.name }}</span></li>
+                        <li><span class="score">+{{author.kudos}}</span> kudos</li>
+                    </ul>
                 </div>
             </div>
-            <!-- End discussion maker -->
             {% endfor %}
         </section>
         {% endif %}
+        </div>
+
     </div> <!-- /container, for list stats -->
 
     </div> <!-- /row, container for home, overview, & thread lists -->

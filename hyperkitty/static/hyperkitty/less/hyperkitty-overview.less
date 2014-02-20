@@ -46,7 +46,7 @@
         padding-top: 0.5em;
         padding-bottom: 0.5em;
     }
-    .list-stats {
+    ul.list-stats {
         margin-bottom: 0.5em;
     }
 }
@@ -93,10 +93,15 @@
     .chart-data {
         &:extend(.bordered);
     }
-    .list-stats {
+    ul.list-stats {
         padding-bottom: 10px;
+        display: block;
         i {
             padding-right: 5px;
+        }
+        li {
+            display: block;
+            padding-left: 0.75em;
         }
     }
     .duration-text {
@@ -113,8 +118,8 @@
         padding-right: 5px;
     }
     .maker-name {
-        display: block !important;
-        max-width: 152px !important;
+        //display: block !important;
+        //max-width: 152px !important;
         word-wrap: break-word !important;
     }
     .score{
@@ -159,10 +164,7 @@
 }
 // xs screen (540-768px): add back-to-top link
 @media (max-width: @screen-xs-max) and (min-width: 540px) {
-    .overview .back-to-top {
-        display: none;
-    }
-    .thread-new {
+    .overview .thread-new {
         text-align: right;
     }
 }
