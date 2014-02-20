@@ -201,18 +201,18 @@
         </ul>
 
         <div class="row">
-        <section id="most-active-poster" class="col-tn-12 col-xs-6">
+        <section id="most-active-poster" class="col-tn-12 col-xs-6 col-sm-12">
             <h3>Most active posters</h3>
             {% for poster in top_posters %}
             <div class="maker row">
-                <div class="inline-block maker-id col-xs-1">
+                <div class="inline-block maker-id col-tn-1">
                     #{{forloop.counter}}
                 </div>
-                <div class="inline-block gravatar col-xs-4">
+                <div class="inline-block gravatar col-tn-3 col-xs-4 col-sm-3">
                     {% gravatar poster.email 40 %}
                     <br />
                 </div>
-                <div class="gravatar-details inline-block col-xs-6">
+                <div class="gravatar-details inline-block col-tn-7 col-xs-6 col-sm-7">
                     <ul class="list-unstyled">
                         <li><span class="maker-name">{{ poster.name }}</span></li>
                         <li><span class="score">{{ poster.count }}</span> posts</li>
@@ -223,21 +223,21 @@
             
         </section>
 
-        {% if top_posters %}
-        <section id="discussion-maker" class="col-tn-12 col-xs-6">
+        {% if top_author %}
+        <section id="discussion-maker" class="col-tn-12 col-xs-6 col-sm-12">
             <h3>Prominent posters</h3>
-            {% for author in top_posters %}
+            {% for author in top_author %}
             <div class="maker row">
-                <div class="inline-block maker-id col-xs-1">
+                <div class="inline-block maker-id col-tn-1">
                     #{{forloop.counter}}
                 </div>
-                <div class="inline-block gravatar col-xs-4">
+                <div class="inline-block gravatar col-tn-3 col-xs-4 col-sm-3">
                     {% if author.email %}
                     {% gravatar author.email 40 %}
                     <br />
                     {% endif %}
                 </div>
-                <div class="gravatar-details inline-block col-xs-6">
+                <div class="gravatar-details inline-block col-tn-7 col-xs-6 col-sm-7">
                     <ul class="list-unstyled">
                         <li><span class="maker-name">{{ author.name }}</span></li>
                         <li><span class="score">+{{author.kudos}}</span> kudos</li>

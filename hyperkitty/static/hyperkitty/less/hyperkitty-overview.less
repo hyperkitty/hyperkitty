@@ -118,13 +118,14 @@
         padding-right: 5px;
     }
     .maker-name {
-        //display: block !important;
-        //max-width: 152px !important;
         word-wrap: break-word !important;
     }
     .score{
         font-weight: bold;
     }
+}
+.overview section#discussion-maker {
+    padding-top: 0;
 }
 
 // tiny screen (<=320px):
@@ -177,6 +178,11 @@
         }
         .thread .thread-title {
             max-height: 2em;
+        }
+    }
+    .overview .gravatar {
+        img {
+            .square(48px);
         }
     }
 }
