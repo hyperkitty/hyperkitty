@@ -17,10 +17,10 @@
 
 {% include 'threads/month_list.html' %}
 
-<div class="overview col-tn-12 col-sm-10 col-md-10">
+<div class="overview col-tn-12 col-sm-10">
     <div class="row">
 
-    <div class="col-tn-12">
+    <div class="col-tn-12 col-sm-4">
         <section id="title">
             <h2>
                 {% if mlist.display_name %}
@@ -60,55 +60,58 @@
                 {% include 'threads/month_list.html' with show_dropdown=True %}
             </li>
         </ul>
-    </div> <!-- /container, title/description & navbar -->
 
-    <div class="quick-links">
-        <a id="home"></a>
-        <form name="search" method="get" action="{% url 'search' %}" class="searchbar col-tn-6 hidden-sm hidden-md hidden-lg" role="search">
-            {% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
-            <input name="query" type="text" class="form-control"
-                   placeholder="Search this list"
-                   {% if query %}value="{{ query }}"{% endif %}
-                   />
-        </form>
-        <div class="thread-new col-tn-6 col-sm-4" {% if not user.is_authenticated %}title="You must be logged-in to create a thread."{% endif %}>
-            <a href="{% url "message_new" mlist_fqdn=mlist.name %}"
-                class="btn btn-default{% if not user.is_authenticated %} disabled{% endif %}">
-                <i class="fa fa-plus"></i>
-               <span class="hidden-tn hidden-xs">Start a n</span><span class="hidden-sm hidden-md hidden-lg">N</span>ew thread
-            </a>
-        </div>
-        <div class="col-tn-12 col-sm-8">
-            <section id="flagged">
-                <h3>Discussions You've Flagged</h3>
-                {% for thread in flagged_threads|slice:":5" %}
-                    {% include "threads/summary_thread.html"  %}
+        <div class="row">
+            <a id="home"></a>
+            <form name="search" method="get" action="{% url 'search' %}" class="searchbar col-tn-6 hidden-sm hidden-md hidden-lg" role="search">
+                {% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
+                <input name="query" type="text" class="form-control"
+                       placeholder="Search this list"
+                       {% if query %}value="{{ query }}"{% endif %}
+                       />
+            </form>
+            <div class="thread-new col-tn-6 col-sm-4" {% if not user.is_authenticated %}title="You must be logged-in to create a thread."{% endif %}>
+                <a href="{% url "message_new" mlist_fqdn=mlist.name %}"
+                    class="btn btn-default{% if not user.is_authenticated %} disabled{% endif %}">
+                    <i class="fa fa-plus"></i>
+                   <span class="hidden-tn hidden-xs">Start a n</span><span class="hidden-sm hidden-md hidden-lg">N</span>ew thread
+                </a>
+            </div>
+        </div> <!-- /container, navbar & search (tiny/xs screens), new thread button -->
+    </div> <!-- /container, title/description + the elements above -->
+
+    {% if user.is_authenticated %}
+    <div class="pull-right col-tn-12 col-sm-8">
+        <section id="flagged">
+            <h3>Discussions You've Flagged</h3>
+            {% for thread in flagged_threads|slice:":5" %}
+                {% include "threads/summary_thread.html"  %}
+            {% empty %}
+                <p>You have not flagged any discussions (yet).</p>
+            {% endfor %}
+            {% if flagged_threads|length > 5 %}
+                <div class="bordered more-threads">
+                    <a href="">More... {{ flagged_threads|length}}</a>
+                </div>
+            {% endif %}
+        </section>
+        <section id="posted-to">
+            <h3>Discussions You've Posted to</h3>
+            {% for thread in threads_posted_to|slice:":5" %}
+                {% include "threads/summary_thread.html"  %}
                 {% empty %}
-                    <p>You have not flagged any discussions (yet).</p>
-                {% endfor %}
-                {% if flagged_threads|length > 5 %}
-                    <div class="bordered more-threads">
-                        <a href="">More... {{ flagged_threads|length}}</a>
-                    </div>
-                {% endif %}
-            </section>
-            <section id="posted-to">
-                <h3>Discussions You've Posted to</h3>
-                {% for thread in threads_posted_to|slice:":5" %}
-                    {% include "threads/summary_thread.html"  %}
-                    {% empty %}
-                    <p>You have not posted to this list (yet).</p>
-                {% endfor %}
-                {% if threads_posted_to|length > 5 %}
-                    <div class="bordered more-threads">
-                        <a href="">More...</a>
-                    </div>
-                {% endif %}
-            </section>
-        </div>
-    </div> <!-- /home, search (tiny/xs screens), new thread, personalized threads lists -->
+                <p>You have not posted to this list (yet).</p>
+            {% endfor %}
+            {% if threads_posted_to|length > 5 %}
+                <div class="bordered more-threads">
+                    <a href="">More...</a>
+                </div>
+            {% endif %}
+        </section>
+    </div> <!-- /home, personalized threads lists -->
+    {% endif %}
 
-    <div class="discussions col-tn-12 col-sm-8 col-sm-push-4">
+    <div class="discussions pull-right col-tn-12 col-sm-8">
         <div class="anchor-link">
             <a id="most-recent"></a>
         </div>
@@ -184,7 +187,7 @@
         </section>
     </div> <!-- /container, for thread lists -->
 
-    <div class="stats col-tn-12 col-sm-4 col-sm-pull-8">
+    <div class="stats col-tn-12 col-sm-4">
         <div class="anchor-link">
             <a id="stats"></a>
         </div>
@@ -194,7 +197,11 @@
             <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
         </div>
 
-        <p class="duration-text">The following statistics are from the past <strong>30</strong> days:</p>
+        <p class="duration-text">
+            <span class="hidden-tn hidden-xs hidden-sm">The following statistics are from </span>
+            <span class="hidden-md hidden-lg">In </span>
+            the past <strong>30</strong> days:
+        </p>
         <ul class="list-stats list-unstyled">
             <li><i class="icomoon participant"></i>{{ mlist.recent_participants_count }} participants</li>
             <li><i class="icomoon discussion"></i>{{ mlist.recent_threads_count }} discussions</li>
@@ -248,7 +255,6 @@
         </section>
         {% endif %}
         </div>
-
     </div> <!-- /container, for list stats -->
 
     </div> <!-- /row, container for home, overview, & thread lists -->
