@@ -126,8 +126,8 @@ class AttachmentFileInput(forms.FileInput):
 class ReplyForm(forms.Form):
     newthread = forms.BooleanField(label="", required=False)
     subject = forms.CharField(label="", required=False,
-            widget=forms.TextInput(attrs={ 'placeholder': 'New subject'}))
-    message = forms.CharField(label="", widget=forms.Textarea)
+            widget=forms.TextInput(attrs={ 'placeholder': 'New subject','class': 'form-control'}))
+    message = forms.CharField(label="", widget=forms.Textarea(attrs={ 'class': 'form-control' }))
     attachment = forms.FileField(required=False, widget=AttachmentFileInput)
 
 class PostForm(forms.Form):
