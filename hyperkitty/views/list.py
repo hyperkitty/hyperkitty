@@ -167,8 +167,6 @@ def overview(request, mlist_fqdn=None):
         authors.reverse()
     else:
         authors = []
-        flagged_threads = []
-        threads_posted_to = []
 
     # Top posters
     top_posters = []
@@ -193,6 +191,18 @@ def overview(request, mlist_fqdn=None):
             continue
         threads_by_category[thread.category].append(thread)
 
+    # Personalized discussion groups: flagged/favorited threads and threads by user
+    if request.user.is_authenticated():
+        try:
+            favorites = Favorite.objects.filter(list_address=mlist.name, user=request.user)
+        except Favorite.DoesNotExist:
+            favorites = []
+        # threads_posted_to = store.get_messages_by_user_id(request.session.get("user_id"), mlist_fqdn)
+        threads_posted_to = []
+    else:
+        favorites = []
+        threads_posted_to = []
+
     context = {
         'view_name': 'overview',
         'mlist' : mlist,
@@ -203,7 +213,7 @@ def overview(request, mlist_fqdn=None):
         'pop_threads': pop_threads[:6],
         'threads_by_category': threads_by_category,
         'months_list': get_months(store, mlist.name),
-        'flagged_threads': flagged_threads[:6],
+        'flagged_threads': favorites[:6],
         'threads_posted_to': threads_posted_to[:6],
     }
     return render(request, "overview.html", context)

@@ -81,7 +81,7 @@
     </div> <!-- /container, title/description + the elements above -->
 
     {% if user.is_authenticated %}
-    <div class="pull-right col-tn-12 col-sm-8">
+    <div class="discussions pull-right col-tn-12 col-sm-8">
         <section id="flagged">
             <h3>Discussions You've Flagged</h3>
             {% for thread in flagged_threads|slice:":5" %}
@@ -91,7 +91,7 @@
             {% endfor %}
             {% if flagged_threads|length > 5 %}
                 <div class="bordered more-threads">
-                    <a href="">More... {{ flagged_threads|length}}</a>
+                    <a href="">More...</a>
                 </div>
             {% endif %}
         </section>
