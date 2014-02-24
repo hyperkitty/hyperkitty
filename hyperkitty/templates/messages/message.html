@@ -78,7 +78,7 @@
         {% include "messages/like_form.html" with message_id_hash=email.message_id_hash object=email %}
 
         {% include "messages/reply_form.html" with mlist_fqdn=mlist.name message_id_hash=email.message_id_hash %}
-        
+
         {% if not unfolded and email.attachments|count %}
         <div class="attachments">
             <a class="attachments" href="#attachments">{{ email.attachments|count }} attachment(s)</a>

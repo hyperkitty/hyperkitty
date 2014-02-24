@@ -5,10 +5,10 @@
         <form method="post" enctype="multipart/form-data"
               action="{% url 'message_reply' mlist_fqdn=mlist_fqdn message_id_hash=message_id_hash %}">
             {% csrf_token %}
-            <p class="reply-tools">
-                <a class="btn btn-mini quote" href="#">Quote</a>
-                <label>{{ reply_form.newthread }} Create a new thread</label>
-            </p>
+            <div class="reply-tools">
+                <a class="btn quote" href="#">Quote</a>
+                <label>{{ reply_form.newthread }} Create new thread</label>
+            </div>
             {{ reply_form.non_field_errors }}
             {% for field in reply_form %}
                 {% if field.html_name != "newthread" %}

@@ -63,12 +63,15 @@
             <li>
                 <a href="#stats">Stats</a>
             </li>
+            <li class="dropdown">
+                {% include 'threads/month_list.html' with show_dropdown=True %}
+            </li>
         </ul> <!-- /navtab -->
         
         <div class="row">
             <div class="col-md-9">
                 <!-- main section, the email thread -->
-                <section id="thread-content">
+                <div id="thread-content">
 
                     <!-- Start first email -->
                     {% include 'messages/message.html' with email=first_mail unfolded='True' %}
@@ -84,8 +87,10 @@
                         {% endif %}
                     </p>
 
-                    <div class="replies">
+                    <div class="anchor-link">
                         <a id="replies"></a>
+                    </div>
+                    <div class="replies">
                         {% if is_bot %}
                             {% include 'ajax/replies.html' %}
                         {% else %}
@@ -93,10 +98,13 @@
                         {% endif %}
                     </div>
 
-                </section>
+                </div>
             </div>
 
             <div class="col-md-3">
+                <div class="anchor-link">
+                        <a id="stats"></a>
+                    </div>
                 {% include 'threads/right_col.html' %}
             </div>
 

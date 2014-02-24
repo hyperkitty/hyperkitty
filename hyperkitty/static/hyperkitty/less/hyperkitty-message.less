@@ -1,4 +1,4 @@
-// MESSAGE VIEW
+// MESSAGE VIEW95px
 @evenEmailColor: rgb(246, 246, 246);
 @oddEmailColor: rgb(238, 238, 238);
 
@@ -26,8 +26,18 @@
 
 .view-thread .nav-tabs {
     margin-bottom: 1.5em;
+    .dropdown-header {
+        padding-left: 0;
+        padding-right: 0;
+    }
 }
-
+.view-thread .anchor-link {
+    position: relative;
+    a {
+        position: absolute;
+        top: -95px;
+    }   
+}
 
 //=== Main section with the whole thread ==/
 
@@ -94,14 +104,14 @@
 }
 
 .email-info {
-    margin-top: 5px;
+    //margin-top: 15px;
     .likestatus {
         padding-right: 1em;
     }
     
 }
 .email-first .email-info {
-    padding: 0 0 10px 0;
+    padding: 0 0 20px 0;
     border-bottom: 1px solid @rowBorderColor;
 }
 
@@ -234,9 +244,9 @@
     border-left: 2px solid rgb(55, 113, 200);
     font-weight: bold;
     font-size: 115%;
-}
-.quoted-switch a:hover {
-    text-decoration: none;
+    &:hover {
+        text-decoration: none;
+    }
 }
 .quoted-text {
     border-left: 2px solid rgb(55, 113, 200);
@@ -267,47 +277,76 @@
 /*
  * Re-attach threads
  */
-.reattach-thread h1 {
-    text-align: center;
-    font-size: 24px;
-    line-height: 26px;
-    margin-bottom: 2em;
-}
-.reattach-thread form {
-    margin-bottom: 0;
-}
-.reattach-thread form.search {
-    margin-top: 2em;
-}
-.reattach-thread form.search p {
-    line-height: 22px;
-}
-.reattach-thread form.search input {
-    margin-left: 3em;
-}
-.reattach-thread form.search input,
-.reattach-thread form.search button {
-    font-size: 12px;
-    padding: 2px 8px;
-}
-.reattach-thread form img.ajaxloader {
-    margin-left: 1em;
-}
-.reattach-thread li.manual label {
-    display: inline;
-}
-.reattach-thread li.manual input {
-    margin-bottom: 0;
-}
-.reattach-thread li.manual input[type='text'] {
-    width: 22em;
-}
-.reattach-thread p.buttons {
-    margin-top: 2em;
+.reattach-thread {
+    h1 {
+        text-align: center;
+        font-size: 24px;
+        line-height: 26px;
+        margin-bottom: 2em;
+    }
+    form {
+        margin-bottom: 0;
+        img.ajaxloader {
+            margin-left: 1em;
+        }
+    }
+    form.search {
+        margin-top: 2em;
+        p {
+            line-height: 22px;
+        }
+        input {
+            margin-left: 3em;
+        }
+        input,
+        button {
+            font-size: 12px;
+            padding: 2px 8px;
+        }
+    }
+    li.manual {
+        label {
+            display: inline;
+        }
+        input {
+            margin-bottom: 0;
+        }
+        input[type='text'] {
+            width: 22em;
+        }
+    }
+    p.buttons {
+        margin-top: 2em;
+    }
 }
 
-// small screens (<768px)
-// thread titles now only take up 1 line max;
+// tiny screen (<=320px):
+// nav-tabs: less padding, smaller dropdowns, right-align last dropdown
+@media (max-width: @screen-tn) {
+    .view-thread .nav-tabs {
+        >li a {
+            padding-left: 7px;
+            padding-right: 7px;
+        }
+        #navbarMonthsListDrop ~ .dropdown-menu {
+            min-width: 90px;
+            left: inherit;
+            right: 0;
+        }
+    }
+}
+// xs screen (<=540px): more padding/spacing in nav-tabs
+@media (max-width: 539px) {
+    .view-thread .nav-tabs {
+        .dropdown-menu {
+            min-width: 120px;
+        }
+        #navbarMonthsListDrop ~ .dropdown-menu {
+            text-align: left;
+        }
+    }
+}
+// small screens (<768px) have smaller gravatar images
 @media (max-width: @screen-sm) {
     .gravatar {
         img {

@@ -192,18 +192,13 @@ a.reply {
     display: none;
     padding-top: 1em;
 
-    p.reply-tools {
+    .reply-tools {
         margin-bottom: 0.7em;
-
-        label {
-            display: inline;
-            font-size: 90%;
-            margin-left: 1.5em;
+        .quote {
+            padding-top: 3px;
         }
-
-        input {
-            margin-top: 0;
-            margin-right: 0.1em;
+        label {
+            font-size: 90%;
         }
     }
 
@@ -211,9 +206,11 @@ a.reply {
         margin: 0;
     }
 
-    #id_subject,
-    textarea {
-        width: 95%;
+    #id_subject {
+        margin-bottom: 0.5em;
+    }
+    #id_message {
+        margin-bottom: 0.25em;
     }
 
     p.buttons {
