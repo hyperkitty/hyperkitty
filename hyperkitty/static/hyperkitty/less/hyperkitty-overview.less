@@ -22,7 +22,7 @@
         }
     }
 
-    .nav .dropdown-header {
+    .nav-tabs .dropdown-header {
         padding-left: 0;
         padding-right: 0;
     }
@@ -85,6 +85,7 @@
 
 .overview .stats {
     float: none;
+    z-index: -1;
 
     .caption {
         font-size: x-small;
@@ -169,6 +170,11 @@
 @media (max-width: @screen-xs-max) and (min-width: 540px) {
     .overview .thread-new {
         text-align: right;
+    }
+}
+@media (max-width: @screen-xs-max) {
+    .overview .stats {
+        .pull-left();
     }
 }
 // small screens & up (>=768px)
