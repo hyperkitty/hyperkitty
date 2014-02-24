@@ -33,11 +33,17 @@
             <a href="#RmFav" class="saved">Remove from favorite discussions</a>
         </p>
     </form>
-    <div class="discussion">{{ num_comments }} comments</div>
-    <div class="participant">{{ participants|length }} participants</div>
+    <div>
+        <i class="icomoon discussion"></i>
+        {{ num_comments }} comments
+    </div>
+    <div>
+        <i class="icomoon participant"></i>
+        {{ participants|length }} participants
+    </div>
     <p class="unread">
         {% if user.is_authenticated %}
-        <i class="unread icon-eye-close"></i> {{ unread_count }} unread messages
+        <i class="fa fa-envelope"></i> {{ unread_count }} unread messages
         {% endif %}
     </p>
     {% if user.is_staff %}
@@ -60,10 +66,10 @@
     </div>
     <div id="participants">
         <span id="participants_title">participants</span> ({{participants|length}})
-        <ul>
+        <ul class="list-unstyled">
             {% for participant in participants %}
             <li>
-                {% gravatar participant.email 20 %}
+                {% gravatar participant.email 32 %}
                 {{ participant.name|escapeemail }}
             </li>
             {% endfor %}

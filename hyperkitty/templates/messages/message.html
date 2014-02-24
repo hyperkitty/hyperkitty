@@ -7,26 +7,11 @@
 {% is_message_new email.date as is_new %}
 <div class="email{% if unfolded %} email-first{% endif %}{% if is_new %} unread{% endif %}">
 
-    <div class="email-header" id="{{email.message_id_hash}}">
-        <div class="email-date inline-block pull-right">
-            {% ifchanged %}
-            <span class="date">
-                {{email|get_date|date:"l, j F"}}
-                {% if unfolded %}
-                {{email|get_date|date:"Y"}}
-                {% endif %}
-            </span>
-            {% endifchanged %}
-            {% if unfolded %}<br />{% endif %}
-            <span class="time" title="Sender's time: {% localtime off %}{{email|get_date|date:"l, j F H:i:s e"}}{% endlocaltime %}">{{email|get_date|date:"H:i:s"}}</span>
-        </div>
-        {% if is_new %}
-            <i class="unread icon-eye-close" title="Unread"></i>
-        {% endif %}
-        <div class="gravatar{% if use_mockups %} pull-left{% endif %}">
+    <div class="email-header row" id="{{email.message_id_hash}}">
+        <div class="gravatar{% if use_mockups %} pull-left{% endif %} col-tn-2">
             {% gravatar email.sender_email 40 %}
         </div>
-        <div class="email-author inline-block">
+        <div class="email-author col-tn-9">
             <span class="name">
                 {% if email.user_id %}
                 <a href="{% url 'public_user_profile' user_id=email.user_id %}"
@@ -46,16 +31,40 @@
                 Rank 8
             </span>
             {% endif %}
+            {% if is_new %}
+                <i class="fa fa-envelope pull-right" title="Unread"></i>
+            {% endif %}
         </div>
-    </div>
+        <div class="email-date col-tn-12">
+            <div class="row">
+                {% ifchanged %}
+                <span class="date hidden-tn hidden-xs">
+                    {{email|get_date|date:"l, j F"}}
+                    {% if unfolded %}
+                    {{email|get_date|date:"Y"}}
+                    {% endif %}
+                </span>
+                <span class="date col-tn-7 hidden-sm hidden-md hidden-lg">
+                    {{email|get_date|date:"D, j M"}}
+                    {% if unfolded %}
+                    '{{email|get_date|date:"y"}}
+                    {% endif %}
+                </span>
+            {% endifchanged %}
+                <div class="time col-tn-5 pull-right">
+                    <span title="Sender's time: {% localtime off %}{{email|get_date|date:"D, j M H:i:s e"}}{% endlocaltime %}">{{email|get_date|date:"H:i:s"}}</span>
+                </div>
+            </div>
+        </div>
+    </div> <!-- /email-header: gravatar, author-info, date -->
 
-    <div class="email-body"
-     >{{ email.content|snip_quoted|wordwrap:90|urlizetrunc:76|escapeemail }}</div>
+    <div class="email-body">{{ email.content|snip_quoted|wordwrap:90|urlizetrunc:76|escapeemail }}
+    </div>
 
     {% if unfolded and email.attachments|count %}
     <div class="attachments">
         <p class="attachments">Attachments:</p>
-        <ul class="attachments-list">
+        <ul class="attachments-list list-unstyled">
         {% for attachment in email.attachments %}
             <li><a href="{% url 'message_attachment' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash counter=attachment.counter filename=attachment.name %}">{{attachment.name}}</a>
                 ({{attachment.content_type}} &mdash; {{attachment.size|filesizeformat}})
@@ -67,10 +76,13 @@
 
     <div class="email-info">
         {% include "messages/like_form.html" with message_id_hash=email.message_id_hash object=email %}
+
+        {% include "messages/reply_form.html" with mlist_fqdn=mlist.name message_id_hash=email.message_id_hash %}
+        
         {% if not unfolded and email.attachments|count %}
         <div class="attachments">
             <a class="attachments" href="#attachments">{{ email.attachments|count }} attachment(s)</a>
-            <ul class="attachments-list">
+            <ul class="attachments-list list-unstyled">
             {% for attachment in email.attachments %}
                 <li><a href="{% url 'message_attachment' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash counter=attachment.counter filename=attachment.name %}">{{attachment.name}}</a>
                     ({{attachment.content_type}} &mdash; {{attachment.size|filesizeformat}})
@@ -79,7 +91,6 @@
             </ul>
         </div>
         {% endif %}
-        {% include "messages/reply_form.html" with mlist_fqdn=mlist.name message_id_hash=email.message_id_hash %}
     </div>
 
 </div>

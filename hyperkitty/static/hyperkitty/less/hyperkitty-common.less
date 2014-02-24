@@ -148,24 +148,19 @@ form.likeform {
     line-height: 1em;
     vertical-align: middle;
 }
-.youlike,
-.youdislike {
-    padding-left: 15px;
-    margin-left: 0.5em;
+.fa-thumbs-up.selected,
+.fa-thumbs-o-up {
+    color: #090;
 }
-.youlike {
-    background: url("../img/youlike.png") no-repeat scroll left;
+.fa-thumbs-down.selected,
+.fa-thumbs-o-down {
+    color: #900;
 }
-.youdislike {
-    background: url("../img/youdislike.png") no-repeat scroll left;
-}
-.youlike.disabled {
-  background: url("../img/youlike-disabled.png") no-repeat scroll left;
-  color: #999;
-}
-.youdislike.disabled {
-  background: url("../img/youdislike-disabled.png") no-repeat scroll left;
-  color: #999;
+.fa-thumbs-o-up.disabled,
+.fa-thumbs-o-down.disabled,
+.fa-thumbs-up.disabled,
+.fa-thumbs-down.disabled {
+    color: #aaa;
 }
 
 
@@ -179,40 +174,6 @@ form.likeform {
     li.current {
         font-weight: bold;
     }
-}
-
-
-//=== Attachments ==/
-p.attachments {
-    margin-bottom: 0;
-    font-weight: bold;
-}
-a.attachments {
-    padding-left: 18px;
-    background: url("../img/mail-attachment.png") no-repeat scroll left;
-}
-.email-info div.attachments {
-    display: inline;
-    padding: 0 1em;
-}
-.email-info .attachments ul.attachments-list {
-    display: none;
-    position: absolute;
-    margin-left: 0;
-    padding-right: 0.5em;
-    border: 1px solid #aaa;
-    border-top: none;
-    z-index: 1;
-}
-.even .email-info .attachments ul.attachments-list {
-    background-color: rgb(246, 246, 246);
-}
-.odd .email-info .attachments ul.attachments-list {
-    background-color: rgb(238, 238, 238);
-}
-.email-info .attachments ul.attachments-list li {
-    list-style-position: inside;
-    padding-left: 0.5em;
 }
 
 

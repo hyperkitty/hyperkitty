@@ -12,29 +12,61 @@
 
 {% block content %}
 
-<div class="row-fluid">
+<div class="row view-thread">
 
 {% include 'threads/month_list.html' %}
 
-    <div class="span10">
+    <div class="col-tn-12 col-md-10">
 
-        <div class="thread-header">
-            {% for thread in neighbors %}
-                {% if thread %}
-                <a class="thread-{% ifequal forloop.counter 1 %}older{% else %}newer{% endifequal %}"
-                   href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
-                   title="{{ thread.subject|strip_subject:mlist|escape }}">{{ thread.subject|strip_subject:mlist|truncatesmart:"22" }}</a>
-                {% endif %}
-            {% endfor %}
+        <!-- thread header: navigation (older/newer), thread title -->
+        <div class="thread-header row">
             <div class="thread-category">
                 {% include 'threads/category.html' %}
             </div>
-            <h1>{{ subject }}</h1>
-        </div>
+            <div class="col-tn-2">
+                {% if next_thread %}
+                <button class="btn btn-default btn-xs {% if not prev_thread %}disabled{% endif %}">
+                    <span class="glyphicon glyphicon-chevron-left"></span>
+                    <span class="hidden-tn hidden-xs">newer</span>
+                </button>
+                <a class="thread-newer hidden-tn hidden-xs"
+                   href="{% url 'thread' threadid=next_thread.thread_id mlist_fqdn=mlist.name %}"
+                   title="{{ next_thread.subject|strip_subject:mlist|escape }}">{{ next_thread.subject|strip_subject:mlist|truncatesmart:"22" }}</a>
+                {% else %}
+                <button class="btn btn-default disabled">Newer</button>
+                {% endif %}
+            </div>
+            <div class="col-tn-8">
+                <h3>{{ subject }}</h3>
+            </div>
+            <div class="col-tn-2">
+                <button class="btn btn-default btn-xs {% if not prev_thread %}disabled{% endif %}">
+                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    <span class="hidden-tn hidden-xs">older</span>
+                </button>
+                {% if prev_thread %}
+                <a class="thread-older hidden-tn hidden-xs"
+                   href="{% url 'thread' threadid=prev_thread.thread_id mlist_fqdn=mlist.name %}"
+                   title="{{ prev_thread.subject|strip_subject:mlist|escape }}">{{ prev_thread.subject|strip_subject:mlist|truncatesmart:"22" }}</a>
+                {% endif %}
+            </div>
+        </div> <!-- /thread-header -->
 
-        <div class="row-fluid">
-
-            <div class="span9">
+        <!-- nav tabs, for smaller screens -->
+        <ul class="nav nav-tabs hidden-sm hidden-md hidden-lg">
+            <li class="active">
+                <a href="#home">First Post</a>
+            </li>
+            <li>
+                <a href="#replies">Replies</a>
+            </li>
+            <li>
+                <a href="#stats">Stats</a>
+            </li>
+        </ul> <!-- /navtab -->
+        
+        <div class="row">
+            <div class="col-md-9">
                 <!-- main section, the email thread -->
                 <section id="thread-content">
 
@@ -53,17 +85,18 @@
                     </p>
 
                     <div class="replies">
-                    {% if is_bot %}
-                        {% include 'ajax/replies.html' %}
-                    {% else %}
-                        <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
-                    {% endif %}
+                        <a id="replies"></a>
+                        {% if is_bot %}
+                            {% include 'ajax/replies.html' %}
+                        {% else %}
+                            <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
+                        {% endif %}
                     </div>
 
                 </section>
             </div>
 
-            <div class="span3">
+            <div class="col-md-3">
                 {% include 'threads/right_col.html' %}
             </div>
 

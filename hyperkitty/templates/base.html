@@ -13,7 +13,7 @@
         <link rel="stylesheet" media="all" href="{{ STATIC_URL }}hyperkitty/libs/jquery/smoothness/jquery-ui-1.10.3.custom.min.css" />
         <link rel="stylesheet" media="all" href="{{ STATIC_URL }}hyperkitty/libs/bootstrap/css/bootstrap.min.css" />
         <link rel="stylesheet" media="all" href="{{ STATIC_URL }}hyperkitty/libs/font-awesome/css/font-awesome.min.css" />
-        {% assets filters="cssrewrite,cssmin", output="gen/hyperkitty.css", "hyperkitty/css/hyperkitty-user.css", "hyperkitty/css/hyperkitty-message.css" %}
+        {% assets filters="cssrewrite,cssmin", output="gen/hyperkitty.css", "hyperkitty/css/hyperkitty-user.css" %}
         <link rel="stylesheet" media="all" href="{{ ASSET_URL }}" />
         {% endassets %}
         {% if debug %} 

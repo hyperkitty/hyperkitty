@@ -1,0 +1,317 @@
+// MESSAGE VIEW
+@evenEmailColor: rgb(246, 246, 246);
+@oddEmailColor: rgb(238, 238, 238);
+
+//=== Thread view ==/
+
+.thread-header {
+    margin-bottom: 0.5em;
+    padding: 0;
+    h3 {
+        text-align: center;
+        font-size: 1.5em;
+        margin-top: 8px;
+    }
+    .thread-older, .thread-newer {
+        margin-top: 1em;
+        color: @subheadingColor;
+    }
+    button {
+        margin-top: 10px;
+    }
+    .thread-category {
+        text-align: center;
+    }
+}
+
+.view-thread .nav-tabs {
+    margin-bottom: 1.5em;
+}
+
+
+//=== Main section with the whole thread ==/
+
+// First email of the thread
+.email-header {
+    margin-bottom: 1em;
+    .gravatar {
+        margin-bottom: 2px;
+        margin-right: 8px;
+    }
+}
+
+.email-author {
+    .name {
+        font-weight: bold;
+    }
+    .rank{
+        color: @subheadingColor;
+        font-size: 80%;
+        font-weight: bold;
+    }
+    .messagelink {
+        font-style: italic;
+        font-size: 90%;
+        color: rgb(167, 169, 172);
+        a {
+            color: rgb(167, 169, 172);
+        }
+    }
+}
+
+.email-date {
+    .date {
+        font-weight: bold;
+    }
+    .time {
+        text-align: right;
+        span {
+            text-align: right;
+            color: @subheadingColor;
+            border-bottom: 1px dashed @rowBorderColor;
+            cursor: help;
+        }
+    }
+}
+
+.email-body {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+
+    span.read-more a,
+    span.read-less a {
+        float: right;
+        padding: 3px 10px 0 0;
+    }
+}
+
+.attachments {
+    padding-top: 8px;
+    p {
+        margin-bottom: 0;
+        font-weight: bold;
+    }
+}
+
+.email-info {
+    margin-top: 5px;
+    .likestatus {
+        padding-right: 1em;
+    }
+    
+}
+.email-first .email-info {
+    padding: 0 0 10px 0;
+    border-bottom: 1px solid @rowBorderColor;
+}
+
+.sort-mode {
+    text-align: right;
+    padding-top: 10px;
+}
+
+
+/* The email thread */
+.view-thread .replies {
+    margin-top: -15px;
+}
+.replies .email {
+    border-top: 1px solid @rowBorderColor;
+    padding: 0.5em;
+    margin: 20px 0 20px 0;
+    .unread {
+        border-top: 1px solid rgb(100, 100, 100);
+        background-color: rgb(214, 214, 214);
+        i.unread {
+            float: right;
+            margin-right: 2em;
+        }
+    }
+    .email-body {
+        padding: 5px;
+        background-color: rgb(255, 255, 255);
+    }
+}
+.even .email {
+    background-color: @evenEmailColor;
+}
+.odd .email {
+    background-color: @oddEmailColor;
+}
+.temporary .email {
+    background-color: rgb(215, 215, 229);
+    display: none;
+}
+ 
+
+// === Thread general information column
+
+.days-num {
+    font-size: 200%;
+    display: inline-block;
+}
+.days-text {
+    font-size: 70%;
+    display: inline-block;
+    margin-right: 2em;
+}
+
+#thread-overview-info {
+    form.favorite {
+        margin-bottom: 0;
+    }
+    .favorite a {
+        color: rgb(167, 169, 172);
+    }
+    a.saved,
+    a.notsaved {
+        /* Will be shown via Javascript */
+        display: none;
+    }
+}
+
+//=== Tags
+
+#tag-title {
+    color: rgb(77, 77, 77);
+    text-transform: uppercase;
+}
+
+#tags {
+    color: rgb(167, 169, 172);
+    margin-top: 2em;
+}
+#tags ul {
+    padding: 10px 0;
+    margin: 0;
+}
+#tags ul li {
+    padding-left: 0;
+}
+#tags ul li span {
+    margin-left: 5px;
+}
+#tags .rmtag {
+    margin: 0;
+    display: inline;
+}
+#tags .rmtag a {
+    visibility: hidden;
+    font-size: 125%;
+}
+#tags:hover .rmtag a {
+    visibility: visible;
+}
+#tags:hover .rmtag a:hover {
+    text-decoration: none;
+}
+
+#add-tag {
+    margin-top: 0.3em;
+}
+
+//=== Participants ==/
+
+#participants {
+    margin-top: 2em;
+    color: @subheadingColor;
+    span#participants_title {
+        &:extend(.small-caps);
+    }
+    li {
+        margin: 1em 0;
+    }
+    img.gravatar {
+        vertical-align: middle;
+    }
+}
+
+
+/* Inline quotes */
+.quoted-switch a {
+    background-color: #fafafa;
+    padding: 0 4px 2px 4px;
+    border-left: 2px solid rgb(55, 113, 200);
+    font-weight: bold;
+    font-size: 115%;
+}
+.quoted-switch a:hover {
+    text-decoration: none;
+}
+.quoted-text {
+    border-left: 2px solid rgb(55, 113, 200);
+    padding-left: 0.2em;
+}
+
+
+/*
+ * Navigation for unread messages
+ */
+#unreadnavbar {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    text-align: right;
+    padding-right: 2em;
+    display: none;
+}
+#unreadnavbar>div {
+    width: auto;
+    padding: 0.2em 1em;
+    border: 1px solid #888;
+    border-bottom: none;
+    background-color: #eee;
+}
+
+
+/*
+ * Re-attach threads
+ */
+.reattach-thread h1 {
+    text-align: center;
+    font-size: 24px;
+    line-height: 26px;
+    margin-bottom: 2em;
+}
+.reattach-thread form {
+    margin-bottom: 0;
+}
+.reattach-thread form.search {
+    margin-top: 2em;
+}
+.reattach-thread form.search p {
+    line-height: 22px;
+}
+.reattach-thread form.search input {
+    margin-left: 3em;
+}
+.reattach-thread form.search input,
+.reattach-thread form.search button {
+    font-size: 12px;
+    padding: 2px 8px;
+}
+.reattach-thread form img.ajaxloader {
+    margin-left: 1em;
+}
+.reattach-thread li.manual label {
+    display: inline;
+}
+.reattach-thread li.manual input {
+    margin-bottom: 0;
+}
+.reattach-thread li.manual input[type='text'] {
+    width: 22em;
+}
+.reattach-thread p.buttons {
+    margin-top: 2em;
+}
+
+// small screens (<768px)
+// thread titles now only take up 1 line max;
+@media (max-width: @screen-sm) {
+    .gravatar {
+        img {
+            .square(48px);
+        }
+    }
+}
