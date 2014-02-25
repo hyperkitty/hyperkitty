@@ -44,13 +44,18 @@
 // First email of the thread
 .email-header {
     margin-bottom: 1em;
+    display: inline-block;
+
     .gravatar {
         margin-bottom: 2px;
-        margin-right: 8px;
+        display: inline-block
     }
 }
 
 .email-author {
+    margin-left: 0.5em;;
+    display: inline-block;
+
     .name {
         font-weight: bold;
     }
@@ -72,9 +77,11 @@
 .email-date {
     .date {
         font-weight: bold;
+        display: inline-block;
     }
     .time {
         text-align: right;
+        display: inline-block;
         span {
             text-align: right;
             color: @subheadingColor;
@@ -235,8 +242,8 @@
     li {
         margin: 1em 0;
     }
-    img.gravatar {
-        vertical-align: middle;
+    .participant-gravatar {
+        padding-left: 0;
     }
 }
 
@@ -334,6 +341,11 @@
             right: 0;
         }
     }
+    #participants {
+        .participant-name {
+            margin-left: 0 !important;
+        }
+    }
 }
 // xs screen (<=540px): more padding/spacing in nav-tabs
 @media (max-width: 539px) {
@@ -347,19 +359,18 @@
     }
 }
 // small screens (<768px) have smaller gravatar images
-@media (max-width: @screen-sm-max) {
+@media (max-width: @screen-xs-max) {
     #participants {
-        .participant-gravatar {
-            padding-left: 0;
+        .participant-name {
+            margin-left: -20px;
         }
+    }   
+}
+// mid screens (<992px): adjust spacing between gravatar images
+@media (min-width: @screen-md-min) {
+    #participants {
         img.gravatar {
-            .square(48px);
-            vertical-align: top;
+            .square(32px);
         }
     }
 }
-//@media (max-width: @screen-sm-max) and (min-width: @screen-sm-min) {
-//    img.gravatar {
-//        .square(48px);
-//    }
-//}

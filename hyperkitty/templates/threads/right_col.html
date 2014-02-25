@@ -76,8 +76,8 @@
         <ul class="list-unstyled">
             {% for participant in participants %}
             <li class="row">
-                <div class="participant-gravatar col-sm-4">{% gravatar participant.email 32 %}</div>
-                <div class="col-sm-8">{{ participant.name|escapeemail }}</div>
+                <div class="participant-gravatar col-tn-2 col-sm-4 col-md-2">{% gravatar participant.email 48 %}</div>
+                <div class="participant-name col-tn-8">{{ participant.name|escapeemail }}</div>
             </li>
             {% endfor %}
         </ul>

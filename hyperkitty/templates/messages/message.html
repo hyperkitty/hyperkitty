@@ -7,11 +7,11 @@
 {% is_message_new email.date as is_new %}
 <div class="email{% if unfolded %} email-first{% endif %}{% if is_new %} unread{% endif %}">
 
-    <div class="email-header row" id="{{email.message_id_hash}}">
-        <div class="gravatar{% if use_mockups %} pull-left{% endif %} col-tn-2">
+    <div class="email-header" id="{{email.message_id_hash}}">
+        <div class="gravatar{% if use_mockups %} pull-left{% endif %}">
             {% gravatar email.sender_email 40 %}
         </div>
-        <div class="email-author col-tn-9">
+        <div class="email-author">
             <span class="name">
                 {% if email.user_id %}
                 <a href="{% url 'public_user_profile' user_id=email.user_id %}"
@@ -35,23 +35,23 @@
                 <i class="fa fa-envelope pull-right" title="Unread"></i>
             {% endif %}
         </div>
-        <div class="email-date col-tn-12">
-            <div class="row">
+        <div class="email-date">
+            <div>
                 {% ifchanged %}
-                <span class="date hidden-tn hidden-xs col-sm-7">
+                <span class="date hidden-tn">
                     {{email|get_date|date:"l, j F"}}
                     {% if unfolded %}
                     {{email|get_date|date:"Y"}}
                     {% endif %}
                 </span>
-                <span class="date col-tn-7 hidden-sm hidden-md hidden-lg">
+                <span class="date hidden-xs hidden-sm hidden-md hidden-lg">
                     {{email|get_date|date:"D, j M"}}
                     {% if unfolded %}
                     '{{email|get_date|date:"y"}}
                     {% endif %}
                 </span>
             {% endifchanged %}
-                <div class="time col-tn-5 pull-right">
+                <div class="time">
                     <span title="Sender's time: {% localtime off %}{{email|get_date|date:"D, j M H:i:s e"}}{% endlocaltime %}">{{email|get_date|date:"H:i:s"}}</span>
                 </div>
             </div>
