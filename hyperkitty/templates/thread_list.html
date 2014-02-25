@@ -16,11 +16,8 @@
 
     <div id="thread-list" class="col-sm-10">
 
-        <div class="thread-list-header page-header">
-            <a href="{% url "message_new" mlist_fqdn=mlist.name %}"
-               class="thread-new btn btn-default pull-right{% if not user.is_authenticated %} disabled" title="You must be logged-in to create a thread.{% endif %}"
-               ><strong>+</strong> Start a new thread</a>
-            <h1>
+        <div class="thread-list-header row">
+            <h1 class="col-tn-12">
                 {% if mlist.display_name %}
                     {{ mlist.display_name }}
                 {% else %}
@@ -28,10 +25,8 @@
                 {% endif %}
                 <small>{{ list_title }}</small>
             </h1>
-            <ul class="list-unstyled list-stats thread-list-info">
-                <li class="list-address">
-                    {{ mlist.name }}
-                </li>
+            <span class="list-address col-tn-12">{{ mlist.name }}</span>
+            <ul class="list-unstyled list-stats thread-list-info col-tn-6">
                 <li>
                     <i class="icomoon participant"></i>
                     {{ participants }} participants
@@ -41,6 +36,13 @@
                     {{ threads.paginator.count }} discussions
                 </li>
             </ul>
+            <div class="thread-new col-tn-6" {% if not user.is_authenticated %}title="You must be logged-in to create a thread."{% endif %}>
+                <a href="{% url "message_new" mlist_fqdn=mlist.name %}"
+                    class="btn btn-default {% if not user.is_authenticated %} disabled{% endif %}">
+                    <i class="fa fa-plus"></i>
+                    <span class="hidden-tn hidden-xs">Start a n</span><span class="hidden-sm hidden-md hidden-lg">N</span>ew thread
+                    </a>
+            </div>
         </div>
 
         {% for thread in threads %}

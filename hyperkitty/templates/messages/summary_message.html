@@ -37,6 +37,6 @@
                 </div>
                 {% include "messages/like_form.html" with message_id_hash=message.message_id_hash object=message %}
                 <a href="{% url 'message_index' message_id_hash=message.message_id_hash mlist_fqdn=message.list_name %}"
-                   class="btn thread-show">Show message</a>
+                   class="btn btn-default thread-show">Show message</a>
             </div>
         </div>
