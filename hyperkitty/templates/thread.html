@@ -25,7 +25,7 @@
             </div>
             <div class="col-tn-2">
                 {% if next_thread %}
-                <button class="btn btn-default btn-xs {% if not next_thread %}disabled{% endif %}"
+                <button id="next-thread" class="btn btn-default btn-xs {% if not next_thread %}disabled{% endif %}"
                         {% if next_thread %}title="{{ next_thread.subject|strip_subject:mlist|escape }}"{% endif %}>
                     <span class="glyphicon glyphicon-chevron-left"></span>
                     <span class="hidden-tn hidden-xs">newer</span>
@@ -36,7 +36,7 @@
                 <h3>{{ subject }}</h3>
             </div>
             <div class="col-tn-2 right">
-                <button class="btn btn-default btn-xs {% if not prev_thread %}disabled{% endif %}"
+                <button id="prev-thread" class="btn btn-default btn-xs {% if not prev_thread %}disabled{% endif %}"
                     {% if prev_thread %}title="{{ prev_thread.subject|strip_subject:mlist|escape }}"{% endif %}>
                     <span class="glyphicon glyphicon-chevron-right"></span>
                     <span class="hidden-tn hidden-xs">older</span>
@@ -125,6 +125,10 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
+        //enable tooltips for thread buttons
+        $("btn#next-thread").tooltip();
+        $("btn#prev-thread").tooltip();
+        
         setup_category();
         setup_tags();
         setup_favorites();
