@@ -72,16 +72,34 @@
                     </li>
                 </ul>
 
-                <ul class="nav navbar-nav navbar-right auth">
-                {% if user.is_authenticated %}
-                    <li><a class="mm_logout" href="{% url 'user_logout' %}?next={% url 'root' %}">Logout</a></li>
-                    <li><a href="{% url 'user_profile' %}">{{ user.username|truncatechars:"35" }}</a></li>
-                {% else %}
-                    <li><a class="mm_user" href="{% url 'user_login' %}?next={{next|default:request.path|urlencode}}">Login</a></li>
-                    {% if use_internal_auth %}
-                        <li><a href="{% url 'user_registration' %}?next={{next|default:request.path|urlencode}}"> Sign Up </a></li>
-                    {% endif %}
+                <!-- show dropdown for smaller screens -->
+                {% if user.is_authenticated or use_internal_auth %}
+                <div class="nav navbar-nav navbar-right auth dropdown navbar-form hidden-md hidden-lg">
+                    <button type="button" class="btn dropdown-toggle" id="loginDropdownMenu" data-toggle="dropdown">
+                        <span class="fa fa-bars"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="loginDropdownMenu">
+                        {% if use_internal_auth %}
+                        <li role="presentation"><a role="menuitem" tabindex="-1" class="mm_user" href="{% url 'user_login' %}?next={{next|default:request.path|urlencode}}">Login</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'user_registration' %}?next={{next|default:request.path|urlencode}}"> Sign Up </a></li>                        
+                        {% else %}
+                        <li role="presentation"><a role="menuitem" tabindex="-1" class="mm_logout" href="{% url 'user_logout' %}?next={% url 'root' %}">Logout</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'user_profile' %}">{{ user.username|truncatechars:"35" }}</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
                 {% endif %}
+                <!-- show regular list items for larger screens -->
+                <ul class="nav navbar-nav navbar-right auth">
+                    {% if user.is_authenticated %}
+                        <li><a class="mm_logout hidden-sm" href="{% url 'user_logout' %}?next={% url 'root' %}">Logout</a></li>
+                        <li><a class="hidden-sm" href="{% url 'user_profile' %}">{{ user.username|truncatechars:"35" }}</a></li>
+                    {% else %}
+                        <li><a class="mm_user {% if use_internal_auth %}hidden-sm{% endif %}" href="{% url 'user_login' %}?next={{next|default:request.path|urlencode}}">Login</a></li>
+                        {% if use_internal_auth %}
+                        <li><a class="hidden-sm" href="{% url 'user_registration' %}?next={{next|default:request.path|urlencode}}"> Sign Up </a></li>                        
+                        {% endif %}
+                    {% endif %}
                 </ul>
 
                 <form name="search" method="get" action="{% url 'search' %}" class="navbar-form navbar-right" role="search">
