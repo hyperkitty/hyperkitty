@@ -1,47 +1,59 @@
 /*
  * Threads view header
  */
-//
-//#thread-list .thread-list-header {
-//    margin-bottom: 4em;
-//}
-//
-//#thread-list .thread-list-header .thread-list-info {
-//    display: inline;
-//    list-style-type: none;
-//    margin: 0;
-//    padding: 0;
-//}
-//#thread-list .thread-list-header .thread-list-info li {
-//    display: inline;
-//    margin-right: 2em;
-//}
-//#thread-list .thread-list-header .thread-list-info li.list-address {
-//    font-size: 120%;
-//    margin-right: 4em;
-//}
-//
-//#thread-list .thread-list-header .thread-new {
-//    float: right;
-//}
-//
-//#thread-list .thread-list-header form {
-//    margin-bottom: 0;
-//    float: right;
-//}
-//#thread-list .thread-list-header form select {
-//    margin-bottom: 0;
-//    width: auto;
-//}
 
+#thread-list .thread-list-header {
+    margin-bottom: 4em;
+    .thread-list-info {
+        li {
+           margin-right: 2em;
+        }
+        li.list-address {
+            font-size: 120%;
+            margin-right: 4em;
+        }
+    }
+
+    .thread-new {
+        float: right;
+    }
+
+    form {
+        margin-bottom: 0;
+        float: right;
+    }
+    form select {
+        margin-bottom: 0;
+        width: auto;
+    }
+}
+
+#thread-list .thread+.thread {
+        padding-top: 1em;
+}
+
+#thread-list .paginator {
+    text-align: center;
+}
+
+#thread-list .thread {
+    border: none;
+   
+    .thread-email {
+        display: block;
+        margin-left: 0;
+        margin-bottom: 5px;
+    }
+}
 
 /*
- * Thread view
+    * Thread view
  */
 
 .thread {
     &:extend(.bordered);
-    padding: 0.25em auto;
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
     margin: 0.25em 0;
     &:hover {
         &:extend(.row-hover);
@@ -60,7 +72,6 @@
 
 .thread-id {
     font-weight: bold;
-    //font-size: normal;
     color: @headingColor;
     vertical-align: top;
     padding-right: 10px;
@@ -89,8 +100,6 @@
 }
 
 .thread-info {
-    //text-align:right;
-    //clear: both;
     margin-left: 60px;
 }
 

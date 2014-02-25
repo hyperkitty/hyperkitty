@@ -7,7 +7,7 @@
             <div class="{% if thread.favorite %}saved{% else %}notsaved{% endif %}">
                 <span class="thread-title">
                     {% if thread.unread %}
-                        <i class="unread icon-eye-close" title="New messages in this thread"></i>
+                        <i class="fa fa-envelope" title="New messages in this thread"></i>
                     {% endif %}
                     <a name="{{thread.thread_id}}"
                        href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
@@ -17,15 +17,15 @@
                     {{ thread|get_date|timesince }}
                 </span>
             </div>
-            <div class="thread-content">
-                <div class="gravatar">
+            <div class="thread-content row">
+                <div class="gravatar col-md-1">
                     {% if thread.starting_email.sender_email %}
                     {% gravatar thread.starting_email.sender_email 40 %}
                     <br />
                     {% endif %}
                     {{ thread.starting_email.sender_name|escapeemail }}
                 </div>
-                <div class="thread-email">
+                <div class="thread-email col-md-11">
                     <span class="expander collapsed">
                         {{ thread.starting_email.content|urlizetrunc:76|escapeemail }}
                     </span>
@@ -38,7 +38,7 @@
                 <div class="tags">
                     {% if thread.tags|length %}
                     Tags:
-                    <ul class="tags inline">
+                    <ul class="list-unstyled tags">
                     {% for tag in thread.tags %}
                         <li>
                             <a href="{% url 'search_tag' mlist_fqdn=mlist.name tag=tag.tag %}">{{tag.tag}}</a>
@@ -47,10 +47,10 @@
                     </ul>
                     {% endif %}
                 </div>
-                <span class="participant">{{ thread.participants_count }} participants</span>
-                <span class="discussion">{{ thread|length }} comments</span>
+                <span><i class="icomoon participant"></i>{{ thread.participants_count }} participants</span>
+                <span><i class="icomoon discussion"></i>{{ thread|length }} comments</span>
                 {% include "messages/like_form.html" with message_id_hash=thread.starting_email.message_id_hash object=thread %}
                 <a href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
-                   class="btn thread-show">Show discussion</a>
+                   class="btn btn-default thread-show">Show discussion</a>
             </div>
         </div>
