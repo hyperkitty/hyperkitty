@@ -16,7 +16,7 @@
 
 {% include 'threads/month_list.html' %}
 
-    <div class="col-tn-12 col-md-10">
+    <div class="col-tn-12 col-sm-10">
 
         <!-- thread header: navigation (older/newer), thread title -->
         <div class="thread-header row">
@@ -25,11 +25,12 @@
             </div>
             <div class="col-tn-2">
                 {% if next_thread %}
-                <button class="btn btn-default btn-xs {% if not prev_thread %}disabled{% endif %}">
+                <button class="btn btn-default btn-xs {% if not next_thread %}disabled{% endif %}"
+                        {% if next_thread %}title="{{ next_thread.subject|strip_subject:mlist|escape }}"{% endif %}>
                     <span class="glyphicon glyphicon-chevron-left"></span>
                     <span class="hidden-tn hidden-xs">newer</span>
                 </button>
-                <a class="thread-newer hidden-tn hidden-xs"
+                <a class="thread-newer hidden-tn hidden-xs hidden-sm"
                    href="{% url 'thread' threadid=next_thread.thread_id mlist_fqdn=mlist.name %}"
                    title="{{ next_thread.subject|strip_subject:mlist|escape }}">{{ next_thread.subject|strip_subject:mlist|truncatesmart:"22" }}</a>
                 {% else %}
@@ -40,12 +41,13 @@
                 <h3>{{ subject }}</h3>
             </div>
             <div class="col-tn-2">
-                <button class="btn btn-default btn-xs {% if not prev_thread %}disabled{% endif %}">
+                <button class="btn btn-default btn-xs {% if not prev_thread %}disabled{% endif %}"
+                    {% if prev_thread %}title="{{ prev_thread.subject|strip_subject:mlist|escape }}"{% endif %}>
                     <span class="glyphicon glyphicon-chevron-right"></span>
                     <span class="hidden-tn hidden-xs">older</span>
                 </button>
                 {% if prev_thread %}
-                <a class="thread-older hidden-tn hidden-xs"
+                <a class="thread-older hidden-tn hidden-xs hidden-sm"
                    href="{% url 'thread' threadid=prev_thread.thread_id mlist_fqdn=mlist.name %}"
                    title="{{ prev_thread.subject|strip_subject:mlist|escape }}">{{ prev_thread.subject|strip_subject:mlist|truncatesmart:"22" }}</a>
                 {% endif %}
@@ -69,7 +71,7 @@
         </ul> <!-- /navtab -->
         
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-sm-9">
                 <!-- main section, the email thread -->
                 <div id="thread-content">
 
@@ -101,7 +103,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-sm-3">
                 <div class="anchor-link">
                         <a id="stats"></a>
                     </div>

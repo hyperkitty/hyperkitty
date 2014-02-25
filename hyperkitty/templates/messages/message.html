@@ -38,7 +38,7 @@
         <div class="email-date col-tn-12">
             <div class="row">
                 {% ifchanged %}
-                <span class="date hidden-tn hidden-xs">
+                <span class="date hidden-tn hidden-xs col-sm-7">
                     {{email|get_date|date:"l, j F"}}
                     {% if unfolded %}
                     {{email|get_date|date:"Y"}}

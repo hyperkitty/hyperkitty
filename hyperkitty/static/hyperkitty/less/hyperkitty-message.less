@@ -158,15 +158,19 @@
 
 .days-num {
     font-size: 200%;
-    display: inline-block;
+    //display: inline-block;
 }
 .days-text {
     font-size: 70%;
-    display: inline-block;
-    margin-right: 2em;
+    //display: inline-block;
+    //margin-right: 2em;
 }
 
 #thread-overview-info {
+    #thread-date-info {
+        padding-bottom: 8px;
+    }
+
     form.favorite {
         margin-bottom: 0;
     }
@@ -254,9 +258,7 @@
 }
 
 
-/*
- * Navigation for unread messages
- */
+//=== Navigation for unread messages ==/
 #unreadnavbar {
     position: fixed;
     bottom: 0;
@@ -274,9 +276,7 @@
 }
 
 
-/*
- * Re-attach threads
- */
+//=== Re-attach threads ==/
 .reattach-thread {
     h1 {
         text-align: center;
@@ -347,10 +347,19 @@
     }
 }
 // small screens (<768px) have smaller gravatar images
-@media (max-width: @screen-sm) {
-    .gravatar {
-        img {
+@media (max-width: @screen-sm-max) {
+    #participants {
+        .participant-gravatar {
+            padding-left: 0;
+        }
+        img.gravatar {
             .square(48px);
+            vertical-align: top;
         }
     }
 }
+//@media (max-width: @screen-sm-max) and (min-width: @screen-sm-min) {
+//    img.gravatar {
+//        .square(48px);
+//    }
+//}
