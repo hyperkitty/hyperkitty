@@ -10,11 +10,11 @@ Reattach a thread - {{ mlist.display_name|default:mlist.name|escapeemail }} - {{
 
 {% block content %}
 
-<div class="row-fluid reattach-thread">
+<div class="row reattach-thread">
 
 {% include 'threads/month_list.html' %}
 
-    <div class="span7">
+    <div class="col-md-7">
 
         <h1>Re-attach a thread to another</h1>
 
@@ -28,16 +28,16 @@ Reattach a thread - {{ mlist.display_name|default:mlist.name|escapeemail }} - {{
             <p>Re-attach it to:
             <span class="input-append">
             <input type="text" name="q" placeholder="Search for the parent thread"
-                /><button type="submit" class="btn">Search</button>
+                /><button type="submit" class="btn btn-default">Search</button>
             </span>
             </p>
         </form>
         <form action="" method="POST">
             {% csrf_token %}
-            <ul class="unstyled suggestions">
+            <ul class="list-unstyled suggestions">
                 <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
             </ul>
-            <ul class="unstyled">
+            <ul class="list-unstyled">
                 <li class="manual">
                     <input type="radio" name="parent" value="" />
                     <label>this thread ID:
