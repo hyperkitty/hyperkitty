@@ -22,12 +22,12 @@
         <a class="youlike vote{% if not user.is_authenticated %} disabled" title="You must be logged-in to vote.{% endif %}"
            href="#like" data-vote="1">
             <span class="fa fa-thumbs-o-up"></span>
-            <span class="hidden-tn hidden-sm">Like</span>
+            <span class="hidden-tn hidden-xs hidden-sm">Like</span>
         </a> / 
         <a class="youdislike vote{% if not user.is_authenticated %} disabled" title="You must be logged-in to vote.{% endif %}"
            href="#dislike" data-vote="-1">
             <span class="fa fa-thumbs-o-down"></span>
-            <span class="hidden-tn hidden-sm">Dislike</span>
+            <span class="hidden-tn hidden-xs hidden-sm">Dislike</span>
         </a>
     {% endif %}
     </form>

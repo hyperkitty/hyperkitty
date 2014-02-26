@@ -1,17 +1,15 @@
-/*
- * Threads view header
- */
+//=== Threads view header ==/
 
 #thread-list .thread-list-header {
     margin-bottom: 2em;
     padding-bottom: 1em;
     border-bottom: 1px solid lighten(@rowBorderColor, 15%);
-
-    .thread-list-info li {
-        margin-right: 2em;
+    h1 {
+        margin-bottom: 0;
     }
     .list-address {
         font-size: 120%;
+        padding-bottom: 0.5em;
     }
 }
 
@@ -35,7 +33,9 @@
         .thread-category {
             padding-bottom: 0.25em;
         }
-
+        .likestatus {
+            padding-right: 1em;
+        }
         .list-stats {
             padding-bottom: 0.25em;
         }
@@ -43,26 +43,6 @@
 }
 
 //=== Thread view ==/
-
-.overview .thread {
-    &:extend(.bordered);
-    padding-top: 0.25em;
-    padding-bottom: 0.25em;
-    margin: 0.25em 0;
-    &:hover {
-        &:extend(.row-hover);
-        a {
-            &:extend(.row-link-hover);
-        }
-        //.chart-data .bars rect {
-        //    &:extend(.row-chart-hover);
-        //}
-    }
-
-    .thread-category {
-        //float: left;
-    }
-}
 
 .thread-id {
     font-weight: bold;
@@ -89,7 +69,7 @@
 .thread-date {
     font-style: italic;
     font-size: 70%;
-    color: rgb(128, 0, 0);
+    color: @maroon;
     margin-left: 1em;
 }
 
@@ -115,9 +95,6 @@
 .thread-content {
     margin-top: 0.5em;
 
-    .thread-content .gravatar a {
-        color: black;
-    }
     .thread-email {
         margin-bottom: 5px;
     }
@@ -156,14 +133,79 @@
     white-space: normal;
 }
 
-// tiny screens  (<=320px): format thread list header
-@media (max-width: @screen-tn) {
-    #thread-list  {
+// tiny screens  (<=480px): format thread list header
+@media (max-width: @screen-tn-max) {
+    #thread-list .thread-list-header {
         h1 {
             margin-bottom: 0;
         }
+        .list-address {
+            padding-bottom: 0.5em;
+        }
+        .list-stats li {
+            display: block;
+        }
         .list-stats li+li {
             padding-left: 0;
+        }
+    }
+    #thread-list .thread-info {
+        .likeform {
+            padding-top: 0.25em;
+            padding-bottom: 0.25em;
+        }
+    }
+}
+// for viewports larger than 320px, add more spacing 
+@media (min-width: @screen-xs-min) {
+    #thread-list  {
+        .thread-list-info {
+            padding-top: 10px;
+        }
+        img.gravatar {
+            .square(60px);
+        }
+    }
+}
+// for extra small viewports (480 <= x < 1199px)
+@media (max-width: @screen-md-max) and (min-width: @screen-xs-min) {
+    #thread-list .thread-info {
+        .likeform {
+            .pull-right();
+        }
+        .thread-content {
+            .make-xs-column-push(2);
+            margin-top: 0;
+        }
+        .gravatar {
+            .make-xs-column-pull(10);
+        }
+        .thread-extras {
+            .make-xs-column-offset(2);
+        }
+    }
+}
+// for viewports >= 768px, thread stats appears on a single line, so align properly
+@media (min-width: @screen-sm-min) {
+    #thread-list .thread-info {
+        .list-stats {
+            text-align: right;
+            padding-left: 0;
+        }
+    }
+}
+// for large viewports (x <= 1200)
+@media (min-width: @screen-lg-min) {
+    #thread-list .thread-info {
+        .thread-content {
+            .make-lg-column-push(1);
+            margin-top: 0;
+        }
+        .gravatar {
+            .make-lg-column-pull(11);
+        }
+        .thread-extras {
+            .make-lg-column-offset(1);
         }
     }
 }

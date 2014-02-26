@@ -131,6 +131,20 @@
     padding-top: 0;
 }
 
+//=== thread view ==/
+.overview .thread {
+    &:extend(.bordered);
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    margin: 0.25em 0;
+    &:hover {
+        &:extend(.row-hover);
+        a {
+            &:extend(.row-link-hover);
+        }
+    }
+}
+
 // tiny screen (<=320px):
 // nav-tabs: less padding, smaller dropdowns, right-align last dropdown
 @media (max-width: @screen-tn) {

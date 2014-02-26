@@ -26,7 +26,7 @@
                 <small>{{ list_title }}</small>
             </h1>
             <span class="list-address col-tn-12">{{ mlist.name }}</span>
-            <ul class="list-unstyled list-stats thread-list-info col-tn-6">
+            <ul class="list-unstyled list-stats thread-list-info col-tn-6 col-xs-8">
                 <li>
                     <i class="icomoon participant"></i>
                     {{ participants }} participants
@@ -36,7 +36,7 @@
                     {{ threads.paginator.count }} discussions
                 </li>
             </ul>
-            <div class="thread-new col-tn-6" {% if not user.is_authenticated %}title="You must be logged-in to create a thread."{% endif %}>
+            <div class="thread-new right col-tn-6 col-xs-4" {% if not user.is_authenticated %}title="You must be logged-in to create a thread."{% endif %}>
                 <a href="{% url "message_new" mlist_fqdn=mlist.name %}"
                     class="btn btn-default {% if not user.is_authenticated %} disabled{% endif %}">
                     <i class="fa fa-plus"></i>
