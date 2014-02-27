@@ -16,6 +16,15 @@
     {% endfor %}
     {% endfor %}
 </ul>
+{% elif show_select %}
+<select id="months-list" class="form-control">
+    {% for year, months in months_list|sort %}
+    <option disabled>----- {{ year }} -----</option>
+    {% for ar_month in months %}
+    <option{% if month and year == month.year and ar_month == month.month %} selected="selected"{% endif %}>{{ ar_month|monthtodate:year|date:"F Y" }}</option>
+    {% endfor %}
+    {% endfor %}
+</select>
 
 {% else %}
 <div class="hidden-tn hidden-xs col-sm-2">

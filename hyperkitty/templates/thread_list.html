@@ -23,7 +23,10 @@
                 {% else %}
                     {{ mlist.name|until:"@" }}
                 {% endif %}
-                <small>{{ list_title }}</small>
+                <small class="hidden-tn hidden-xs">{{ list_title }}</small>
+                <div class="hidden-sm hidden-md hidden-lg">
+                    {% include 'threads/month_list.html' with show_select='True' %}
+                </div>
             </h1>
             <span class="list-address col-tn-12">{{ mlist.name }}</span>
             <ul class="list-unstyled list-stats thread-list-info col-tn-6 col-xs-8">
@@ -76,6 +79,33 @@ $(document).ready(function() {
         }
     });
     setup_category();
+    
+    // onchange event for month_list select (seen only in tiny/xs viewports)
+    // only add this event listener if the element exists
+    if ($('select#months-list').length > 0) {
+        var months = {
+            'January' : '1',
+            'February' : '2',
+            'March' : '3',
+            'April' : '4',
+            'May' : '5',
+            'June' : '6',
+            'July' : '7',
+            'August' : '8',
+            'September' : '9',
+            'October' : '10',
+            'November' : '11',
+            'December' : '12',
+        }
+        $('select#months-list').change(function() {
+            var date = $(this).val().split(' ');
+            var url = "{% url 'archives_with_month' year=9999 mlist_fqdn=mlist.name month=0 %}";
+            url = url.replace('0', months[date[0]]);
+            url = url.replace('9999', date[1]);
+            window.parent.location.href = url;
+        });
+    }
+
 });
 </script>
 {% endblock %}
