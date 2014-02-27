@@ -3,7 +3,7 @@
 {% load hk_generic %}
 {% load storm %}
 
-        <div class="thread">
+        <div class="thread search-result">
             <div>
                 <span class="thread-title">
                     <a name="{{message.message_id_hash}}"
@@ -11,32 +11,47 @@
                        >{{ message.subject|strip_subject:mlist }}</a></span>
                 <span class="thread-date">{{ message|get_date|timesince }}</span>
             </div>
-            <div class="thread-content">
-                <div class="gravatar">
+            <div class="thread-info row">
+                <div class="thread-content col-tn-12 col-xs-10 col-lg-11">
+                    <div class="thread-email">
+                        <span class="expander collapsed">
+                            {{ message.content|urlizetrunc:76|escapeemail }}
+                        </span>
+                    </div>
+                </div>
+                <div class="gravatar col-tn-3 col-xs-2 col-lg-1">
                     {% if message.user_id %}
                     <a href="{% url 'public_user_profile' user_id=message.user_id %}"
                        title="See {{ message.sender_name|escapeemail|escape }}'s profile">
                     {% endif %}
-                        {% if message.sender_email %}
-                        {% gravatar message.sender_email 40 %}
-                        <br />
-                        {% endif %}
-                        {{ message.sender_name|escapeemail }}
+                    {% if message.sender_email %}
+                    {% gravatar message.sender_email 40 %}
+                    <br />
+                    {% endif %}
+                    {{ message.sender_name|escapeemail }}
                     {% if message.user_id %}
                     </a>
                     {% endif %}
                 </div>
-                <div class="thread-email">
-                    <span class="expander collapsed">
-                        {{ message.content|urlizetrunc:76|escapeemail }}
-                    </span>
+                <div class="thread-extras col-tn-9 col-xs-10 col-lg-11">
+                    <div class="thread-category col-tn-12 col-xs-6 col-sm-3">
+                        {% include 'threads/category.html' with category=message.category_hk category_form=message.category_form threadid=message.thread_id %}
+                    </div>
+                    <div class="col-tn-12 col-xs-6 col-sm-4">
+                        {% include "messages/like_form.html" with message_id_hash=message.message_id_hash object=message %}
+                    </div>
                 </div>
             </div>
             <div class="thread-info">
-                <div class="tags">
-                </div>
-                {% include "messages/like_form.html" with message_id_hash=message.message_id_hash object=message %}
-                <a href="{% url 'message_index' message_id_hash=message.message_id_hash mlist_fqdn=message.list_name %}"
-                   class="btn btn-default thread-show">Show message</a>
+                {% if message.tags|length %}
+                Tags:
+                <ul class="list-unstyled tags">
+                {% for tag in message.tags %}
+                    <li>
+                        <a href="{% url 'search_tag' mlist_fqdn=mlist.name tag=tag.tag %}">{{tag.tag}}</a>
+                    </li>
+                {% endfor %}
+                </ul>
+                {% endif %}
             </div>
         </div>

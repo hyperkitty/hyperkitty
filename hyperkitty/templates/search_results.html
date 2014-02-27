@@ -16,9 +16,14 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
 
     <div id="thread-list" class="col-sm-10">
 
-        <div class="thread-list-header page-header">
+        <div class="thread-list-header">
             {% if mlist %}
-            <h1>{{ mlist.display_name|default:mlist.name|escapeemail }}
+            <h1>
+                {% if mlist.display_name %}
+                    {{ mlist.display_name }}
+                {% else %}
+                    {{ mlist.name|until:"@" }}
+                {% endif %}
                 <small>Search results for query "{{ query }}"</small>
             </h1>
             {% else %}
@@ -26,13 +31,14 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
             <small>for query "{{ query }}"</small>
             </h1>
             {% endif %}
-            <ul class="thread-list-info">
+            <ul class="list-unstyled list-stats thread-list-info">
                 {% if mlist.display_name %}
                 <li class="list-address">
                     {{ mlist.name|escapeemail }}
                 </li>
                 {% endif %}
-                <li class="discussion">
+                <li>
+                    <span class="icomoon discussion"></span>
                     {{ total }} messages
                 </li>
             </ul>
@@ -43,7 +49,7 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
                 {% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
                 <p>
                 Sort mode:
-                <select name="sort">
+                <select name="sort" class="form-control">
                     <option value="score"
                         {% if sort_mode == "score" %}selected{% endif %}
                         >score</option>
@@ -54,7 +60,7 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
                         {% if sort_mode == "date-asc" %}selected{% endif %}
                         >earliest first</option>
                 </select>
-                <button type="submit" class="btn btn-small">Update</button>
+                <button type="submit" class="btn btn-default btn-small">Update</button>
                 </p>
             </form>
 
