@@ -65,7 +65,7 @@
             <a id="home"></a>
             <form name="search" method="get" action="{% url 'search' %}" class="searchbar col-tn-6 hidden-sm hidden-md hidden-lg" role="search">
                 {% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
-                <input name="query" type="text" class="form-control"
+                <input id="nav-tab-search" name="query" type="text" class="form-control"
                        placeholder="Search this list"
                        {% if query %}value="{{ query }}"{% endif %}
                        />
@@ -282,6 +282,21 @@
 
         // Back to top link
         setup_back_to_top_link(220); // set offset to 220 for link to appear
+        
+        // submit search on enter (only add if there's a nav-tab's search box)
+        if ($('ul.nav-tabs').length > 0) {
+            $(document).ready(function() {
+                $('#nav-tab-search').keydown(function(e) {
+                    //if (!e) { var e = window.event; }
+                    //e.preventDefault();
+                    // if enter is pressed
+                    if (e.keyCode == 13) {
+                        $(this).closest('form').submit();
+                        return false;
+                     }
+                });
+            });
+        }
     });
 </script>
 

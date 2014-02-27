@@ -111,7 +111,9 @@
                                    placeholder="Search {% if mlist %}this list{% else %}all lists{% endif %}"
                                    {% if query %}value="{{ query }}"{% endif %}
                                    />
-                            <a href="#" class="input-group-addon"><span class="glyphicon glyphicon-search"></span></a>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                            </span>
                         </div>
                     </div>
                 </form>
