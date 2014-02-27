@@ -134,8 +134,14 @@
 }
 
 //=== search result thread list ==/
-#thread-list .search-result+.search-result {
-    padding-top: 1.5em;
+.search-results {
+    .thread+.thread {
+        padding-top: 1.5em;
+    }
+    .list-stats {
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+    }
 }
 
 // tiny screens  (<=480px): format thread list header

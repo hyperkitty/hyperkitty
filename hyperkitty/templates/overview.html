@@ -287,8 +287,6 @@
         if ($('ul.nav-tabs').length > 0) {
             $(document).ready(function() {
                 $('#nav-tab-search').keydown(function(e) {
-                    //if (!e) { var e = window.event; }
-                    //e.preventDefault();
                     // if enter is pressed
                     if (e.keyCode == 13) {
                         $(this).closest('form').submit();
