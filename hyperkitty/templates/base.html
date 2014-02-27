@@ -72,9 +72,10 @@
                     </li>
                 </ul>
 
-                <!-- show dropdown for smaller screens -->
+                <!-- show dropdown for smaller viewports b/c login name/email may be too long -->
+                <!-- only show this extra button/dropdown if we're in small screen sizes -->
                 {% if user.is_authenticated or use_internal_auth %}
-                <div class="nav navbar-nav navbar-right auth dropdown navbar-form hidden-md hidden-lg">
+                <div class="nav navbar-nav navbar-right auth dropdown navbar-form hidden-tn hidden-xs hidden-md hidden-lg">
                     <button type="button" class="btn dropdown-toggle" id="loginDropdownMenu" data-toggle="dropdown">
                         <span class="fa fa-bars"></span>
                     </button>
@@ -89,7 +90,7 @@
                     </ul>
                 </div>
                 {% endif %}
-                <!-- show regular list items for larger screens -->
+                <!-- show regular list items for larger viewports (no dropdown)-->
                 <ul class="nav navbar-nav navbar-right auth">
                     {% if user.is_authenticated %}
                         <li><a class="mm_logout hidden-sm" href="{% url 'user_logout' %}?next={% url 'root' %}">Logout</a></li>
