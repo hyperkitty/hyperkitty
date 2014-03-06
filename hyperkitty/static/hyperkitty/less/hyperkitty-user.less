@@ -1,0 +1,80 @@
+//=== Login form ==/
+#login,
+#register {
+    text-align: left;
+    width: 60em;
+    margin: 0 auto;
+}
+#login h2,
+#register h2 {
+    margin: 4em 0 1em 0;
+    text-align: center;
+    font-size: 160%;
+}
+#login {
+    .social-login {
+        text-align: center;
+        li {
+            margin: 0 20px;
+        }
+        li.browserid {
+            display: block;
+        }
+    }
+    a#browserid.disabled {
+        cursor: wait;
+    }
+    form.openid {
+        display: none;
+        position: absolute;
+        left: 0;
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+
+//=== User profile page ==/
+.user-profile {
+    h1 {
+        margin-bottom: 1em;
+    }
+    h3 {
+        margin-top: 2em;
+    }
+
+    div.gravatar {
+        font-size: 95%;
+    }
+
+    .tab-pane {
+        padding-top: 1em;
+    }
+
+    .ajaxloader {
+        margin-top: 0;
+        margin-left: 0;
+        position: absolute;
+    }
+
+}
+
+table.user-data {
+    font-size: 95%; 
+    th {
+        font-weight: bold;
+        padding-left: 0 !important; // override boostrap default
+    }
+}
+
+// for tiny viewports (<=380px), adjust table column widths
+@media (max-width: @screen-tn-max) {
+    .user-profile table.user-data {
+        .ellipsis-overflow {
+            max-width: 150px;
+        }
+        select {
+            width: 150px;
+        }
+    }
+}

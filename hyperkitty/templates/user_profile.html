@@ -11,71 +11,81 @@
 
 {% block content %}
 
-<div class="user-profile">
+<div class="row user-profile">
+<div class="col-tn-12">
 
     <h1>User profile <small>for {{ user }}</small></h1>
 
-    <div class="tabbed">
-    <ul>
-        <li><a href="#account">Account</a></li>
-        <li><a href="#favorites">Favorites</a></li>
-        <li><a href="#views">Threads you have read</a></li>
-        <li><a href="#votes">Votes</a></li>
-        <li><a href="#subscriptions">Subscriptions</a></li>
-    </ul>
-
-    <div id="account">
-        <form method="post" action="{% url 'user_profile' %}">
-        {% csrf_token %}
-        <table class="table table-bordered table-striped user-data">
-            <tbody>
-                <tr>
-                    <th>{% trans 'User name:' %}</th>
-                    <td>{{ user.username}}</td>
-                </tr>
-                {{ form.as_table }}
-                <tr>
-                    <th>{% trans 'Email:' %}</th>
-                    <td>{{ user.email }}</td>
-                </tr>
-                {% if emails %}
-                <tr>
-                    <th>{% trans 'Other emails:' %}</th>
-                    <td><ul>
-                    {% for email in emails %}
-                        <li>{{ email }}</li>
-                    {% endfor %}
-                    </ul></td>
-                </tr>
-                {% endif %}
-                {% if use_mockups %}
-                <tr>
-                    <th>{% trans 'Karma:' %}</th>
-                    <td>{{ user_profile.karma }}</td>
-                </tr>
-                {% endif %}
-                <tr>
-                    <th>{% trans 'Date joined:' %}</th>
-                    <td>{{ user.date_joined }}</td>
-                </tr>
-            </tbody>
-        </table>
-        <p class="buttons">
-            <button type="submit" class="submit btn btn-primary">Update</button>
-            or <a href="#" class="cancel" onclick="document.forms[0].reset(); return false;">cancel</a>
-        </p>
-        </form>
-
-        <div class="gravatar">
-            <a href="{{ gravatar_url }}">{% gravatar user.email 150 %}</a>
-            <p><a href="{{ gravatar_url }}">Edit on {{ gravatar_shortname }}</a></p>
-        </div>
-
-    <div class="clearfix"></div>
+    <div class="btn-group">
+        <a href="#account" class="btn btn-default active" data-toggle="tab" id="account-btn">Account</a>
+        <a href="#favorites" class="btn btn-default" data-toggle="tab" id="favorites-btn">Favorites</a>
+        <a href="#views" class="btn btn-default" data-toggle="tab" id="views-btn">Threads you have read</a>
+        <a href="#votes" class="btn btn-default" data-toggle="tab" id="votes-btn">Votes</a>
+        <a href="#subscriptions" class="btn btn-default" data-toggle="tab" id="subscriptions-btn">Subscriptions</a>
     </div>
 
-    <div id="favorites">
-        {% if favorites %}
+    <div class="tab-content">
+        <div class="tab-pane active" id="account">
+            <form method="post" action="{% url 'user_profile' %}" class="row">
+                {% csrf_token %}
+                <div class="gravatar col-tn-12">
+                    <a href="{{ gravatar_url }}">{% gravatar user.email 150 %}</a>
+                    <p><a href="{{ gravatar_url }}">Edit on {{ gravatar_shortname }}</a></p>
+                </div>
+
+                <div class="col-tn-12">
+                    <table class="table user-data">
+                        <tbody>
+                            <tr>
+                                <th class="col-tn-6">{% trans 'User name:' %}</th>
+                                <td>
+                                    <div class="ellipsis-overflow">{{ user.username}}</div>
+                                </td>
+                            </tr>
+                            {{ form.as_table }}
+                            <tr>
+                                <th>{% trans 'Email:' %}</th>
+                                <td>
+                                    <div class="ellipsis-overflow">{{ user.email }}</div>
+                                </td>
+                            </tr>
+                            {% if emails %}
+                            <tr>
+                                <th>{% trans 'Other emails:' %}</th>
+                                <td>
+                                    <div class="ellipsis-overflow">
+                                        <ul class="list-unstyled">
+                                            {% for email in emails %}
+                                            <li>{{ email }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% if use_mockups %}
+                            <tr>
+                                <th>{% trans 'Karma:' %}</th>
+                                <td>{{ user_profile.karma }}</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <th>{% trans 'Joined on:' %}</th>
+                                <td>{{ user.date_joined|date:"N j Y, H:i" }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="buttons col-tn-12">
+                    <button type="submit" class="submit btn btn-primary">Update</button>
+                    or <a href="#" class="cancel" onclick="document.forms[0].reset(); return false;">cancel</a>
+                </p>
+            </form>
+        </div> <!-- /tab pane, account info -->
+
+        <div class="tab-pane" id="favorites">
+            {% if favorites %}
             <ul>
             {% for fav in favorites %}
                 <li>
@@ -85,30 +95,30 @@
                 </li>
             {% endfor %}
             </ul>
-        {% else %}
-            <p>No favorite yet.</p>
-        {% endif %}
-    </div>
+            {% else %}
+            <p>No favorites yet.</p>
+            {% endif %}
+        </div> <!-- /tab pane, favorites -->
 
+        <div id="views" class="tab-pane">
+            <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
+            <div class="ajaxcontent" data-load-from="{% url 'user_last_views' %}"></div>
+        </div> <!-- /tab pane, threads you've read -->
 
-    <div id="views">
-        <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
-        <div class="ajaxcontent" data-load-from="{% url 'user_last_views' %}"></div>
-    </div>
+        <div id="votes" class="tab-pane">
+            <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
+            <div class="ajaxcontent" data-load-from="{% url 'user_votes' %}"></div>
+        </div> <!-- /tab pane, threads you've voted on -->
 
-
-    <div id="votes">
-        <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
-        <div class="ajaxcontent" data-load-from="{% url 'user_votes' %}"></div>
-    </div>
-
-
-    <div id="subscriptions">
-        <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
-        <div class="ajaxcontent" data-load-from="{% url 'user_subscriptions' %}"></div>
-    </div>
+        <div id="subscriptions" class="tab-pane">
+            <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
+            <div class="ajaxcontent" data-load-from="{% url 'user_subscriptions' %}"></div>
+        </div> <!-- /tab pane, list subscriptions -->
 
     </div>
+
+
+</div>
 </div>
 
 {% endblock %}
@@ -121,6 +131,15 @@
         $(".tabbed").tabs();
         $("div.ajaxcontent").each(function() {
             update_user_profile_part($(this));
+        });
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            console.log(e.target);
+            console.log(e.relatedTarget);
+            //if($(e.target).attr("href") == "#favorites") {
+            //    alert('hi');
+            //}
+            $(e.target).addClass('active');
+            $(e.target).siblings().removeClass('active');
         });
     });
 </script>
