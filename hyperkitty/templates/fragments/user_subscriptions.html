@@ -21,7 +21,8 @@
                     <br>
                     <a href="{{ sub.all_posts_url }}">{{ sub.posts_count }} post{{ sub.posts_count|pluralize }}</a><
                     <br>
-                    <span class="likestatus {{ sub.likestatus }}">+{{ sub.likes }}/-{{ sub.dislikes }}</span>
+                    <i class="icomoon likestatus {{ sub.likestatus }}"></i>
+                    <span class="likestatus">+{{ sub.likes }}/-{{ sub.dislikes }}</span>
                 {% else %}
                 <td colspan="4" style="text-align:center"><em>no post yet</em>
                 {% endif %}
@@ -56,7 +57,10 @@
                         >{{ sub.first_post.subject }}</a>
                 </td>
                 <td><a href="{{ sub.all_posts_url }}">{{ sub.posts_count }} post{{ sub.posts_count|pluralize }}</a></td>
-                <td><span class="likestatus {{ sub.likestatus }}">+{{ sub.likes }}/-{{ sub.dislikes }}</span></td>
+                <td>
+                    <i class="icomoon likestatus {{ sub.likestatus }}"></i>
+                    <span class="likestatus">+{{ sub.likes }}/-{{ sub.dislikes }}</span>
+                </td>
                 {% else %}
                 <td colspan="4" style="text-align:center"><em>no post yet</em></td>
                 {% endif %}
