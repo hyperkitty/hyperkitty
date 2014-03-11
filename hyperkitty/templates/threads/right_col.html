@@ -26,13 +26,8 @@
         <input type="hidden" name="action" value="{{ fav_action }}" />
         <p>
             <a href="#AddFav" class="notsaved{% if not user.is_authenticated %} disabled" title="You must be logged-in to have favorites.{% endif %}">
-                Add to favorite<span class="hidden-tn hidden-xs hidden-md hidden-lg">s</span>
-                <span class="hidden-sm"> discussions</span>
-            </a>
-            <a href="#RmFav" class="saved">Remove from favorite
-                <span class="hidden-tn hidden-xs hidden-md hidden-lg">s</span>
-                <span class="hidden-sm">discussions</span>
-            </a>
+                Add to favorites</a>
+            <a href="#RmFav" class="saved">Remove from favorites</a>
         </p>
     </form>
     <div>
