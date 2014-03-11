@@ -2,7 +2,6 @@
 #login,
 #register {
     text-align: left;
-    width: 60em;
     margin: 0 auto;
 }
 #login h2,
@@ -45,6 +44,9 @@
 
     div.gravatar {
         font-size: 95%;
+        img {
+            .square(150px);
+        }
     }
 
     .tab-pane {
@@ -57,6 +59,17 @@
         position: absolute;
     }
 
+    #views tr.list-address,
+    #votes tr.list-address,
+    #subscriptions tr.list-address {
+        font-weight: bold;
+        background: @rowBorderColor;
+    }
+
+    #favorites ul {
+        margin-left: 0;
+        padding-left: 30px;
+    }
 }
 
 table.user-data {
@@ -65,7 +78,11 @@ table.user-data {
         font-weight: bold;
         padding-left: 0 !important; // override boostrap default
     }
+    tr.gravatar td {
+        vertical-align: middle;
+    }
 }
+
 
 // for tiny viewports (<=380px), adjust table column widths
 @media (max-width: @screen-tn-max) {

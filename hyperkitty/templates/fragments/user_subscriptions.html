@@ -2,7 +2,35 @@
 {% load hk_generic %}
 
     {% if subscriptions %}
-    <table class="table table-striped table-bordered table-condensed subscriptions">
+    <table class="table table-bordered table-condensed subscriptions hidden-sm hidden-md hidden-lg">
+        <tbody>
+        {% for sub in subscriptions %}
+            {% ifchanged sub.list_name %}
+            <tr class="list-address">
+                <td><a href="{% url 'list_overview' sub.list_name %}">{{ sub.list_name }}</a></td>
+            </tr>
+            {% endifchanged %}
+            <tr>
+                {% if sub.first_post %}
+                <td>
+                    <a href="{% url 'message_index' mlist_fqdn=sub.list_name message_id_hash=sub.first_post.message_id_hash %}"
+                        >{{ sub.first_post.subject }}</a>
+                    <br>
+                    <abbr title="{{ sub.first_post|get_date|date:"D, j M Y H:i"|escape }}">
+                    {{ sub.first_post|get_date|timesince }}</abbr> since first post
+                    <br>
+                    <a href="{{ sub.all_posts_url }}">{{ sub.posts_count }} post{{ sub.posts_count|pluralize }}</a><
+                    <br>
+                    <span class="likestatus {{ sub.likestatus }}">+{{ sub.likes }}/-{{ sub.dislikes }}</span>
+                {% else %}
+                <td colspan="4" style="text-align:center"><em>no post yet</em>
+                {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <table class="table table-striped table-bordered table-condensed subscriptions hidden-tn hidden-xs">
         <thead>
             <tr>
                 <th>List</th>

@@ -3,7 +3,38 @@
 {% load hk_generic %}
 
     {% if last_views %}
-        <table class="table table-striped table-bordered table-condensed">
+        <table class="table table-bordered table-condensed hidden-sm hidden-md hidden-lg">
+            <tbody>
+            {% for lv in last_views %}
+                {% ifchanged lv.list_address %}
+                <tr class="list-address">
+                    <td>{{ lv.list_address }}</td>
+                </tr>
+                {% endifchanged %}
+                <tr>
+                    <td>
+                        {% if thread.unread %}
+                        <i class="unread icon-eye-close" title="New comments"></i>
+                        {% endif %}
+                        <a href="{% url 'thread' mlist_fqdn=lv.list_address threadid=lv.threadid %}"
+                            >{{ lv.thread.starting_email.subject }}</a>
+                        <br>
+                        Original author: {{ lv.thread.starting_email.sender_name }}
+                        <br>
+                        Started on: {{ lv.thread.starting_email|get_date|date:"D, j M Y H:i" }}
+                        <br>
+                        Last activity: {{ lv.thread|get_date|timesince }}
+                        <br>
+                        Replies: {{ lv.thread|length }} 
+                        {% if thread.unread %}
+                        / {{ thread.unread }} new
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <table class="table table-striped table-bordered table-condensed hidden-tn hidden-xs">
             <thead>
                 <tr>
                     <th></th>
@@ -23,7 +54,10 @@
                         <i class="unread icon-eye-close" title="New comments"></i>
                         {% endif %}
                     </td>
-                    <td>{{ lv.list_address }}</td>
+                    <td>
+                        <span class="hidden-md hidden-lg">{{ lv.list_address|until:"@" }}</span>
+                        <span class="hidden-sm">{{ lv.list_address }}</span>
+                    </td>
                     <td><a href="{% url 'thread' mlist_fqdn=lv.list_address threadid=lv.threadid %}"
                             >{{ lv.thread.starting_email.subject }}</a></td>
                     <td>{{ lv.thread.starting_email.sender_name }}</td>
