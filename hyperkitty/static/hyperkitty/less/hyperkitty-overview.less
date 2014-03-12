@@ -67,6 +67,19 @@
     }
 }
 
+.overview {
+    #flagged .thread-list,
+    #posted-to .thread-list {
+        display: none;
+    }
+    #flagged h3,
+    #posted-to h3 {
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
+
 // Threads by category
 .discussion-by-category h4 {
     font-size: 105%;

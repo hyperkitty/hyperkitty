@@ -83,30 +83,34 @@
     {% if user.is_authenticated %}
     <div class="discussions pull-right col-tn-12 col-sm-8">
         <section id="flagged">
-            <h3>Discussions You've Flagged</h3>
-            {% for thread in flagged_threads|slice:":5" %}
-                {% include "threads/summary_thread.html"  %}
-            {% empty %}
-                <p>You have not flagged any discussions (yet).</p>
-            {% endfor %}
-            {% if flagged_threads|length > 5 %}
-                <div class="bordered more-threads">
-                    <a href="">More...</a>
-                </div>
-            {% endif %}
+            <h3>Discussions You've Flagged ({{ flagged_threads|length }}) <b class="caret"></b></h3>
+            <div class="thread-list">
+                {% for thread in flagged_threads|slice:":5" %}
+                    {% include "threads/summary_thread.html"  %}
+                {% empty %}
+                    <p>You have not flagged any discussions (yet).</p>
+                {% endfor %}
+                {% if flagged_threads|length > 5 %}
+                    <div class="bordered more-threads">
+                        <a href="">More...</a>
+                    </div>
+                {% endif %}
+            </div>
         </section>
         <section id="posted-to">
-            <h3>Discussions You've Posted to</h3>
-            {% for thread in threads_posted_to|slice:":5" %}
-                {% include "threads/summary_thread.html"  %}
+            <h3>Discussions You've Posted to ({{ threads_posted_to|length }}) <b class="caret"></b></h3>
+            <div class="thread-list">
+                {% for thread in threads_posted_to|slice:":5" %}
+                    {% include "threads/summary_thread.html"  %}
                 {% empty %}
-                <p>You have not posted to this list (yet).</p>
-            {% endfor %}
-            {% if threads_posted_to|length > 5 %}
-                <div class="bordered more-threads">
-                    <a href="">More...</a>
-                </div>
-            {% endif %}
+                    <p>You have not posted to this list (yet).</p>
+                {% endfor %}
+                {% if threads_posted_to|length > 5 %}
+                    <div class="bordered more-threads">
+                        <a href="">More...</a>
+                    </div>
+                {% endif %}
+            </div>
         </section>
     </div> <!-- /home, personalized threads lists -->
     {% endif %}
@@ -273,9 +277,8 @@
     $(window).resize(function() {
         var chartDivWidth =  $(".stats .chart").width();
         ajax_chart(".stats .chart", "{% url 'list_recent_activity' mlist.name %}", {width: chartDivWidth});
-
     });
-    
+
     $(function() {
         var chartDivWidth =  $(".stats .chart").width();
         ajax_chart(".stats .chart", "{% url 'list_recent_activity' mlist.name %}", {width: chartDivWidth});
@@ -296,6 +299,20 @@
             });
         }
     });
+
+    function collapsibleDivs() {
+        if (!$(this).next('.thread-list').is(':visible')) {
+            $(this).children('.caret').hide();
+            $(this).next('.thread-list').slideDown();
+        }
+        else {
+            $(this).children('.caret').show();
+            $(this).next('.thread-list').slideUp();
+        }
+    }
+
+    $('#flagged h3').click(collapsibleDivs);
+    $('#posted-to h3').click(collapsibleDivs);
 </script>
 
 {% endblock %}
