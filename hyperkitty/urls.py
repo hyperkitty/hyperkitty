@@ -49,10 +49,12 @@ urlpatterns = patterns('hyperkitty.views',
     url(r'^accounts/profile/subscriptions$', 'accounts.subscriptions', name='user_subscriptions'),
     url(r'^accounts/register/$', 'accounts.user_registration', {'SSL': True}, name='user_registration'),
 
-    # Users
+    # User (logged in user)
     url(r'^user/(?P<user_id>[^/]+)/$', 'accounts.public_profile', name='public_user_profile'),
     url(r'^user/(?P<user_id>[^/]+)/posts$', 'accounts.posts', name='user_posts'),
-    url(r'^users/$', 'search.search', name='users'),
+    # Users (other users)
+    url(r'^users/$', 'users.users', name='users_overview'),
+    url(r'^users/(?P<user_id>[^/]+)/$', 'users.public_profile', name='users_profile'),
 
     # List archives and overview
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/(?P<year>\d{4})/(?P<month>\d\d?)/(?P<day>\d\d?)/$',
@@ -104,8 +106,8 @@ urlpatterns = patterns('hyperkitty.views',
 
 
     # Categories and Tags
-    url(r'^categories/$', 'search.search', name='categories_overview'),
-    url(r'^tags/$', 'search.search', name='tags_overview'),
+    url(r'^categories/$', 'categories.categories', name='categories_overview'),
+    url(r'^tags/$', 'tags.tags', name='tags_overview'),
 
     # REST API
     url(r'^api/$', TemplateView.as_view(template_name="api.html")),
