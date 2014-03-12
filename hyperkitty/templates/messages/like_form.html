@@ -3,7 +3,8 @@
     <form method="post" class="likeform"
           action="{% url 'message_vote' mlist_fqdn=object.list_name message_id_hash=message_id_hash %}">
     {% csrf_token %}
-    <span class="icomoon likestatus {{ object.likestatus }}">+{{ object.likes }}/-{{ object.dislikes }}</span>
+    <i class="icomoon likestatus {{ object.likestatus }}"></i>
+    <span>+{{ object.likes }}/-{{ object.dislikes }}</span>
     {% if object.myvote and object.myvote.value == 1 %}
         <!-- if you like it, highlight thumbs up, disable thumbs down -->
         <a href="#cancelvote" class="vote" data-vote="0">

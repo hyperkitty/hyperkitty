@@ -6,12 +6,15 @@
         <div class="thread{% if thread.unread %} unread{% endif %}">
             <div class="{% if thread.favorite %}saved{% else %}notsaved{% endif %}">
                 <span class="thread-title">
-                    {% if thread.unread %}
-                        <i class="fa fa-envelope" title="New messages in this thread"></i>
-                    {% endif %}
                     <a name="{{thread.thread_id}}"
                        href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
-                       >{{ thread.starting_email.subject|strip_subject:mlist }}</a></span>
+                        >
+                        {% if thread.unread %}
+                        <i class="fa fa-envelope" title="New messages in this thread"></i>
+                        {% endif %}
+                        {{ thread.starting_email.subject|strip_subject:mlist }}
+                    </a>
+                </span>
                 <span class="thread-date"
                       title="{{ thread|get_date|date:"l, j F Y H:i:s" }}">
                     {{ thread|get_date|timesince }}
@@ -42,10 +45,10 @@
                         </div>
                         <ul class="list-unstyled list-stats col-tn-12 col-sm-5">
                         <li>
-                            <i class="icomoon participant"></i>{{ thread.participants_count }} participants
+                            <i class="icomoon participant"></i> {{ thread.participants_count }} participants
                         </li>
                         <li>
-                            <i class="icomoon discussion"></i>{{ thread|length }} comments
+                            <i class="icomoon discussion"></i> {{ thread|length }} comments
                         </li>
                         </ul>
                     </div>

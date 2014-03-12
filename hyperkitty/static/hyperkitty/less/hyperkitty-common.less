@@ -116,17 +116,15 @@ ul.list-stats {
     color: #BFBFBF;
     font-size: 1.14em;
     line-height: 1em;
-    vertical-align: middle;
 }
 .discussion:before {
     content: "\e607";
     color: #BFBFBF;
     font-size: 1.14em;
     line-height: 1em;
-    vertical-align: middle;
 }
-i.unread {
-    vertical-align: baseline;
+.fa-envelope {
+    color: #BFBFBF;
 }
 
 
@@ -142,26 +140,28 @@ i.unread {
     content: "\e600";
     font-size: 16px;
     line-height: 1em;
-    vertical-align: middle;
+    vertical-align: -2px;
 }
 .like:before {
     content: '\e602';
     font-size: 16px;
     line-height: 1em;
-    vertical-align: middle;
+    vertical-align: -2px;
 }
 .likealot:before {
     content: '\e601';
     font-size: 16px;
     line-height: 1em;
-    vertical-align: middle;
+    vertical-align: -2px;
 }
 .fa-thumbs-up.selected,
-.fa-thumbs-o-up {
+.fa-thumbs-o-up,
+a.youlike {
     color: #090;
 }
 .fa-thumbs-down.selected,
-.fa-thumbs-o-down {
+.fa-thumbs-o-down,
+a.youdislike {
     color: #900;
 }
 .fa-thumbs-o-up.disabled,
@@ -329,6 +329,7 @@ a.reply {
     font-variant: normal;
     text-transform: none;
     line-height: 1;
+    vertical-align: text-top;   // better aligns font icon and text
 
     /* Better Font Rendering */
     -webkit-font-smoothing: antialiased;
