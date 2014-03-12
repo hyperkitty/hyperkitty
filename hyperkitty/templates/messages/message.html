@@ -8,7 +8,7 @@
 <div class="email{% if unfolded %} email-first{% endif %}{% if is_new %} unread{% endif %}">
 
     <div class="email-header" id="{{email.message_id_hash}}">
-        <div class="gravatar{% if use_mockups %} pull-left{% endif %}">
+        <div class="gravatar">
             {% gravatar email.sender_email 40 %}
         </div>
         <div class="email-author">
@@ -27,9 +27,8 @@
                     title="{{ email.subject }}">permalink</a>)
             </span>
             {% if use_mockups %}
-            <span class="rank">
-                Rank 8
-            </span>
+            <br>
+            <span class="rank">Rank 8</span>
             {% endif %}
             {% if is_new %}
                 <i class="fa fa-envelope pull-right" title="Unread"></i>
