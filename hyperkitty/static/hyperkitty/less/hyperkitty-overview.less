@@ -45,6 +45,12 @@
         max-height: 3em;
         padding-top: 0.5em;
         padding-bottom: 0.5em;
+        max-height: 1.8em;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: @linkColor;  // color ellipsis the same as link color
     }
     ul.list-stats {
         margin-bottom: 0.5em;
@@ -199,7 +205,9 @@
             padding-top: 0;
         }
         .thread .thread-title {
-            max-height: 2em;
+            max-height: 1.8em;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
     .overview .gravatar {
