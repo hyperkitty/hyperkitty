@@ -23,5 +23,5 @@ from django.http import Http404
 def users(request):
     raise Http404("This feature has not been implemented yet.")
 
-def public_profile(request):
+def public_profile(request, user_id):
     raise Http404("This feature has not been implemented yet.")
