@@ -19,11 +19,14 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
         <div class="thread-list-header row">
             {% if mlist %}
             <h1 class="col-tn-12">
-                {% if mlist.display_name %}
-                    {{ mlist.display_name }}
-                {% else %}
-                    {{ mlist.name|until:"@" }}
-                {% endif %}
+                <a href="{% url 'list_overview' mlist_fqdn=mlist.name %}"
+                   class="list-name">
+                    {% if mlist.display_name %}
+                        {{ mlist.display_name }}
+                    {% else %}
+                        {{ mlist.name|until:"@" }}
+                    {% endif %}
+                </a>
                 <small>search results</small>
             </h1>
             {% else %}

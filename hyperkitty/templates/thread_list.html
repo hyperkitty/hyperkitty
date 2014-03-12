@@ -18,11 +18,14 @@
 
         <div class="thread-list-header row">
             <h1 class="col-tn-12">
-                {% if mlist.display_name %}
-                    {{ mlist.display_name }}
-                {% else %}
-                    {{ mlist.name|until:"@" }}
-                {% endif %}
+                <a href="{% url 'list_overview' mlist_fqdn=mlist.name %}"
+                   class="list-name">
+                    {% if mlist.display_name %}
+                        {{ mlist.display_name }}
+                    {% else %}
+                        {{ mlist.name|until:"@" }}
+                    {% endif %}
+                </a>
                 <small class="hidden-tn hidden-xs">{{ list_title }}</small>
                 <div class="hidden-sm hidden-md hidden-lg">
                     {% include 'threads/month_list.html' with show_select='True' %}

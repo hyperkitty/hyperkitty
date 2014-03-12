@@ -20,6 +20,12 @@
         </div>
     </div> <!-- /Stats re: dates -->
 
+    <div class="list-name">
+        <a href="{% url 'list_overview' mlist_fqdn=mlist.name %}">
+            {{ mlist.name }}
+        </a>
+    </div>
+
     <form id="fav_form" name="favorite" method="post" class="favorite"
           action="{% url 'favorite' mlist_fqdn=mlist.name threadid=threadid %}">
         {% csrf_token %}
