@@ -176,13 +176,8 @@ div#months-list {
 
 //=== Replies ===/
 a.reply {
-    background: url("../img/reply.png") no-repeat left center;
-    padding-left: 20px;
-    margin-left: 1em;
-
     .disabled {
-        background: url("../img/reply-disabled.png") no-repeat left center;
-        color: #999;
+        color: @subheadingColor;
     }
 }
 .reply-form {
@@ -190,9 +185,10 @@ a.reply {
     padding-top: 1em;
 
     .reply-tools {
-        margin-bottom: 0.7em;
+        margin-top: 0.7em;
         .quote {
-            padding-top: 3px;
+            margin-bottom: 3px;
+            padding-left: 0;
         }
         label {
             font-size: 90%;
@@ -240,6 +236,12 @@ a.reply {
     display: block;
 }
 
+//=== quoted switch in message view ===/
+.quoted-switch .pgp {
+    font-weight: normal;
+    text-transform: lowercase;
+    font-size: 90%;
+}
 
 //=== AJAX ===/
 .ajaxloader {

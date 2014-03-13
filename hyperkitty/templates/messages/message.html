@@ -7,57 +7,60 @@
 {% is_message_new email.date as is_new %}
 <div class="email{% if unfolded %} email-first{% endif %}{% if is_new %} unread{% endif %}">
 
-    <div class="email-header" id="{{email.message_id_hash}}">
-        <div class="gravatar">
-            {% gravatar email.sender_email 40 %}
-        </div>
-        <div class="email-author">
-            <span class="name">
-                {% if email.user_id %}
-                <a href="{% url 'public_user_profile' user_id=email.user_id %}"
-                   title="See {{ email.sender_name|escapeemail|escape }}'s profile"
-                   >{{email.sender_name|default:"(no name)"|escapeemail}}</a>
-                {% else %}
-                   {{email.sender_name|default:"(no name)"|escapeemail}}
+    <div id="{{email.message_id_hash}}" class="email-header row">
+        <div class="gravatar-wrapper col-md-10">
+            <div class="gravatar">
+                {% gravatar email.sender_email 40 %}
+            </div>
+            <div class="email-author">
+                <span class="name">
+                    {% if email.user_id %}
+                    <a href="{% url 'public_user_profile' user_id=email.user_id %}"
+                       title="See {{ email.sender_name|escapeemail|escape }}'s profile"
+                       >{{email.sender_name|default:"(no name)"|escapeemail}}</a>
+                    {% else %}
+                       {{email.sender_name|default:"(no name)"|escapeemail}}
+                    {% endif %}
+                </span>
+                {% if use_mockups %}
+                <br>
+                <span class="rank">Rank 8</span>
                 {% endif %}
-            </span>
-            <br />
-            <span class="messagelink">
-                (<a href="{% url 'message_index' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash %}"
-                    title="{{ email.subject }}">permalink</a>)
-            </span>
-            {% if use_mockups %}
-            <br>
-            <span class="rank">Rank 8</span>
-            {% endif %}
-            {% if is_new %}
-                <i class="fa fa-envelope pull-right" title="Unread"></i>
-            {% endif %}
-        </div>
-        <div class="email-date">
-            <div>
-                {% ifchanged %}
-                <span class="date hidden-tn">
-                    {{email|get_date|date:"l, j F"}}
-                    {% if unfolded %}
-                    {{email|get_date|date:"Y"}}
-                    {% endif %}
-                </span>
-                <span class="date hidden-xs hidden-sm hidden-md hidden-lg">
-                    {{email|get_date|date:"D, j M"}}
-                    {% if unfolded %}
-                    '{{email|get_date|date:"y"}}
-                    {% endif %}
-                </span>
-            {% endifchanged %}
-                <div class="time">
-                    <span title="Sender's time: {% localtime off %}{{email|get_date|date:"D, j M H:i:s e"}}{% endlocaltime %}">{{email|get_date|date:"H:i:s"}}</span>
-                </div>
             </div>
         </div>
-    </div> <!-- /email-header: gravatar, author-info, date -->
+        {% if is_new %}
+        <div class="right col-md-2">
+            <i class="fa fa-envelope" title="Unread"></i>
+        </div>
+        {% endif %}
+        <div class="email-date col-md-10">
+            {% ifchanged %}
+            <span class="date hidden-tn">
+                {{email|get_date|date:"l, j F"}}
+                {% if unfolded %}
+                    {{email|get_date|date:"Y"}}
+                {% endif %}
+            </span>
+            <span class="date hidden-xs hidden-sm hidden-md hidden-lg">
+                {{email|get_date|date:"D, j M"}}
+                {% if unfolded %}
+                '{{email|get_date|date:"y"}}
+                {% endif %}
+            </span>
+            {% endifchanged %}
+            <div class="time">
+                <span title="Sender's time: {% localtime off %}{{email|get_date|date:"D, j M H:i:s e"}}{% endlocaltime %}">{{email|get_date|date:"H:i:s"}}</span>
+            </div>
+            
+        </div>
+        <span class="messagelink right col-xs-2">
+            (<a href="{% url 'message_index' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash %}"
+                title="{{ email.subject }}">permalink</a>)
+        </span>
+    </div> <!-- /email-header: gravatar, author-info, date, peramlink -->
 
-    <div class="email-body">{{ email.content|snip_quoted|wordwrap:90|urlizetrunc:76|escapeemail }}
+    <div class="email-body row">
+        <span class="col-md-12">{{ email.content|snip_quoted|snip_pgp|wordwrap:90|urlizetrunc:76|escapeemail }}</span>
     </div>
 
     {% if unfolded and email.attachments|count %}
@@ -74,9 +77,14 @@
     {% endif %}
 
     <div class="email-info">
-        {% include "messages/like_form.html" with message_id_hash=email.message_id_hash object=email %}
+        <div class="likeform-wrapper right">
+            {% include "messages/like_form.html" with message_id_hash=email.message_id_hash object=email %}
+        </div>
+        <div>
+            {% include "messages/reply_form.html" with mlist_fqdn=mlist.name message_id_hash=email.message_id_hash %}
+        </div>
 
-        {% include "messages/reply_form.html" with mlist_fqdn=mlist.name message_id_hash=email.message_id_hash %}
+
 
         {% if not unfolded and email.attachments|count %}
         <div class="attachments">

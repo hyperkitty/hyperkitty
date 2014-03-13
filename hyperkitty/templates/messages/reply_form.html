@@ -1,6 +1,9 @@
 {% load url from future %}
 
-    <a class="reply pull-right{% if not user.is_authenticated %} disabled" title="You must be logged-in to reply.{% endif %}" href="#">Reply</a>
+    <a class="reply {% if not user.is_authenticated %}disabled" title="You must be logged-in to reply.{% endif %}" href="#">
+        <i class="fa fa-reply"></i>
+        Reply
+    </a>
     <div class="reply-form dropdown">
         <form method="post" enctype="multipart/form-data"
               action="{% url 'message_reply' mlist_fqdn=mlist_fqdn message_id_hash=message_id_hash %}">

@@ -48,12 +48,26 @@
 // First email of the thread
 .email-header {
     margin-bottom: 1em;
-    display: inline-block;
+    //display: inline-block;
 
     .gravatar {
         margin-bottom: 2px;
         display: inline-block
     }
+
+    .fa-envelope {
+        font-size: 130%;
+    }
+
+    .messagelink {
+        font-style: italic;
+        font-size: 90%;
+        color: rgb(167, 169, 172);
+        a {
+            color: rgb(167, 169, 172);
+        }
+    }
+
 }
 
 .email-author {
@@ -67,14 +81,6 @@
         color: @subheadingColor;
         font-size: 80%;
         font-weight: bold;
-    }
-    .messagelink {
-        font-style: italic;
-        font-size: 90%;
-        color: rgb(167, 169, 172);
-        a {
-            color: rgb(167, 169, 172);
-        }
     }
 }
 
@@ -96,7 +102,7 @@
 }
 
 .email-body {
-    white-space: pre-wrap;
+    white-space: pre-line;
     word-wrap: break-word;
 
     span.read-more a,
@@ -115,6 +121,12 @@
 }
 
 .email-info {
+    position: relative;
+    .likeform-wrapper {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
     .likestatus + span {
         padding-right: 1em;
     }

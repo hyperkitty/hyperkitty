@@ -167,13 +167,48 @@ def snip_quoted(content, quotemsg="...", autoescape=None):
                 current_quote_orig = []
         #lastline = line
     for quote_orig, quote in quoted:
-        replaced = ('<div class="quoted-switch"><a href="#">%s</a></div>' % quotemsg
+        replaced = ('<div class="quoted-switch"><a style="font-weight:normal" href="#">%s</a></div>' % quotemsg
                    +'<div class="quoted-text">'
                    +"\n".join(quote)
                    +' </div>')
         content = content.replace("\n".join(quote_orig), replaced)
     return mark_safe(content)
 
+SNIPPED_BEGIN_PGP = re.compile("^.*(BEGIN PGP SIGNATURE).*$", re.M)
+SNIPPED_END_PGP = re.compile("^.*(END PGP SIGNATURE).*$", re.M)
+@register.filter(needs_autoescape=True)
+def snip_pgp(content, quotemsg="...PGP SIGNATURE...", autoescape=None):
+    """Snip pgp signature in messages"""
+    if autoescape:
+        content = conditional_escape(content)
+    quoted = []
+    current_quote = []
+    current_quote_orig = []
+    pgp_signature = False
+    for line in content.split("\n"):
+        match_start = SNIPPED_BEGIN_PGP.match(line)
+        match_end = SNIPPED_END_PGP.match(line)
+        if match_end is not None or match_start is not None or pgp_signature:
+            current_quote_orig.append(line)
+            current_quote.append(line)
+        # start of pgp signature
+        if match_start is not None:
+            pgp_signature = True
+        # end of pgp signature
+        elif match_end is not None:
+            pgp_signature = False
+            if current_quote_orig:
+                current_quote_orig.append("")
+                quoted.append( (current_quote_orig[:], current_quote[:]) )
+                current_quote = []
+                current_quote_orig = []
+    for quote_orig, quote in quoted:
+        replaced = ('<div class="quoted-switch"><a href="#" class="pgp">%s</a></div>' % quotemsg
+                   +'<div class="quoted-text">'
+                   +"\n".join(quote)
+                   +' </div>')
+        content = content.replace("\n".join(quote_orig), replaced)
+    return mark_safe(content)
 
 @register.filter()
 def multiply(num1, num2):
@@ -214,3 +249,7 @@ def until(value, limit):
 @register.filter
 def to_json(value):
     return json.dumps(value)
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
