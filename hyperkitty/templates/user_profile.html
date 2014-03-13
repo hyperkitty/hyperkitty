@@ -133,16 +133,10 @@
 <script type="text/javascript">
     $(document).ready(function() {
         // Load the last views
-        $(".tabbed").tabs();
         $("div.ajaxcontent").each(function() {
             update_user_profile_part($(this));
         });
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            console.log(e.target);
-            console.log(e.relatedTarget);
-            //if($(e.target).attr("href") == "#favorites") {
-            //    alert('hi');
-            //}
             $(e.target).addClass('active');
             $(e.target).siblings().removeClass('active');
         });
