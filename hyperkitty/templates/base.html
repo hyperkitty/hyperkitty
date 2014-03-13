@@ -38,6 +38,7 @@
             </div> <!-- /navbar-header -->
 
             <div class="navbar-collapse collapse"> <!--part of navbar that's collapsed on small screens-->
+                {% if USE_MOCKUP %}
                 <ul class="nav navbar-nav nav-stacked nav-pills">
                     <li {% if view_name == 'all_lists' or '/list' in request.path %}
                         class="active">
@@ -68,6 +69,7 @@
                         <a href="{% url 'users_overview' %}">Users</a>
                     </li>
                 </ul>
+                {% endif %}
 
                 <!-- show dropdown for smaller viewports b/c login name/email may be too long -->
                 <!-- only show this extra button/dropdown if we're in small screen sizes -->

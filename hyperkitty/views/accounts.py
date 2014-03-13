@@ -199,7 +199,7 @@ def last_views(request):
     # Last viewed threads
     try:
         last_views = LastView.objects.filter(user=request.user
-                                            ).order_by("view_date")
+                                            ).order_by("-view_date")
     except Favorite.DoesNotExist:
         last_views = []
     last_views = paginate(last_views, request.GET.get('lvpage'))
