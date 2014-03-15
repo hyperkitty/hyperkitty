@@ -38,7 +38,7 @@
             </div> <!-- /navbar-header -->
 
             <div class="navbar-collapse collapse"> <!--part of navbar that's collapsed on small screens-->
-                {% if USE_MOCKUP %}
+                {% if use_mockups %}
                 <ul class="nav navbar-nav nav-stacked nav-pills">
                     <li {% if view_name == 'all_lists' or '/list' in request.path %}
                         class="active">
@@ -148,7 +148,7 @@
     <script>window.jQuery || document.write('<script src="{{ STATIC_URL }}hyperkitty/libs/jquery/jquery-1.10.1.min.js"><\/script>')</script>
     <script src="{{ STATIC_URL }}hyperkitty/libs/jquery/jquery-ui-1.10.3.custom.min.js"></script>
     {% if debug %}
-    <script src="{{ STATIC_URL }}hyperkitty/libs/less/less-1.6.3.min.js"></script>
+    <script src="{{ STATIC_URL }}hyperkitty/libs/less/less-1.7.0.min.js"></script>
     {% endif %}
     {% assets filters="rjsmin", output="gen/hyperkitty.js", "hyperkitty/libs/bootstrap/js/bootstrap.min.js", "hyperkitty/libs/jquery.expander.js", "hyperkitty/libs/d3.v2.min.js", "hyperkitty/libs/jquery.hotkeys.js", "hyperkitty/js/hyperkitty-common.js", "hyperkitty/js/hyperkitty-index.js", "hyperkitty/js/hyperkitty-thread.js", "hyperkitty/js/hyperkitty-userprofile.js" %}
     <script src="{{ ASSET_URL }}"></script>
