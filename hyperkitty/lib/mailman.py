@@ -60,7 +60,11 @@ def get_subscriptions(store, client, mm_user):
             continue
         posts_count = store.get_message_count_by_user_id(
                 mm_user.user_id, mlist)
-        likes, dislikes = ks_user.get_votes_in_list(mlist)
+        if ks_user is None:
+            # no email sent and no vote cast yet
+            likes = dislikes = 0
+        else:
+            likes, dislikes = ks_user.get_votes_in_list(mlist)
         all_posts_url = "%s?list=%s" % \
                 (reverse("user_posts", args=[mm_user.user_id]), mlist)
         likestatus = "neutral"

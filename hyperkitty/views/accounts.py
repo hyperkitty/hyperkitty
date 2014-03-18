@@ -229,7 +229,10 @@ def votes(request):
         return HttpResponse("Could not find or create your user ID in Mailman",
                             content_type="text/plain", status=500)
     user = store.get_user(request.session["user_id"])
-    votes = paginate(user.votes, request.GET.get('vpage'))
+    if user is None:
+        votes = [] # User not found in KittyStore: no emails sent yet
+    else:
+        votes = paginate(user.votes, request.GET.get('vpage'))
     return render(request, 'ajax/votes.html', {
                 "votes": votes,
             })

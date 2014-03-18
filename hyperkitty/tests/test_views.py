@@ -23,6 +23,7 @@
 import datetime
 from tempfile import mkdtemp
 from shutil import rmtree
+from traceback import format_exc
 
 from mock import Mock
 
@@ -84,6 +85,28 @@ class AccountViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
         # @TODO: Try to register a user and verify its working
+
+    def test_votes_no_mailman_user(self):
+        self.client.login(username='testuser', password='testPass')
+        response = self.client.get(reverse("user_votes"))
+        self.assertEqual(response.status_code, 500)
+
+    def test_votes_no_ks_user(self):
+        self.client.login(username='testuser', password='testPass')
+        # use a temp variable below because self.client.session is actually a
+        # property which returns a new instance en each call :-/
+        session = self.client.session
+        session["user_id"] = u"testuser"
+        session.save()
+
+        try:
+            response = self.client.get(reverse("user_votes"))
+        except AttributeError, e:
+            self.fail("Getting the votes should not fail if "
+                      "the user has never voted yet\n%s" % format_exc())
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, "<table>")
+        self.assertNotContains(response, "<tbody>")
 
 
 

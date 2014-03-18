@@ -20,11 +20,17 @@
 #
 
 import datetime
+from traceback import print_exc, format_exc
 
+from mock import Mock
 from django.http import HttpRequest
+from django.core.urlresolvers import reverse
+import kittystore
+from kittystore.test import SettingsModule
 
 from hyperkitty.lib.view_helpers import get_display_dates, show_mlist
 from hyperkitty.lib.paginator import paginate
+from hyperkitty.lib.mailman import get_subscriptions
 
 from hyperkitty.tests.utils import TestCase
 
@@ -139,3 +145,41 @@ class ShowMlistTestCase(TestCase):
 
     def test_different_single_component_domain(self):
         self._do_test("intranet", "extranet", False)
+
+
+#
+# mailman.get_subscriptions()
+#
+
+class FakeMMList:
+    def __init__(self, name):
+        self.fqdn_listname = name
+
+class MMGetSubTestCase(TestCase):
+
+    def setUp(self):
+        self.store = kittystore.get_store(
+                SettingsModule(), debug=False, auto_create=True)
+        self.client = Mock()
+        self.client.get_list.side_effect = lambda name: FakeMMList(name)
+        self.mm_user = Mock()
+        self.mm_user.user_id = "123456"
+
+    def test_user_not_in_ks(self):
+        # The user is not in KittyStore yet, this should not prevent the
+        # listing of the subscriptions in Mailman
+        self.mm_user.subscription_list_ids = ["test@example.com",]
+        try:
+            subs = get_subscriptions(self.store, self.client, self.mm_user)
+        except AttributeError, e:
+            #print_exc()
+            self.fail("Subscriptions should be available even if "
+                      "the user has never voted yet\n%s" % format_exc())
+        expected = [{
+            'first_post': None, 'posts_count': 0,
+            'likes': 0, 'dislikes': 0, 'likestatus': 'neutral',
+            'list_name': "test@example.com",
+            'all_posts_url': "%s?list=test@example.com"
+                             % reverse("user_posts", args=["123456"]),
+            }]
+        self.assertEqual(subs, expected)
