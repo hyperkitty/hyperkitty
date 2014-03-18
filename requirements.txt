@@ -12,5 +12,7 @@ cssmin
 robot-detection
 pytz
 django-paintstore
+django-compressor
+django-static-precompiler
 # mailmanclient is not yet in PyPI
 bzr+lp:mailman.client#egg=mailmanclient

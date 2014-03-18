@@ -52,11 +52,17 @@ It's also recommanded to change the database access paths in the ``DATABASES``,
 ``KITTYSTORE_URL`` and ``KITTYSTORE_SEARCH_INDEX`` variables.
 
 If you ever want to turn the ``DEBUG`` variable to ``False`` (by removing it
-from ``settings_local.py``), you'll have to run two additional commands at
+from ``settings_local.py``), you'll have to run three additional commands at
 first and each time you change the static files::
 
     django-admin collectstatic --pythonpath hyperkitty_standalone --settings settings
     django-admin assets --pythonpath hyperkitty_standalone --settings settings build --parse-templates
+    django-admin compress --pythonpath hyperkitty_standalone --settings settings
+
+Normally, to generate compressor content, you'll need to set ``COMPRESS_ENABLED`` to ``TRUE``
+and ``COMPRESS_OFFLINE`` to ``TRUE`` in ``settings_local.py``. However, you can force the generation of
+compressor content by adding the ``--force`` switch to the ``django-admin compress`` command, which
+will run the compressor even if the ``COMPRESS`` settings are not ``TRUE``. 
 
 But for development purposes, it's better to keep ``DEBUG = True``.
 

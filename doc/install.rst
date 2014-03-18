@@ -15,6 +15,7 @@ Install the HyperKitty package and its dependencies with the following
 commands::
 
     sudo pip install -r requirements.txt
+    sudo yum install nodejs-less
     sudo python setup.py install
 
 
