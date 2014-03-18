@@ -1,4 +1,4 @@
-//
+    //
 // Mixins
 // --------------------------------------------------
 
@@ -656,13 +656,42 @@
 }
 
 // Generate the extra small columns
-.make-xs-column(@columns; @gutter: @grid-gutter-width) {
+.make-tn-column(@columns; @gutter: @grid-gutter-width) {
   position: relative;
   float: left;
   width: percentage((@columns / @grid-columns));
   min-height: 1px;
   padding-left:  (@gutter / 2);
   padding-right: (@gutter / 2);
+}
+.make-tn-column-offset(@columns) {
+  @media (min-width: @screen-tn-min) {
+    margin-left: percentage((@columns / @grid-columns));
+  }
+}
+.make-tn-column-push(@columns) {
+  @media (min-width: @screen-tn-min) {
+    left: percentage((@columns / @grid-columns));
+  }
+}
+.make-tn-column-pull(@columns) {
+  @media (min-width: @screen-tn-min) {
+    right: percentage((@columns / @grid-columns));
+  }
+}
+
+
+// Generate the extra small columns
+.make-xs-column(@columns; @gutter: @grid-gutter-width) {
+  position: relative;
+  min-height: 1px;
+  padding-left:  (@gutter / 2);
+  padding-right: (@gutter / 2);
+
+  @media (min-width: @screen-xs-min) {
+    float: left;
+    width: percentage((@columns / @grid-columns));
+  }
 }
 .make-xs-column-offset(@columns) {
   @media (min-width: @screen-xs-min) {
@@ -768,6 +797,35 @@
 }
 
 
+// Generate the extra large columns
+.make-xl-column(@columns; @gutter: @grid-gutter-width) {
+  position: relative;
+  min-height: 1px;
+  padding-left:  (@gutter / 2);
+  padding-right: (@gutter / 2);
+
+  @media (min-width: @screen-xl-min) {
+    float: left;
+    width: percentage((@columns / @grid-columns));
+  }
+}
+.make-xl-column-offset(@columns) {
+  @media (min-width: @screen-xl-min) {
+    margin-left: percentage((@columns / @grid-columns));
+  }
+}
+.make-xl-column-push(@columns) {
+  @media (min-width: @screen-xl-min) {
+    left: percentage((@columns / @grid-columns));
+  }
+}
+.make-xl-column-pull(@columns) {
+  @media (min-width: @screen-xl-min) {
+    right: percentage((@columns / @grid-columns));
+  }
+}
+
+
 // Framework grid generation
 //
 // Used only by Bootstrap to generate the correct number of grid classes given
@@ -776,11 +834,11 @@
 .make-grid-columns() {
   // Common styles for all sizes of grid columns, widths 1-12
   .col(@index) when (@index = 1) { // initial
-    @item: ~".col-xs-@{index}, .col-sm-@{index}, .col-md-@{index}, .col-lg-@{index}";
+    @item: ~".col-tn-@{index}, .col-xs-@{index}, .col-sm-@{index}, .col-md-@{index}, .col-lg-@{index}, .col-xl-@{index}";
     .col((@index + 1), @item);
   }
   .col(@index, @list) when (@index =< @grid-columns) { // general; "=<" isn't a typo
-    @item: ~".col-xs-@{index}, .col-sm-@{index}, .col-md-@{index}, .col-lg-@{index}";
+    @item: ~".col-tn-@{index}, .col-xs-@{index}, .col-sm-@{index}, .col-md-@{index}, .col-lg-@{index}, .col-xl-@{index}";
     .col((@index + 1), ~"@{list}, @{item}");
   }
   .col(@index, @list) when (@index > @grid-columns) { // terminal

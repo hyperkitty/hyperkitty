@@ -23,10 +23,17 @@
 
 
 // Visibility utilities
+.visible-tn {
+  .responsive-invisibility();
+
+  @media (max-width: @screen-tn-max) {
+    .responsive-visibility();
+  }
+}
 .visible-xs {
   .responsive-invisibility();
 
-  @media (max-width: @screen-xs-max) {
+  @media (min-width: @screen-xs-min) and (max-width: @screen-xs-max) {
     .responsive-visibility();
   }
 }
@@ -51,9 +58,21 @@
     .responsive-visibility();
   }
 }
+.visible-xl {
+  .responsive-invisibility();
 
+  @media (min-width: @screen-xl-min) {
+    .responsive-visibility();
+  }
+}
+
+.hidden-tn {
+  @media (max-width: @screen-tn-max) {
+    .responsive-invisibility();
+  }
+}
 .hidden-xs {
-  @media (max-width: @screen-xs-max) {
+  @media (min-width: @screen-xs-min) and (max-width: @screen-xs-max) {
     .responsive-invisibility();
   }
 }
@@ -69,6 +88,11 @@
 }
 .hidden-lg {
   @media (min-width: @screen-lg-min) {
+    .responsive-invisibility();
+  }
+}
+.hidden-xl {
+  @media (min-width: @screen-xl-min) {
     .responsive-invisibility();
   }
 }
