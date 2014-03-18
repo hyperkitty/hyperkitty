@@ -34,7 +34,8 @@ admin.autodiscover()
 
 from hyperkitty.views import TextTemplateView
 
-
+from hyperkitty.views.handler500 import Handler500
+handler500 = Handler500.as_error_view()
 
 urlpatterns = patterns('hyperkitty.views',
     # Index

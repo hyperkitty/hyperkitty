@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load i18n %}
+
+{% block content %}
+        <style>
+            #contentBox
+            {
+                padding:10px;
+                font-family: 'Times New Roman';
+                font-size:20px;
+                color:#444;
+                margin-left:300px;
+                margin-top:100px;
+            }
+            .hello
+            {
+                font-size:100px;
+                color:#444;
+                font-family: 'Times New Roman';
+            }
+            a
+            {
+                color:#323232;
+            }
+        </style>
+
+        <div style="margin: 60px 40px 0 40px;">
+            <div id="contentBox" style="width:50%; ">
+                <span class="hello"> 500 </span>
+                <br/><br/>
+                <span style="font-size:60px; color:#444;font-family: 'Times New Roman';"> Oh! Snap </span> 
+                <br/><br/>
+                Page is unavailable.
+                <a href ="{% url 'root' %}">'Back home'</a>
+            </div>
+        </div>
+
+{% endblock %}
