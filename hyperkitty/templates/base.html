@@ -12,12 +12,13 @@
         <link rel="shortcut icon" href="{{ STATIC_URL }}hyperkitty/img/favicon.ico" />
         <link rel="stylesheet" media="all" href="{{ STATIC_URL }}hyperkitty/libs/jquery/smoothness/jquery-ui-1.10.3.custom.min.css" />
         <link rel="stylesheet" media="all" href="{{ STATIC_URL }}hyperkitty/libs/font-awesome/css/font-awesome.min.css" />
+        <link rel="stylesheet" media="all" href="{{ STATIC_URL }}hyperkitty/libs/bootstrap/css/bootstrap.min.css" />
         {% if debug %}
-        <link rel="stylesheet" type="text/less" media="all" href="{{ STATIC_URL }}hyperkitty/libs/bootstrap/less/bootstrap.less" />
+        <link rel="stylesheet" type="text/less" media="all" href="{{ STATIC_URL }}hyperkitty/less/custom-bootstrap.less" />
         <link rel="stylesheet/less" type="text/css" media="all" href="{{ STATIC_URL }}hyperkitty/less/hyperkitty.less" />
         {% else %}
         {% compress css %}
-        <link rel="stylesheet" type="text/less" media="all" href="{{ STATIC_URL }}hyperkitty/libs/bootstrap/less/bootstrap.less" />
+        <link rel="stylesheet" type="text/less" media="all" href="{{ STATIC_URL }}hyperkitty/less/custom-bootstrap.less" />
         <link rel="stylesheet" type="text/less" media="all" href="{{ STATIC_URL }}hyperkitty/less/hyperkitty.less" />
         {% endcompress %}
         {% endif %}
@@ -112,7 +113,7 @@
                                    {% if query %}value="{{ query }}"{% endif %}
                                    />
                             <span class="input-group-btn">
-                                <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-search"></span></button>
+                                <button class="btn btn-default" type="submit"><span class="fa fa-search"></span></button>
                             </span>
                         </div>
                     </div>

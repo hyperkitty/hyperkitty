@@ -27,7 +27,7 @@
                 {% if next_thread %}
                 <button id="next-thread" class="btn btn-default btn-xs {% if not next_thread %}disabled{% endif %}"
                         {% if next_thread %}title="{{ next_thread.subject|strip_subject:mlist|escape }}"{% endif %}>
-                    <span class="glyphicon glyphicon-chevron-left"></span>
+                    <span class="fa fa-chevron-left"></span>
                     <span class="hidden-tn hidden-xs">newer</span>
                 </button>
                {% endif %}
@@ -38,7 +38,7 @@
             <div class="col-tn-2 right">
                 <button id="prev-thread" class="btn btn-default btn-xs {% if not prev_thread %}disabled{% endif %}"
                     {% if prev_thread %}title="{{ prev_thread.subject|strip_subject:mlist|escape }}"{% endif %}>
-                    <span class="glyphicon glyphicon-chevron-right"></span>
+                    <span class="fa fa-chevron-right"></span>
                     <span class="hidden-tn hidden-xs">older</span>
                 </button>
             </div>
