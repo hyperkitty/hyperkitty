@@ -34,8 +34,6 @@ admin.autodiscover()
 
 from hyperkitty.views import TextTemplateView
 
-from django.conf import settings
-import os
 
 urlpatterns = patterns('hyperkitty.views',
     # Index
