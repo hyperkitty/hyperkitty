@@ -15,9 +15,11 @@ Install the HyperKitty package and its dependencies with the following
 commands::
 
     sudo pip install -r requirements.txt
-    sudo yum install nodejs-less
     sudo python setup.py install
 
+You will also need to install Node.js and LESS using your package manager or the
+project's installation documentation. If you are using Fedora, you just have to run
+``yum install nodejs-less``.
 
 Setup your django project
 =========================
