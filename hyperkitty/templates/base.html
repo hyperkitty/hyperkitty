@@ -1,5 +1,4 @@
 {% load url from future %}
-{% load assets %}
 {% load compress %}
 <!DOCTYPE HTML>
 <html>
@@ -152,9 +151,16 @@
     {% if debug %}
     <script src="{{ STATIC_URL }}hyperkitty/libs/less/less-1.7.0.min.js"></script>
     {% endif %}
-    {% assets filters="rjsmin", output="gen/hyperkitty.js", "hyperkitty/libs/bootstrap/js/bootstrap.min.js", "hyperkitty/libs/jquery.expander.js", "hyperkitty/libs/d3.v2.min.js", "hyperkitty/libs/jquery.hotkeys.js", "hyperkitty/js/hyperkitty-common.js", "hyperkitty/js/hyperkitty-index.js", "hyperkitty/js/hyperkitty-thread.js", "hyperkitty/js/hyperkitty-userprofile.js" %}
-    <script src="{{ ASSET_URL }}"></script>
-    {% endassets %}
+    {% compress js %}
+    <script type="text/javascript" src="{{ STATIC_URL }}hyperkitty/libs/bootstrap/js/bootstrap.min.js" />
+    <script type="text/javascript" src="{{ STATIC_URL }}hyperkitty/libs/jquery.expander.js" />
+    <script type="text/javascript" src="{{ STATIC_URL }}hyperkitty/libs/d3.v2.min.js" />
+    <script type="text/javascript" src="{{ STATIC_URL }}hyperkitty/libs/jquery.hotkeys.js" />
+    <script type="text/javascript" src="{{ STATIC_URL }}hyperkitty/js/hyperkitty-common.js" />
+    <script type="text/javascript" src="{{ STATIC_URL }}hyperkitty/js/hyperkitty-index.js" />
+    <script type="text/javascript" src="{{ STATIC_URL }}hyperkitty/js/hyperkitty-thread.js" />
+    <script type="text/javascript" src="{{ STATIC_URL }}hyperkitty/js/hyperkitty-userprofile.js" />
+    {% endcompress %}
     {% block additionaljs %} {% endblock %}
 
     </body>

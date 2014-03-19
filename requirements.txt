@@ -6,13 +6,11 @@ mailman>=3.0.0b2
 kittystore
 South
 django-crispy-forms
-django-assets
 rjsmin
 cssmin
 robot-detection
 pytz
 django-paintstore
 django-compressor
-django-static-precompiler
 # mailmanclient is not yet in PyPI
 bzr+lp:mailman.client#egg=mailmanclient
