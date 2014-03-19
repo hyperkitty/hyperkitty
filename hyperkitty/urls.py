@@ -34,8 +34,8 @@ admin.autodiscover()
 
 from hyperkitty.views import TextTemplateView
 
-from hyperkitty.views.handler500 import Handler500
-handler500 = Handler500.as_error_view()
+from django.conf import settings
+import os
 
 urlpatterns = patterns('hyperkitty.views',
     # Index
@@ -148,4 +148,3 @@ urlpatterns = patterns('hyperkitty.views',
 )
 #) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += staticfiles_urlpatterns()
-
