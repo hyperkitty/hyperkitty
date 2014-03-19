@@ -17,9 +17,10 @@ commands::
     sudo pip install -r requirements.txt
     sudo python setup.py install
 
-You will also need to install Node.js and LESS using your package manager or the
-project's installation documentation. If you are using Fedora, you just have to run
-``yum install nodejs-less``.
+You will also need to install Node.js and LESS (version >= 1.5) using your package
+manager or the project's installation documentation. If you are using Fedora 20, you
+can just run ``yum install nodejs-less``. If you are using Fedora 19 (or earlier),
+you can install the correct version of LESS via rpm: http://pkgs.org/download/nodejs-less
 
 Setup your django project
 =========================
