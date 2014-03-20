@@ -44,8 +44,6 @@ content::
 
     DEBUG = True
     TEMPLATE_DEBUG = DEBUG
-    ASSETS_DEBUG = DEBUG
-    ASSETS_AUTO_BUILD = DEBUG
     USE_SSL = False
 
 It's also recommanded to change the database access paths in the ``DATABASES``,
@@ -56,7 +54,6 @@ from ``settings_local.py``), you'll have to run three additional commands at
 first and each time you change the static files::
 
     django-admin collectstatic --pythonpath hyperkitty_standalone --settings settings
-    django-admin assets --pythonpath hyperkitty_standalone --settings settings build --parse-templates
     django-admin compress --pythonpath hyperkitty_standalone --settings settings
 
 Normally, to generate compressor content, you'll need to set ``COMPRESS_ENABLED`` to ``TRUE``
