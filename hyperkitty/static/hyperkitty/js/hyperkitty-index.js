@@ -66,14 +66,17 @@ function setup_index(url_template) {
         // fire the above change event after every letter
         $(this).change();
     }).focus();
+    
+    // Back to top link
+    setup_back_to_top_link(220); // set offset to 220 for link to appear
 
     // Initials
     $(".initials").animate({ right: 0 }, {duration: 600});
     // Override the scrolling because we have a fixed header
-    $(".initials a").click(function (e) {
+    $(".initials li a").click(function (e) {
         e.preventDefault();
         var target = $("a[name="+$(this).attr("href").substring(1)+"]");
-        $(window).scrollTop(target.offset().top - 70);
+        $(window).scrollTop(target.offset().top - 80); //80 is a bit more than header height
     });
 
     // Update list graphs
@@ -82,6 +85,7 @@ function setup_index(url_template) {
         var listname = $.trim(listelem.find(".list-address").text());
         url_template = url_template.replace(/@/, "%40"); // Django 1.5 compatibility, it did not escape the url tag
         var url = url_template.replace(/PLACEHOLDER%40PLACEHOLDER/, listname);
-        ajax_chart(listelem.find("div.chart"), url, {height: 30});
+        // only load data for visible charts
+        ajax_chart(listelem.find("div.chart:visible"), url, {height: 30});
     });
 }
