@@ -33,7 +33,11 @@ function setup_index(url_template) {
             var cls = $(this).val();
             hide_by_class[cls] = $(this).prop("checked");
         });
-        var filter = $.trim($(".filter-lists input").val().toLowerCase());
+        var filter = null;
+        if ($(".filter-lists input[type=text]").length !== 0) {
+            // The field does not exist if there are only a few lists
+            filter = $.trim($(".filter-lists input[type=text]").val().toLowerCase());
+        }
         $("table.lists tr.list").each(function() {
             var list_name = $.trim($(this).find("a.list-name").text());
             var list_addr = $.trim($(this).find("a.list-address").text());
