@@ -158,20 +158,20 @@ class LastViewsTestCase(TestCase):
                         "list@example.com", threadid)))
             responses.append(response)
         # There's always one icon in the right column, so all counts are +1
-        self.assertContains(responses[0], "icon-eye-close", count=2, status_code=200)
-        self.assertContains(responses[1], "icon-eye-close", count=1, status_code=200)
-        self.assertContains(responses[2], "icon-eye-close", count=2, status_code=200)
+        self.assertContains(responses[0], "fa-envelope", count=2, status_code=200)
+        self.assertContains(responses[1], "fa-envelope", count=1, status_code=200)
+        self.assertContains(responses[2], "fa-envelope", count=2, status_code=200)
 
     def test_thread_list(self):
         now = datetime.datetime.now()
         response = self.client.get(reverse('archives_with_month', args=(
                     "list@example.com", now.year, now.month)))
-        self.assertContains(response, "icon-eye-close",
+        self.assertContains(response, "fa-envelope",
                             count=2, status_code=200)
 
     def test_overview(self):
         response = self.client.get(reverse('list_overview', args=["list@example.com"]))
-        self.assertContains(response, "icon-eye-close",
+        self.assertContains(response, "fa-envelope",
                             count=4, status_code=200)
 
 
