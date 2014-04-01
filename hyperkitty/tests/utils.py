@@ -33,7 +33,11 @@ OVERRIDE_SETTINGS = {
     "KITTYSTORE_DEBUG": False,
     "USE_MOCKUPS": False,
     "ROOT_URLCONF": "hyperkitty.urls",
-    "CACHES": {},
+    "CACHES": {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        },
+    },
 }
 
 
