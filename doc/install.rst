@@ -75,7 +75,7 @@ from HyperKitty (which resides somewhere on your pythonpath) to be able to
 serve them from the site directory. All you have to do is run::
 
     django-admin collectstatic --pythonpath hyperkitty_standalone --settings settings
-    django-admin assets --pythonpath hyperkitty_standalone --settings settings build --parse-templates
+    django-admin compress --pythonpath hyperkitty_standalone --settings settings
 
 .. note::
     Your ``django-admin`` command may be called ``django-admin.py`` depending

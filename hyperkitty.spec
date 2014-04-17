@@ -192,10 +192,12 @@ rm -f hyperkitty_standalone/__init__.py
 
 %post
 # Build the static files cache
-%{__python} %{_sysconfdir}/%{name}/sites/default/manage.py \
-    collectstatic --noinput >/dev/null || :
-%{__python} %{_sysconfdir}/%{name}/sites/default/manage.py \
-    assets build --parse-templates &>/dev/null || :
+%{__bindir}/django-admin collectstatic \
+    --pythonpath %{_sysconfdir}/%{name}/sites/default \
+    --settings settings --noinput &>/dev/null || :
+%{__bindir}/django-admin compress \
+    --pythonpath %{_sysconfdir}/%{name}/sites/default \
+    --settings settings &>/dev/null || :
 
 
 %post selinux
