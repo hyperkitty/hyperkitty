@@ -22,9 +22,8 @@
 
 import datetime
 import re
+import json
 from collections import namedtuple
-
-import django.utils.simplejson as json
 
 from django.http import HttpResponse, Http404
 from django.template import RequestContext, loader

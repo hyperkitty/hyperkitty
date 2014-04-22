@@ -22,8 +22,8 @@
 
 import urllib
 import datetime
+import json
 
-import django.utils.simplejson as json
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, render
 from django.core.urlresolvers import reverse

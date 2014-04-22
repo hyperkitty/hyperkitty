@@ -27,7 +27,7 @@ from traceback import format_exc
 
 from mock import Mock
 
-import django.utils.simplejson as json
+import json
 from hyperkitty.tests.utils import TestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse

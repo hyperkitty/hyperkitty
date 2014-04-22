@@ -22,7 +22,7 @@
 import datetime
 import re
 
-import django.utils.simplejson as json
+import json
 from dateutil.tz import tzoffset
 from django import template
 from django.utils.datastructures import SortedDict
