@@ -526,3 +526,10 @@ class ThreadTestCase(TestCase):
         result = self._do_post({ "tag": "testtag", "action": "add" })
         self.assertEqual(result["tags"], [u"testtag"])
         self.assertEqual(Tag.objects.count(), 1)
+
+    def test_add_multiple_tags(self):
+        result = self._do_post({ "tag": "testtag 1, testtag 2 ; testtag 3", "action": "add" })
+        expected = [u"testtag 1", u"testtag 2", u"testtag 3"]
+        self.assertEqual(result["tags"], expected)
+        self.assertEqual(Tag.objects.count(), 3)
+        self.assertEqual(sorted(t.tag for t in Tag.objects.all()), expected)
