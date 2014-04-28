@@ -239,6 +239,7 @@ def tags(request, mlist_fqdn, threadid):
         tagname = request.POST.get('tag')
     else:
         raise SuspiciousOperation
+    tagname = tagname.strip()
     try:
         tag = Tag.objects.get(threadid=threadid, list_address=mlist_fqdn,
                               tag=tagname)

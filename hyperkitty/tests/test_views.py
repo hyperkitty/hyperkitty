@@ -21,6 +21,7 @@
 #
 
 import datetime
+import json
 from tempfile import mkdtemp
 from shutil import rmtree
 from traceback import format_exc
@@ -38,7 +39,7 @@ import kittystore
 from kittystore.utils import get_message_id_hash
 from kittystore.test import FakeList, SettingsModule
 
-from hyperkitty.models import LastView
+from hyperkitty.models import LastView, Tag
 
 
 
@@ -477,3 +478,51 @@ class PrivateArchivesTestCase(TestCase):
         # the user's subscriptions
         response = self.client.get(reverse('search'), {"query": "dummy"})
         self.assertNotContains(response, "Dummy message", status_code=200)
+
+
+
+#from hyperkitty.views.forms import AddTagForm
+
+class ThreadTestCase(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
+        self.user.is_staff = True
+        self.user.save()
+        self.client.login(username='testuser', password='testPass')
+        self.store = kittystore.get_store(SettingsModule(), debug=False, auto_create=True)
+        self.client.defaults = {"kittystore.store": self.store,
+                                "HTTP_USER_AGENT": "testbot",
+                                }
+        ml = FakeList("list@example.com")
+        ml.subject_prefix = u"[example] "
+        self.msg = Message()
+        self.msg["From"] = "dummy@example.com"
+        self.msg["Message-ID"] = "<msgid>"
+        self.msg["Subject"] = "Dummy message"
+        self.msg.set_payload("Dummy message")
+        self.msg["Message-ID-Hash"] = self.store.add_to_list(ml, self.msg)
+
+    def _do_post(self, data):
+        response = self.client.post(
+                reverse('tags', args=["list@example.com", "msgid"]), data)
+        self.assertEqual(response.status_code, 200)
+        return json.loads(response.content)
+
+    def test_add_tag(self):
+        result = self._do_post({ "tag": "testtag", "action": "add" })
+        self.assertEqual(result["tags"], [u"testtag"])
+
+    def test_add_tag_stripped(self):
+        result = self._do_post({ "tag": " testtag ", "action": "add" })
+        self.assertEqual(result["tags"], [u"testtag"])
+        self.assertEqual(Tag.objects.count(), 1)
+        self.assertEqual(Tag.objects.all()[0].tag, u"testtag")
+
+    def test_add_tag_twice(self):
+        # A second adding of the same tag should just be ignored
+        Tag(list_address="list@example.com", threadid="msgid",
+            tag="testtag", user=self.user).save()
+        result = self._do_post({ "tag": "testtag", "action": "add" })
+        self.assertEqual(result["tags"], [u"testtag"])
+        self.assertEqual(Tag.objects.count(), 1)
