@@ -127,6 +127,8 @@ urlpatterns = patterns('hyperkitty.views',
 
     # Social Auth
     url(r'', include('social_auth.urls'), {"SSL": True}),
+    # BrowserID
+    url(r'', include('django_browserid.urls'), {"SSL": True}),
 
     # Mailman 2.X compatibility
     url(r'^listinfo/?$', 'compat.summary'),
@@ -140,4 +142,3 @@ urlpatterns = patterns('hyperkitty.views',
 )
 #) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += staticfiles_urlpatterns()
-

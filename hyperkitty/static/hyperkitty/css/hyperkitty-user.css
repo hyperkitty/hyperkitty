@@ -23,15 +23,15 @@
 #login .social-login li.browserid {
     display: block;
 }
-#login a#browserid.disabled {
-    cursor: wait;
-}
 #login form.openid {
     display: none;
     position: absolute;
     left: 0;
     width: 100%;
     margin-top: 10px;
+}
+#login a.persona-button:hover {
+    color: #fff;
 }
 
 
