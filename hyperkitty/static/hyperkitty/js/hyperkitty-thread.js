@@ -64,12 +64,13 @@ function setup_category() {
 
 function setup_tags() {
     function post_tags(e) {
+        var form = $(this);
         e.preventDefault();
         $.ajax({
             type: "POST",
             dataType: "json",
-            data : $(this).serialize(),
-            url: $(this).attr("action"),
+            data : form.serialize(),
+            url: form.attr("action"),
             success: function(data) {
                 $("#tags").html(data.html);
                 $("#tags form").submit(post_tags);
@@ -77,11 +78,13 @@ function setup_tags() {
                     e.preventDefault();
                     $(this).parents("form").first().submit();
                 });
-                $(this).find("#id_tag").value("");
             },
             error: function(jqXHR, textStatus, errorThrown) {
                 // authentication and invalid data
                 alert(jqXHR.responseText);
+            },
+            complete: function(jqXHR, textStatus) {
+                form.find("#id_tag").val("");
             }
         });
     }
