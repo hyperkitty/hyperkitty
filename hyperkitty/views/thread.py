@@ -163,7 +163,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'fav_action': fav_action,
         'reply_form': ReplyForm(),
         'is_bot': is_bot,
-        'num_comments': len(thread),
+        'num_comments': len(thread) - 1,
         'participants': thread.participants,
         'last_view': last_view,
         'unread_count': unread_count,

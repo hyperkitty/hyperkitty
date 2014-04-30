@@ -24,7 +24,7 @@
                         {{ thread.participants_count }}
                     </li>
                     <li class="discussion">
-                        {{ thread|length }}
+                        {{ thread|num_comments }}
                     </li>
                     <span class="likestatus {{ thread.likestatus }}">+{{ thread.likes }}/-{{ thread.dislikes }}</span>
                 </ul>

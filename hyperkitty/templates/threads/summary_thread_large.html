@@ -48,7 +48,7 @@
                     {% endif %}
                 </div>
                 <span class="participant">{{ thread.participants_count }} participants</span>
-                <span class="discussion">{{ thread|length }} comments</span>
+                <span class="discussion">{{ thread|num_comments }} comments</span>
                 {% include "messages/like_form.html" with message_id_hash=thread.starting_email.message_id_hash object=thread %}
                 <a href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
                    class="btn thread-show">Show discussion</a>

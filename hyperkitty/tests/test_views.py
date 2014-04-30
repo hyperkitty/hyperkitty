@@ -494,18 +494,25 @@ class ThreadTestCase(TestCase):
         self.client.defaults = {"kittystore.store": self.store,
                                 "HTTP_USER_AGENT": "testbot",
                                 }
-        ml = FakeList("list@example.com")
-        ml.subject_prefix = u"[example] "
-        self.msg = Message()
-        self.msg["From"] = "dummy@example.com"
-        self.msg["Message-ID"] = "<msgid>"
-        self.msg["Subject"] = "Dummy message"
-        self.msg.set_payload("Dummy message")
-        self.msg["Message-ID-Hash"] = self.store.add_to_list(ml, self.msg)
+        self.ml = FakeList("list@example.com")
+        self.ml.subject_prefix = u"[example] "
+        msg = self._make_msg("msgid")
+        self.threadid = msg["Message-ID-Hash"]
+
+    def _make_msg(self, msgid, reply_to=None):
+        msg = Message()
+        msg["From"] = "dummy@example.com"
+        msg["Message-ID"] = "<%s>" % msgid
+        msg["Subject"] = "Dummy message"
+        msg.set_payload("Dummy message")
+        if reply_to is not None:
+            msg["In-Reply-To"] = "<%s>" % reply_to
+        msg["Message-ID-Hash"] = self.store.add_to_list(self.ml, msg)
+        return msg
 
     def _do_post(self, data):
-        response = self.client.post(
-                reverse('tags', args=["list@example.com", "msgid"]), data)
+        url = reverse('tags', args=["list@example.com", self.threadid])
+        response = self.client.post(url, data)
         self.assertEqual(response.status_code, 200)
         return json.loads(response.content)
 
@@ -521,7 +528,7 @@ class ThreadTestCase(TestCase):
 
     def test_add_tag_twice(self):
         # A second adding of the same tag should just be ignored
-        Tag(list_address="list@example.com", threadid="msgid",
+        Tag(list_address="list@example.com", threadid=self.threadid,
             tag="testtag", user=self.user).save()
         result = self._do_post({ "tag": "testtag", "action": "add" })
         self.assertEqual(result["tags"], [u"testtag"])
@@ -533,3 +540,13 @@ class ThreadTestCase(TestCase):
         self.assertEqual(result["tags"], expected)
         self.assertEqual(Tag.objects.count(), 3)
         self.assertEqual(sorted(t.tag for t in Tag.objects.all()), expected)
+
+    def test_num_comments(self):
+        self._make_msg("msgid2", "msgid")
+        self._make_msg("msgid3", "msgid2")
+        self._make_msg("msgid4", "msgid3")
+        url = reverse('thread', args=["list@example.com", self.threadid])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("num_comments" in response.context)
+        self.assertEqual(response.context["num_comments"], 3)

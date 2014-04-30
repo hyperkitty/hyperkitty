@@ -214,3 +214,12 @@ def until(value, limit):
 @register.filter
 def to_json(value):
     return json.dumps(value)
+
+
+@register.filter(is_safe=True)
+def num_comments(value):
+    """Returns the number of comments in a thread"""
+    try:
+        return len(value) - 1
+    except (ValueError, TypeError):
+        return ''

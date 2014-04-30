@@ -30,7 +30,7 @@
                     <td>{{ lv.thread.starting_email|get_date|date:"l, j F Y H:i:s" }}</td>
                     <td>{{ lv.thread|get_date|timesince }}</td>
                     <td>
-                        {{ lv.thread|length }}
+                        {{ lv.thread|num_comments }}
                         {% if thread.unread %}
                         / {{ thread.unread }} new
                         {% endif %}
