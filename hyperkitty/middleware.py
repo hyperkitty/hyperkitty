@@ -134,7 +134,7 @@ class TimezoneMiddleware(object):
         if not request.user.is_authenticated():
             return
         try:
-            user_profile = request.user.get_profile()
+            user_profile = request.user.userprofile
         except ObjectDoesNotExist:
             return
         if user_profile.timezone:

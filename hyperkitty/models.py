@@ -19,6 +19,7 @@
 # Author: Aamir Khan <syst3m.w0rm@gmail.com>
 #
 
+from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib import admin
@@ -30,7 +31,7 @@ from paintstore.fields import ColorPickerField
 
 class UserProfile(models.Model):
     # User Object
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL)
 
     karma = models.IntegerField(default=1)
     TIMEZONES = [ (tz, tz) for tz in pytz.common_timezones ]
@@ -44,7 +45,7 @@ class UserProfile(models.Model):
 class Tag(models.Model):
     list_address = models.CharField(max_length=255, db_index=True)
     threadid = models.CharField(max_length=100, db_index=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     tag = models.CharField(max_length=255)
 
     def __unicode__(self):
@@ -58,7 +59,7 @@ admin.site.register(Tag)
 class Favorite(models.Model):
     list_address = models.CharField(max_length=255, db_index=True)
     threadid = models.CharField(max_length=100, db_index=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     def __unicode__(self):
         """Unicode representation"""
@@ -71,7 +72,7 @@ admin.site.register(Favorite)
 class LastView(models.Model):
     list_address = models.CharField(max_length=255, db_index=True)
     threadid = models.CharField(max_length=100, db_index=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     view_date = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
