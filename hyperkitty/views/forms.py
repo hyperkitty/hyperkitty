@@ -93,7 +93,9 @@ class AddTagForm(forms.Form):
                 widget=TextInputWithButton(
                     attrs={'placeholder': 'Add a tag...',
                            'class': 'input-medium form-control',
-                           'button_text': 'Add'}
+                           'button_text': 'Add',
+                           'title': 'use commas to add multiple tags',
+                           }
                     )
                 )
     action = forms.CharField(widget=forms.HiddenInput, initial="add")

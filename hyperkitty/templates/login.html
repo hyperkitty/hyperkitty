@@ -2,11 +2,17 @@
 {% load url from future %}
 {% load i18n %}
 {% load crispy_forms_tags %}
+{% load assets %}
+{% load browserid %}
 
 
 {% block title %}
 {% trans 'Login' %} - {{ app_name|title }}
 {% endblock %}
+
+{% block additional_stylesheets %}
+<link rel="stylesheet" media="all" href="{{ STATIC_URL }}browserid/persona-buttons.css">
+{% endblock additional_stylesheets %}
 
 {% block content %}
 
@@ -15,6 +21,11 @@
 
 <h2>Login with your email</h2>
 <ul class="social-login list-unstyled">
+    <!-- Persona first -->
+    <li class="browserid">
+        {% browserid_login text='Login using Persona' color='blue' %}
+    </li>
+    <!-- then other backends from social_auth -->
     {% for backend in backends %}
         <li class="{{ backend }}">
         {% if backend == "browserid" %}
@@ -72,29 +83,12 @@
 
 {% block additionaljs %}
 <!-- Include BrowserID JavaScript -->
-<script src="https://browserid.org/include.js" type="text/javascript"></script>
-<!-- Setup click handler that receives BrowserID assertion code and sends POST data -->
+<script src="https://login.persona.org/include.js"></script>
+{% assets filters="rjsmin", output="gen/browserid.js", "browserid/api.js", "browserid/browserid.js" %}
+<script src="{{ ASSET_URL }}"></script>
+{% endassets %}
 <script type="text/javascript">
     $(function() {
-        // BrowserID
-        $('#browserid').click(function(e) {
-            e.preventDefault();
-            var self = $(this);
-
-            navigator.id.get(function(assertion) {
-                if (assertion) {
-                    self.parent('form').find('input[type=hidden]').attr('value', assertion).end().submit();
-                } else {
-                    alert('Some error occurred');
-                }
-            });
-        }).each(function() {
-            var img = $(this).find("img");
-            img.attr("src", img.attr("src").replace(/-disabled/, ""));
-            $(this).removeClass("disabled")
-                   .tooltip("destroy")
-                   .removeAttr("title");
-        });
         // OpenID
         $('a.openid').click(function(e) {
             e.preventDefault();
@@ -103,9 +97,6 @@
                 .find("input[name='openid_identifier']").focus();
         });
     });
-</script>
-<!-- end browserid stuff -->
-<script type="text/javascript">
     var username = document.getElementById('id_username');
     if (username) { username.focus(); }
 </script>

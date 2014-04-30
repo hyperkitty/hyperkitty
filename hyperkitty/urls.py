@@ -133,6 +133,8 @@ urlpatterns = patterns('hyperkitty.views',
 
     # Social Auth
     url(r'', include('social_auth.urls'), {"SSL": True}),
+    # BrowserID
+    url(r'', include('django_browserid.urls'), {"SSL": True}),
 
     # Mailman 2.X compatibility
     url(r'^listinfo/?$', 'compat.summary'),

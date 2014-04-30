@@ -22,7 +22,7 @@
 import datetime
 import re
 
-import django.utils.simplejson as json
+import json
 from dateutil.tz import tzoffset
 from django import template
 from django.utils.datastructures import SortedDict
@@ -253,3 +253,11 @@ def to_json(value):
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
+
+@register.filter(is_safe=True)
+def num_comments(value):
+    """Returns the number of comments in a thread"""
+    try:
+        return len(value) - 1
+    except (ValueError, TypeError):
+        return ''

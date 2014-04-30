@@ -22,9 +22,8 @@
 
 import datetime
 import re
+import json
 from collections import namedtuple
-
-import django.utils.simplejson as json
 
 from django.http import HttpResponse, Http404
 from django.template import RequestContext, loader
@@ -165,7 +164,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'fav_action': fav_action,
         'reply_form': ReplyForm(),
         'is_bot': is_bot,
-        'num_comments': len(thread),
+        'num_comments': len(thread) - 1,
         'participants': thread.participants,
         'last_view': last_view,
         'unread_count': unread_count,
@@ -222,7 +221,7 @@ def replies(request, mlist_fqdn, threadid):
 
 @check_mlist_private
 def tags(request, mlist_fqdn, threadid):
-    """ Add or remove a tag on a given thread. """
+    """ Add or remove one or more tags on a given thread. """
     if not request.user.is_authenticated():
         return HttpResponse('You must be logged in to add a tag',
                             content_type="text/plain", status=403)
@@ -241,18 +240,21 @@ def tags(request, mlist_fqdn, threadid):
         tagname = request.POST.get('tag')
     else:
         raise SuspiciousOperation
-    try:
-        tag = Tag.objects.get(threadid=threadid, list_address=mlist_fqdn,
-                              tag=tagname)
-        if action == "rm":
-            tag.delete()
-    except Tag.DoesNotExist:
-        if action == "add":
-            tag = Tag(list_address=mlist_fqdn, threadid=threadid,
-                      tag=tagname, user=request.user)
-            tag.save()
-        elif action == "rm":
-            raise Http404("No such tag: %s" % tagname)
+    tagnames = [ t.strip() for t in re.findall(r"[\w'_ -]+", tagname) ]
+    for tagname in tagnames:
+        try:
+            tag = Tag.objects.get(threadid=threadid, list_address=mlist_fqdn,
+                                  tag=tagname)
+        except Tag.DoesNotExist:
+            if action == "add":
+                tag = Tag(list_address=mlist_fqdn, threadid=threadid,
+                          tag=tagname, user=request.user)
+                tag.save()
+            elif action == "rm":
+                raise Http404("No such tag: %s" % tagname)
+        else:
+            if action == "rm":
+                tag.delete()
 
     # Now refresh the tag list
     tags = Tag.objects.filter(threadid=threadid, list_address=mlist_fqdn)

@@ -22,7 +22,7 @@
 
 import datetime
 
-import django.utils.simplejson as json
+import json
 from django.shortcuts import redirect, render
 from django.conf import settings
 from django.core.urlresolvers import reverse
