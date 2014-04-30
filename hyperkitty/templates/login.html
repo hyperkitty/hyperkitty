@@ -2,7 +2,7 @@
 {% load url from future %}
 {% load i18n %}
 {% load crispy_forms_tags %}
-{% load assets %}
+{% load compress %}
 {% load browserid %}
 
 
@@ -84,9 +84,10 @@
 {% block additionaljs %}
 <!-- Include BrowserID JavaScript -->
 <script src="https://login.persona.org/include.js"></script>
-{% assets filters="rjsmin", output="gen/browserid.js", "browserid/api.js", "browserid/browserid.js" %}
-<script src="{{ ASSET_URL }}"></script>
-{% endassets %}
+{% compress js %}
+<script type="text/javascript" src="{{ STATIC_URL }}browserid/api.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}browserid/browserid.js"></script>
+{% endcompress %}
 <script type="text/javascript">
     $(function() {
         // OpenID
