@@ -23,6 +23,9 @@
 from django.test import TestCase as DjangoTestCase
 from django.conf import settings
 
+import kittystore
+from kittystore.test import SettingsModule
+
 
 OVERRIDE_SETTINGS = {
     "TEMPLATE_DEBUG": True,
@@ -54,3 +57,18 @@ class TestCase(DjangoTestCase):
         super(TestCase, self)._post_teardown()
         for key, value in self._old_settings.iteritems():
             setattr(settings, key, value)
+
+
+class ViewTestCase(TestCase):
+    """A testcase class that sets up kittystore to make the web client work"""
+
+    def _pre_setup(self):
+        super(ViewTestCase, self)._pre_setup()
+        self.store = kittystore.get_store(SettingsModule(),
+                                     debug=False, auto_create=True)
+        self.client.defaults = {"kittystore.store": self.store,
+                                "HTTP_USER_AGENT": "testbot",
+                                }
+
+    def _post_teardown(self):
+        super(ViewTestCase, self)._post_teardown()

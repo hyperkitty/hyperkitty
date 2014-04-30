@@ -72,7 +72,7 @@ def user_profile(request):
 
     # try to render the user profile.
     try:
-        user_profile = request.user.get_profile()
+        user_profile = request.user.userprofile
     except ObjectDoesNotExist:
         user_profile = UserProfile.objects.create(user=request.user)
 
