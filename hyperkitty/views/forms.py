@@ -102,41 +102,15 @@ class AddTagForm(forms.Form):
 
 
 
-class AttachmentFileInput(forms.FileInput):
-    attach_first_text = ugettext_lazy('Attach a file')
-    attach_another_text = ugettext_lazy('Attach another file')
-    rm_text = ugettext_lazy('Remove this file')
-    template = """
-<span class="attach-files-template">
-    %(input)s <a href="#" title="%(rm_text)s">(-)</a>
-</span>
-<span class="attach-files"></span>
-<a href="#" class="attach-files-first">%(attach_first_text)s</a>
-<a href="#" class="attach-files-add">%(attach_another_text)s</a>
-"""
-
-    def render(self, name, value, attrs=None):
-        substitutions = {
-            'attach_first_text': self.attach_first_text,
-            'attach_another_text': self.attach_another_text,
-            'rm_text': self.rm_text,
-        }
-        substitutions['input'] = super(AttachmentFileInput, self).render(name, value, attrs)
-        return mark_safe(self.template % substitutions)
-
-
 class ReplyForm(forms.Form):
     newthread = forms.BooleanField(label="", required=False)
     subject = forms.CharField(label="", required=False,
             widget=forms.TextInput(attrs={ 'placeholder': 'New subject'}))
     message = forms.CharField(label="", widget=forms.Textarea)
-    attachment = forms.FileField(required=False, widget=AttachmentFileInput)
 
 class PostForm(forms.Form):
     subject = forms.CharField()
     message = forms.CharField(widget=forms.Textarea)
-    attachment = forms.FileField(required=False, label="",
-                                 widget=AttachmentFileInput)
 
 class CategoryForm(forms.Form):
     category = forms.ChoiceField(label="", required=False)

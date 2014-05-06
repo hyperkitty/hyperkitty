@@ -279,21 +279,6 @@ a.thread-new strong {
 }
 
 
-/*
- * Attachments in replies or new threads
- */
-
-.attach-files-template {
-    display: none;
-}
-.attach-files-add {
-    display: none;
-}
-.attach-files span {
-    display: block;
-}
-
-
 /* AJAX */
 .ajaxloader {
     display: block;
