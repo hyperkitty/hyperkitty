@@ -86,9 +86,19 @@ function setup_attachments(baseElem) {
     function add_attach_form (e) {
         e.preventDefault();
         var form = $(this).parents("form").first();
+        // Clone the attachment template
+        var cur_att_count = form.find(".attach-files input").length;
         form.find(".attach-files-template")
             .clone().removeClass("attach-files-template")
-            .appendTo(form.find(".attach-files"));
+            .appendTo(form.find(".attach-files"))
+            .find("input").each(function() {
+                // Suffix the name and id properties with the index number to
+                // make them unique
+                var elem = $(this);
+                $.each(["name", "id"], function(_i, attr) {
+                    elem.attr(attr, elem.attr(attr) + "_" + (cur_att_count+1));
+                });
+            });
         form.find(".attach-files span a").click(function (e) {
             e.preventDefault();
             $(this).parent().remove();
