@@ -49,7 +49,7 @@ def subscribe(list_address, user):
 
 
 def get_subscriptions(store, client, mm_user):
-    if not mm_user:
+    if not mm_user or not mm_user.user_id:
         return []
     ks_user = store.get_user(mm_user.user_id)
     subscriptions = []

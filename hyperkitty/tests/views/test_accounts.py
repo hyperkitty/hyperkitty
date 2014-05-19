@@ -51,6 +51,14 @@ class AccountViewsTestCase(ViewTestCase):
         response = self.client.get(reverse("user_profile"))
         self.assertEqual(response.status_code, 200)
 
+    def test_public_profile(self):
+        user_email = u"dummy@example.com"
+        user_id = u"DUMMY"
+        self.store.create_user(user_email, user_id)
+        self.client.login(username='testuser', password='testPass')
+        response = self.client.get(reverse("public_user_profile", args=[user_id]))
+        self.assertEqual(response.status_code, 200)
+
     def test_registration(self):
         self.client.login(username='testuser', password='testPass')
         # If the user if already logged in, redirect to index page...

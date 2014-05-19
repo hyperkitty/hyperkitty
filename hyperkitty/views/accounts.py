@@ -263,6 +263,7 @@ def public_profile(request, user_id):
         created_on = None
         addresses = []
         subscription_list_ids = []
+        user_id = None
     store = get_store(request)
     try:
         client = mailmanclient.Client('%s/3.0' %
@@ -273,7 +274,7 @@ def public_profile(request, user_id):
     except HTTPError:
         raise Http404("No user with this ID: %s" % user_id)
     except mailmanclient.MailmanConnectionError:
-        db_user = store.get_user(user_id)
+        db_user = store.get_user(user_id) # fallback to kittystore if possible
         if db_user is None:
             return HttpResponse("Can't connect to Mailman",
                                 content_type="text/plain", status=500)
