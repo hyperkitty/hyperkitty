@@ -17,11 +17,21 @@
 # HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Author: Aamir Khan <syst3m.w0rm@gmail.com>
+# Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
 from django.conf import settings
 
-def export_settings(context):
+def export_settings(request):
     exports = ["APP_NAME", "USE_MOCKUPS", "USE_INTERNAL_AUTH"]
     return dict( (name.lower(), getattr(settings, name))
                  for name in exports)
+
+
+from django.core.urlresolvers import reverse
+
+def postorius_info(request):
+    if "postorius" in settings.INSTALLED_APPS:
+        return {"postorius_installed": reverse("postorius.views.list_index") }
+    else:
+        return {"postorius_installed": False }

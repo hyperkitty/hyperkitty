@@ -37,6 +37,10 @@
                         {% endif %}
                         </ul>
 
+                        {% if postorius_installed %}
+                        <a class="postorius" href="{{ postorius_installed }}">{% trans 'Manage lists' %}</a>
+                        {% endif %}
+
                         <div id="search-form" class="nav">
                             <form name="search" method="get" action="{% url 'search' %}" class="form-search">
                                 {% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
