@@ -23,6 +23,9 @@
 import datetime
 from traceback import format_exc
 
+from mock import Mock
+
+import mailmanclient
 from hyperkitty.tests.utils import ViewTestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
@@ -31,6 +34,7 @@ from mailman.email.message import Message
 from kittystore.utils import get_message_id_hash
 from kittystore.test import FakeList
 
+import hyperkitty.lib.mailman
 from hyperkitty.models import LastView
 
 
@@ -39,6 +43,13 @@ class AccountViewsTestCase(ViewTestCase):
 
     def setUp(self):
         self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
+        hyperkitty.lib.mailman.MailmanClient = Mock() # the class
+        mailman_client = Mock() # the instance
+        mailman_client.get_user.side_effect = mailmanclient.MailmanConnectionError()
+        hyperkitty.lib.mailman.MailmanClient.return_value = mailman_client
+
+    def tearDown(self):
+        hyperkitty.lib.mailman.MailmanClient = mailmanclient.Client
 
     def test_login(self):
         # Try to access user profile (private data) without logging in

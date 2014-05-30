@@ -43,7 +43,7 @@ from hyperkitty.views.forms import RegistrationForm, UserProfileForm
 from hyperkitty.lib import get_store
 from hyperkitty.lib.view_helpers import FLASH_MESSAGES
 from hyperkitty.lib.paginator import paginate
-from hyperkitty.lib.mailman import get_subscriptions, is_mlist_authorized
+from hyperkitty.lib.mailman import MailmanClient, get_subscriptions, is_mlist_authorized
 
 
 logger = logging.getLogger(__name__)
@@ -78,7 +78,7 @@ def user_profile(request):
 
     # get the Mailman user
     try:
-        mm_client = mailmanclient.Client('%s/3.0' %
+        mm_client = MailmanClient('%s/3.0' %
                     settings.MAILMAN_REST_SERVER,
                     settings.MAILMAN_API_USER,
                     settings.MAILMAN_API_PASS)
@@ -243,7 +243,7 @@ def subscriptions(request):
     store = get_store(request)
     # get the Mailman user
     try:
-        mm_client = mailmanclient.Client('%s/3.0' %
+        mm_client = MailmanClient('%s/3.0' %
                     settings.MAILMAN_REST_SERVER,
                     settings.MAILMAN_API_USER,
                     settings.MAILMAN_API_PASS)
@@ -266,7 +266,7 @@ def public_profile(request, user_id):
         user_id = None
     store = get_store(request)
     try:
-        client = mailmanclient.Client('%s/3.0' %
+        client = MailmanClient('%s/3.0' %
                     settings.MAILMAN_REST_SERVER,
                     settings.MAILMAN_API_USER,
                     settings.MAILMAN_API_PASS)
@@ -332,7 +332,7 @@ def posts(request, user_id):
 
     # Get the user's full name
     try:
-        client = mailmanclient.Client('%s/3.0' %
+        client = MailmanClient('%s/3.0' %
                     settings.MAILMAN_REST_SERVER,
                     settings.MAILMAN_API_USER,
                     settings.MAILMAN_API_PASS)
