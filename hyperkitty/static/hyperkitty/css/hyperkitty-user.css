@@ -22,6 +22,7 @@
 }
 #login .social-login li.browserid {
     display: block;
+    margin-bottom: 20px;
 }
 #login form.openid {
     display: none;
