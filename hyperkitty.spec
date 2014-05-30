@@ -35,6 +35,7 @@ BuildRequires:  python-robot-detection
 BuildRequires:  pytz
 BuildRequires:  django-paintstore
 BuildRequires:  django-browserid
+BuildRequires:  python-django-nose
 %if 0%{fedora} && 0%{fedora} < 18
 BuildRequires:  Django
 BuildRequires:  Django-south
@@ -62,6 +63,7 @@ Requires:       python-robot-detection
 Requires:       pytz
 Requires:       django-paintstore
 Requires:       django-browserid
+Requires:       python-django-nose
 %if 0%{fedora} && 0%{fedora} < 18
 Requires:       Django >= 1.4
 Requires:       Django-south

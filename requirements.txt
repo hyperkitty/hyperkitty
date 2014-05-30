@@ -13,5 +13,6 @@ robot-detection
 pytz
 django-paintstore
 django-browserid
+django-nose
 # mailmanclient is not yet in PyPI
 bzr+lp:mailman.client#egg=mailmanclient
