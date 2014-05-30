@@ -28,10 +28,13 @@ def export_settings(request):
                  for name in exports)
 
 
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, NoReverseMatch
 
 def postorius_info(request):
+    postorius_url = False
     if "postorius" in settings.INSTALLED_APPS:
-        return {"postorius_installed": reverse("postorius.views.list_index") }
-    else:
-        return {"postorius_installed": False }
+        try:
+            postorius_url = reverse("postorius.views.list_index")
+        except NoReverseMatch:
+            pass
+    return {"postorius_installed": postorius_url }
