@@ -65,10 +65,10 @@ Requires:       django-paintstore
 Requires:       django-browserid
 Requires:       python-django-nose
 %if 0%{fedora} && 0%{fedora} < 18
-Requires:       Django >= 1.4
+Requires:       Django >= 1.5
 Requires:       Django-south
 %else
-Requires:       python-django >= 1.4
+Requires:       python-django >= 1.5
 Requires:       python-django-south
 %endif
 

@@ -1,4 +1,4 @@
-Django>=1.4
+Django>=1.5
 django-gravatar2
 django-social-auth>=0.7.1
 djangorestframework>=2.2.0
@@ -14,5 +14,4 @@ pytz
 django-paintstore
 django-browserid
 django-nose
-# mailmanclient is not yet in PyPI
-bzr+lp:mailman.client#egg=mailmanclient
+mailmanclient
