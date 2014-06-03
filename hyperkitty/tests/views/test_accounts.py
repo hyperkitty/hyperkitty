@@ -29,6 +29,7 @@ import mailmanclient
 from hyperkitty.tests.utils import ViewTestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.test.utils import override_settings
 from mailman.email.message import Message
 
 from kittystore.utils import get_message_id_hash
@@ -70,6 +71,7 @@ class AccountViewsTestCase(ViewTestCase):
         response = self.client.get(reverse("public_user_profile", args=[user_id]))
         self.assertEqual(response.status_code, 200)
 
+    @override_settings(USE_INTERNAL_AUTH=True)
     def test_registration(self):
         self.client.login(username='testuser', password='testPass')
         # If the user if already logged in, redirect to index page...
