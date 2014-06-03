@@ -13,5 +13,4 @@ robot-detection
 pytz
 django-paintstore
 django-browserid
-django-nose
 mailmanclient

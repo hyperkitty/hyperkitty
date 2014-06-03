@@ -35,13 +35,16 @@ BuildRequires:  python-robot-detection
 BuildRequires:  pytz
 BuildRequires:  django-paintstore
 BuildRequires:  django-browserid
-BuildRequires:  python-django-nose
 %if 0%{fedora} && 0%{fedora} < 18
 BuildRequires:  Django
 BuildRequires:  Django-south
 %else
 BuildRequires:  python-django
 BuildRequires:  python-django-south
+%endif
+%if 0%{fedora} && 0%{fedora} < 20
+# Needed for Django < 1.6
+BuildRequires:  python-django-discover-runner
 %endif
 
 # SELinux
@@ -63,13 +66,16 @@ Requires:       python-robot-detection
 Requires:       pytz
 Requires:       django-paintstore
 Requires:       django-browserid
-Requires:       python-django-nose
 %if 0%{fedora} && 0%{fedora} < 18
 Requires:       Django >= 1.5
 Requires:       Django-south
 %else
 Requires:       python-django >= 1.5
 Requires:       python-django-south
+%endif
+%if 0%{fedora} && 0%{fedora} < 20
+# Needed for Django < 1.6
+Requires:       python-django-discover-runner
 %endif
 
 
