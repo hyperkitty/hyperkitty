@@ -249,6 +249,10 @@ function chart(elem_id, data, default_props) {
 
 function ajax_chart(elem, url, props) {
     elem = $(elem);
+    if (elem.data("chart_loading") || elem.find("img.ajaxloader").length == 0) {
+        return; // already loaded or being loaded
+    }
+    elem.data("chart_loading", true);
     // if there's already a chart drawn, remove it and then redraw
     // this would occur when resizing the browser
     if (elem.find("svg.chart-data")) {
@@ -266,6 +270,7 @@ function ajax_chart(elem, url, props) {
         complete: function(jqXHR, textStatus) {
             // if the list is private we have no info, remove the img anyway
             elem.find("img.ajaxloader").remove();
+            elem.removeData("chart_loading");
         }
     });
 }

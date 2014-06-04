@@ -26,6 +26,17 @@ function setup_index(url_template) {
         document.location.href = $(this).find("a.list-name").attr("href");
     });
 
+    // Helper to load the graph
+    function show_ajax_chart(listelem) {
+        if (!listelem.is(":visible")) {
+            return;
+        }
+        var listname = $.trim(listelem.find(".list-address").text());
+        url_template = url_template.replace(/@/, "%40"); // Django 1.5 compatibility, it did not escape the url tag
+        var url = url_template.replace(/PLACEHOLDER%40PLACEHOLDER/, listname);
+        ajax_chart(listelem.find("div.chart"), url, {height: 30});
+    }
+
     // Filter
     function filter_lists() {
         var hide_by_class = {};
@@ -55,6 +66,7 @@ function setup_index(url_template) {
                 $(this).hide();
             } else {
                 $(this).show();
+                show_ajax_chart($(this));
             }
         });
     }
@@ -79,13 +91,8 @@ function setup_index(url_template) {
         $(window).scrollTop(target.offset().top - 80); //80 is a bit more than header height
     });
 
-    // Update list graphs
-    $(".all-lists table.lists tr.list").each(function() {
-        var listelem = $(this);
-        var listname = $.trim(listelem.find(".list-address").text());
-        url_template = url_template.replace(/@/, "%40"); // Django 1.5 compatibility, it did not escape the url tag
-        var url = url_template.replace(/PLACEHOLDER%40PLACEHOLDER/, listname);
-        // only load data for visible charts
-        ajax_chart(listelem.find("div.chart:visible"), url, {height: 30});
+    // Update list graphs for visible lists
+    $(".all-lists table.lists tr.list:visible").each(function() {
+        show_ajax_chart($(this));
     });
 }
