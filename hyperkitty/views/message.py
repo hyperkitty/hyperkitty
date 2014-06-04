@@ -57,6 +57,7 @@ def index(request, mlist_fqdn, message_id_hash):
         'message': message,
         'message_id_hash' : message_id_hash,
         'months_list': get_months(store, mlist.name),
+        'month': message.date,
         'reply_form': ReplyForm(),
     }
     return render(request, "message.html", context)
