@@ -43,7 +43,7 @@ from hyperkitty.views.forms import RegistrationForm, UserProfileForm
 from hyperkitty.lib import get_store
 from hyperkitty.lib.view_helpers import FLASH_MESSAGES
 from hyperkitty.lib.paginator import paginate
-from hyperkitty.lib.mailman import get_subscriptions, is_mlist_authorized
+from hyperkitty.lib.mailman import MailmanClient, get_subscriptions, is_mlist_authorized
 
 
 logger = logging.getLogger(__name__)
@@ -78,7 +78,7 @@ def user_profile(request):
 
     # get the Mailman user
     try:
-        mm_client = mailmanclient.Client('%s/3.0' %
+        mm_client = MailmanClient('%s/3.0' %
                     settings.MAILMAN_REST_SERVER,
                     settings.MAILMAN_API_USER,
                     settings.MAILMAN_API_PASS)
@@ -155,8 +155,7 @@ def user_profile(request):
 
 
 def user_registration(request):
-    if not settings.USE_INTERNAL_AUTH and \
-            request.META["SERVER_NAME"] != "testserver": # work with unit tests
+    if not settings.USE_INTERNAL_AUTH:
         raise SuspiciousOperation
     redirect_to = request.REQUEST.get("next", reverse("root"))
     if not is_safe_url(url=redirect_to, host=request.get_host()):
@@ -243,7 +242,7 @@ def subscriptions(request):
     store = get_store(request)
     # get the Mailman user
     try:
-        mm_client = mailmanclient.Client('%s/3.0' %
+        mm_client = MailmanClient('%s/3.0' %
                     settings.MAILMAN_REST_SERVER,
                     settings.MAILMAN_API_USER,
                     settings.MAILMAN_API_PASS)
@@ -263,9 +262,10 @@ def public_profile(request, user_id):
         created_on = None
         addresses = []
         subscription_list_ids = []
+        user_id = None
     store = get_store(request)
     try:
-        client = mailmanclient.Client('%s/3.0' %
+        client = MailmanClient('%s/3.0' %
                     settings.MAILMAN_REST_SERVER,
                     settings.MAILMAN_API_USER,
                     settings.MAILMAN_API_PASS)
@@ -273,7 +273,7 @@ def public_profile(request, user_id):
     except HTTPError:
         raise Http404("No user with this ID: %s" % user_id)
     except mailmanclient.MailmanConnectionError:
-        db_user = store.get_user(user_id)
+        db_user = store.get_user(user_id) # fallback to kittystore if possible
         if db_user is None:
             return HttpResponse("Can't connect to Mailman",
                                 content_type="text/plain", status=500)
@@ -331,7 +331,7 @@ def posts(request, user_id):
 
     # Get the user's full name
     try:
-        client = mailmanclient.Client('%s/3.0' %
+        client = MailmanClient('%s/3.0' %
                     settings.MAILMAN_REST_SERVER,
                     settings.MAILMAN_API_USER,
                     settings.MAILMAN_API_PASS)

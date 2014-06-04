@@ -65,6 +65,10 @@
                         {% endif %}
                         <a href="{% url 'users_overview' %}">Users</a>
                     </li>
+                    {% if postorius_installed %}
+                    <li><a class="postorius" href="{{ postorius_installed }}">{% trans 'Manage lists' %}</a></li>
+                    {% endif %}
+
                 </ul>
                 {% endif %}
 

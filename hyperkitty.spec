@@ -1,20 +1,20 @@
 %global pypi_name HyperKitty
-%global prerel 1
+%global prerel 2
 
 Name:           hyperkitty
 Version:        1.0.0
-Release:        %{?prerel:0.}1%{?dist}
+Release:        %{?prerel:0.b%{prerel}.}1%{?dist}
 Summary:        A web interface to access GNU Mailman v3 archives
 
 License:        GPLv3
 URL:            https://fedorahosted.org/hyperkitty/
-Source0:        http://pypi.python.org/packages/source/H/%{pypi_name}/%{pypi_name}-%{version}%{?prerel:dev}.tar.gz
+Source0:        http://pypi.python.org/packages/source/H/%{pypi_name}/%{pypi_name}-%{version}%{?prerel:b%{prerel}dev}.tar.gz
 
 # To get SOURCE1:
 #   git clone https://github.com/hyperkitty/hyperkitty_standalone.git
 #   make sdist -C hyperkitty_standalone
 #   mv hyperkitty_standalone/dist/hyperkitty_standalone-%{version}.tar.gz .
-Source1:        hyperkitty_standalone-%{version}%{?prerel:dev}.tar.gz
+Source1:        hyperkitty_standalone-%{version}%{?prerel:b%{prerel}dev}.tar.gz
 
 
 BuildArch:      noarch
@@ -34,12 +34,17 @@ BuildRequires:  python-mailman-client
 BuildRequires:  python-robot-detection
 BuildRequires:  pytz
 BuildRequires:  django-paintstore
+BuildRequires:  django-browserid
 %if 0%{fedora} && 0%{fedora} < 18
 BuildRequires:  Django
 BuildRequires:  Django-south
 %else
 BuildRequires:  python-django
 BuildRequires:  python-django-south
+%endif
+%if 0%{fedora} && 0%{fedora} < 20
+# Needed for Django < 1.6
+BuildRequires:  python-django-discover-runner
 %endif
 
 # SELinux
@@ -60,12 +65,17 @@ Requires:       python-mailman-client
 Requires:       python-robot-detection
 Requires:       pytz
 Requires:       django-paintstore
+Requires:       django-browserid
 %if 0%{fedora} && 0%{fedora} < 18
-Requires:       Django >= 1.4
+Requires:       Django >= 1.5
 Requires:       Django-south
 %else
-Requires:       python-django >= 1.4
+Requires:       python-django >= 1.5
 Requires:       python-django-south
+%endif
+%if 0%{fedora} && 0%{fedora} < 20
+# Needed for Django < 1.6
+Requires:       python-django-discover-runner
 %endif
 
 
@@ -94,10 +104,10 @@ This is the SELinux module for %{name}, install it if you are using SELinux.
 
 
 %prep
-%setup -q -n %{pypi_name}-%{version}%{?prerel:dev} -a 1
+%setup -q -n %{pypi_name}-%{version}%{?prerel:b%{prerel}dev} -a 1
 # Remove bundled egg-info
 rm -rf %{pypi_name}.egg-info
-mv hyperkitty_standalone-%{version}%{?prerel:dev} hyperkitty_standalone
+mv hyperkitty_standalone-%{version}%{?prerel:b%{prerel}dev} hyperkitty_standalone
 # remove shebang on manage.py
 sed -i -e '1d' hyperkitty_standalone/manage.py
 # remove executable permissions on wsgi.py
@@ -213,7 +223,7 @@ fi
 %config(noreplace) %attr(640,root,apache) %{_sysconfdir}/%{name}/sites/default/settings.py
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/%{name}.conf
 %{python_sitelib}/%{name}
-%{python_sitelib}/%{pypi_name}-%{version}%{?prerel:dev}-py?.?.egg-info
+%{python_sitelib}/%{pypi_name}-*.egg-info
 %dir %{_localstatedir}/lib/%{name}
 %dir %{_localstatedir}/lib/%{name}/sites
 %dir %{_localstatedir}/lib/%{name}/sites/default

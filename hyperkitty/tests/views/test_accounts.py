@@ -23,14 +23,19 @@
 import datetime
 from traceback import format_exc
 
+from mock import Mock
+
+import mailmanclient
 from hyperkitty.tests.utils import ViewTestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.test.utils import override_settings
 from mailman.email.message import Message
 
 from kittystore.utils import get_message_id_hash
 from kittystore.test import FakeList
 
+import hyperkitty.lib.mailman
 from hyperkitty.models import LastView
 
 
@@ -39,6 +44,13 @@ class AccountViewsTestCase(ViewTestCase):
 
     def setUp(self):
         self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
+        hyperkitty.lib.mailman.MailmanClient = Mock() # the class
+        mailman_client = Mock() # the instance
+        mailman_client.get_user.side_effect = mailmanclient.MailmanConnectionError()
+        hyperkitty.lib.mailman.MailmanClient.return_value = mailman_client
+
+    def tearDown(self):
+        hyperkitty.lib.mailman.MailmanClient = mailmanclient.Client
 
     def test_login(self):
         # Try to access user profile (private data) without logging in
@@ -51,6 +63,15 @@ class AccountViewsTestCase(ViewTestCase):
         response = self.client.get(reverse("user_profile"))
         self.assertEqual(response.status_code, 200)
 
+    def test_public_profile(self):
+        user_email = u"dummy@example.com"
+        user_id = u"DUMMY"
+        self.store.create_user(user_email, user_id)
+        self.client.login(username='testuser', password='testPass')
+        response = self.client.get(reverse("public_user_profile", args=[user_id]))
+        self.assertEqual(response.status_code, 200)
+
+    @override_settings(USE_INTERNAL_AUTH=True)
     def test_registration(self):
         self.client.login(username='testuser', password='testPass')
         # If the user if already logged in, redirect to index page...

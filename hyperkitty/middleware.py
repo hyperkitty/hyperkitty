@@ -145,8 +145,8 @@ class TimezoneMiddleware(object):
 # Cache some metadata from Mailman about the logged in user
 
 from urllib2 import HTTPError
-from mailmanclient import Client as MailmanClient
 from mailmanclient import MailmanConnectionError
+from hyperkitty.lib.mailman import MailmanClient
 
 class MailmanUserMetadata(object):
 

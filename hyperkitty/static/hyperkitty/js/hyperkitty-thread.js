@@ -323,7 +323,6 @@ function update_thread_replies(url) {
                 fold_quotes(newcontent);
                 setup_disabled_tooltips(newcontent);
                 setup_vote(newcontent);
-                setup_attachments(newcontent);
                 // load the rest if applicable
                 if (data.more_pending) {
                     load_more(url+"&offset="+data.next_offset);

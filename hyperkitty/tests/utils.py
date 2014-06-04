@@ -36,6 +36,9 @@ OVERRIDE_SETTINGS = {
     "KITTYSTORE_DEBUG": False,
     "USE_MOCKUPS": False,
     "ROOT_URLCONF": "hyperkitty.urls",
+    "LOGIN_URL": '/accounts/login/',
+    "LOGIN_REDIRECT_URL": '/',
+    "LOGIN_ERROR_URL": '/accounts/login/',
     "CACHES": {
         'default': {
             'BACKEND': 'django.core.cache.backends.dummy.DummyCache',

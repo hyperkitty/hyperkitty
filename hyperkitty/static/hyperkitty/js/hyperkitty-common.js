@@ -314,5 +314,4 @@ $(document).ready(function() {
     setup_vote();
     setup_disabled_tooltips();
     setup_flash_messages();
-    setup_attachments();
 });

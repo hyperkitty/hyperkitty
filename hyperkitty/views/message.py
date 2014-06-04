@@ -57,6 +57,7 @@ def index(request, mlist_fqdn, message_id_hash):
         'message': message,
         'message_id_hash' : message_id_hash,
         'months_list': get_months(store, mlist.name),
+        'month': message.date,
         'reply_form': ReplyForm(),
     }
     return render(request, "message.html", context)
@@ -148,8 +149,7 @@ def reply(request, mlist_fqdn, message_id_hash):
         headers = {"In-Reply-To": "<%s>" % message.message_id,
                    "References": "<%s>" % message.message_id, }
     try:
-        post_to_list(request, mlist, subject, form.cleaned_data["message"],
-                     headers, attachments=request.FILES.getlist('attachment'))
+        post_to_list(request, mlist, subject, form.cleaned_data["message"], headers)
     except PostingFailed, e:
         return HttpResponse(str(e), content_type="text/plain", status=500)
 
@@ -189,8 +189,7 @@ def new_message(request, mlist_fqdn):
             redirect_url += "?msg=sent-ok"
             try:
                 post_to_list(request, mlist, form.cleaned_data['subject'],
-                             form.cleaned_data["message"],
-                             attachments=request.FILES.getlist("attachment"))
+                             form.cleaned_data["message"])
             except PostingFailed, e:
                 failure = str(e)
             else:

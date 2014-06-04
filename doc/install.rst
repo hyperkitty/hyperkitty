@@ -162,6 +162,19 @@ This command will refresh list properties and user IDs, and may take several
 minutes to complete.
 
 
+RPMs
+====
+Some preliminary RPMs for Fedora 19 are available from the repository described in this repo file::
+
+    http://repos.fedorapeople.org/repos/abompard/hyperkitty/hyperkitty.repo
+
+Only Fedora 19 has packages for now, the plan is to build RPMs for RHEL 7 when
+it's out, and submit HyperKitty and Mailman3 for inclusion into Fedora when
+Mailman3 itself is out. At the moment, the packages are rather stable, but the
+dependencies can change a lot. These packages have been tested on Fedora 19
+with the targeted SELinux policy set to enforcing.
+
+
 License
 =======
 
