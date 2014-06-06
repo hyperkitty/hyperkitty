@@ -1,4 +1,4 @@
-include AUTHORS.txt COPYING.txt pylintrc distribute_setup.py requirements.txt hyperkitty.spec
+include AUTHORS.txt COPYING.txt pylintrc ez_setup.py requirements.txt hyperkitty.spec
 # http://bruno.im/2010/may/05/packaging-django-reusable-app/
 recursive-include hyperkitty *.py *.html *.js
 graft hyperkitty/static
