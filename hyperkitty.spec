@@ -65,7 +65,7 @@ Requires:       python-mailman-client
 Requires:       python-robot-detection
 Requires:       pytz
 Requires:       django-paintstore
-Requires:       django-browserid
+Requires:       django-browserid >= 0.10.1
 %if 0%{fedora} && 0%{fedora} < 18
 Requires:       Django >= 1.5
 Requires:       Django-south

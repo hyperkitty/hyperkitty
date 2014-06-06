@@ -12,5 +12,5 @@ robot-detection
 pytz
 django-paintstore
 django-compressor
-django-browserid
+django-browserid>=0.10.1
 mailmanclient
