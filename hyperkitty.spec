@@ -1,20 +1,20 @@
 %global pypi_name HyperKitty
-%global prerel b3
+#%%global prerel 1
 
 Name:           hyperkitty
-Version:        1.0.0
-Release:        %{?prerel:0.%{prerel}.}1%{?dist}
+Version:        0.9.3
+Release:        %{?prerel:0.}1%{?dist}
 Summary:        A web interface to access GNU Mailman v3 archives
 
 License:        GPLv3
 URL:            https://fedorahosted.org/hyperkitty/
-Source0:        http://pypi.python.org/packages/source/H/%{pypi_name}/%{pypi_name}-%{version}%{?prerel}.tar.gz
+Source0:        http://pypi.python.org/packages/source/H/%{pypi_name}/%{pypi_name}-%{version}%{?prerel:dev}.tar.gz
 
 # To get SOURCE1:
 #   git clone https://github.com/hyperkitty/hyperkitty_standalone.git
 #   make sdist -C hyperkitty_standalone
 #   mv hyperkitty_standalone/dist/hyperkitty_standalone-%{version}.tar.gz .
-Source1:        hyperkitty_standalone-%{version}%{?prerel}.tar.gz
+Source1:        hyperkitty_standalone-%{version}%{?prerel:dev}.tar.gz
 
 
 BuildArch:      noarch
@@ -104,10 +104,10 @@ This is the SELinux module for %{name}, install it if you are using SELinux.
 
 
 %prep
-%setup -q -n %{pypi_name}-%{version}%{?prerel} -a 1
+%setup -q -n %{pypi_name}-%{version}%{?prerel:dev} -a 1
 # Remove bundled egg-info
 rm -rf %{pypi_name}.egg-info
-mv hyperkitty_standalone-%{version}%{?prerel} hyperkitty_standalone
+mv hyperkitty_standalone-%{version}%{?prerel:dev} hyperkitty_standalone
 # remove shebang on manage.py
 sed -i -e '1d' hyperkitty_standalone/manage.py
 # remove executable permissions on wsgi.py

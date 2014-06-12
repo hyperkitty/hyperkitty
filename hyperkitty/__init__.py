@@ -19,4 +19,4 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-VERSION = "1.0.0b3"
+VERSION = "0.9.3"
