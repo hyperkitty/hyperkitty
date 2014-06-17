@@ -24,11 +24,12 @@ import datetime
 from tempfile import mkdtemp
 from shutil import rmtree
 
-from hyperkitty.tests.utils import TestCase, ViewTestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from mailman.email.message import Message
 from mailman.interfaces.archiver import ArchivePolicy
+
+from hyperkitty.tests.utils import TestCase, ViewTestCase
 
 import kittystore
 from kittystore.test import FakeList, SettingsModule
@@ -65,9 +66,9 @@ class PrivateArchivesTestCase(TestCase):
         self.tmpdir = mkdtemp(prefix="hyperkitty-testing-")
         self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
         # Setup KittyStore with a working search index
-        settings = SettingsModule()
-        settings.KITTYSTORE_SEARCH_INDEX = self.tmpdir
-        self.store = kittystore.get_store(settings, debug=False, auto_create=True)
+        ks_settings = SettingsModule()
+        ks_settings.KITTYSTORE_SEARCH_INDEX = self.tmpdir
+        self.store = kittystore.get_store(ks_settings, debug=False, auto_create=True)
         self.client.defaults = {"kittystore.store": self.store,
                                 "HTTP_USER_AGENT": "testbot",
                                 }
@@ -83,6 +84,7 @@ class PrivateArchivesTestCase(TestCase):
 
     def tearDown(self):
         rmtree(self.tmpdir)
+        self.client.logout()
 
 
     def _do_test(self, url, query={}):
@@ -91,6 +93,7 @@ class PrivateArchivesTestCase(TestCase):
         self.client.login(username='testuser', password='testPass')
         # use a temp variable below because self.client.session is actually a
         # property which returns a new instance en each call :-/
+        # http://blog.joshcrompton.com/2012/09/how-to-use-sessions-in-django-unit-tests.html
         session = self.client.session
         session["subscribed"] = ["list@example.com"]
         session.save()

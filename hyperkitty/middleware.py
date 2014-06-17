@@ -146,11 +146,9 @@ class TimezoneMiddleware(object):
 
 from urllib2 import HTTPError
 from mailmanclient import MailmanConnectionError
-from hyperkitty.lib.mailman import MailmanClient
+from hyperkitty.lib.mailman import get_mailman_client
 
 class MailmanUserMetadata(object):
-
-    session_key = "subscribed"
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         if not request.user.is_authenticated():
@@ -159,10 +157,7 @@ class MailmanUserMetadata(object):
             return # Can this really happen?
         if "subscribed" in request.session and "user_id" in request.session:
             return # Already set
-        client = MailmanClient('%s/3.0' %
-                    settings.MAILMAN_REST_SERVER,
-                    settings.MAILMAN_API_USER,
-                    settings.MAILMAN_API_PASS)
+        client = get_mailman_client()
         try:
             user = client.get_user(request.user.email)
         except MailmanConnectionError:
