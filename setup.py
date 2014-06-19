@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import re
+import sys
+
 try:
     import setuptools
 except ImportError:
@@ -8,6 +11,7 @@ except ImportError:
     use_setuptools()
 
 from setuptools import setup, find_packages
+
 
 def reqfile(filepath):
     """Turns a text file into a list (one element per line)"""
@@ -26,9 +30,21 @@ def reqfile(filepath):
     return result
 
 
+# extract the version number without importing the package
+with open('hyperkitty/__init__.py') as fp:
+    for line in fp:
+        mo = re.match("""VERSION\s*=\s*['"](?P<version>[^'"]+?)['"]""", line)
+        if mo:
+            __version__ = mo.group('version')
+            break
+    else:
+        print('No version number found')
+        sys.exit(1)
+
+
 setup(
     name="HyperKitty",
-    version="1.0.0b2",
+    version=__version__,
     description="A web interface to access GNU Mailman v3 archives",
     long_description=open('README.rst').read(),
     author='HyperKitty Developers',

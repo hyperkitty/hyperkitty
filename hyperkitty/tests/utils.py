@@ -20,11 +20,15 @@
 #
 
 
+import mailmanclient
+from mock import Mock
 from django.test import TestCase as DjangoTestCase
 from django.conf import settings
 
 import kittystore
 from kittystore.test import SettingsModule
+
+import hyperkitty.lib.mailman
 
 
 OVERRIDE_SETTINGS = {
@@ -51,15 +55,22 @@ class TestCase(DjangoTestCase):
 
     def _pre_setup(self):
         super(TestCase, self)._pre_setup()
+        # Override settings
         self._old_settings = {}
         for key, value in OVERRIDE_SETTINGS.iteritems():
             self._old_settings[key] = getattr(settings, key)
             setattr(settings, key, value)
+        # Make sure the mailman client always raises an exception
+        hyperkitty.lib.mailman.MailmanClient = Mock() # the class
+        self.mailman_client = Mock() # the instance
+        self.mailman_client.get_user.side_effect = mailmanclient.MailmanConnectionError()
+        hyperkitty.lib.mailman.MailmanClient.return_value = self.mailman_client
 
     def _post_teardown(self):
         super(TestCase, self)._post_teardown()
         for key, value in self._old_settings.iteritems():
             setattr(settings, key, value)
+        hyperkitty.lib.mailman.MailmanClient = mailmanclient.Client
 
 
 class ViewTestCase(TestCase):

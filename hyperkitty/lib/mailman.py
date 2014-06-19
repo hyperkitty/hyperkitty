@@ -34,12 +34,18 @@ from mailmanclient import Client
 from hyperkitty.lib import get_store
 
 
-MailmanClient = Client # easier to patch during unit tests
+MailmanClient = Client
+def get_mailman_client():
+    # easier to patch during unit tests
+    client = MailmanClient('%s/3.0' %
+                settings.MAILMAN_REST_SERVER,
+                settings.MAILMAN_API_USER,
+                settings.MAILMAN_API_PASS)
+    return client
 
 
 def subscribe(list_address, user):
-    client = MailmanClient('%s/3.0' % settings.MAILMAN_REST_SERVER,
-                    settings.MAILMAN_API_USER, settings.MAILMAN_API_PASS)
+    client = get_mailman_client()
     rest_list = client.get_list(list_address)
     try:
         member = rest_list.get_member(user.email)

@@ -43,7 +43,8 @@ from hyperkitty.views.forms import RegistrationForm, UserProfileForm
 from hyperkitty.lib import get_store
 from hyperkitty.lib.view_helpers import FLASH_MESSAGES
 from hyperkitty.lib.paginator import paginate
-from hyperkitty.lib.mailman import MailmanClient, get_subscriptions, is_mlist_authorized
+from hyperkitty.lib.mailman import get_mailman_client, get_subscriptions, \
+                                   is_mlist_authorized
 
 
 logger = logging.getLogger(__name__)
@@ -78,10 +79,7 @@ def user_profile(request):
 
     # get the Mailman user
     try:
-        mm_client = MailmanClient('%s/3.0' %
-                    settings.MAILMAN_REST_SERVER,
-                    settings.MAILMAN_API_USER,
-                    settings.MAILMAN_API_PASS)
+        mm_client = get_mailman_client()
         mm_user = mm_client.get_user(request.user.email)
     except (HTTPError, mailmanclient.MailmanConnectionError):
         mm_client = mm_user = None
@@ -242,10 +240,7 @@ def subscriptions(request):
     store = get_store(request)
     # get the Mailman user
     try:
-        mm_client = MailmanClient('%s/3.0' %
-                    settings.MAILMAN_REST_SERVER,
-                    settings.MAILMAN_API_USER,
-                    settings.MAILMAN_API_PASS)
+        mm_client = get_mailman_client()
         mm_user = mm_client.get_user(request.user.email)
     except (HTTPError, mailmanclient.MailmanConnectionError):
         mm_client = mm_user = None
@@ -265,10 +260,7 @@ def public_profile(request, user_id):
         user_id = None
     store = get_store(request)
     try:
-        client = MailmanClient('%s/3.0' %
-                    settings.MAILMAN_REST_SERVER,
-                    settings.MAILMAN_API_USER,
-                    settings.MAILMAN_API_PASS)
+        client = get_mailman_client()
         mm_user = client.get_user(user_id)
     except HTTPError:
         raise Http404("No user with this ID: %s" % user_id)
@@ -331,10 +323,7 @@ def posts(request, user_id):
 
     # Get the user's full name
     try:
-        client = MailmanClient('%s/3.0' %
-                    settings.MAILMAN_REST_SERVER,
-                    settings.MAILMAN_API_USER,
-                    settings.MAILMAN_API_PASS)
+        client = get_mailman_client()
         mm_user = client.get_user(user_id)
     except HTTPError:
         raise Http404("No user with this ID: %s" % user_id)
