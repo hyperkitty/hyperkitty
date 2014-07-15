@@ -211,23 +211,22 @@ a.reply {
   padding-left: 20px;
   margin-left: 1em;
 }
-a.reply.disabled {
-  background: url("../img/reply-disabled.png") no-repeat left center;
-  color: #999;
-}
 .reply-form {
     display: none;
     padding-top: 1em;
 }
-.reply-form p.reply-tools {
+.reply-form ul.reply-tools {
     margin-bottom: 0.7em;
+    margin-left: 0;
+    list-style: none outside none;
 }
-.reply-form p.reply-tools label {
-    display: inline;
+.reply-form ul.reply-tools li {
     font-size: 90%;
-    margin-left: 1.5em;
+    margin-right: 1.5em;
+    display: inline-block;
+    padding: 0 5px;
 }
-.reply-form p.reply-tools input {
+.reply-form ul.reply-tools input {
     margin-top: 0;
     margin-right: 0.1em;
 }

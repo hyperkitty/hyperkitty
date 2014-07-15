@@ -30,6 +30,8 @@ from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 from django.utils.timezone import utc
 
+import hyperkitty.lib.posting
+
 register = template.Library()
 
 
@@ -223,3 +225,8 @@ def num_comments(value):
         return len(value) - 1
     except (ValueError, TypeError):
         return ''
+
+
+@register.filter
+def reply_subject(value):
+    return hyperkitty.lib.posting.reply_subject(value)

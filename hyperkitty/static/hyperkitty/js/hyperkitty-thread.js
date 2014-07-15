@@ -189,15 +189,19 @@ function setup_replies(baseElem) {
     if (!baseElem) {
         baseElem = document;
     }
-    $(baseElem).find("a.reply").click(function(e) {
+    $(baseElem).find("a.reply").tooltip().click(function(e) {
+        if ($(this).hasClass("reply-mailto")) { return; }
         e.preventDefault();
-        if (!$(this).hasClass("disabled")) {
-            $(this).next().slideToggle("fast", function() {
-                if ($(this).css("display") === "block") {
-                    $(this).find("textarea").focus();
-                }
-            });
-        }
+        $(this).next().slideToggle("fast", function() {
+            if ($(this).css("display") === "block") {
+                $(this).find("textarea").focus();
+            }
+        });
+    });
+    $(baseElem).find("a.reply-mailto").click(function(e) {
+        // Close the reply form, we're going to use email software
+        var replyform = $(this).parents(".reply-form").first().slideUp();
+        return;
     });
     $(baseElem).find(".reply-form button[type='submit']").click(function(e) {
         e.preventDefault();
@@ -211,11 +215,11 @@ function setup_replies(baseElem) {
             dataType: "json",
             data: data,
             success: function(response) {
-                var reply = $(response.message_html);
-                reply.insertAfter(form.parents(".email").first().parent());
+                var server_reply = $(response.message_html);
+                server_reply.insertAfter(form.parents(".email").first().parent());
                 form.parents(".reply-form").first().slideUp(function() {
                     form.find("textarea").val("");
-                    reply.slideDown();
+                    server_reply.slideDown();
                 });
                 $('<div class="reply-result"><div class="alert alert-success">'
                   + response.result + '</div></div>')

@@ -22,8 +22,11 @@
 
 import datetime
 import json
+import re
+import urlparse
 
 from mock import Mock
+from bs4 import BeautifulSoup
 
 from hyperkitty.tests.utils import ViewTestCase
 from django.contrib.auth.models import User
@@ -188,18 +191,18 @@ class ThreadTestCase(ViewTestCase):
         msg["Message-ID-Hash"] = self.store.add_to_list(self.ml, msg)
         return msg
 
-    def _do_post(self, data):
+    def do_tag_post(self, data):
         url = reverse('tags', args=["list@example.com", self.threadid])
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 200)
         return json.loads(response.content)
 
     def test_add_tag(self):
-        result = self._do_post({ "tag": "testtag", "action": "add" })
+        result = self.do_tag_post({ "tag": "testtag", "action": "add" })
         self.assertEqual(result["tags"], [u"testtag"])
 
     def test_add_tag_stripped(self):
-        result = self._do_post({ "tag": " testtag ", "action": "add" })
+        result = self.do_tag_post({ "tag": " testtag ", "action": "add" })
         self.assertEqual(result["tags"], [u"testtag"])
         self.assertEqual(Tag.objects.count(), 1)
         self.assertEqual(Tag.objects.all()[0].tag, u"testtag")
@@ -208,12 +211,12 @@ class ThreadTestCase(ViewTestCase):
         # A second adding of the same tag should just be ignored
         Tag(list_address="list@example.com", threadid=self.threadid,
             tag="testtag", user=self.user).save()
-        result = self._do_post({ "tag": "testtag", "action": "add" })
+        result = self.do_tag_post({ "tag": "testtag", "action": "add" })
         self.assertEqual(result["tags"], [u"testtag"])
         self.assertEqual(Tag.objects.count(), 1)
 
     def test_add_multiple_tags(self):
-        result = self._do_post({ "tag": "testtag 1, testtag 2 ; testtag 3", "action": "add" })
+        result = self.do_tag_post({ "tag": "testtag 1, testtag 2 ; testtag 3", "action": "add" })
         expected = [u"testtag 1", u"testtag 2", u"testtag 3"]
         self.assertEqual(result["tags"], expected)
         self.assertEqual(Tag.objects.count(), 3)
@@ -228,3 +231,29 @@ class ThreadTestCase(ViewTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue("num_comments" in response.context)
         self.assertEqual(response.context["num_comments"], 3)
+
+    def test_reply_button(self):
+        def check_mailto(link):
+            self.assertTrue(link is not None)
+            link_mo = re.match('mailto:list@example.com\?(.+)', link["href"])
+            self.assertTrue(link_mo is not None)
+            params = urlparse.parse_qs(link_mo.group(1))
+            self.assertEqual(params, {u'In-Reply-To': [u'msgid'],
+                                      u'Subject':     [u'Re: Dummy message']})
+        url = reverse('thread', args=["list@example.com", self.threadid])
+        # Authenticated request
+        response = self.client.get(url)
+        soup = BeautifulSoup(response.content)
+        self.assertEqual(len(soup.find_all("a", class_="reply-mailto")), 1)
+        self.assertTrue(soup.find("a", class_="reply") is not None)
+        link = soup.find(class_="reply-tools").find("a", class_="reply-mailto")
+        check_mailto(link)
+        # Anonymous request
+        self.client.logout()
+        response = self.client.get(url)
+        soup = BeautifulSoup(response.content)
+        self.assertEqual(len(soup.find_all("a", class_="reply-mailto")), 1)
+        link = soup.find("a", class_="reply")
+        self.assertTrue(link is not None)
+        self.assertTrue("reply-mailto" in link["class"])
+        check_mailto(link)

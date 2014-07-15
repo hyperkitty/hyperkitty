@@ -42,6 +42,9 @@ BuildRequires:  Django-south
 BuildRequires:  python-django
 BuildRequires:  python-django-south
 %endif
+# Unit tests only
+BuildRequires:  python-beautifulsoup4
+BuildRequires:  python-mock
 %if 0%{fedora} && 0%{fedora} < 20
 # Needed for Django < 1.6
 BuildRequires:  python-django-discover-runner
@@ -72,10 +75,6 @@ Requires:       Django-south
 %else
 Requires:       python-django >= 1.5
 Requires:       python-django-south
-%endif
-%if 0%{fedora} && 0%{fedora} < 20
-# Needed for Django < 1.6
-Requires:       python-django-discover-runner
 %endif
 
 
