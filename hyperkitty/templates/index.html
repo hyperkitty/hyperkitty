@@ -16,10 +16,10 @@
     <h2>{% trans 'Lists' %}</h2>
     <ul>
         <li>
-            {% if not sort_mode %}
-            <span class="active">{% trans 'All' %}</span>
+            {% if sort_mode == "name" %}
+            <span class="active">{% trans 'By name' %}</span>
             {% else %}
-            <a href="{% url 'root' %}">{% trans 'All' %}</a>
+            <a href="{% url 'root' %}?sort=name">{% trans 'By name' %}</a>
             {% endif %}
         </li>
         <li>

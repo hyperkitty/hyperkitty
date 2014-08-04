@@ -57,14 +57,19 @@ def index(request):
 
     # sorting
     sort_mode = request.GET.get('sort')
-    if sort_mode == "active":
+    if not sort_mode:
+        sort_mode = "popular"
+    if sort_mode == "name":
+        pass # already sorted by name
+    elif sort_mode == "active":
         lists.sort(key=lambda l: l.recent_threads_count, reverse=True)
     elif sort_mode == "popular":
         lists.sort(key=lambda l: l.recent_participants_count, reverse=True)
     elif sort_mode == "creation":
         lists.sort(key=lambda l: l.created_at, reverse=True)
     else:
-        sort_mode = None
+        return HttpResponse("Wrong search parameter",
+                            content_type="text/plain", status=500)
 
     context = {
         'view_name': 'all_lists',
