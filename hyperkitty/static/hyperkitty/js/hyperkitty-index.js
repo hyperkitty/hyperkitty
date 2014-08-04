@@ -42,15 +42,23 @@ function setup_index(url_template) {
             var list_name = $.trim($(this).find("a.list-name").text());
             var list_addr = $.trim($(this).find("a.list-address").text());
             var must_hide = false;
+            // name filter
             if (filter && list_name.indexOf(filter) === -1
                        && list_addr.indexOf(filter) === -1) {
                 must_hide = true;
             }
+            // class filter
             for (cls in hide_by_class) {
                 if ($(this).hasClass(cls) && hide_by_class[cls]) {
                     must_hide = true;
                 }
             }
+            // initial filter
+            var selected_initial = $(".initials input").val();
+            if (selected_initial && list_name[0].toLowerCase() != selected_initial) {
+                must_hide = true;
+            }
+            // now apply the filters
             if (must_hide) {
                 $(this).hide();
             } else {
@@ -69,11 +77,10 @@ function setup_index(url_template) {
 
     // Initials
     $(".initials").animate({ right: 0 }, {duration: 600});
-    // Override the scrolling because we have a fixed header
-    $(".initials a").click(function (e) {
+    $(".initials a").click(function(e) {
         e.preventDefault();
-        var target = $("a[name="+$(this).attr("href").substring(1)+"]");
-        $(window).scrollTop(target.offset().top - 70);
+        $(".initials input").val($(this).attr("href").substring(1));
+        filter_lists();
     });
 
     // Update list graphs
