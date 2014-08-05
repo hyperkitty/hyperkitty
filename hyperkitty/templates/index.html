@@ -149,12 +149,11 @@
 </div> <!-- middle column -->
 
 <!-- right bar -->
-{% if all_lists|length > 10 %}
+{% if all_lists|length >= 10 %}
 <div class="side-menu initials">
     <input type="hidden" name="initial" value="" />
     <h2>&#8628;</h2>
     <ul>
-        <li><a href="#">*</a></li>
         {% for letter in initials %}
         <li><a href="#{{ letter }}">{{ letter|upper }}</a></li>
         {% endfor %}

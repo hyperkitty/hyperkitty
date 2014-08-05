@@ -79,7 +79,15 @@ function setup_index(url_template) {
     $(".initials").animate({ right: 0 }, {duration: 600});
     $(".initials a").click(function(e) {
         e.preventDefault();
-        $(".initials input").val($(this).attr("href").substring(1));
+        var initial = $(this).attr("href").substring(1);
+        if ($(this).hasClass("active")) {
+            $(".initials input").val("");
+            $(this).removeClass("active");
+        } else {
+            $(".initials input").val(initial);
+            $(".initials a").removeClass("active");
+            $(this).addClass("active");
+        }
         filter_lists();
     });
 

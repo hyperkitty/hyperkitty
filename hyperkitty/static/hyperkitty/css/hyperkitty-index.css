@@ -75,10 +75,14 @@
 .all-lists .initials ul a {
     display: block;
     padding: 0.5em 1em;
+    outline: none;
 }
 .all-lists .initials ul a:hover {
     background-color: #ddd;
     text-decoration: none;
+}
+.all-lists .initials ul a.active {
+    background-color: #ddd;
 }
 
 
