@@ -89,7 +89,7 @@ HyperKitty in your web browser.
 Connecting to Mailman
 =====================
 
-To receive incoming emails from Mailman, you must add the follwing lines to
+To receive incoming emails from Mailman, you must add the following lines to
 ``mailman.cfg``::
 
     [archiver.hyperkitty]
@@ -98,7 +98,7 @@ To receive incoming emails from Mailman, you must add the follwing lines to
     configuration: /path/to/hyperkitty_standalone/settings.py
 
 .. warning::
-    The user that Mailman runs under (unually "mailman") must be able to read
+    The user that Mailman runs under (usually "mailman") must be able to read
     both the ``settings.py`` and ``settings_local.py`` files. Remember that
     those files also contain the database passwords, so make sure the
     permissions are correct. We suggest adding the mailman user to the apache
@@ -128,7 +128,7 @@ Upgrading
 
 To upgrade an existing installation of HyperKitty, you need to update the code
 base and run the commands that will update the database schemas. Before
-updating any of those databases, it is recommanded to shut down the webserver
+updating any of those databases, it is recommended to shut down the webserver
 which serves HyperKitty (Apache HTTPd for example).
 
 There are two main databases in HyperKitty. The one from KittyStore and the one
