@@ -16,11 +16,11 @@
     <h2>{% trans 'Lists' %}</h2>
     <ul>
         <li>
-            {% if sort_mode == "name" %}
-            <span class="active">{% trans 'By name' %}</span>
-            {% else %}
-            <a href="{% url 'root' %}?sort=name">{% trans 'By name' %}</a>
-            {% endif %}
+           {% if sort_mode == "popular" %}
+           <span class="active">{% trans 'Most popular' %}</span>
+           {% else %}
+            <a href="{% url 'root' %}?sort=popular">{% trans 'Most popular' %}</a>
+           {% endif %}
         </li>
         <li>
            {% if sort_mode == "active" %}
@@ -30,11 +30,11 @@
            {% endif %}
         </li>
         <li>
-           {% if sort_mode == "popular" %}
-           <span class="active">{% trans 'Most popular' %}</span>
-           {% else %}
-            <a href="{% url 'root' %}?sort=popular">{% trans 'Most popular' %}</a>
-           {% endif %}
+            {% if sort_mode == "name" %}
+            <span class="active">{% trans 'By name' %}</span>
+            {% else %}
+            <a href="{% url 'root' %}?sort=name">{% trans 'By name' %}</a>
+            {% endif %}
         </li>
         <li>
            {% if sort_mode == "creation" %}
@@ -57,13 +57,6 @@
 
 <h1>
     {% trans 'Available lists' %}
-    {% if sort_mode == 'active' %}
-        <small>({% trans 'most active first' %})</small>
-    {% elif sort_mode == 'popular' %}
-        <small>({% trans 'most popular first' %})</small>
-    {% elif sort_mode == 'creation' %}
-        <small>({% trans 'newest first' %})</small>
-    {% endif %}
 </h1>
 
 {% if all_lists %}
