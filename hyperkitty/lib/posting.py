@@ -64,3 +64,10 @@ def post_to_list(request, mlist, subject, message, headers={},
         for attach in attachments:
             msg.attach(attach.name, attach.read())
     msg.send()
+
+
+def reply_subject(subject):
+    if not subject.lower().startswith("re:"):
+        return u"Re: %s" % subject
+    else:
+        return subject

@@ -33,7 +33,7 @@ from django.contrib.auth.decorators import login_required
 
 from hyperkitty.lib import get_store
 from hyperkitty.lib.view_helpers import get_months
-from hyperkitty.lib.posting import post_to_list, PostingFailed
+from hyperkitty.lib.posting import post_to_list, PostingFailed, reply_subject
 from hyperkitty.lib.mailman import check_mlist_private
 from forms import ReplyForm, PostForm
 
@@ -143,9 +143,7 @@ def reply(request, mlist_fqdn, message_id_hash):
         headers = {}
     else:
         message = store.get_message_by_hash_from_list(mlist.name, message_id_hash)
-        subject = message.subject
-        if not message.subject.lower().startswith("re:"):
-            subject = "Re: %s" % subject
+        subject = reply_subject(message.subject)
         headers = {"In-Reply-To": "<%s>" % message.message_id,
                    "References": "<%s>" % message.message_id, }
     try:

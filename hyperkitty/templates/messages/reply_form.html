@@ -1,6 +1,8 @@
 {% load url from future %}
+{% load hk_generic %}
 
-    <a class="reply {% if not user.is_authenticated %}disabled" title="You must be logged-in to reply.{% endif %}" href="#">
+    {% if user.is_authenticated %}
+    <a class="reply" href="#">
         <i class="fa fa-reply"></i>
         Reply
     </a>
@@ -11,6 +13,9 @@
             <div class="reply-tools">
                 <a class="btn quote" href="#">Quote</a>
                 <label>{{ reply_form.newthread }} Create new thread</label>
+                <a class="reply-mailto"
+                   href="mailto:{{ mlist.name }}?Subject={{ email.subject|reply_subject|urlencode }}&amp;In-Reply-To={{ email.message_id|urlencode }}"
+                   >Use email software</a>
             </div>
             {{ reply_form.non_field_errors }}
             {% for field in reply_form %}
@@ -25,3 +30,10 @@
             </p>
         </form>
     </div>
+    {% else %}
+    <a class="reply reply-mailto" title="Login to reply online"
+       href="mailto:{{ mlist.name }}?Subject={{ email.subject|reply_subject|urlencode }}&amp;In-Reply-To={{ email.message_id|urlencode }}">
+        <i class="fa fa-reply"></i>
+        Reply
+    </a>
+    {% endif %}

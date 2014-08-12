@@ -195,9 +195,13 @@
         a {
             display: block;
             padding: 0.25em 1em;
+            outline: none;
             &:hover {
                 background-color: @linkHoverColor;
                 text-decoration: none;
+            }
+            &:active {
+                background-color: @linkHoverColor;
             }
         }
     }

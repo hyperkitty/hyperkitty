@@ -16,11 +16,11 @@
     <nav class="right hidden-tn hidden-xs col-sm-6 col-sm-push-6 col-md-4 col-md-push-8">
         <ul class="list-unstyled list-inline">
             <li>
-                {% if not sort_mode %}
-                <span class="active">{% trans 'All' %}</span>
-                {% else %}
-                <a href="{% url 'root' %}">{% trans 'All' %}</a>
-                {% endif %}
+               {% if sort_mode == "popular" %}
+               <span class="active">{% trans 'Most popular' %}</span>
+               {% else %}
+                <a href="{% url 'root' %}?sort=popular">{% trans 'Most popular' %}</a>
+               {% endif %}
             </li>
             <li>
                {% if sort_mode == "active" %}
@@ -30,10 +30,10 @@
                {% endif %}
             </li>
             <li>
-               {% if sort_mode == "popular" %}
-               <span class="active">{% trans 'Most popular' %}</span>
+               {% if sort_mode == "name" %}
+               <span class="active">{% trans 'By name' %}</span>
                {% else %}
-                <a href="{% url 'root' %}?sort=popular">{% trans 'Most popular' %}</a>
+               <a href="{% url 'root' %}?sort=name">{% trans 'By name' %}</a>
                {% endif %}
             </li>
             <li>
@@ -48,32 +48,19 @@
     <h1 class="col-tn-12 col-xs-5">
         {% trans 'Available lists' %}
     </h1>
-    <div class="sort-type col-tn-7 col-xs-4 hidden-sm hidden-md hidden-lg">
-        <h1>
-        {% if sort_mode == 'active' %}
-            <small>({% trans 'most active first' %})</small>
-        {% elif sort_mode == 'popular' %}
-            <small>({% trans 'most popular first' %})</small>
-        {% elif sort_mode == 'creation' %}
-            <small>({% trans 'newest first' %})</small>
-        {% else %}
-            <small>({% trans 'showing all' %})</small>
-        {% endif %}
-        </h1>
-    </div>
     <div class="btn-group pull-right col-tn-5 col-xs-3 hidden-sm hidden-md hidden-lg">
         <button type="button" class="btn btn-sm btn-default dropdown-toggle pull-right" data-toggle="dropdown">
             {% trans 'Sort by' %} <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu">
             <li>
-                <a href="{% url 'root' %}">{% trans 'All' %}</a>
+                <a href="{% url 'root' %}?sort=popular">{% trans 'Most popular' %}</a>
             </li>
             <li>
                 <a href="{% url 'root' %}?sort=active">{% trans 'Most active' %}</a>
             </li>
             <li>
-                <a href="{% url 'root' %}?sort=popular">{% trans 'Most popular' %}</a>
+                <a href="{% url 'root' %}?sort=name">{% trans 'By name' %}</a>
             </li>
             <li>
                 <a href="{% url 'root' %}?sort=creation">{% trans 'Newest' %}</a>
@@ -259,8 +246,9 @@
 
     </div> <!-- /container for table -->
 
-    {% if all_lists|length > 10 %}
+    {% if all_lists|length >= 10 %}
     <div class="side-menu initials">
+        <input type="hidden" name="initial" value="" />
         <h2>&#8628;</h2>
         <ul class="list-unstyled">
             {% for letter in initials %}
