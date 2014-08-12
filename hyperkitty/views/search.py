@@ -118,7 +118,7 @@ def search(request, page=1):
     query_result = store.search(query, mlist_fqdn, page_num, results_per_page,
                                 sortedby=sortedby, reverse=reverse)
     total = query_result["total"]
-    messages = query_result["results"]
+    messages = [ m for m in query_result["results"] if m is not None ]
     for message in messages:
         message.myvote = message.get_vote_by_user_id(
                 request.session.get("user_id"))

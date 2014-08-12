@@ -49,18 +49,11 @@ def _get_thread_replies(request, thread, offset=1, limit=None):
     if not thread:
         raise Http404
 
-    if "sort" in request.GET and request.GET["sort"] == "date":
-        sort_mode = "date"
-        emails = thread.emails
-    else:
-        sort_mode = "thread"
-        emails = thread.emails_by_reply
+    sort_mode = request.GET.get("sort", "thread")
+    if sort_mode not in ("date", "thread"):
+        raise SuspiciousOperation
 
-    # XXX: Storm-specific
-    emails = emails.find()
-    emails.config(offset=offset, limit=limit)
-
-    emails = list(emails)
+    emails = thread.get_emails(sort=sort_mode, offset=offset, limit=limit)
     for email in emails:
         # Extract all the votes for this message
         email.myvote = email.get_vote_by_user_id(request.session.get("user_id"))
@@ -129,7 +122,6 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         else:
             unread_count = 0
     else:
-        # XXX: Storm-specific
         unread_count = thread.replies_after(last_view).count()
 
     # Flash messages

@@ -208,7 +208,6 @@ def last_views(request):
             continue
         if thread.date_active.replace(tzinfo=utc) > last_view.view_date:
             # small optimization: only query the replies if necessary
-            # XXX: Storm-specific (count method)
             thread.unread = thread.replies_after(last_view.view_date).count()
         else:
             thread.unread = 0
