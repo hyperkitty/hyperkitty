@@ -17,7 +17,10 @@
 # HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Author: Aamir Khan <syst3m.w0rm@gmail.com>
+# Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
+
+from __future__ import absolute_import, print_function, unicode_literals
 
 import datetime
 from traceback import print_exc, format_exc

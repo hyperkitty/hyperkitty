@@ -22,40 +22,6 @@
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Page
 from django.utils import six
-from storm.store import ResultSet
-
-
-class StormPaginator(Paginator):
-
-    def page(self, number):
-        "Returns a Page object for the given 1-based page number."
-        number = self.validate_number(number)
-        bottom = (number - 1) * self.per_page
-        top = bottom + self.per_page
-        if top + self.orphans >= self.count:
-            top = self.count
-        #return StormPage(self.object_list[bottom:top], number, self)
-        return Page(list(self.object_list[bottom:top]), number, self)
-
-class StormPage(Page):
-
-    def __len__(self):
-        return self.paginator.per_page
-
-    def __getitem__(self, index):
-        if not isinstance(index, (slice,) + six.integer_types):
-            raise TypeError
-        # The object_list is converted to a list so that if it was a QuerySet
-        # it won't be a database hit per __getitem__.
-        return list(self.object_list)[index]
-        #return self.object_list[index]
-
-    def __iter__(self):
-        for obj in self.object_list:
-            yield obj
-
-    def __contains__(self, item):
-        return self.object_list.__contains__(item)
 
 
 def paginate(objects, page_num, max_page_range=10, paginator=None):
@@ -65,10 +31,7 @@ def paginate(objects, page_num, max_page_range=10, paginator=None):
         page_num = 1
     if paginator is None:
         # else use the provided instance
-        if isinstance(objects, ResultSet):
-            paginator = StormPaginator(objects, 10)
-        else:
-            paginator = Paginator(objects, 10)
+        paginator = Paginator(objects, 10)
     try:
         objects = paginator.page(page_num)
     except PageNotAnInteger:
