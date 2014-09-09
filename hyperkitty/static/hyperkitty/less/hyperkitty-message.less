@@ -48,8 +48,13 @@
 // First email of the thread
 .email-header {
     margin-bottom: 1em;
+    display: table;
+    width: 100%;
     //display: inline-block;
 
+    .gravatar-wrapper {
+        float: left;
+    }
     .gravatar {
         margin-bottom: 2px;
         display: inline-block
@@ -102,6 +107,9 @@
 }
 
 .email-body {
+    display: table;
+    width: 100%;
+    clear: both;
     white-space: pre-line;
     word-wrap: break-word;
 
@@ -130,7 +138,7 @@
     .likestatus + span {
         padding-right: 1em;
     }
-    
+
 }
 .email-first .email-info {
     padding: 0 0 20px 0;

@@ -7,8 +7,8 @@
 {% is_message_new email.date as is_new %}
 <div class="email{% if unfolded %} email-first{% endif %}{% if is_new %} unread{% endif %}">
 
-    <div id="{{email.message_id_hash}}" class="email-header row">
-        <div class="gravatar-wrapper col-md-10">
+    <div id="{{email.message_id_hash}}" class="email-header">
+        <div class="gravatar-wrapper">
             <div class="gravatar">
                 {% gravatar email.sender_email 40 %}
             </div>
@@ -29,11 +29,11 @@
             </div>
         </div>
         {% if is_new %}
-        <div class="right col-md-2">
+        <div class="right">
             <i class="fa fa-envelope" title="Unread"></i>
         </div>
         {% endif %}
-        <div class="email-date col-md-10">
+        <div class="email-date right">
             {% ifchanged %}
             <span class="date hidden-tn">
                 {{email|get_date|date:"l, j F"}}
@@ -51,16 +51,16 @@
             <div class="time">
                 <span title="Sender's time: {% localtime off %}{{email|get_date|date:"D, j M H:i:s e"}}{% endlocaltime %}">{{email|get_date|date:"H:i:s"}}</span>
             </div>
-            
+
         </div>
-        <span class="messagelink right col-xs-2">
+        <div class="messagelink right">
             (<a href="{% url 'message_index' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash %}"
                 title="{{ email.subject }}">permalink</a>)
-        </span>
+        </div>
     </div> <!-- /email-header: gravatar, author-info, date, peramlink -->
 
-    <div class="email-body row">
-        <span class="col-md-12">{{ email.content|snip_quoted|snip_pgp|wordwrap:90|urlizetrunc:76|escapeemail }}</span>
+    <div class="email-body">
+        {{ email.content|snip_quoted|snip_pgp|wordwrap:90|urlizetrunc:76|escapeemail }}
     </div>
 
     {% if unfolded and email.attachments|count %}
