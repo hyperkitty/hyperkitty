@@ -84,33 +84,11 @@
     <div class="discussions pull-right col-tn-12 col-sm-8">
         <section id="flagged">
             <h3>Discussions You've Flagged ({{ flagged_threads|length }}) <b class="caret"></b></h3>
-            <div class="thread-list">
-                {% for thread in flagged_threads|slice:":5" %}
-                    {% include "threads/summary_thread.html"  %}
-                {% empty %}
-                    <p>You have not flagged any discussions (yet).</p>
-                {% endfor %}
-                {% if flagged_threads|length > 5 %}
-                    <div class="bordered more-threads">
-                        <a href="">More...</a>
-                    </div>
-                {% endif %}
-            </div>
+            {% include "fragments/overview_threads.html" with threads=flagged_threads empty="You have not flagged any discussions (yet)." %}
         </section>
         <section id="posted-to">
             <h3>Discussions You've Posted to ({{ threads_posted_to|length }}) <b class="caret"></b></h3>
-            <div class="thread-list">
-                {% for thread in threads_posted_to|slice:":5" %}
-                    {% include "threads/summary_thread.html"  %}
-                {% empty %}
-                    <p>You have not posted to this list (yet).</p>
-                {% endfor %}
-                {% if threads_posted_to|length > 5 %}
-                    <div class="bordered more-threads">
-                        <a href="">More...</a>
-                    </div>
-                {% endif %}
-            </div>
+            {% include "fragments/overview_threads.html" with threads=threads_posted_to empty="You have not posted to this list (yet)." %}
         </section>
     </div> <!-- /home, personalized threads lists -->
     {% endif %}
@@ -121,14 +99,7 @@
         </div>
         <section id="most-recent">
             <h3>Recently active discussions</h3>
-            {% for thread in most_active_threads|slice:":5" %}
-                {% include "threads/summary_thread.html"  %}
-            {% endfor %}
-            {% if most_active_threads|length > 5 %}
-                <div class="bordered more-threads">
-                    <a href="">More...</a>
-                </div>
-            {% endif %}
+            {% include "fragments/overview_threads.html" with threads=most_active_threads empty="No discussions this month (yet)." %}
         </section>
 
         <div class="anchor-link">
@@ -136,16 +107,7 @@
         </div>
         <section id="most-popular">
             <h3>Most popular discussions</h3>
-            {% for thread in pop_threads|slice:":5" %}
-                {% include "threads/summary_thread.html" with counter=forloop.counter %}
-            {% empty %}
-                <p>No vote has been cast this month (yet).</p>
-            {% endfor %}
-            {% if pop_threads|length > 5 %}
-                <div class="bordered more-threads">
-                    <a href="">More...</a>
-                </div>
-            {% endif %}
+            {% include "fragments/overview_threads.html" with threads=pop_threads empty="No vote has been cast this month (yet)." %}
         </section>
 
         <div class="anchor-link">
@@ -153,14 +115,7 @@
         </div>
         <section id="most-active">
             <h3>Most active discussions</h3>
-            {% for thread in top_threads|slice:":5" %}
-                {% include "threads/summary_thread.html" with counter=forloop.counter %}
-            {% endfor %}
-            {% if top_threads|length > 5 %}
-                <div class="bordered more-threads">
-                    <a href="">More...</a>
-                </div>
-            {% endif %}
+            {% include "fragments/overview_threads.html" with threads=top_threads empty="No discussions this month (yet)." %}
         </section>
 
         <div class="anchor-link">
@@ -274,45 +229,9 @@
 {% block additionaljs %}
 
 <script type="text/javascript" >
-    $(window).resize(function() {
-        var chartDivWidth =  $(".stats .chart").width();
-        ajax_chart(".stats .chart", "{% url 'list_recent_activity' mlist.name %}", {width: chartDivWidth});
+    $(document).ready(function() {
+        setup_overview("{% url 'list_recent_activity' mlist.name %}");
     });
-
-    $(function() {
-        var chartDivWidth =  $(".stats .chart").width();
-        ajax_chart(".stats .chart", "{% url 'list_recent_activity' mlist.name %}", {width: chartDivWidth});
-
-        // Back to top link
-        setup_back_to_top_link(220); // set offset to 220 for link to appear
-        
-        // submit search on enter (only add if there's a nav-tab's search box)
-        if ($('ul.nav-tabs').length > 0) {
-            $(document).ready(function() {
-                $('#nav-tab-search').keydown(function(e) {
-                    // if enter is pressed
-                    if (e.keyCode == 13) {
-                        $(this).closest('form').submit();
-                        return false;
-                     }
-                });
-            });
-        }
-    });
-
-    function collapsibleDivs() {
-        if (!$(this).next('.thread-list').is(':visible')) {
-            $(this).children('.caret').hide();
-            $(this).next('.thread-list').slideDown();
-        }
-        else {
-            $(this).children('.caret').show();
-            $(this).next('.thread-list').slideUp();
-        }
-    }
-
-    $('#flagged h3').click(collapsibleDivs);
-    $('#posted-to h3').click(collapsibleDivs);
 </script>
 
 {% endblock %}

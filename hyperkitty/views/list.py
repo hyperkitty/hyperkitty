@@ -197,24 +197,25 @@ def overview(request, mlist_fqdn=None):
             favorites = Favorite.objects.filter(list_address=mlist.name, user=request.user)
         except Favorite.DoesNotExist:
             favorites = []
-        # threads_posted_to = store.get_messages_by_user_id(request.session.get("user_id"), mlist_fqdn)
-        threads_posted_to = []
+        threads_posted_to = store.get_messages_by_user_id(request.user.user_id, mlist.name)
     else:
         favorites = []
         threads_posted_to = []
+    favorites = [ store.get_thread(mlist.name, f.threadid) for f in favorites[:20] ]
+    favorites = [ thread for thread in favorites if thread is not None ] # cleanup
 
     context = {
         'view_name': 'overview',
         'mlist' : mlist,
-        'top_threads': top_threads[:6],
-        'most_active_threads': active_threads[:6],
+        'top_threads': top_threads[:20],
+        'most_active_threads': active_threads[:20],
         'top_author': authors,
         'top_posters': top_posters,
-        'pop_threads': pop_threads[:6],
+        'pop_threads': pop_threads[:20],
         'threads_by_category': threads_by_category,
         'months_list': get_months(store, mlist.name),
-        'flagged_threads': favorites[:6],
-        'threads_posted_to': threads_posted_to[:6],
+        'flagged_threads': favorites,
+        'threads_posted_to': threads_posted_to[:20],
     }
     return render(request, "overview.html", context)
 
