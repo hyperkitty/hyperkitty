@@ -83,11 +83,11 @@
     {% if user.is_authenticated %}
     <div class="discussions pull-right col-tn-12 col-sm-8">
         <section id="flagged">
-            <h3>Discussions You've Flagged ({{ flagged_threads|length }}) <b class="caret"></b></h3>
+            <h3>Discussions You've Flagged ({{ flagged_threads|length }}) <i class="fa fa-caret-right"></i></h3>
             {% include "fragments/overview_threads.html" with threads=flagged_threads empty="You have not flagged any discussions (yet)." %}
         </section>
         <section id="posted-to">
-            <h3>Discussions You've Posted to ({{ threads_posted_to|length }}) <b class="caret"></b></h3>
+            <h3>Discussions You've Posted to ({{ threads_posted_to|length }}) <i class="fa fa-caret-right"></i></h3>
             {% include "fragments/overview_threads.html" with threads=threads_posted_to empty="You have not posted to this list (yet)." %}
         </section>
     </div> <!-- /home, personalized threads lists -->

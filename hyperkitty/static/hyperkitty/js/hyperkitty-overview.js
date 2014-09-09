@@ -45,14 +45,19 @@ function setup_overview(recent_activity_url) {
         });
     }
 
+    // Collapsible thread lists
     function collapsibleDivs() {
         if (!$(this).next('.thread-list').is(':visible')) {
-            $(this).children('.caret').hide();
+            $(this).children('.fa-caret-right')
+                   .removeClass("fa-caret-right")
+                   .addClass("fa-caret-down");
             $(this).next('.thread-list').slideDown();
         }
         else {
-            $(this).children('.caret').show();
             $(this).next('.thread-list').slideUp();
+            $(this).children('.fa-caret-down')
+                   .removeClass("fa-caret-down")
+                   .addClass("fa-caret-right");
         }
     }
     $('#flagged h3').click(collapsibleDivs);
@@ -63,7 +68,7 @@ function setup_overview(recent_activity_url) {
         e.preventDefault();
         var more_block = $(this).parent('.more-threads');
         $(this).nextAll('.thread').slice(0, 5)
-            .hide().insertBefore(more_block).slideDown();
+               .hide().insertBefore(more_block).slideDown();
         if (more_block.find(".thread").length === 0) {
             more_block.remove();
         }

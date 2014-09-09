@@ -197,11 +197,11 @@ def overview(request, mlist_fqdn=None):
             favorites = Favorite.objects.filter(list_address=mlist.name, user=request.user)
         except Favorite.DoesNotExist:
             favorites = []
-        threads_posted_to = store.get_messages_by_user_id(request.user.user_id, mlist.name)
+        threads_posted_to = list(store.get_threads_user_posted_to(request.user.id, mlist.name))
     else:
         favorites = []
         threads_posted_to = []
-    favorites = [ store.get_thread(mlist.name, f.threadid) for f in favorites[:20] ]
+    favorites = [ store.get_thread(mlist.name, f.threadid) for f in favorites ]
     favorites = [ thread for thread in favorites if thread is not None ] # cleanup
 
     context = {
@@ -215,7 +215,7 @@ def overview(request, mlist_fqdn=None):
         'threads_by_category': threads_by_category,
         'months_list': get_months(store, mlist.name),
         'flagged_threads': favorites,
-        'threads_posted_to': threads_posted_to[:20],
+        'threads_posted_to': threads_posted_to,
     }
     return render(request, "overview.html", context)
 
