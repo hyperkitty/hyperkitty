@@ -130,13 +130,13 @@ class ReplyForm(forms.Form):
     subject = forms.CharField(label="", required=False,
             widget=forms.TextInput(attrs={ 'placeholder': 'New subject','class': 'form-control'}))
     message = forms.CharField(label="", widget=forms.Textarea(attrs={ 'class': 'form-control' }))
-    attachment = forms.FileField(required=False, widget=AttachmentFileInput)
+    #attachment = forms.FileField(required=False, widget=AttachmentFileInput)
 
 class PostForm(forms.Form):
     subject = forms.CharField()
     message = forms.CharField(widget=forms.Textarea)
-    attachment = forms.FileField(required=False, label="",
-                                 widget=AttachmentFileInput)
+    #attachment = forms.FileField(required=False, label="",
+    #                             widget=AttachmentFileInput)
 
 class CategoryForm(forms.Form):
     category = forms.ChoiceField(label="", required=False)
