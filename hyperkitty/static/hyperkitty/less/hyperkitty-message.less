@@ -138,8 +138,57 @@
     .likestatus + span {
         padding-right: 1em;
     }
+    div.attachments {
+        display: inline;
+        margin-left: 1em;
+        .attachments-list {
+            margin-bottom: 0;
+        }
+    }
+
+    .reply-form {
+        display: none;
+        .reply-tools {
+            margin-top: 0.7em;
+            .quote {
+                margin-bottom: 3px;
+                padding-left: 0;
+            }
+            label {
+                font-size: 90%;
+            }
+            .reply-mailto {
+                margin-left: 1em;
+            }
+        }
+        p { margin: 0; }
+        #id_subject {
+            margin-bottom: 0.5em;
+        }
+        #id_message {
+            margin-bottom: 0.25em;
+        }
+        p.buttons {
+            margin-top: 1em;
+        }
+    }
+    .reply-result {
+        text-align: center;
+        .alert {
+            display: inline-block;
+        }
+        .alert-success {
+            margin-bottom: 0;
+        }
+        .alert-error {
+            white-space: pre;
+            text-align: left;
+        }
+    }
 
 }
+
+
 .email-first .email-info {
     padding: 0 0 20px 0;
     border-bottom: 1px solid @rowBorderColor;

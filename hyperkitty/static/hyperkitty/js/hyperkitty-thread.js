@@ -158,14 +158,7 @@ function setup_emails_list(baseElem) {
         baseElem = document;
     }
     // Attachements
-    $(baseElem).find(".email-info .attachments a.attachments").each(function() {
-        var att_list = $(this).next("ul.attachments-list");
-        var pos = $(this).position();
-        att_list.css("left", pos.left);
-        $(this).click(function() {
-            att_list.slideToggle('fast');
-        });
-    });
+    $(baseElem).find(".email-info .attachments-list a").tooltip({placement: "right"});
     // Quotes
     $(baseElem).find('div.email-body .quoted-switch a')
         .click(function(e) {
@@ -192,7 +185,7 @@ function setup_replies(baseElem) {
     $(baseElem).find("a.reply").tooltip().click(function(e) {
         if ($(this).hasClass("reply-mailto")) { return; }
         e.preventDefault();
-        $(this).next().slideToggle("fast", function() {
+        $(this).parent(".email-info").find(".reply-form").slideToggle("fast", function() {
             if ($(this).css("display") === "block") {
                 $(this).find("textarea").focus();
             }
