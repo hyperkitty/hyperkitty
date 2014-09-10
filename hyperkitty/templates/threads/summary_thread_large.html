@@ -4,22 +4,23 @@
 {% load storm %}
 
         <div class="thread{% if thread.unread %} unread{% endif %}">
-            <div class="{% if thread.favorite %}saved{% else %}notsaved{% endif %}">
-                <span class="thread-title">
-                    <a name="{{thread.thread_id}}"
-                       href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
-                        >
-                        {% if thread.unread %}
-                        <i class="fa fa-envelope" title="New messages in this thread"></i>
-                        {% endif %}
-                        {{ thread.starting_email.subject|strip_subject:mlist }}
-                    </a>
-                </span>
-                <span class="thread-date"
-                      title="{{ thread|get_date|date:"l, j F Y H:i:s" }}">
-                    {{ thread|get_date|timesince }}
-                </span>
-            </div>
+            <span class="thread-title">
+                <a name="{{thread.thread_id}}"
+                   href="{% url 'thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
+                    >
+                    {% if thread.favorite %}
+                    <i class="fa fa-star saved" title="Favorite"></i>
+                    {% endif %}
+                    {% if thread.unread %}
+                    <i class="fa fa-envelope" title="New messages in this thread"></i>
+                    {% endif %}
+                    {{ thread.starting_email.subject|strip_subject:mlist }}
+                </a>
+            </span>
+            <span class="thread-date"
+                  title="{{ thread|get_date|date:"l, j F Y H:i:s" }}">
+                {{ thread|get_date|timesince }}
+            </span>
             <div class="thread-info row">
                 <div class="thread-content col-tn-12 col-xs-10 col-lg-11">
                     <div class="thread-email">

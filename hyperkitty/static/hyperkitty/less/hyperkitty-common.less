@@ -96,21 +96,13 @@ h1 {
     }
 }
 
-//=== Favorites ==/
-.icon-container {
-    padding-left: 20px;
-    background: no-repeat scroll left center;
+// Favorites
+.saved .fa-star, .fa-star.saved {
+    color: #ffdd00;
 }
-
-.saved {
-    &:extend(.icon-container);
-    background-image: url("../img/saved.png");
+.notsaved .fa-star, .fa-star.notsaved {
+    color: #999;
 }
-.notsaved {
-    &:extend(.icon-container);
-    background-image: url("../img/notsaved.png");
-}
-
 
 //=== Gravatar ==/
 .gravatar {
