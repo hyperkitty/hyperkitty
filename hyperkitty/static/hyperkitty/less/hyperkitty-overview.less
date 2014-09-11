@@ -123,12 +123,19 @@
         }
         li {
             display: block;
-            padding-left: 0.75em;
+            font-size: small;
+            padding-left: 0;
         }
     }
     .duration-text {
         margin-top: 0.5em;
         margin-bottom: 0.25em;
+    }
+}
+@media (min-width: @screen-lg-min) {
+    .overview .stats ul.list-stats li {
+        display: inline;
+        margin-right: 1em;
     }
 }
 
