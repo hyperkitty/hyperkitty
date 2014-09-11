@@ -84,13 +84,16 @@
     display: none;
 }
 .all-lists table.lists {
+
+    border-collapse: separate;
+    border-spacing: 0 0.5em;
+
     th {
         &:extend(.small-caps);
         border-bottom: none;
     }
 
     tr.list {
-        &:extend(.bordered);
         &:hover {
             &:extend(.row-hover);
             a {
@@ -102,14 +105,17 @@
         }
     }
 
-    tr.spacer td {
-        height: 0.5em;
-        padding: 0;
-    }
-
     td {
         vertical-align: middle;
         padding: 5px 8px;
+        border-top: 1px solid @rowBorderColor;
+        border-bottom: 1px solid @rowBorderColor;
+    }
+    td:first-child {
+        border-left: 1px solid @rowBorderColor;
+    }
+    td:last-child {
+        border-right: 1px solid @rowBorderColor;
     }
 
     .list-name {
