@@ -18,7 +18,9 @@
 #
 #
 
-from django.http import Http404
+from django.shortcuts import render
 
 def categories(request):
-    raise Http404("This feature has not been implemented yet.")
+    return render(request, "errors/notimplemented.html", {
+        "mockup": "http://blog.linuxgrrl.com/2013/09/11/hyperkitty-categories/",
+    })

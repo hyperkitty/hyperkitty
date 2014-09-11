@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load url from future %}
+{% load gravatar %}
+{% load hk_generic %}
+{% load storm %}
+
+
+{% block title %}
+Not implemented yet - {{ app_name|title }}
+{% endblock %}
+
+{% block content %}
+
+<h1>Not implemented</h1>
+<p class="">
+    This feature has not been implemented yet, sorry.
+    {% if mockup %}
+    It will <a class="" href="{{ mockup }}">look like this</a>.
+    {% endif %}
+</p>
+
+{% endblock %}
+

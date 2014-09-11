@@ -18,10 +18,9 @@
 #
 #
 
-from django.http import Http404
+from django.shortcuts import render
 
 def users(request):
-    raise Http404("This feature has not been implemented yet.")
-
-def public_profile(request, user_id):
-    raise Http404("This feature has not been implemented yet.")
+    return render(request, "errors/notimplemented.html", {
+        "mockup": "http://blog.linuxgrrl.com/2013/08/20/hyperkitty-user-profile-idea/",
+    })
