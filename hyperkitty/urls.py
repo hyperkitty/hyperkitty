@@ -39,7 +39,7 @@ urlpatterns = patterns('hyperkitty.views',
     # Index
     url(r'^/?$', 'index.index', name='root'),
 
-    # Account
+    # Account (logged-in user)
     url(r'^accounts/login/$', 'accounts.login_view', {'template_name': 'login.html', 'SSL': True}, name='user_login'),
     url(r'^accounts/logout/$', logout_view, {'next_page': '/'}, name='user_logout'),
     url(r'^accounts/profile/$', 'accounts.user_profile', name='user_profile'),
@@ -48,12 +48,10 @@ urlpatterns = patterns('hyperkitty.views',
     url(r'^accounts/profile/subscriptions$', 'accounts.subscriptions', name='user_subscriptions'),
     url(r'^accounts/register/$', 'accounts.user_registration', {'SSL': True}, name='user_registration'),
 
-    # User (logged in user)
-    url(r'^user/(?P<user_id>[^/]+)/$', 'accounts.public_profile', name='public_user_profile'),
-    url(r'^user/(?P<user_id>[^/]+)/posts$', 'accounts.posts', name='user_posts'),
-    # Users (other users)
+    # Users
     url(r'^users/$', 'users.users', name='users_overview'),
-    url(r'^users/(?P<user_id>[^/]+)/$', 'users.public_profile', name='users_profile'),
+    url(r'^users/(?P<user_id>[^/]+)/$', 'accounts.public_profile', name='public_user_profile'),
+    url(r'^users/(?P<user_id>[^/]+)/posts$', 'accounts.posts', name='user_posts'),
 
     # List archives and overview
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/(?P<year>\d{4})/(?P<month>\d\d?)/(?P<day>\d\d?)/$',
