@@ -86,7 +86,8 @@ function setup_index(url_template) {
         // fire the above change event after every letter
         $(this).change();
     }).focus();
-    
+    filter_lists(); // Filter on page load
+
     // Back to top link
     setup_back_to_top_link(220); // set offset to 220 for link to appear
 
