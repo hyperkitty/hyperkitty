@@ -27,25 +27,20 @@ BuildRequires:  django-gravatar2
 BuildRequires:  django-rest-framework >= 2.2.0
 BuildRequires:  django-social-auth >= 0.7.1
 BuildRequires:  django-crispy-forms
-BuildRequires:  django-assets
+BuildRequires:  python-django-compressor
 BuildRequires:  python-rjsmin
-BuildRequires:  python-cssmin
+BuildRequires:  nodejs-less
 BuildRequires:  python-mailman-client
 BuildRequires:  python-robot-detection
 BuildRequires:  pytz
 BuildRequires:  django-paintstore
 BuildRequires:  django-browserid
-%if 0%{fedora} && 0%{fedora} < 18
-BuildRequires:  Django
-BuildRequires:  Django-south
-%else
 BuildRequires:  python-django
 BuildRequires:  python-django-south
-%endif
 # Unit tests only
 BuildRequires:  python-beautifulsoup4
 BuildRequires:  python-mock
-%if 0%{fedora} && 0%{fedora} < 20
+%if 0%{?fedora} && 0%{?fedora} < 20
 # Needed for Django < 1.6
 BuildRequires:  python-django-discover-runner
 %endif
@@ -61,20 +56,19 @@ Requires:       django-rest-framework >= 2.2.0
 Requires:       mailman3
 Requires:       kittystore
 Requires:       django-crispy-forms
-Requires:       django-assets
+Requires:       python-django-compressor
 Requires:       python-rjsmin
-Requires:       python-cssmin
+Requires:       nodejs-less
 Requires:       python-mailman-client
 Requires:       python-robot-detection
 Requires:       pytz
 Requires:       django-paintstore
 Requires:       django-browserid >= 0.10.1
-%if 0%{fedora} && 0%{fedora} < 18
-Requires:       Django >= 1.5
-Requires:       Django-south
-%else
 Requires:       python-django >= 1.5
 Requires:       python-django-south
+%if 0%{?fedora} && 0%{?fedora} < 20
+# Needed for Django < 1.6
+Requires:       python-django-discover-runner
 %endif
 
 
@@ -184,19 +178,17 @@ done
 
 
 %check
-touch hyperkitty_standalone/__init__.py
-%{__python} hyperkitty_standalone/manage.py test --pythonpath=`pwd` hyperkitty
-rm -f hyperkitty_standalone/__init__.py
+PYTHONPATH=`pwd`:`pwd`/hyperkitty_standalone %{_bindir}/django-admin test --settings=settings hyperkitty
 
 
 %post
 # Build the static files cache
-%{__bindir}/django-admin collectstatic \
-    --pythonpath %{_sysconfdir}/%{name}/sites/default \
-    --settings settings --noinput &>/dev/null || :
-%{__bindir}/django-admin compress \
-    --pythonpath %{_sysconfdir}/%{name}/sites/default \
-    --settings settings &>/dev/null || :
+%{_bindir}/django-admin collectstatic \
+    --pythonpath=%{_sysconfdir}/%{name}/sites/default \
+    --settings=settings --noinput &>/dev/null || :
+%{_bindir}/django-admin compress \
+    --pythonpath=%{_sysconfdir}/%{name}/sites/default \
+    --settings=settings &>/dev/null || :
 
 
 %post selinux
