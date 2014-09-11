@@ -68,7 +68,7 @@
         </ul>
     </div>
 </div> <!--/row, for title & header -->
-    
+
 <div class="row filter-lists">
     <div class="col-tn-12 col-xs-7 col-md-8">
             {% if all_lists %}
@@ -90,7 +90,7 @@
 <!-- condensed table for tiny & xsmall screens -->
 <div class="row lists hidden-sm hidden-md hidden-lg">
     <div class="col-tn-12">
-        {% if all_lists %} 
+        {% if all_lists %}
         <table class="lists table">
             <tbody>
             {% for mlist in all_lists %}
@@ -147,9 +147,11 @@
                         </ul>
                     </td>
                 </tr>
+                {% if not forloop.last %}
                 <tr class="spacer">
                     <td></td>
                 </tr>
+                {% endif %}
             {% endfor %}
             </tbody>
         </table> <!-- /table, main-content -->
@@ -157,11 +159,11 @@
         <p>No archived list yet.</p>
         {% endif %}
     </div>
-</div> <!-- /row, for lists --> 
+</div> <!-- /row, for lists -->
 
 <div class="row lists hidden-tn hidden-xs">
     <div class="col-sm-12">
-        {% if all_lists %}     
+        {% if all_lists %}
         <table class="lists table">
             <!-- headings only shown in screens >= 480px -->
             <thead class="hidden-xs">
@@ -233,10 +235,12 @@
                         </ul>
                     </td>
                 </tr>
+                {% if not forloop.last %}
                 <tr class="spacer">
                     <td class="hidden-sm" colspan="3"></td>
                     <td class="hidden-md hidden-lg" colspan="2"></td>
                 </tr>
+                {% endif %}
             {% endfor %}
             </tbody>
         </table> <!-- /table, main-content -->
