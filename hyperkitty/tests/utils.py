@@ -33,7 +33,6 @@ import hyperkitty.lib.mailman
 
 OVERRIDE_SETTINGS = {
     "TEMPLATE_DEBUG": True,
-    "ASSETS_DEBUG": True,
     "USE_SSL": False,
     "KITTYSTORE_URL": 'sqlite:',
     "KITTYSTORE_SEARCH_INDEX": None,
