@@ -28,6 +28,7 @@ BuildRequires:  django-rest-framework >= 2.2.0
 BuildRequires:  django-social-auth >= 0.7.1
 BuildRequires:  django-crispy-forms
 BuildRequires:  python-django-compressor
+BuildRequires:  python-BeautifulSoup
 BuildRequires:  python-rjsmin
 BuildRequires:  nodejs-less
 BuildRequires:  python-mailman-client
@@ -57,6 +58,7 @@ Requires:       mailman3
 Requires:       kittystore
 Requires:       django-crispy-forms
 Requires:       python-django-compressor
+Requires:       python-BeautifulSoup
 Requires:       python-rjsmin
 Requires:       nodejs-less
 Requires:       python-mailman-client
