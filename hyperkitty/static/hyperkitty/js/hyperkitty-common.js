@@ -299,9 +299,10 @@ function setup_back_to_top_link(offset, duration) {
     // default scroll to top animation will last 1/4 secs
     duration = (typeof duration !== 'undefined' ? duration : 250);
     $(window).scroll(function() {
-        if ($(this).scrollTop() > offset) {
+        var button = $(".back-to-top");
+        if ($(this).scrollTop() > offset && button.is(":hidden")) {
             $(".back-to-top").stop().fadeIn(duration);
-        } else {
+        } else if ($(this).scrollTop() <= offset && button.is(":visible")) {
             $(".back-to-top").stop().fadeOut(duration);
         }
     });
