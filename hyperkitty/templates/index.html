@@ -74,7 +74,12 @@
             {% if all_lists %}
             <p class="hide-switches">
                 <label><input type="checkbox" value="inactive" checked="checked" /> Hide inactive</label>
-                <label><input type="checkbox" value="private" /> Hide private</label>
+                <label><input type="checkbox" value="private"
+                        {% if sort_mode == "active" or sort_mode == "popular" %}
+                        checked="checked" disabled="disabled"
+                        title="Private lists are always hidden in this sort mode"
+                        {% endif %}
+                        /> Hide private</label>
             </p>
             {% endif %}
     </div>

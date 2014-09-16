@@ -63,8 +63,14 @@ def index(request):
         pass # already sorted by name
     elif sort_mode == "active":
         lists.sort(key=lambda l: l.recent_threads_count, reverse=True)
+        # Don't show private lists when sorted by activity, to avoid disclosing
+        # info about the private list's activity
+        lists = [ l for l in lists if l.is_private == False ]
     elif sort_mode == "popular":
         lists.sort(key=lambda l: l.recent_participants_count, reverse=True)
+        # Don't show private lists when sorted by popularity, to avoid disclosing
+        # info about the private list's popularity
+        lists = [ l for l in lists if l.is_private == False ]
     elif sort_mode == "creation":
         lists.sort(key=lambda l: l.created_at, reverse=True)
     else:
