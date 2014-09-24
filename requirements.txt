@@ -6,12 +6,13 @@ mailman>=3.0.0b2
 kittystore
 South
 django-crispy-forms
-django-assets
 rjsmin
 cssmin
 robot-detection
 pytz
 django-paintstore
+django-compressor
+BeautifulSoup<4.0
 django-browserid>=0.10.1
 mailmanclient
 beautifulsoup4

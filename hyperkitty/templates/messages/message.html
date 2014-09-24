@@ -7,55 +7,66 @@
 {% is_message_new email.date as is_new %}
 <div class="email{% if unfolded %} email-first{% endif %}{% if is_new %} unread{% endif %}">
 
-    <div class="email-header" id="{{email.message_id_hash}}">
-        <div class="email-date inline-block pull-right">
+    <div id="{{email.message_id_hash}}" class="email-header">
+        <div class="gravatar-wrapper">
+            <div class="gravatar">
+                {% gravatar email.sender_email 40 %}
+            </div>
+            <div class="email-author">
+                <span class="name">
+                    {% if email.user_id %}
+                    <a href="{% url 'public_user_profile' user_id=email.user_id %}"
+                       title="See {{ email.sender_name|escapeemail|escape }}'s profile"
+                       >{{email.sender_name|default:"(no name)"|escapeemail}}</a>
+                    {% else %}
+                       {{email.sender_name|default:"(no name)"|escapeemail}}
+                    {% endif %}
+                </span>
+                {% if use_mockups %}
+                <br>
+                <span class="rank">Rank 8</span>
+                {% endif %}
+            </div>
+        </div>
+        {% if is_new %}
+        <div class="right">
+            <i class="fa fa-envelope" title="Unread"></i>
+        </div>
+        {% endif %}
+        <div class="email-date right">
             {% ifchanged %}
-            <span class="date">
+            <span class="date hidden-tn">
                 {{email|get_date|date:"l, j F"}}
                 {% if unfolded %}
-                {{email|get_date|date:"Y"}}
+                    {{email|get_date|date:"Y"}}
+                {% endif %}
+            </span>
+            <span class="date hidden-xs hidden-sm hidden-md hidden-lg">
+                {{email|get_date|date:"D, j M"}}
+                {% if unfolded %}
+                '{{email|get_date|date:"y"}}
                 {% endif %}
             </span>
             {% endifchanged %}
-            {% if unfolded %}<br />{% endif %}
-            <span class="time" title="Sender's time: {% localtime off %}{{email|get_date|date:"l, j F H:i:s e"}}{% endlocaltime %}">{{email|get_date|date:"H:i:s"}}</span>
-        </div>
-        {% if is_new %}
-            <i class="unread icon-eye-close" title="Unread"></i>
-        {% endif %}
-        <div class="gravatar{% if use_mockups %} pull-left{% endif %}">
-            {% gravatar email.sender_email 40 %}
-        </div>
-        <div class="email-author inline-block">
-            <span class="name">
-                {% if email.user_id %}
-                <a href="{% url 'public_user_profile' user_id=email.user_id %}"
-                   title="See {{ email.sender_name|escapeemail|escape }}'s profile"
-                   >{{email.sender_name|default:"(no name)"|escapeemail}}</a>
-                {% else %}
-                   {{email.sender_name|default:"(no name)"|escapeemail}}
-                {% endif %}
-            </span>
-            <br />
-            <span class="messagelink">
-                (<a href="{% url 'message_index' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash %}"
-                    title="{{ email.subject }}">permalink</a>)
-            </span>
-            {% if use_mockups %}
-            <span class="rank">
-                Rank 8
-            </span>
-            {% endif %}
-        </div>
-    </div>
+            <div class="time">
+                <span title="Sender's time: {% localtime off %}{{email|get_date|date:"D, j M H:i:s e"}}{% endlocaltime %}">{{email|get_date|date:"H:i:s"}}</span>
+            </div>
 
-    <div class="email-body"
-     >{{ email.content|snip_quoted|wordwrap:90|urlizetrunc:76|escapeemail }}</div>
+        </div>
+        <div class="messagelink right">
+            (<a href="{% url 'message_index' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash %}"
+                title="{{ email.subject }}">permalink</a>)
+        </div>
+    </div> <!-- /email-header: gravatar, author-info, date, peramlink -->
+
+    <div class="email-body">
+        {{ email.content|snip_quoted|snip_pgp|wordwrap:90|urlizetrunc:76|escapeemail }}
+    </div>
 
     {% if unfolded and email.attachments|count %}
     <div class="attachments">
         <p class="attachments">Attachments:</p>
-        <ul class="attachments-list">
+        <ul class="attachments-list list-unstyled">
         {% for attachment in email.attachments %}
             <li><a href="{% url 'message_attachment' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash counter=attachment.counter filename=attachment.name %}">{{attachment.name}}</a>
                 ({{attachment.content_type}} &mdash; {{attachment.size|filesizeformat}})
@@ -66,20 +77,72 @@
     {% endif %}
 
     <div class="email-info">
-        {% include "messages/like_form.html" with message_id_hash=email.message_id_hash object=email %}
+        <div class="likeform-wrapper right">
+            {% include "messages/like_form.html" with message_id_hash=email.message_id_hash object=email %}
+        </div>
+
+        <!-- Reply link -->
+        {% if user.is_authenticated %}
+        <a class="reply" href="#">
+            <i class="fa fa-reply"></i>
+            Reply
+        </a>
+        {% else %}
+        <a class="reply reply-mailto" title="Login to reply online"
+           href="mailto:{{ mlist.name }}?Subject={{ email.subject|reply_subject|urlencode }}&amp;In-Reply-To={{ email.message_id|urlencode }}">
+            <i class="fa fa-reply"></i>
+            Reply
+        </a>
+        {% endif %}
+
+        <!-- Attachments -->
         {% if not unfolded and email.attachments|count %}
-        <div class="attachments">
-            <a class="attachments" href="#attachments">{{ email.attachments|count }} attachment(s)</a>
-            <ul class="attachments-list">
+        <div class="attachments dropdown">
+            <a class="attachments" data-toggle="dropdown" href="#">
+                {{ email.attachments|count }} attachment{% if email.attachments|count > 1 %}s{% endif %}
+                <span class="caret"></span>
+                <!-- <i class="fa fa-caret-right"></i> -->
+            </a>
+            <ul class="attachments-list list-unstyled dropdown-menu">
             {% for attachment in email.attachments %}
-                <li><a href="{% url 'message_attachment' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash counter=attachment.counter filename=attachment.name %}">{{attachment.name}}</a>
-                    ({{attachment.content_type}} &mdash; {{attachment.size|filesizeformat}})
+                <li><a href="{% url 'message_attachment' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash counter=attachment.counter filename=attachment.name %}"
+                        title="{{attachment.content_type|escape}}, {{attachment.size|filesizeformat}}"
+                        >{{attachment.name}}
+                    </a>
                 </li>
             {% endfor %}
             </ul>
         </div>
         {% endif %}
-        {% include "messages/reply_form.html" with mlist_fqdn=mlist.name message_id_hash=email.message_id_hash %}
+
+        <!-- Reply form -->
+        {% if user.is_authenticated %}
+        <div class="reply-form dropdown">
+            <form method="post" enctype="multipart/form-data"
+                  action="{% url 'message_reply' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash %}">
+                {% csrf_token %}
+                <div class="reply-tools">
+                    <a class="btn quote" href="#">Quote</a>
+                    <label>{{ reply_form.newthread }} Create new thread</label>
+                    <a class="reply-mailto"
+                       href="mailto:{{ mlist.name }}?Subject={{ email.subject|reply_subject|urlencode }}&amp;In-Reply-To={{ email.message_id|urlencode }}"
+                       >Use email software</a>
+                </div>
+                {{ reply_form.non_field_errors }}
+                {% for field in reply_form %}
+                    {% if field.html_name != "newthread" %}
+                        <p>{{ field }} {{ field.errors}}</p>
+                    {% endif %}
+                {% endfor %}
+                {# { reply_form.as_p } #}
+                <p class="buttons">
+                    <button type="submit" class="submit btn btn-primary">Send</button>
+                    or <a class="cancel" href="#">cancel</a>
+                </p>
+            </form>
+        </div>
+        {% endif %}
+
     </div>
 
 </div>

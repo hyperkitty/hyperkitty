@@ -72,7 +72,7 @@ class UserProfileForm(forms.Form):
 class TextInputWithButton(forms.TextInput):
     """
     Render a text field and a button following the Twitter Bootstrap
-    directives: http://twitter.github.com/bootstrap/base-css.html#buttons
+    directives: http://getbootstrap.com/components/#input-groups-buttons
 
     Use the 'button_text' class attribute to set the button's text.
     """
@@ -81,10 +81,10 @@ class TextInputWithButton(forms.TextInput):
         button_text = self.attrs.pop("button_text", u"")
         initial_rendering = forms.TextInput.render(
                 self, name, value, attrs)
-        button = mark_safe(u'<button type="submit" class="btn">%s</button>'
+        button = mark_safe(u'<span class="input-group-btn"><button type="submit" class="btn btn-default">%s</button></span>'
                            % button_text)
-        return "".join([u'<span class="input-append">',
-                        initial_rendering, button, u'</span>'])
+        return "".join([u'<span class="input-append"><div class="input-group">',
+                        initial_rendering, button, u'</div></span>'])
 
 
 
@@ -92,7 +92,7 @@ class AddTagForm(forms.Form):
     tag =  forms.CharField(label='', help_text=None,
                 widget=TextInputWithButton(
                     attrs={'placeholder': 'Add a tag...',
-                           'class': 'input-medium',
+                           'class': 'input-medium form-control',
                            'button_text': 'Add',
                            'title': 'use commas to add multiple tags',
                            }
@@ -102,15 +102,41 @@ class AddTagForm(forms.Form):
 
 
 
+class AttachmentFileInput(forms.FileInput):
+    attach_first_text = ugettext_lazy('Attach a file')
+    attach_another_text = ugettext_lazy('Attach another file')
+    rm_text = ugettext_lazy('Remove this file')
+    template = """
+<span class="attach-files-template">
+    %(input)s <a href="#" title="%(rm_text)s">(-)</a>
+</span>
+<span class="attach-files"></span>
+<a href="#" class="attach-files-first">%(attach_first_text)s</a>
+<a href="#" class="attach-files-add">%(attach_another_text)s</a>
+"""
+
+    def render(self, name, value, attrs=None):
+        substitutions = {
+            'attach_first_text': self.attach_first_text,
+            'attach_another_text': self.attach_another_text,
+            'rm_text': self.rm_text,
+        }
+        substitutions['input'] = super(AttachmentFileInput, self).render(name, value, attrs)
+        return mark_safe(self.template % substitutions)
+
+
 class ReplyForm(forms.Form):
     newthread = forms.BooleanField(label="", required=False)
     subject = forms.CharField(label="", required=False,
-            widget=forms.TextInput(attrs={ 'placeholder': 'New subject'}))
-    message = forms.CharField(label="", widget=forms.Textarea)
+            widget=forms.TextInput(attrs={ 'placeholder': 'New subject','class': 'form-control'}))
+    message = forms.CharField(label="", widget=forms.Textarea(attrs={ 'class': 'form-control' }))
+    #attachment = forms.FileField(required=False, widget=AttachmentFileInput)
 
 class PostForm(forms.Form):
     subject = forms.CharField()
     message = forms.CharField(widget=forms.Textarea)
+    #attachment = forms.FileField(required=False, label="",
+    #                             widget=AttachmentFileInput)
 
 class CategoryForm(forms.Form):
     category = forms.ChoiceField(label="", required=False)

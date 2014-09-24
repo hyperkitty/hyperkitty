@@ -4,48 +4,62 @@
 
 <!-- right column -->
 <section id="thread-overview-info">
-    <!-- Start dates -->
-    <div id="thread-date-info" class="row-fluid">
-        <div class="days-num">
-            {{ days_inactive }}
+    <!-- Start stats re: dates -->
+    <div id="thread-date-info" class="row">
+        <div class="col-tn-6">
+            <span class="days-num">{{ days_inactive }}</span>
+            <div class="days-text">
+                days inactive
+            </div>
         </div>
-        <div class="days-text">
-            days
-            <br />
-            inactive
+        <div class="col-tn-6">
+            <span class="days-num">{{ days_old }}</span>
+            <div class="days-text">
+                days old
+            </div>
         </div>
-        <div class="days-num">
-            {{ days_old }}
-        </div>
-        <div class="days-text">
-            days
-            <br />
-            old
-        </div>
+    </div> <!-- /Stats re: dates -->
+
+    <div class="list-name">
+        <a href="{% url 'list_overview' mlist_fqdn=mlist.name %}">
+            {{ mlist.name }}
+        </a>
     </div>
-    <!-- End dates -->
+
+    <div>
+        <i class="icomoon discussion"></i>
+        {{ num_comments }} comments
+    </div>
+    <div>
+        <i class="icomoon participant"></i>
+        {{ participants|length }} participants
+    </div>
+    <p class="unread">
+        {% if user.is_authenticated %}
+        <i class="fa fa-envelope"></i> {{ unread_count }} unread
+        <span class="hidden-sm"> messages</span>
+        {% endif %}
+    </p>
+
     <form id="fav_form" name="favorite" method="post" class="favorite"
           action="{% url 'favorite' mlist_fqdn=mlist.name threadid=threadid %}">
         {% csrf_token %}
         <input type="hidden" name="action" value="{{ fav_action }}" />
         <p>
-            <a href="#AddFav" class="notsaved{% if not user.is_authenticated %} disabled" title="You must be logged-in to have favorites.{% endif %}">Add to favorite discussions</a>
-            <a href="#RmFav" class="saved">Remove from favorite discussions</a>
+            <a href="#AddFav" class="notsaved{% if not user.is_authenticated %} disabled" title="You must be logged-in to have favorites.{% endif %}">
+                <i class="fa fa-star"></i>Add to favorites</a>
+            <a href="#RmFav" class="saved">
+                <i class="fa fa-star"></i>Remove from favorites</a>
         </p>
     </form>
-    <div class="discussion">{{ num_comments }} comments</div>
-    <div class="participant">{{ participants|length }} participants</div>
-    <p class="unread">
-        {% if user.is_authenticated %}
-        <i class="unread icon-eye-close"></i> {{ unread_count }} unread messages
-        {% endif %}
-    </p>
+
     {% if user.is_staff %}
     <p><i class="icon-resize-small"></i>
        <a href="{% url 'thread_reattach' mlist_fqdn=mlist.name threadid=threadid %}"
           >Reattach this thread</a>
     </p>
     {% endif %}
+
     <div id="tags">
         {% include 'threads/tags.html' %}
     </div>
@@ -60,11 +74,11 @@
     </div>
     <div id="participants">
         <span id="participants_title">participants</span> ({{participants|length}})
-        <ul>
+        <ul class="list-unstyled">
             {% for participant in participants %}
-            <li>
-                {% gravatar participant.email 20 %}
-                {{ participant.name|escapeemail }}
+            <li class="row">
+                <div class="participant-gravatar col-tn-2 col-sm-4 col-md-2">{% gravatar participant.email 48 %}</div>
+                <div class="participant-name col-tn-8">{{ participant.name|escapeemail }}</div>
             </li>
             {% endfor %}
         </ul>

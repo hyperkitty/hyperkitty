@@ -1,7 +1,7 @@
 {% load url from future %}
 
         {{ category_form.errors.category }}
-        <a class="label {% if not user.is_authenticated %} disabled {% endif %}"
+        <a class="label label-default{% if not user.is_authenticated %} disabled {% endif %}"
            {% if category %}style="background-color:{{category.color}}"{% endif %}
            {% if user.is_authenticated %}
            title="Click to edit"

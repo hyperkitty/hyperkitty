@@ -10,11 +10,11 @@ Messages by {{ fullname }}{% if mlist %} - {{ mlist.display_name|default:mlist.n
 
 {% block content %}
 
-<div class="row-fluid">
+<div class="row">
 
-<div id="months-list" class="span2"> </div>
+<div id="months-list" class="col-sm-2"> </div>
 
-    <div id="thread-list" class="span8">
+    <div id="thread-list" class="col-sm-8">
 
         <div class="thread-list-header page-header">
             {% if mlist %}

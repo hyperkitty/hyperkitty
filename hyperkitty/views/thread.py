@@ -147,7 +147,8 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'addtag_form': tag_form,
         'month': thread.date_active,
         'first_mail': thread.starting_email,
-        'neighbors': (prev_thread, next_thread),
+        'prev_thread': prev_thread,
+        'next_thread': next_thread,
         'months_list': get_months(store, mlist.name),
         'days_inactive': days_inactive.days,
         'days_old': days_old.days,
@@ -176,7 +177,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
 @check_mlist_private
 def replies(request, mlist_fqdn, threadid):
     """Get JSON encoded lists with the replies and the participants"""
-    chunk_size = 5
+    chunk_size = 6 # must be an even number, or the even/odd cycle will be broken
     offset = int(request.GET.get("offset", "1"))
     store = get_store(request)
     thread = store.get_thread(mlist_fqdn, threadid)

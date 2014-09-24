@@ -26,6 +26,17 @@ function setup_index(url_template) {
         document.location.href = $(this).find("a.list-name").attr("href");
     });
 
+    // Helper to load the graph
+    function show_ajax_chart(listelem) {
+        if (!listelem.is(":visible")) {
+            return;
+        }
+        var listname = $.trim(listelem.find(".list-address").text());
+        url_template = url_template.replace(/@/, "%40"); // Django 1.5 compatibility, it did not escape the url tag
+        var url = url_template.replace(/PLACEHOLDER%40PLACEHOLDER/, listname);
+        ajax_chart(listelem.find("div.chart"), url, {height: 30});
+    }
+
     // Filter
     function filter_lists() {
         var hide_by_class = {};
@@ -63,6 +74,7 @@ function setup_index(url_template) {
                 $(this).hide();
             } else {
                 $(this).show();
+                show_ajax_chart($(this));
             }
         });
     }
@@ -74,10 +86,15 @@ function setup_index(url_template) {
         // fire the above change event after every letter
         $(this).change();
     }).focus();
+    filter_lists(); // Filter on page load
+
+    // Back to top link
+    setup_back_to_top_link(220); // set offset to 220 for link to appear
 
     // Initials
     $(".initials").animate({ right: 0 }, {duration: 600});
-    $(".initials a").click(function(e) {
+    // Override the scrolling because we have a fixed header
+    $(".initials a").click(function (e) {
         e.preventDefault();
         var initial = $(this).attr("href").substring(1);
         if ($(this).hasClass("active")) {
@@ -91,12 +108,8 @@ function setup_index(url_template) {
         filter_lists();
     });
 
-    // Update list graphs
-    $(".all-lists table.lists tr.list").each(function() {
-        var listelem = $(this);
-        var listname = $.trim(listelem.find(".list-address").text());
-        url_template = url_template.replace(/@/, "%40"); // Django 1.5 compatibility, it did not escape the url tag
-        var url = url_template.replace(/PLACEHOLDER%40PLACEHOLDER/, listname);
-        ajax_chart(listelem.find("div.chart"), url, {height: 30});
+    // Update list graphs for visible lists
+    $(".all-lists table.lists tr.list:visible").each(function() {
+        show_ajax_chart($(this));
     });
 }

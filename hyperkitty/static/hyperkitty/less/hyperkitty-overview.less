@@ -1,0 +1,248 @@
+// Overview page (List overview)
+
+.overview {
+    h3 {
+        &:extend(.small-caps);
+        line-height: 28px;
+        margin-bottom: 0.5em;
+        margin-top: 0;
+    }
+
+    .searchbar,
+    .thread-new {
+        padding-top: 1em;
+        padding-bottom: 1em;
+    }
+
+    .anchor-link {
+        position: relative;
+        a {
+            position: absolute;
+            top: -75px;
+        }
+    }
+
+    .nav-tabs .dropdown-header {
+        padding-left: 0;
+        padding-right: 0;
+    }
+}
+
+.overview section#title {
+    h2 {
+        margin-top: 5px;
+        margin-bottom: 0px;
+    }
+    #description {
+        font-size: smaller;
+        font-weight: normal;
+    }
+}
+
+.overview .thread {
+    .thread-title {
+        line-height: 1.25em;
+        max-height: 3em;
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        max-height: 1.8em;
+
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        color: @linkColor;  // color ellipsis the same as link color
+    }
+    ul.list-stats {
+        margin-bottom: 0.5em;
+    }
+}
+
+// spacing between sections
+.overview {
+    section+section,
+    .discussions > section,
+    .stats,
+    .stats > section {
+        padding-top: 10px;
+    }
+}
+
+.overview {
+    #flagged .thread-list,
+    #posted-to .thread-list {
+        display: none;
+    }
+    #flagged h3,
+    #posted-to h3 {
+        &:hover {
+            cursor: pointer;
+        }
+    }
+}
+
+// Threads by category
+.discussion-by-category h4 {
+    font-size: 105%;
+    line-height: 105%;
+    margin: 1.5em 0 0.5em 0;
+    padding-left: 1em;
+    padding-right: 1em;
+
+    h4.first {
+        margin-top: 0;
+    }
+    .thread {
+        margin: 0 0 0 0.5em;
+    }
+    .thread-stats {
+        margin-left: 0;
+    }
+    .thread .category {
+        display: none;
+    }
+}
+
+.overview .stats {
+    float: none;
+    z-index: -1;
+
+    .caption {
+        font-size: x-small;
+        color: @subheadingColor;
+        margin-left: .25em;
+        margin-bottom: 0px;
+    }
+    .chart-data {
+        &:extend(.bordered);
+    }
+    ul.list-stats {
+        padding-bottom: 10px;
+        display: block;
+        i {
+            padding-right: 5px;
+        }
+        li {
+            display: block;
+            font-size: small;
+            padding-left: 0;
+        }
+    }
+    .duration-text {
+        margin-top: 0.5em;
+        margin-bottom: 0.25em;
+    }
+}
+@media (min-width: @screen-lg-min) {
+    .overview .stats ul.list-stats li {
+        display: inline;
+        margin-right: 1em;
+    }
+}
+
+.overview .maker {
+    padding-right: 10px;
+    padding-bottom: 20px;
+
+    .gravatar {
+        padding-right: 5px;
+    }
+    .maker-name {
+        word-wrap: break-word !important;
+    }
+    .score{
+        font-weight: bold;
+    }
+}
+.overview section#discussion-maker {
+    padding-top: 0;
+}
+
+
+.overview .more-threads {
+    text-align: center;
+    font-weight: bold;
+
+    .thread {
+        display: none;
+    }
+}
+
+
+
+//=== thread view ==/
+.overview .thread {
+    &:extend(.bordered);
+    padding-top: 0.25em;
+    padding-bottom: 0.25em;
+    margin: 0.25em 0;
+    &:hover {
+        &:extend(.row-hover);
+        a {
+            &:extend(.row-link-hover);
+        }
+    }
+}
+
+// tiny screen (<=320px):
+// nav-tabs: less padding, smaller dropdowns, right-align last dropdown
+@media (max-width: @screen-tn) {
+    .overview .nav-tabs {
+        >li a {
+            padding-left: 5px;
+            padding-right: 7px;
+        }
+        #navbarDiscussionsDrop ~ .dropdown-menu {
+            min-width: 110px;
+        }
+        #navbarMonthsListDrop ~ .dropdown-menu {
+            min-width: 90px;
+            left: inherit;
+            right: 0;
+        }
+    }
+}
+// xs screen (<=540px): more padding/spacing in nav-tabs
+@media (max-width: 539px) {
+    .overview .nav-tabs {
+        .dropdown-menu {
+            min-width: 120px;
+        }
+        #navbarMonthsListDrop ~ .dropdown-menu {
+            text-align: left;
+        }
+    }
+    .thread-new {
+        text-align: right;
+    }
+    .overview .back-to-top {
+        .hidden();
+    }
+}
+// xs screen (540-768px): add back-to-top link
+@media (max-width: @screen-xs-max) and (min-width: 540px) {
+    .overview .thread-new {
+        text-align: right;
+    }
+}
+@media (max-width: @screen-xs-max) {
+    .overview .stats {
+        .pull-left();
+    }
+}
+// small screens & up (>=768px)
+// thread titles now only take up 1 line max;
+@media (min-width: @screen-sm) {
+    .overview {
+        .thread-new {
+            padding-top: 0;
+        }
+        .thread .thread-title {
+            max-height: 1.8em;
+        }
+    }
+    .overview .gravatar {
+        img {
+            .square(48px);
+        }
+    }
+}

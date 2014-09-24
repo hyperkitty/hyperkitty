@@ -36,7 +36,7 @@ This is the response.
 """
         expected = """
 On Fri, 09.11.12 11:27, Someone wrote:
-<div class="quoted-switch"><a href="#">%s</a></div><div class="quoted-text"> This is the first quoted line
+<div class="quoted-switch"><a style="font-weight:normal" href="#">%s</a></div><div class="quoted-text"> This is the first quoted line
  This is the second quoted line </div>This is the response.
 """ % self.quotemsg
         result = snip_quoted(contents, self.quotemsg)

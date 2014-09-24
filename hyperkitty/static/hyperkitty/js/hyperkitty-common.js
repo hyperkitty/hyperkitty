@@ -76,24 +76,65 @@ function setup_vote(baseElem) {
 
 
 /*
+ * New messages (or replies)
+ */
+
+function setup_attachments(baseElem) {
+    if (!baseElem) {
+        baseElem = document;
+    }
+    function add_attach_form (e) {
+        e.preventDefault();
+        var form = $(this).parents("form").first();
+        // Clone the attachment template
+        var cur_att_count = form.find(".attach-files input").length;
+        form.find(".attach-files-template")
+            .clone().removeClass("attach-files-template")
+            .appendTo(form.find(".attach-files"))
+            .find("input").each(function() {
+                // Suffix the name and id properties with the index number to
+                // make them unique
+                var elem = $(this);
+                $.each(["name", "id"], function(_i, attr) {
+                    elem.attr(attr, elem.attr(attr) + "_" + (cur_att_count+1));
+                });
+            });
+        form.find(".attach-files span a").click(function (e) {
+            e.preventDefault();
+            $(this).parent().remove();
+            if (form.find(".attach-files input").length === 0) {
+                form.find(".attach-files-add").hide();
+                form.find(".attach-files-first").show();
+            };
+        });
+        form.find(".attach-files-first").hide();
+        form.find(".attach-files-add").show();
+    }
+    $(baseElem).find(".attach-files-add").click(add_attach_form);
+    $(baseElem).find(".attach-files-first").click(add_attach_form);
+}
+
+
+
+/*
  * Recent activity bar chart
  */
 
 function chart(elem_id, data, default_props) {
     /* Function for grid lines, for x-axis */
     function make_x_axis() {
-	return d3.svg.axis()
-	    .scale(x)
-	    .orient("bottom")
-	    .ticks(d3.time.days, 1)
+    return d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .ticks(d3.time.days, 1)
     }
 
     /* Function for grid lines, for y-axis */
     function make_y_axis() {
-	return d3.svg.axis()
-	    .scale(y)
-	    .orient("left")
-	    .ticks(5)
+    return d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .ticks(5)
     }
     if (typeof default_props === "undefined") {
         default_props = {};
@@ -121,14 +162,14 @@ function chart(elem_id, data, default_props) {
     var xAxis = d3.svg.axis()
         .scale(x)
         .orient("bottom")
-	.tickSize(0,0) // change to 2,2 for ticks
+    .tickSize(0,0) // change to 2,2 for ticks
         .tickFormat(format_out)
         .ticks(d3.time.days, 1);
 
     var yAxis = d3.svg.axis()
         .scale(y)
         .orient("left")
-	.tickSize(0,0) // change to 4,3 for ticks
+    .tickSize(0,0) // change to 4,3 for ticks
         .ticks("") // change to 2 for y-axis tick labels
         .tickSubdivide(1);
 
@@ -138,7 +179,7 @@ function chart(elem_id, data, default_props) {
         .y(function(d) { return y(d.count); });
 
     var svg = d3.select(elem_id).append("svg")
-	.attr("class", "chart-data")
+    .attr("class", "chart-data")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
@@ -155,35 +196,35 @@ function chart(elem_id, data, default_props) {
 
     /* Draw the grid lines, for x-axis */
     svg.append("g")
-	.attr("class", "grid")
-	.attr("Transform", "translate(0, " + height + ")")
-	.call(make_x_axis()
-	    .tickSize(height, 0, 0)
-	    .tickFormat("")
-	)
+    .attr("class", "grid")
+    .attr("Transform", "translate(0, " + height + ")")
+    .call(make_x_axis()
+        .tickSize(height, 0, 0)
+        .tickFormat("")
+    )
 
     /* Draw the grid lines, for y-axis */
     svg.append("g")
-	.attr("class", "grid")
-	.call(make_y_axis()
-	    .tickSize(-width, 0, 0)
-	    .tickFormat("")
-	)
+    .attr("class", "grid")
+    .call(make_y_axis()
+        .tickSize(-width, 0, 0)
+        .tickFormat("")
+    )
 
     svg.append("g").attr("class", "bars").selectAll("rect")
-	    .data(data)
-	.enter().append("rect")
-	    .attr("x", function(d) { return x(d.date); })
-	    //.attr("y0", height)
-	    .attr("y", function(d) { return y(d.count); })
-	    .attr("width", w)
-	    .attr("height", function(d) { return height - y(d.count); });
+        .data(data)
+    .enter().append("rect")
+        .attr("x", function(d) { return x(d.date); })
+        //.attr("y0", height)
+        .attr("y", function(d) { return y(d.count); })
+        .attr("width", w)
+        .attr("height", function(d) { return height - y(d.count); });
 
     /* draw x-axis */
     svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+      . call(xAxis)
       /*.selectAll("text")
         .attr("y", -5)
         .attr("x", -30)
@@ -193,8 +234,8 @@ function chart(elem_id, data, default_props) {
 
     /* Y-axis label */
     svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
+        .attr("class", "y axis")
+        .call(yAxis)
     /*.append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 0)
@@ -208,6 +249,15 @@ function chart(elem_id, data, default_props) {
 
 function ajax_chart(elem, url, props) {
     elem = $(elem);
+    if (elem.data("chart_loading") || elem.find("img.ajaxloader").length == 0) {
+        return; // already loaded or being loaded
+    }
+    elem.data("chart_loading", true);
+    // if there's already a chart drawn, remove it and then redraw
+    // this would occur when resizing the browser
+    if (elem.find("svg.chart-data")) {
+        elem.find("svg.chart-data").remove();
+    }
     $.ajax({
         dataType: "json",
         url: url,
@@ -220,6 +270,7 @@ function ajax_chart(elem, url, props) {
         complete: function(jqXHR, textStatus) {
             // if the list is private we have no info, remove the img anyway
             elem.find("img.ajaxloader").remove();
+            elem.removeData("chart_loading");
         }
     });
 }
@@ -230,16 +281,6 @@ function ajax_chart(elem, url, props) {
 /*
  * Misc.
  */
-
-function setup_months_list() {
-    var current = $("#months-list li.current").parent().prev();
-    if (!current.length) {
-        current = 0; // overview or search
-    } else {
-        current = current.prevAll("h3").length;
-    }
-    $("#months-list").accordion({ collapsible: true, active: current });
-}
 
 function setup_disabled_tooltips(baseElem) {
     if (!baseElem) {
@@ -254,7 +295,22 @@ function setup_flash_messages() {
     $('.flashmsgs .alert-success').delay(3000).fadeOut('slow');
 }
 
-
+function setup_back_to_top_link(offset, duration) {
+    // default scroll to top animation will last 1/4 secs
+    duration = (typeof duration !== 'undefined' ? duration : 250);
+    $(window).scroll(function() {
+        var button = $(".back-to-top");
+        if ($(this).scrollTop() > offset && button.is(":hidden")) {
+            $(".back-to-top").stop().fadeIn(duration);
+        } else if ($(this).scrollTop() <= offset && button.is(":visible")) {
+            $(".back-to-top").stop().fadeOut(duration);
+        }
+    });
+    $(".back-to-top").click(function(e) {
+        e.preventDefault();
+        $("html").animate({scrollTop: 0}, duration);
+    })
+}
 
 /*
  * Activate
@@ -262,7 +318,6 @@ function setup_flash_messages() {
 
 $(document).ready(function() {
     setup_vote();
-    setup_months_list();
     setup_disabled_tooltips();
     setup_flash_messages();
 });

@@ -1,0 +1,237 @@
+//=== Threads view header ==/
+
+#thread-list .thread-list-header {
+    margin-bottom: 2em;
+    padding-bottom: 1em;
+    border-bottom: 1px solid lighten(@rowBorderColor, 15%);
+    h1 {
+        margin-bottom: 0;
+    }
+    .list-name {
+        color: black;
+        &:hover {
+            text-decoration: none;
+        }
+    }
+    .list-address {
+        font-size: 120%;
+        padding-bottom: 0.5em;
+    }
+}
+
+#thread-list .thread+.thread {
+    padding-top: 1em;
+}
+
+#thread-list .paginator {
+    text-align: center;
+}
+
+#thread-list .thread {
+    border: none;
+   
+    .thread-email {
+        margin-bottom: 5px;
+    }
+    
+    .thread-info {
+        padding-top: 0.25em;
+        .thread-category {
+            padding-bottom: 0.25em;
+        }
+        .likestatus + span {
+            padding-right: 1em;
+        }
+        .likestatus {
+            vertical-align: -2px;
+        }
+        .list-stats {
+            padding-bottom: 0.25em;
+        }
+    }
+}
+
+//=== Thread view ==/
+
+.thread-id {
+    font-weight: bold;
+    color: @headingColor;
+    vertical-align: top;
+    padding-right: 10px;
+}
+
+.thread-title {
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    .category {
+        text-align: center;
+        margin-right: 1%;
+    }
+}
+
+.thread-stats .date {
+    display: inline;
+}
+
+.thread-date {
+    font-style: italic;
+    font-size: 70%;
+    color: @maroon;
+    margin-left: 1em;
+}
+
+.thread-info {
+    .tags {
+        display: inline;
+        margin-right: 1em;
+        li {
+            padding: 0 0.2em 0 0.2em;
+        }
+        a {
+            font-size: 90%;
+        }
+    }
+
+    .thread-show {
+        padding-top: 2px;
+        padding-bottom: 2px;
+        margin-left: 2em;
+    }
+}
+
+.thread-content {
+    margin-top: 0.5em;
+
+    .thread-email {
+        margin-bottom: 5px;
+    }
+}
+
+// Part containing the body of the mail which can be shown/hidden 
+.expander {
+    background-image: linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
+    background-image: -o-linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
+    background-image: -moz-linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
+    background-image: -webkit-linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
+    background-image: -ms-linear-gradient(bottom, rgb(236,236,236) 11%, rgb(255,255,255) 100%);
+
+    background-image: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.11, rgb(236,236,236)),
+        color-stop(1, rgb(255,255,255))
+    );
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(236,236,236);
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;
+    padding: 1em;
+    display: block;
+    vertical-align: top;
+
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.thread-email .expander.collapsed {
+    white-space: normal;
+}
+
+//=== search result thread list ==/
+.search-results {
+    .list-name {
+        color: black;
+        &:hover {
+            text-decoration: none;
+        }
+    }
+    .thread+.thread {
+        padding-top: 1.5em;
+    }
+    .list-stats {
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+    }
+}
+
+// tiny screens  (<=480px): format thread list header
+@media (max-width: @screen-tn-max) {
+    #thread-list .thread-list-header {
+        h1 {
+            margin-bottom: 0;
+        }
+        .list-address {
+            padding-bottom: 0.5em;
+        }
+        .list-stats li {
+            display: block;
+        }
+        .list-stats li+li {
+            padding-left: 0;
+        }
+    }
+    #thread-list .thread-info {
+        .likeform {
+            padding-top: 0.25em;
+            padding-bottom: 0.25em;
+        }
+    }
+}
+// for viewports larger than 320px, add more spacing 
+@media (min-width: @screen-xs-min) {
+    #thread-list  {
+        .thread-list-info {
+            padding-top: 10px;
+        }
+        img.gravatar {
+            .square(60px);
+        }
+    }
+}
+// for extra small viewports (480 <= x < 1199px)
+@media (max-width: @screen-md-max) and (min-width: @screen-xs-min) {
+    #thread-list .thread-info {
+        .likeform {
+            .pull-right();
+        }
+        .thread-content {
+            .make-xs-column-push(2);
+            margin-top: 0;
+        }
+        .gravatar {
+            .make-xs-column-pull(10);
+        }
+        .thread-extras {
+            .make-xs-column-offset(2);
+        }
+    }
+}
+// for viewports >= 768px, thread stats appears on a single line, so align properly
+@media (min-width: @screen-sm-min) {
+    #thread-list .thread-info {
+        .list-stats {
+            text-align: right;
+            padding-left: 0;
+        }
+    }
+}
+// for large viewports (x <= 1200)
+@media (min-width: @screen-lg-min) {
+    #thread-list .thread-info {
+        .thread-content {
+            .make-lg-column-push(1);
+            margin-top: 0;
+        }
+        .gravatar {
+            .make-lg-column-pull(11);
+        }
+        .thread-extras {
+            .make-lg-column-offset(1);
+        }
+    }
+}

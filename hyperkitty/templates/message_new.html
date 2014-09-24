@@ -12,14 +12,17 @@ Create a new thread - {{ mlist.display_name|default:mlist.name|escapeemail }} - 
 
 {% block content %}
 
-<div class="row-fluid">
+<div class="row">
 
 {% include 'threads/month_list.html' %}
 
-    <div class="span7">
+    <div class="col-sm-10">
 
         <div class="message-header">
-            <h1>Create a new thread</h1>
+            <h1>
+                Create a new thread
+                <small>in {{ mlist.display_name|default:mlist.name|escapeemail }}</small>
+            </h1>
         </div>
 
         {% if failure %}

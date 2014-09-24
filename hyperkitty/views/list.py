@@ -191,16 +191,31 @@ def overview(request, mlist_fqdn=None):
             continue
         threads_by_category[thread.category].append(thread)
 
+    # Personalized discussion groups: flagged/favorited threads and threads by user
+    if request.user.is_authenticated():
+        try:
+            favorites = Favorite.objects.filter(list_address=mlist.name, user=request.user)
+        except Favorite.DoesNotExist:
+            favorites = []
+        threads_posted_to = list(store.get_threads_user_posted_to(request.user.id, mlist.name))
+    else:
+        favorites = []
+        threads_posted_to = []
+    favorites = [ store.get_thread(mlist.name, f.threadid) for f in favorites ]
+    favorites = [ thread for thread in favorites if thread is not None ] # cleanup
+
     context = {
         'view_name': 'overview',
         'mlist' : mlist,
-        'top_threads': top_threads[:5],
-        'most_active_threads': active_threads[:5],
+        'top_threads': top_threads[:20],
+        'most_active_threads': active_threads[:20],
         'top_author': authors,
         'top_posters': top_posters,
-        'pop_threads': pop_threads[:5],
+        'pop_threads': pop_threads[:20],
         'threads_by_category': threads_by_category,
         'months_list': get_months(store, mlist.name),
+        'flagged_threads': favorites,
+        'threads_posted_to': threads_posted_to,
     }
     return render(request, "overview.html", context)
 

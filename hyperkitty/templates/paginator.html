@@ -1,8 +1,8 @@
 {% load i18n %}
 {% load hk_generic %}
 
-<div class="pagination pagination-centered">
-<ul>
+<div class="paginator">
+<ul class="pagination">
     {% if pager.has_previous %}
     <li>
         <a href="?{% add_to_query_string page_key|default:'page' pager.previous_page_number %}">

@@ -3,20 +3,55 @@
 {% load hk_generic %}
 
     {% if votes %}
-        <table class="table table-striped table-bordered table-condensed">
+        <table class="table table-bordered table-condensed hidden-sm hidden-md hidden-lg">
+            <tbody>
+            {% for vote in votes %}
+                {% ifchanged vote.list_name %}
+                <tr class="list-address">
+                    <td>{{ vote.list_name }}</td>
+                </tr>
+                {% endifchanged %}
+                <tr>
+                    <td>
+                        <a href="{% url 'message_index' mlist_fqdn=vote.list_name message_id_hash=vote.message.message_id_hash %}"
+                            >{{ vote.message.subject }}</a>
+                        <br>
+                        Original author: {{ vote.message.sender_name }}
+                        <br>
+                        Started on: {{ vote.message|get_date|date:"D, j M Y H:i" }}
+                        <br>
+                        <form method="post" class="likeform"
+                              action="{% url 'message_vote' mlist_fqdn=vote.list_name message_id_hash=vote.message.message_id_hash %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="vote" value="0" />
+                            {% if vote.value == 1 %}
+                            <span class="youlike">You like it
+                            {% elif vote.value == -1 %}
+                            <span class="youdislike">You dislike it
+                            {% endif %}
+                            (<a href="#cancelvote" class="cancel">cancel</a>)</span>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <table class="table table-striped table-bordered table-condensed hidden-tn hidden-xs">
             <thead>
                 <tr>
                     <th>List</th>
                     <th>Subject</th>
-                    <th>Author</th>
-                    <th>Date</th>
+                    <th>Original author</th>
+                    <th>Start date</th>
                     <th>Vote</th>
                 </tr>
             </thead>
             <tbody>
             {% for vote in votes %}
                 <tr>
-                    <td>{{ vote.list_name }}</td>
+                    <td>
+                        <span class="hidden-md hidden-lg">{{ vote.list_name|until:"@" }}</span>
+                        <span class="hidden-sm">{{ vote.list_name }}</span>
+                    </td>
                     <td><a href="{% url 'message_index' mlist_fqdn=vote.list_name message_id_hash=vote.message.message_id_hash %}"
                             >{{ vote.message.subject }}</a></td>
                     <td>{{ vote.message.sender_name }}</td>

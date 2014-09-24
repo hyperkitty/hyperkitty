@@ -1,0 +1,285 @@
+/*
+ * Classes common to two or more pages, but not all (those go to base.less)
+ */
+
+//=== COMMON STYLES ==/
+
+// override potential browser default styles
+ul {
+    padding-left: 0;
+}
+
+h1 {
+    margin-top: 0px;
+    font-size: 28px !important; /* override bootstrap */
+    line-height: 32px;
+    margin-bottom: 0.5em;
+}
+
+.right {
+    text-align: right;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.heading {
+    font-size: 100%;
+    line-height: 100%;
+    font-weight: bold;
+    color: @headingColor;
+    text-transform: uppercase;
+}
+
+.small-caps {
+    color: @subheadingColor;
+    text-transform: uppercase;
+    font-size: small;
+    font-weight: normal;
+}
+
+.small-bolded-text {
+    font-weight: bold;
+    font-size: small;
+    vertical-align: top;
+}
+
+.bordered {
+    border: 1px solid @rowBorderColor;
+}
+
+.labels {
+    font-size: 78%;
+    text-transform: uppercase;
+}
+
+// typical hover behavior for table rows
+.row-hover {
+    cursor: pointer;
+    color: white;
+    background-color: @rowHoverColor;
+}
+.row-link-hover {
+    color: white;
+}
+.row-chart-hover {
+    fill: white;
+}
+
+
+// from Bootstrap's alert class
+.errorlist {
+    list-style-type: none;
+    margin: 0 0 20px 0;
+    padding: 8px 35px 8px 14px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+    border: 1px solid #eed3d7;
+    -webkit-border-radius: 4px;
+       -moz-border-radius: 4px;
+            border-radius: 4px;
+    color: #b94a48;
+    background-color: #f2dede;
+}
+
+// Flash messages 
+.flashmsgs {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    .flashmsg-wrapper {
+        display: block;
+    }
+    .alert {
+        display: inline-block;
+    }
+}
+
+// Favorites
+.saved .fa-star, .fa-star.saved {
+    color: #ffdd00;
+}
+.notsaved .fa-star, .fa-star.notsaved {
+    color: #999;
+}
+
+//=== Gravatar ==/
+.gravatar {
+    vertical-align: top;
+    img {
+        .square(60px);
+    }
+}
+.gravatar-details {
+    padding-left: 5px;
+    padding-right: 0;
+}
+.maker-id {
+    &:extend(.small-bolded-text);
+    color: @subheadingColor;
+}
+.maker-name  {
+    &:extend(.small-bolded-text);
+}
+
+//== font icons (participant, discussion, unread) ===/
+ul.list-stats {
+    margin: 0;
+    li {
+        display: inline;
+        font-size: smaller;
+    }
+    li+li {
+        padding-left: 0.75em;
+    }
+}
+.participant:before {
+    content: "\e609";
+    color: #BFBFBF;
+    font-size: 1.14em;
+    line-height: 1em;
+}
+.discussion:before {
+    content: "\e607";
+    color: #BFBFBF;
+    font-size: 1.14em;
+    line-height: 1em;
+}
+.fa-envelope {
+    color: #BFBFBF;
+}
+
+
+//=== Like / dislike ==/
+.fa-meh-o {
+    font-weight: lighter;
+    font-size: larger;
+}
+.neutral:before {
+    content: "\e600";
+    font-size: 16px;
+    line-height: 1em;
+    vertical-align: -2px;
+}
+.like:before {
+    content: '\e602';
+    font-size: 16px;
+    line-height: 1em;
+    vertical-align: -2px;
+}
+.likealot:before {
+    content: '\e601';
+    font-size: 16px;
+    line-height: 1em;
+    vertical-align: -2px;
+}
+.fa-thumbs-up.selected,
+.fa-thumbs-o-up,
+a.youlike {
+    color: #090;
+}
+.fa-thumbs-down.selected,
+.fa-thumbs-o-down,
+a.youdislike {
+    color: #900;
+}
+.fa-thumbs-o-up.disabled,
+.fa-thumbs-o-down.disabled,
+.fa-thumbs-up.disabled,
+.fa-thumbs-down.disabled {
+    color: #aaa;
+}
+
+
+//=== Months list ===/
+div#months-list {
+    padding-top: 1em;
+    h3 {
+        margin-top: 1em;
+        font-size: larger;
+    }
+    li.current {
+        font-weight: bold;
+    }
+}
+
+
+//=== Attachments in replies or new threads ===/
+.attach-files-template {
+    display: none;
+}
+.attach-files-add {
+    display: none;
+}
+.attach-files span {
+    display: block;
+}
+
+//=== quoted switch in message view ===/
+.quoted-switch .pgp {
+    font-weight: normal;
+    text-transform: lowercase;
+    font-size: 90%;
+}
+
+//=== AJAX ===/
+.ajaxloader {
+    display: block;
+    margin: 1em auto;
+}
+.ui-autocomplete-loading {
+    background: white url('../img/ajax-loader.gif') right center no-repeat;
+}
+
+
+//=== Categories ===/
+.thread-category {
+    //padding: 0;
+    a.label.disabled {
+        cursor: default;
+    }
+    a.label:hover {
+        color: white;
+        text-decoration: none;
+    }
+    form {
+        margin: 0;
+        display: none;
+
+        p {
+            margin: 0;
+        }
+
+        select {
+            font-size: 90%;
+            width: 12em;
+            margin: 0;
+        }
+
+        .errorlist {
+            display: none; /* Displayed manually */
+        }
+    }
+}
+
+
+//=== Activity chart ===/
+.chart-font {
+    font-size: 8pt;
+    font-family: "Droid Sans", sans-serif;
+    font-color: #777;
+}
+.chart-data {
+    &:extend(.chart-font);
+    position: relative;
+    margin: auto;
+    padding-top: 3px;
+    // default behavior is to hide axes
+    .axis path, .chart-data .axis line {
+        display: none;
+    }
+    .bars rect {
+        fill: steelBlue;
+    }
+}

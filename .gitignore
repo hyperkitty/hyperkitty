@@ -7,4 +7,5 @@ logs
 doc/_build
 doc/_static
 /dist
+*.orig
 .tox
