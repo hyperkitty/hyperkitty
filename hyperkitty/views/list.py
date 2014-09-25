@@ -197,7 +197,7 @@ def overview(request, mlist_fqdn=None):
             favorites = Favorite.objects.filter(list_address=mlist.name, user=request.user)
         except Favorite.DoesNotExist:
             favorites = []
-        threads_posted_to = list(store.get_threads_user_posted_to(request.user.id, mlist.name))
+        threads_posted_to = store.get_threads_user_posted_to(request.user.id, mlist.name).all()
     else:
         favorites = []
         threads_posted_to = []
