@@ -171,5 +171,10 @@ class MailmanUserMetadata(object):
             request.session["user_id"] = None
         else:
             request.session["user_id"] = unicode(user.user_id)
-        request.session["subscribed"] = \
-                [ s.address for s in user.subscriptions ]
+        request.session["subscribed"] = []
+        for list_id in user.subscription_list_ids:
+            try:
+                ml = client.get_list(list_id)
+                request.session["subscribed"].append(ml.fqdn_listname)
+            except (MailmanConnectionError, HTTPError):
+                continue
