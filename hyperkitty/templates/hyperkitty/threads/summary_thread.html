@@ -1,0 +1,39 @@
+{% load url from future %}
+{% load hk_generic %}
+{% load storm %}
+
+        <div class="thread row">
+            <span class="thread-title col-tn-12">
+                {% if counter %}<span class="thread-id">#{{counter}}</span>{% endif %}
+                <a name="{{thread.thread_id}}"
+                    href="{% url 'hk_thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
+                    >
+                    {% if thread.category_widget %}
+                        <span class="label category" style="background-color:{{thread.category_widget.color}}">
+                            {{ thread.category_widget.name|upper }}
+                        </span>
+                    {% endif %}
+                    {% if thread.unread %}
+                        <i class="fa fa-envelope" title="New messages in this thread"></i>
+                    {% endif %}
+                    {{ thread.subject|strip_subject:mlist }}
+                </a>
+            </span>
+            <div class="thread-stats col-tn-12">
+                <span class="date">{{ thread.date_active|date:"D M j, g:i a" }}</span>
+                <ul class="list-unstyled pull-right list-stats">
+                    <li>
+                        <i class="icomoon participant"></i>
+                        {{ thread.participants_count }}
+                    </li>
+                    <li>
+                        <i class="icomoon discussion"></i>
+                        {{ thread|num_comments }}
+                    </li>
+                    <li class="hidden-tn">
+                        <i class="icomoon likestatus {{ thread.likestatus }}"></i>
+                        <span class="likestatus">+{{ thread.likes }}/-{{ thread.dislikes }}</span>
+                    </li>
+                </ul>
+            </div>
+        </div>

@@ -1,0 +1,57 @@
+{% load url from future %}
+{% load hk_generic %}
+
+{% if show_dropdown %}
+<a href="" id="navbarMonthsListDrop" class="dropdown-toggle" data-toggle="dropdown">Go to <b class="caret"></b></a>
+<ul class="dropdown-menu right" role="menu" aria-labelledby="navbarMonthsListDrop">
+    {% for year, months in months_list|sort %}
+    <li role="presentation" class="dropdown-header disabled">
+        <a href="">----- {{ year }} -----</a>
+    </li>
+    {% for ar_month in months %}
+    <li>
+        <a href="{% url 'hk_archives_with_month' year=year mlist_fqdn=mlist.name month=ar_month %}"
+           >{{ ar_month|monthtodate:year|date:"F" }}</a>
+    </li>
+    {% endfor %}
+    {% endfor %}
+</ul>
+{% elif show_select %}
+<select id="months-list" class="form-control">
+    {% for year, months in months_list|sort %}
+    <option disabled>----- {{ year }} -----</option>
+    {% for ar_month in months %}
+    <option{% if month and year == month.year and ar_month == month.month %} selected="selected"{% endif %}>{{ ar_month|monthtodate:year|date:"F Y" }}</option>
+    {% endfor %}
+    {% endfor %}
+</select>
+
+{% else %}
+<div class="hidden-tn hidden-xs col-sm-2">
+    <div class="panel-group" id="months-list">
+        {% for year, months in months_list|sort %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#months-list" href="#collapse{{forloop.counter0}}">
+                        {{ year }}
+                    </a>
+                </h3>
+            </div>
+            <div id="collapse{{forloop.counter0}}" class="panel-collapse {% if forloop.counter == 1 %}in{% else %}collapse{% endif %}">
+                <div class="panel-body">
+                    <ul class="list-unstyled">
+                        {% for ar_month in months %}
+                        <li class="{% if month and year == month.year and ar_month == month.month %}current{% endif %}">
+                            <a href="{% url 'hk_archives_with_month' year=year mlist_fqdn=mlist.name month=ar_month %}"
+                               >{{ ar_month|monthtodate:year|date:"F" }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}

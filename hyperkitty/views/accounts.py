@@ -67,7 +67,7 @@ def login_view(request, *args, **kwargs):
 @login_required
 def user_profile(request):
     if not request.user.is_authenticated():
-        return redirect('user_login')
+        return redirect('hk_user_login')
 
     store = get_store(request)
 
@@ -97,7 +97,7 @@ def user_profile(request):
                 mm_user.display_name = "%s %s" % (
                         request.user.first_name, request.user.last_name)
                 mm_user.save()
-            redirect_url = reverse('user_profile')
+            redirect_url = reverse('hk_user_profile')
             redirect_url += "?msg=updated-ok"
             return redirect(redirect_url)
     else:
@@ -149,13 +149,13 @@ def user_profile(request):
         'gravatar_url': gravatar_url,
         'gravatar_shortname': gravatar_shortname,
     }
-    return render(request, "user_profile.html", context)
+    return render(request, "hyperkitty/user_profile.html", context)
 
 
 def user_registration(request):
     if not settings.USE_INTERNAL_AUTH:
         raise SuspiciousOperation
-    redirect_to = request.REQUEST.get("next", reverse("root"))
+    redirect_to = request.REQUEST.get("next", reverse("hk_root"))
     if not is_safe_url(url=redirect_to, host=request.get_host()):
         redirect_to = settings.LOGIN_REDIRECT_URL
 
@@ -187,7 +187,7 @@ def user_registration(request):
         'form': form,
         'next': redirect_to,
     }
-    return render(request, 'register.html', context)
+    return render(request, 'hyperkitty/register.html', context)
 
 
 @login_required
@@ -214,7 +214,7 @@ def last_views(request):
             thread.unread = 0
     last_views = [ lv for lv in last_views if lv.thread is not None ]
 
-    return render(request, 'ajax/last_views.html', {
+    return render(request, 'hyperkitty/ajax/last_views.html', {
                 "last_views": last_views,
             })
 
@@ -230,7 +230,7 @@ def votes(request):
         votes = [] # User not found in KittyStore: no emails sent yet
     else:
         votes = paginate(user.votes, request.GET.get('vpage'))
-    return render(request, 'ajax/votes.html', {
+    return render(request, 'hyperkitty/ajax/votes.html', {
                 "votes": votes,
             })
 
@@ -246,7 +246,7 @@ def subscriptions(request):
         mm_client = mm_user = None
     # Subscriptions
     subscriptions = get_subscriptions(store, mm_client, mm_user)
-    return render(request, 'fragments/user_subscriptions.html', {
+    return render(request, 'hyperkitty/fragments/user_subscriptions.html', {
                 "subscriptions": subscriptions,
             })
 
@@ -303,7 +303,7 @@ def public_profile(request, user_id):
         "dislikes": dislikes,
         "likestatus": likestatus,
     }
-    return render(request, "user_public_profile.html", context)
+    return render(request, "hyperkitty/user_public_profile.html", context)
 
 
 def posts(request, user_id):
@@ -317,7 +317,7 @@ def posts(request, user_id):
         if mlist is None:
             raise Http404("No archived mailing-list by that name.")
         if not is_mlist_authorized(request, mlist):
-            return render(request, "errors/private.html", {
+            return render(request, "hyperkitty/errors/private.html", {
                             "mlist": mlist,
                           }, status=403)
 
@@ -352,4 +352,4 @@ def posts(request, user_id):
         'messages': messages,
         'fullname': fullname,
     }
-    return render(request, "user_posts.html", context)
+    return render(request, "hyperkitty/user_posts.html", context)

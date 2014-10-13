@@ -75,7 +75,7 @@ def get_subscriptions(store, client, mm_user):
         else:
             likes, dislikes = ks_user.get_votes_in_list(mlist)
         all_posts_url = "%s?list=%s" % \
-                (reverse("user_posts", args=[mm_user.user_id]), mlist)
+                (reverse("hk_user_posts", args=[mm_user.user_id]), mlist)
         likestatus = "neutral"
         if likes - dislikes >= 10:
             likestatus = "likealot"
@@ -110,7 +110,7 @@ def check_mlist_private(func):
             raise Http404("No archived mailing-list by that name.")
         #return HttpResponse(request.session.get("subscribed", "NO KEY"), content_type="text/plain")
         if not is_mlist_authorized(request, mlist):
-            return render(request, "errors/private.html", {
+            return render(request, "hyperkitty/errors/private.html", {
                             "mlist": mlist,
                           }, status=403)
         return func(request, *args, **kwargs)

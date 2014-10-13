@@ -179,7 +179,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         # The limit is a safety measure, don't let a bot kill the DB
         context["replies"] = _get_thread_replies(request, thread, limit=1000)
 
-    return render(request, "thread.html", context)
+    return render(request, "hyperkitty/thread.html", context)
 
 
 @check_mlist_private
@@ -206,7 +206,7 @@ def replies(request, mlist_fqdn, threadid):
     context["replies"] = _get_thread_replies(request, thread, offset=offset,
                                              limit=chunk_size)
 
-    replies_tpl = loader.get_template('ajax/replies.html')
+    replies_tpl = loader.get_template('hyperkitty/ajax/replies.html')
     replies_html = replies_tpl.render(RequestContext(request, context))
     response = {"replies_html": replies_html,
                 "more_pending": False,
@@ -259,7 +259,7 @@ def tags(request, mlist_fqdn, threadid):
     # Now refresh the tag list
     tags = Tag.objects.filter(threadid=threadid, list_address=mlist_fqdn)
     FakeMList = namedtuple("MailingList", ["name"])
-    tpl = loader.get_template('threads/tags.html')
+    tpl = loader.get_template('hyperkitty/threads/tags.html')
     html = tpl.render(RequestContext(request, {
             "tags": tags,
             "mlist": FakeMList(name=mlist_fqdn),
@@ -341,7 +341,7 @@ def set_category(request, mlist_fqdn, threadid):
             "threadid": threadid,
             "category": category,
             }
-    return render(request, "threads/category.html", context)
+    return render(request, "hyperkitty/threads/category.html", context)
 
 
 @check_mlist_private
@@ -381,7 +381,7 @@ def reattach(request, mlist_fqdn, threadid):
                     store.attach_to_thread(msg, new_thread)
                 store.delete_thread(mlist_fqdn, threadid)
                 return redirect(reverse(
-                        'thread', kwargs={
+                        'hk_thread', kwargs={
                             "mlist_fqdn": mlist_fqdn,
                             'threadid': parent_tid,
                         })+"?msg=attached-ok")
@@ -393,7 +393,7 @@ def reattach(request, mlist_fqdn, threadid):
         'months_list': get_months(store, mlist.name),
         'flash_messages': flash_messages,
     }
-    return render(request, "reattach.html", context)
+    return render(request, "hyperkitty/reattach.html", context)
 
 
 @check_mlist_private
@@ -422,4 +422,4 @@ def reattach_suggest(request, mlist_fqdn, threadid):
         'mlist' : mlist,
         'suggested_threads': suggested_threads[:10],
     }
-    return render(request, "ajax/reattach_suggest.html", context)
+    return render(request, "hyperkitty/ajax/reattach_suggest.html", context)

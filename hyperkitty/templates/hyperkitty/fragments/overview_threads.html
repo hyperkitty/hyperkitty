@@ -1,0 +1,17 @@
+{% load url from future %}
+{% load storm %}
+
+<div class="thread-list">
+    {% for thread in threads %}
+        {% if forloop.counter == 6 %}
+        <div class="bordered more-threads">
+        <a href="#">More...</a>
+        {% endif %}
+        {% include "hyperkitty/threads/summary_thread.html" with counter=forloop.counter %}
+    {% empty %}
+        <p>{{ empty }}</p>
+    {% endfor %}
+    {% if threads|length > 5 %}
+        </div> <!-- closing the more-threads block -->
+    {% endif %}
+</div>

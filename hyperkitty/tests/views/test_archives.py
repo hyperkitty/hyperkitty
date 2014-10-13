@@ -50,8 +50,8 @@ class ListArchivesTestCase(ViewTestCase):
     def test_no_date(self):
         today = datetime.date.today()
         response = self.client.get(reverse(
-                'archives_latest', args=['list@example.com']))
-        final_url = reverse('archives_with_month',
+                'hk_archives_latest', args=['list@example.com']))
+        final_url = reverse('hk_archives_with_month',
                 kwargs={'mlist_fqdn': 'list@example.com',
                         'year': today.year,
                         'month': today.month,
@@ -103,22 +103,22 @@ class PrivateArchivesTestCase(TestCase):
 
     def test_month_view(self):
         now = datetime.datetime.now()
-        self._do_test(reverse('archives_with_month', args=["list@example.com", now.year, now.month]))
+        self._do_test(reverse('hk_archives_with_month', args=["list@example.com", now.year, now.month]))
 
     def test_overview(self):
-        self._do_test(reverse('list_overview', args=["list@example.com"]))
+        self._do_test(reverse('hk_list_overview', args=["list@example.com"]))
 
     def test_thread_view(self):
-        self._do_test(reverse('thread', args=["list@example.com", self.msgid]))
+        self._do_test(reverse('hk_thread', args=["list@example.com", self.msgid]))
 
     def test_message_view(self):
-        self._do_test(reverse('message_index', args=["list@example.com", self.msgid]))
+        self._do_test(reverse('hk_message_index', args=["list@example.com", self.msgid]))
 
     def test_search_list(self):
-        self._do_test(reverse('search'), {"list": "list@example.com", "query": "dummy"})
+        self._do_test(reverse('hk_search'), {"list": "list@example.com", "query": "dummy"})
 
     def test_search_all_lists(self):
         # When searching all lists, we only search public lists regardless of
         # the user's subscriptions
-        response = self.client.get(reverse('search'), {"query": "dummy"})
+        response = self.client.get(reverse('hk_search'), {"query": "dummy"})
         self.assertNotContains(response, "Dummy message", status_code=200)

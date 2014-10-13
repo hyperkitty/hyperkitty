@@ -1,0 +1,48 @@
+{% extends "hyperkitty/base.html" %}
+{% load url from future %}
+{% load i18n %}
+{% load hk_generic %}
+{% load gravatar %}
+
+
+{% block title %}
+{% trans 'User Profile' %} for {{ fullname }} - {{ app_name|title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="user-profile user-public-profile">
+
+    <h1>User profile <small>for {{ fullname }}</small></h1>
+
+    <table class="table table-bordered table-striped user-data">
+        <tbody>
+            <tr>
+                <th>{% trans 'Name:' %}</th>
+                <td>{{ fullname }}</td>
+            </tr>
+            {% if creation %}
+            <tr>
+                <th>{% trans 'Creation:' %}</th>
+                <td>{{ creation|date:"l, j F Y H:i:s" }} ({{ creation|timesince }})</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <th>{% trans 'Votes for this user:' %}</th>
+                <td><span class="likestatus {{ likestatus }}">+{{ likes }}/-{{ dislikes }}</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="gravatar">
+        {% gravatar email 100 %}
+    </div>
+
+    <div class="clearfix"></div>
+
+    <h3>Subscriptions</h3>
+    {% include "hyperkitty/fragments/user_subscriptions.html" %}
+
+</div>
+
+{% endblock %}

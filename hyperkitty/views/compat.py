@@ -37,12 +37,12 @@ from hyperkitty.lib.compat import get_list_by_name, month_name_to_num
 
 def summary(request, list_name=None):
     if list_name is None:
-        return HttpResponseRedirect(reverse('root'))
+        return HttpResponseRedirect(reverse('hk_root'))
     store = get_store(request)
     mlist = get_list_by_name(list_name, store, request)
     if mlist is None:
         raise Http404("No archived mailing-list by that name.")
-    url = reverse('list_overview', kwargs={'mlist_fqdn': mlist.name})
+    url = reverse('hk_list_overview', kwargs={'mlist_fqdn': mlist.name})
     #return HttpResponse(request.build_absolute_uri(url))
     return HttpResponseRedirect(url)
 
@@ -52,7 +52,7 @@ def arch_month(request, list_name, year, month_name, summary_type="thread"):
     mlist = get_list_by_name(list_name, store, request)
     if mlist is None:
         raise Http404("No archived mailing-list by that name.")
-    url = reverse('archives_with_month', kwargs={
+    url = reverse('hk_archives_with_month', kwargs={
             'mlist_fqdn': mlist.name,
             'year': year,
             'month': str(month_name_to_num(month_name)).rjust(2, "0"),
@@ -112,7 +112,7 @@ def message(request, list_name, year, month_name, msg_num):
     message = store.get_message_by_number(mlist.name, int(msg_num))
     if message is None:
         raise Http404("No such message in this mailing-list.")
-    url = reverse('message_index', kwargs={
+    url = reverse('hk_message_index', kwargs={
             'mlist_fqdn': mlist.name,
             'message_id': message.message_id_hash,
             })

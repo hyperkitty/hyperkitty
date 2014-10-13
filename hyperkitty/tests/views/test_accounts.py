@@ -43,13 +43,13 @@ class AccountViewsTestCase(ViewTestCase):
 
     def test_login(self):
         # Try to access user profile (private data) without logging in
-        response = self.client.get(reverse("user_profile"))
+        response = self.client.get(reverse("hk_user_profile"))
         self.assertRedirects(response,
-                "%s?next=%s" % (reverse('user_login'), reverse("user_profile")))
+                "%s?next=%s" % (reverse('hk_user_login'), reverse("hk_user_profile")))
 
     def test_profile(self):
         self.client.login(username='testuser', password='testPass')
-        response = self.client.get(reverse("user_profile"))
+        response = self.client.get(reverse("hk_user_profile"))
         self.assertEqual(response.status_code, 200)
 
     def test_public_profile(self):
@@ -57,7 +57,7 @@ class AccountViewsTestCase(ViewTestCase):
         user_id = u"DUMMY"
         self.store.create_user(user_email, user_id)
         self.client.login(username='testuser', password='testPass')
-        response = self.client.get(reverse("public_user_profile", args=[user_id]))
+        response = self.client.get(reverse("hk_public_user_profile", args=[user_id]))
         self.assertEqual(response.status_code, 200)
 
     @override_settings(USE_INTERNAL_AUTH=True)
@@ -65,19 +65,19 @@ class AccountViewsTestCase(ViewTestCase):
         self.client.login(username='testuser', password='testPass')
         # If the user if already logged in, redirect to index page...
         # Don't let him register again
-        response = self.client.get(reverse('user_registration'))
-        self.assertRedirects(response, reverse('root'))
+        response = self.client.get(reverse('hk_user_registration'))
+        self.assertRedirects(response, reverse('hk_root'))
 
         # Access the user registration page after logging out and try to register now
         self.client.logout()
-        response = self.client.get(reverse('user_registration'))
+        response = self.client.get(reverse('hk_user_registration'))
         self.assertEqual(response.status_code, 200)
 
         # @TODO: Try to register a user and verify its working
 
     def test_votes_no_mailman_user(self):
         self.client.login(username='testuser', password='testPass')
-        response = self.client.get(reverse("user_votes"))
+        response = self.client.get(reverse("hk_user_votes"))
         self.assertEqual(response.status_code, 500)
 
     def test_votes_no_ks_user(self):
@@ -89,7 +89,7 @@ class AccountViewsTestCase(ViewTestCase):
         session.save()
 
         try:
-            response = self.client.get(reverse("user_votes"))
+            response = self.client.get(reverse("hk_user_votes"))
         except AttributeError:
             self.fail("Getting the votes should not fail if "
                       "the user has never voted yet\n%s" % format_exc())
@@ -131,7 +131,7 @@ class LastViewsTestCase(ViewTestCase):
         self.store.add_to_list(ml, msg4)
 
     def test_profile(self):
-        response = self.client.get(reverse('user_last_views'))
+        response = self.client.get(reverse('hk_user_last_views'))
         self.assertContains(response, "<td>dummy@example.com</td>",
                             count=2, status_code=200, html=True)
 
@@ -139,7 +139,7 @@ class LastViewsTestCase(ViewTestCase):
         responses = []
         for msgnum in range(3):
             threadid = get_message_id_hash("<id%d>" % (msgnum+1))
-            response = self.client.get(reverse('thread', args=(
+            response = self.client.get(reverse('hk_thread', args=(
                         "list@example.com", threadid)))
             responses.append(response)
         # There's always one icon in the right column, so all counts are +1
@@ -149,12 +149,12 @@ class LastViewsTestCase(ViewTestCase):
 
     def test_thread_list(self):
         now = datetime.datetime.now()
-        response = self.client.get(reverse('archives_with_month', args=(
+        response = self.client.get(reverse('hk_archives_with_month', args=(
                     "list@example.com", now.year, now.month)))
         self.assertContains(response, "fa-envelope",
                             count=2, status_code=200)
 
     def test_overview(self):
-        response = self.client.get(reverse('list_overview', args=["list@example.com"]))
+        response = self.client.get(reverse('hk_list_overview', args=["list@example.com"]))
         self.assertContains(response, "fa-envelope",
                             count=4, status_code=200)

@@ -1,0 +1,144 @@
+{% extends "hyperkitty/base.html" %}
+
+{% load url from future %}
+{% load gravatar %}
+{% load hk_generic %}
+{% load storm %}
+
+
+{% block title %}
+{{ subject }} - {{ mlist.display_name|default:mlist.name|escapeemail }} - {{ app_name|title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="row view-thread">
+
+{% include 'hyperkitty/threads/month_list.html' %}
+
+    <div class="col-tn-12 col-sm-10">
+
+        <!-- thread header: navigation (older/newer), thread title -->
+        <div class="thread-header row">
+            <div class="thread-category">
+                {% include 'hyperkitty/threads/category.html' %}
+            </div>
+            <div class="col-tn-2">
+                {% if next_thread %}
+                <button id="next-thread" class="btn btn-default btn-xs {% if not next_thread %}disabled{% endif %}"
+                        {% if next_thread %}title="{{ next_thread.subject|strip_subject:mlist|escape }}"{% endif %}>
+                    <span class="fa fa-chevron-left"></span>
+                    <span class="hidden-tn hidden-xs">newer</span>
+                </button>
+               {% endif %}
+            </div>
+            <div class="col-tn-8">
+                <h3>{{ subject }}</h3>
+            </div>
+            <div class="col-tn-2 right">
+                <button id="prev-thread" class="btn btn-default btn-xs {% if not prev_thread %}disabled{% endif %}"
+                    {% if prev_thread %}title="{{ prev_thread.subject|strip_subject:mlist|escape }}"{% endif %}>
+                    <span class="fa fa-chevron-right"></span>
+                    <span class="hidden-tn hidden-xs">older</span>
+                </button>
+            </div>
+            <div class="thread-titles">
+                {% if next_thread %}
+                <a class="hidden-tn hidden-xs col-sm-6"
+                   href="{% url 'hk_thread' threadid=next_thread.thread_id mlist_fqdn=mlist.name %}"
+                   title="{{ next_thread.subject|strip_subject:mlist|escape }}">{{ next_thread.subject|strip_subject:mlist|truncatesmart:"35" }}</a>
+                {% endif %}
+                {% if prev_thread %}
+                <a class="right hidden-tn hidden-xs col-sm-6"
+                   href="{% url 'hk_thread' threadid=prev_thread.thread_id mlist_fqdn=mlist.name %}"
+                   title="{{ prev_thread.subject|strip_subject:mlist|escape }}">{{ prev_thread.subject|strip_subject:mlist|truncatesmart:"35" }}</a>
+                {% endif %}
+            </div>
+        </div> <!-- /thread-header -->
+
+        <!-- nav tabs, for smaller screens -->
+        <ul class="nav nav-tabs hidden-sm hidden-md hidden-lg">
+            <li class="active">
+                <a href="#home">First Post</a>
+            </li>
+            <li>
+                <a href="#replies">Replies</a>
+            </li>
+            <li>
+                <a href="#stats">Stats</a>
+            </li>
+            <li class="dropdown">
+                {% include 'hyperkitty/threads/month_list.html' with show_dropdown=True %}
+            </li>
+        </ul> <!-- /navtab -->
+        
+        <div class="row">
+            <div class="col-sm-9">
+                <!-- main section, the email thread -->
+                <div id="thread-content">
+
+                    <!-- Start first email -->
+                    {% include 'hyperkitty/messages/message.html' with email=first_mail unfolded='True' %}
+                    <!-- End first email -->
+
+                    <p class="sort-mode">
+                        {% if sort_mode == "date" %}
+                        <a href="{% url 'hk_thread' threadid=threadid mlist_fqdn=mlist.name %}?sort=thread"
+                            >Show replies by thread</a>
+                        {% else %}
+                        <a href="{% url 'hk_thread' threadid=threadid mlist_fqdn=mlist.name %}?sort=date"
+                            >Show replies by date</a>
+                        {% endif %}
+                    </p>
+
+                    <div class="anchor-link">
+                        <a id="replies"></a>
+                    </div>
+                    <div class="replies">
+                        {% if is_bot %}
+                            {% include 'hyperkitty/ajax/replies.html' %}
+                        {% else %}
+                            <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
+                        {% endif %}
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="col-sm-3">
+                <div class="anchor-link">
+                        <a id="stats"></a>
+                    </div>
+                {% include 'hyperkitty/threads/right_col.html' %}
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- end of content -->
+{% endblock %}
+
+{% block additionaljs %}
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        //enable tooltips for thread buttons
+        $("btn#next-thread").tooltip();
+        $("btn#prev-thread").tooltip();
+        
+        setup_category();
+        setup_tags();
+        setup_favorites();
+        setup_emails_list();
+        // Hide quotes by default in the thread view
+        fold_quotes();
+        // Load the replies
+        update_thread_replies("{% url 'hk_thread_replies' threadid=threadid mlist_fqdn=mlist.name %}?sort={{sort_mode}}&last_view={{last_view|date:'U'}}");
+        setup_unreadnavbar("#unreadnavbar");
+    });
+</script>
+
+{% endblock %}

@@ -43,7 +43,7 @@ class PrivateListTestCase(ViewTestCase):
         msg["Message-ID-Hash"] = self.msgid = self.store.add_to_list(ml, msg)
 
     def _do_test(self, sort_mode):
-        response = self.client.get(reverse("root"), {"sort": sort_mode})
+        response = self.client.get(reverse("hk_root"), {"sort": sort_mode})
         self.assertNotContains(response, "list@example.com", status_code=200)
 
     def test_sort_active(self):
