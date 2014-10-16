@@ -36,6 +36,9 @@ from django.core.urlresolvers import reverse
 from kittystore import get_store
 from kittystore.utils import get_message_id_hash
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class Archiver(object):
 
@@ -112,7 +115,10 @@ class Archiver(object):
         """
         if self.store is None:
             self.store = get_store(self.settings)
-        msg.message_id_hash = self.store.add_to_list(mlist, msg)
+        self.store.add_to_list(mlist, msg)
         self.store.commit()
         # TODO: Update karma
-        return msg.message_id_hash
+        url = self.permalink(mlist, msg)
+        logger.info("Archived message %s to %s",
+                    msg['Message-Id'].strip(), url)
+        return url
