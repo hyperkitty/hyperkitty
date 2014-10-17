@@ -33,6 +33,7 @@ from mailman.interfaces.archiver import IArchiver
 from mailman.config import config
 from mailman.config.config import external_configuration
 from django.core.urlresolvers import reverse
+from django.utils.http import urlunquote
 from kittystore import get_store
 from kittystore.utils import get_message_id_hash
 
@@ -85,8 +86,8 @@ class Archiver(object):
         :param mlist: The IMailingList object.
         :returns: The url string.
         """
-        return urljoin(self.base_url,
-                       reverse('list_overview', args=[mlist.fqdn_listname]))
+        return urljoin(self.base_url, urlunquote(
+                reverse('list_overview', args=[mlist.fqdn_listname])))
 
     def permalink(self, mlist, msg):
         """Return the url to the message in the archive.
@@ -101,9 +102,9 @@ class Archiver(object):
         """
         msg_id = msg['Message-Id'].strip().strip("<>")
         msg_hash = get_message_id_hash(msg_id)
-        return urljoin(self.base_url, reverse('message_index',
+        return urljoin(self.base_url, urlunquote(reverse('message_index',
                     kwargs={"mlist_fqdn": mlist.fqdn_listname,
-                            "message_id_hash": msg_hash}))
+                            "message_id_hash": msg_hash})))
 
     def archive_message(self, mlist, msg):
         """Send the message to the archiver.
