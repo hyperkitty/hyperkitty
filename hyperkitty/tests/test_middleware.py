@@ -50,11 +50,11 @@ class MailmanMiddlewareTestCase(TestCase):
 
     def test_setting_user_id(self):
         self.set_mailman_client_mode("mocking")
-        self.mailman_client.add_fake_user("testuser@example.com")
+        expected_user_id = self.mailman_client.add_fake_user("testuser@example.com")
         self.middleware.process_view(self.request, self.view_func, [], {})
         #print self.mailman_client.called_paths
         self.assertTrue("user_id" in self.request.session)
-        self.assertEqual(self.request.session["user_id"], "testuser_userid")
+        self.assertEqual(self.request.session["user_id"], unicode(expected_user_id))
 
     def test_setting_subscriptions(self):
         self.set_mailman_client_mode("mocking")

@@ -19,6 +19,7 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+import uuid
 from copy import deepcopy
 
 import mailmanclient
@@ -166,11 +167,12 @@ class FakeMailmanClient(mailmanclient.Client):
 
     def add_fake_user(self, address):
         """Make it easier to create fake users"""
-        user_id = address[:address.index("@")] + "_userid"
+        user_id = uuid.uuid1()
         if "users" not in self._connection.data:
             self._connection.data["users"] = {}
-        self._connection.data["users"][address] = {"user_id": user_id}
-        self._connection.data["users"][user_id] = {"addresses": [{
+        self._connection.data["users"][address] = {"user_id": user_id.int}
+        self._connection.data["users"][str(user_id.int)] = {"addresses": [{
             "email": address, "self_link": "address/%s" % address}]}
         if "members" not in self._connection.data:
             self._connection.data["members"] = {}
+        return user_id
