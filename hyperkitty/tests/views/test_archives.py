@@ -58,6 +58,15 @@ class ListArchivesTestCase(ViewTestCase):
                 })
         self.assertRedirects(response, final_url)
 
+    def test_wrong_date(self):
+        response = self.client.get(reverse(
+                'archives_with_month', kwargs={
+                    'mlist_fqdn': 'list@example.com',
+                    'year': '9999',
+                    'month': '0',
+                }))
+        self.assertEqual(response.status_code, 404)
+
 
 
 class PrivateArchivesTestCase(TestCase):

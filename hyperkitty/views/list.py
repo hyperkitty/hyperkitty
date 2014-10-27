@@ -54,7 +54,11 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
                     'year': today.year,
                     'month': today.month}))
 
-    begin_date, end_date = get_display_dates(year, month, day)
+    try:
+        begin_date, end_date = get_display_dates(year, month, day)
+    except ValueError:
+        # Wrong date format, for example 9999/0/0
+        raise Http404("Wrong date format")
     store = get_store(request)
     mlist = store.get_list(mlist_fqdn)
     threads = store.get_threads(mlist_fqdn, start=begin_date, end=end_date)
