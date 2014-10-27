@@ -33,6 +33,7 @@ import hyperkitty.lib.mailman
 
 
 OVERRIDE_SETTINGS = {
+    "DEBUG": True,
     "TEMPLATE_DEBUG": True,
     "USE_SSL": False,
     "KITTYSTORE_URL": 'sqlite:',
@@ -43,6 +44,8 @@ OVERRIDE_SETTINGS = {
     "LOGIN_URL": '/accounts/login/',
     "LOGIN_REDIRECT_URL": '/',
     "LOGIN_ERROR_URL": '/accounts/login/',
+    "COMPRESS_ENABLED": False,
+    "COMPRESS_PRECOMPILERS": (),
     "CACHES": {
         'default': {
             'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
