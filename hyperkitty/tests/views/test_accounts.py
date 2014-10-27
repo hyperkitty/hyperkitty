@@ -21,6 +21,7 @@
 #
 
 import datetime
+import uuid
 from traceback import format_exc
 
 from hyperkitty.tests.utils import ViewTestCase
@@ -54,10 +55,10 @@ class AccountViewsTestCase(ViewTestCase):
 
     def test_public_profile(self):
         user_email = u"dummy@example.com"
-        user_id = u"DUMMY"
+        user_id = uuid.uuid1()
         self.store.create_user(user_email, user_id)
         self.client.login(username='testuser', password='testPass')
-        response = self.client.get(reverse("public_user_profile", args=[user_id]))
+        response = self.client.get(reverse("public_user_profile", args=[user_id.int]))
         self.assertEqual(response.status_code, 200)
 
     @override_settings(USE_INTERNAL_AUTH=True)

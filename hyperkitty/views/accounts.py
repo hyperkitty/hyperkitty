@@ -21,6 +21,7 @@
 
 import logging
 from urllib2 import HTTPError
+from uuid import UUID
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -258,6 +259,7 @@ def public_profile(request, user_id):
         subscription_list_ids = []
         user_id = None
     store = get_store(request)
+    user_id = UUID(int=int(user_id))
     try:
         client = get_mailman_client()
         mm_user = client.get_user(user_id)
@@ -320,6 +322,7 @@ def posts(request, user_id):
                             "mlist": mlist,
                           }, status=403)
 
+    user_id = UUID(int=int(user_id))
     # Get the user's full name
     try:
         client = get_mailman_client()
@@ -346,7 +349,7 @@ def posts(request, user_id):
                 request.session.get("user_id"))
 
     context = {
-        'user_id': user_id,
+        'user_id': user_id.int,
         'mlist' : mlist,
         'messages': messages,
         'fullname': fullname,

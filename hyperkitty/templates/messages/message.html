@@ -15,7 +15,7 @@
             <div class="email-author">
                 <span class="name">
                     {% if email.user_id %}
-                    <a href="{% url 'public_user_profile' user_id=email.user_id %}"
+                    <a href="{% url 'public_user_profile' user_id=email.user_id.int %}"
                        title="See {{ email.sender_name|escapeemail|escape }}'s profile"
                        >{{email.sender_name|default:"(no name)"|escapeemail}}</a>
                     {% else %}

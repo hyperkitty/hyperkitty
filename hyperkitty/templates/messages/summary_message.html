@@ -21,7 +21,7 @@
                 </div>
                 <div class="gravatar col-tn-3 col-xs-2 col-lg-1">
                     {% if message.user_id %}
-                    <a href="{% url 'public_user_profile' user_id=message.user_id %}"
+                    <a href="{% url 'public_user_profile' user_id=message.user_id.int %}"
                        title="See {{ message.sender_name|escapeemail|escape }}'s profile">
                     {% endif %}
                     {% if message.sender_email %}
