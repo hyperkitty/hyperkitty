@@ -75,7 +75,7 @@ def get_subscriptions(store, client, mm_user):
         else:
             likes, dislikes = ks_user.get_votes_in_list(mlist)
         all_posts_url = "%s?list=%s" % \
-                (reverse("user_posts", args=[mm_user.user_id]), mlist)
+                (reverse("user_posts", args=[mm_user.user_id.int]), mlist)
         likestatus = "neutral"
         if likes - dislikes >= 10:
             likestatus = "likealot"

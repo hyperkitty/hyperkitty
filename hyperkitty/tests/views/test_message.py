@@ -21,6 +21,7 @@
 #
 
 import json
+import uuid
 
 from hyperkitty.tests.utils import ViewTestCase
 from django.contrib.auth.models import User
@@ -38,10 +39,11 @@ class MessageViewsTestCase(ViewTestCase):
         self.user = User.objects.create_user(
                 'testuser', 'test@example.com', 'testPass')
         self.client.login(username='testuser', password='testPass')
+        self.uuid = uuid.uuid1()
         # use a temp variable below because self.client.session is actually a
         # property which returns a new instance en each call :-/
         session = self.client.session
-        session["user_id"] = u"testuser"
+        session["user_id"] = self.uuid
         session.save()
         # Create a dummy message to test on
         ml = FakeList("list@example.com")
@@ -82,9 +84,9 @@ class MessageViewsTestCase(ViewTestCase):
         msg.replace_header("Message-ID", "<msg2>")
         self.store.add_to_list(ml, msg)
         msg1 = self.store.get_message_by_id_from_list("list@example.com", "msg1")
-        msg1.vote(1, u"testuser")
+        msg1.vote(1, self.uuid)
         msg2 = self.store.get_message_by_id_from_list("list@example.com", "msg2")
-        msg2.vote(-1, u"testuser")
+        msg2.vote(-1, self.uuid)
         self.assertEqual(msg1.likes, 1)
         self.assertEqual(msg2.dislikes, 1)
         for msg in (msg1, msg2):

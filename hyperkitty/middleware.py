@@ -167,10 +167,7 @@ class MailmanUserMetadata(object):
                 user = client.create_user(request.user.email, "")
             else:
                 return
-        if user.user_id is None:
-            request.session["user_id"] = None
-        else:
-            request.session["user_id"] = unicode(user.user_id)
+        request.session["user_id"] = user.user_id
         request.session["subscribed"] = []
         for list_id in user.subscription_list_ids:
             try:

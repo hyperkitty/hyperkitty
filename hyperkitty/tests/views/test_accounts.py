@@ -86,7 +86,7 @@ class AccountViewsTestCase(ViewTestCase):
         # use a temp variable below because self.client.session is actually a
         # property which returns a new instance en each call :-/
         session = self.client.session
-        session["user_id"] = u"testuser"
+        session["user_id"] = uuid.uuid1()
         session.save()
 
         try:
