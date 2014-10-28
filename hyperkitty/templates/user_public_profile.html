@@ -29,7 +29,10 @@
             {% endif %}
             <tr>
                 <th>{% trans 'Votes for this user:' %}</th>
-                <td><span class="likestatus {{ likestatus }}">+{{ likes }}/-{{ dislikes }}</span></td>
+                <td>
+                    <i class="icomoon likestatus {{ likestatus }}"></i>
+                    <span class="likestatus">+{{ likes }}/-{{ dislikes }}</span>
+                </td>
             </tr>
         </tbody>
     </table>
