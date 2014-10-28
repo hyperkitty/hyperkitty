@@ -67,9 +67,13 @@ class KittyStoreDjangoMiddleware(object):
                 store = kittystore.get_store(settings)
             except kittystore.SchemaUpgradeNeeded:
                 return redirect("error_schemaupgrade")
-            else:
-                request.environ['kittystore.store'] = \
-                        self._local.__dict__.setdefault('store', store)
+            except KeyError:
+                # Sometimes Alembic fails to unset a module proxy on schema
+                # check, but it's harmless. Just do it again.
+                # TODO: investigate this.
+                store = kittystore.get_store(settings)
+            request.environ['kittystore.store'] = \
+                    self._local.__dict__.setdefault('store', store)
 
     def process_response(self, request, response):
         if "kittystore.store" in request.environ:
