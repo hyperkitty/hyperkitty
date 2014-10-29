@@ -167,7 +167,7 @@ class MMGetSubTestCase(TestCase):
         self.client = Mock()
         self.client.get_list.side_effect = lambda name: FakeMMList(name)
         self.mm_user = Mock()
-        self.mm_user.user_id = uuid.uuid1()
+        self.mm_user.user_id = uuid.uuid1().int
 
     def test_user_not_in_ks(self):
         # The user is not in KittyStore yet, this should not prevent the
@@ -184,6 +184,6 @@ class MMGetSubTestCase(TestCase):
             'likes': 0, 'dislikes': 0, 'likestatus': 'neutral',
             'list_name': "test@example.com",
             'all_posts_url': "%s?list=test@example.com"
-                    % reverse("user_posts", args=[self.mm_user.user_id.int]),
+                    % reverse("user_posts", args=[self.mm_user.user_id]),
             }]
         self.assertEqual(subs, expected)

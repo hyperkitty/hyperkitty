@@ -22,6 +22,7 @@
 from __future__ import absolute_import
 
 from functools import wraps
+from uuid import UUID
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
@@ -60,22 +61,22 @@ def subscribe(list_address, user):
 def get_subscriptions(store, client, mm_user):
     if not mm_user or not mm_user.user_id:
         return []
-    ks_user = store.get_user(mm_user.user_id)
+    user_id = UUID(int=mm_user.user_id)
+    ks_user = store.get_user(user_id)
     subscriptions = []
     for mlist_id in mm_user.subscription_list_ids:
         mlist = client.get_list(mlist_id).fqdn_listname
         # de-duplicate subscriptions
         if mlist in [ s["list_name"] for s in subscriptions ]:
             continue
-        posts_count = store.get_message_count_by_user_id(
-                mm_user.user_id, mlist)
+        posts_count = store.get_message_count_by_user_id(user_id, mlist)
         if ks_user is None:
             # no email sent and no vote cast yet
             likes = dislikes = 0
         else:
             likes, dislikes = ks_user.get_votes_in_list(mlist)
         all_posts_url = "%s?list=%s" % \
-                (reverse("user_posts", args=[mm_user.user_id.int]), mlist)
+                (reverse("user_posts", args=[user_id.int]), mlist)
         likestatus = "neutral"
         if likes - dislikes >= 10:
             likestatus = "likealot"
@@ -83,7 +84,7 @@ def get_subscriptions(store, client, mm_user):
             likestatus = "like"
         subscriptions.append({
             "list_name": mlist,
-            "first_post": store.get_first_post(mlist, mm_user.user_id),
+            "first_post": store.get_first_post(mlist, user_id),
             "likes": likes,
             "dislikes": dislikes,
             "likestatus": likestatus,

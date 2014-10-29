@@ -149,6 +149,7 @@ class TimezoneMiddleware(object):
 # Cache some metadata from Mailman about the logged in user
 
 from urllib2 import HTTPError
+from uuid import UUID
 from mailmanclient import MailmanConnectionError
 from hyperkitty.lib.mailman import get_mailman_client
 
@@ -171,7 +172,8 @@ class MailmanUserMetadata(object):
                 user = client.create_user(request.user.email, "")
             else:
                 return
-        request.session["user_id"] = user.user_id
+        if user.user_id is not None:
+            request.session["user_id"] = UUID(int=user.user_id)
         request.session["subscribed"] = []
         for list_id in user.subscription_list_ids:
             try:
