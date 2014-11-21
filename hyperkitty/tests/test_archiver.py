@@ -46,11 +46,8 @@ class ArchiverTestCase(TestCase):
         [archiver.hyperkitty]
         configuration: {}
         """.format(conffile))
-        zcml = resource_string('mailman.config', 'configure.zcml')
-        xmlconfig.string(zcml)
-        config.create_paths = False
-        config.load(None)
-        config.push('test config', test_config)
+        # Mailman's config has been initialized by the FakeMailmanClient
+        config.push('ArchiverTestCase config', test_config)
         with open(conffile, 'w') as hkcfg:
             hkcfg.write(dedent("""
         [general]
@@ -60,7 +57,7 @@ class ArchiverTestCase(TestCase):
         self.archiver = Archiver()
 
     def tearDown(self):
-        config.pop('test config')
+        config.pop('ArchiverTestCase config')
         shutil.rmtree(self.tmpdir)
 
     def _get_msg(self):

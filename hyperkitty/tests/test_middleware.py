@@ -23,6 +23,7 @@
 
 from urllib2 import HTTPError
 from pprint import pprint
+from uuid import UUID
 from mock import Mock
 
 from hyperkitty.tests.utils import TestCase
@@ -50,7 +51,9 @@ class MailmanMiddlewareTestCase(TestCase):
 
     def test_setting_user_id(self):
         self.set_mailman_client_mode("mocking")
-        expected_user_id = self.mailman_client.add_fake_user("testuser@example.com")
+        self.mailman_client.create_user("testuser@example.com", "pw")
+        user = self.mailman_client.get_user("testuser@example.com")
+        expected_user_id = UUID(int=user.user_id)
         self.middleware.process_view(self.request, self.view_func, [], {})
         #print self.mailman_client.called_paths
         self.assertTrue("user_id" in self.request.session)
@@ -58,21 +61,9 @@ class MailmanMiddlewareTestCase(TestCase):
 
     def test_setting_subscriptions(self):
         self.set_mailman_client_mode("mocking")
-        self.mailman_client.data = {
-            "members": {
-                "testuser@example.com": {
-                    "list_id": "testlist.example.com",
-                    "self_link": "members/testuser@example.com",
-                    "email": "testuser@example.com",
-                },
-            },
-            "lists": {
-                "testlist.example.com": {
-                    "fqdn_listname": "testlist@example.com",
-                },
-            },
-        }
-        self.mailman_client.add_fake_user("testuser@example.com")
+        dom = self.mailman_client.create_domain("example.com")
+        ml = dom.create_list("testlist")
+        ml.subscribe("testuser@example.com")
         self.middleware.process_view(self.request, self.view_func, [], {})
         #print self.mailman_client.called_paths
         self.assertTrue("subscribed" in self.request.session)
