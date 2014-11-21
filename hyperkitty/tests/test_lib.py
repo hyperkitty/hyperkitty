@@ -184,6 +184,6 @@ class MMGetSubTestCase(TestCase):
             'likes': 0, 'dislikes': 0, 'likestatus': 'neutral',
             'list_name': "test@example.com",
             'all_posts_url': "%s?list=test@example.com"
-                    % reverse("user_posts", args=[self.mm_user.user_id]),
+                    % reverse("hk_user_posts", args=[self.mm_user.user_id]),
             }]
         self.assertEqual(subs, expected)

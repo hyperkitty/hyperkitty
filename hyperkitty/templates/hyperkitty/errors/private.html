@@ -1,0 +1,27 @@
+{% extends "hyperkitty/base.html" %}
+{% load url from future %}
+{% load gravatar %}
+{% load hk_generic %}
+{% load kittystore %}
+
+
+{% block title %}
+Error: private list - {{ mlist.display_name|default:mlist.name|escapeemail }} - {{ app_name|title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+
+    <div class="col-sm-2">
+    </div>
+
+    <div class="col-sm-10">
+        <p class="text-danger">
+            This mailing-list is private, you must be subscribed to view the archives.
+        </p>
+    </div>
+
+</div>
+
+{% endblock %}

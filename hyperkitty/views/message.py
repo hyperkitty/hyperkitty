@@ -60,7 +60,7 @@ def index(request, mlist_fqdn, message_id_hash):
         'month': message.date,
         'reply_form': ReplyForm(),
     }
-    return render(request, "message.html", context)
+    return render(request, "hyperkitty/message.html", context)
 
 
 @check_mlist_private
@@ -112,7 +112,7 @@ def vote(request, mlist_fqdn, message_id_hash):
 
     # Extract all the votes for this message to refresh it
     message.myvote = message.get_vote_by_user_id(request.session["user_id"])
-    t = loader.get_template('messages/like_form.html')
+    t = loader.get_template('hyperkitty/messages/like_form.html')
     html = t.render(RequestContext(request, {
             "object": message,
             "message_id_hash": message_id_hash,
@@ -158,7 +158,7 @@ def reply(request, mlist_fqdn, message_id_hash):
         "content": form.cleaned_data["message"],
         "level": message.thread_depth, # no need to increment, level = thread_depth - 1
     }
-    t = loader.get_template('ajax/temp_message.html')
+    t = loader.get_template('hyperkitty/ajax/temp_message.html')
     html = t.render(RequestContext(request, { 'email': reply }))
     result = {"result": "The reply has been sent successfully.",
               "message_html": html}
@@ -200,4 +200,4 @@ def new_message(request, mlist_fqdn):
         "failure": failure,
         'months_list': get_months(store, mlist.name),
     }
-    return render(request, "message_new.html", context)
+    return render(request, "hyperkitty/message_new.html", context)

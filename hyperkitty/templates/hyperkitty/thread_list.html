@@ -1,0 +1,114 @@
+{% extends "hyperkitty/base.html" %}
+{% load url from future %}
+{% load gravatar %}
+{% load hk_generic %}
+
+
+{% block title %}
+{{ list_title }} - {{ mlist.display_name|default:mlist.name|escapeemail }} - {{ app_name|title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+
+{% include 'hyperkitty/threads/month_list.html' %}
+
+    <div id="thread-list" class="col-sm-10">
+
+        <div class="thread-list-header row">
+            <h1 class="col-tn-12">
+                <a href="{% url 'hk_list_overview' mlist_fqdn=mlist.name %}"
+                   class="list-name">
+                    {% if mlist.display_name %}
+                        {{ mlist.display_name }}
+                    {% else %}
+                        {{ mlist.name|until:"@" }}
+                    {% endif %}
+                </a>
+                <small class="hidden-tn hidden-xs">{{ list_title }}</small>
+                <div class="hidden-sm hidden-md hidden-lg">
+                    {% include 'hyperkitty/threads/month_list.html' with show_select='True' %}
+                </div>
+            </h1>
+            <span class="list-address col-tn-12">{{ mlist.name }}</span>
+            <ul class="list-unstyled list-stats thread-list-info col-tn-6 col-xs-8">
+                <li>
+                    <i class="icomoon participant"></i>
+                    {{ participants }} participants
+                </li>
+                <li>
+                    <i class="icomoon discussion"></i>
+                    {{ threads.paginator.count }} discussions
+                </li>
+            </ul>
+            <div class="thread-new right col-tn-6 col-xs-4" {% if not user.is_authenticated %}title="You must be logged-in to create a thread."{% endif %}>
+                <a href="{% url "hk_message_new" mlist_fqdn=mlist.name %}"
+                    class="btn btn-default {% if not user.is_authenticated %} disabled{% endif %}">
+                    <i class="fa fa-plus"></i>
+                    <span class="hidden-tn hidden-xs">Start a n</span><span class="hidden-sm hidden-md hidden-lg">N</span>ew thread
+                    </a>
+            </div>
+        </div>
+
+        {% for thread in threads %}
+            {% include "hyperkitty/threads/summary_thread_large.html" %}
+        {% empty %}
+            <p>Sorry no email threads could be found {{ no_results_text }}.</p>
+        {% endfor %}
+
+        {% include "hyperkitty/paginator.html" with pager=threads %}
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block additionaljs %}
+<script>
+$(document).ready(function() {
+    $('span.expander').expander({
+        slicePoint: 500,
+        userCollapseText : '\n[View Less]',
+        expandText : '\n[View More]',
+        beforeExpand: function() {
+            $(this).removeClass("collapsed");
+            $(this).addClass("expanded");
+        },
+        onCollapse: function() {
+            $(this).removeClass("expanded");
+            $(this).addClass("collapsed");
+        }
+    });
+    setup_category();
+    
+    // onchange event for month_list select (seen only in tiny/xs viewports)
+    // only add this event listener if the element exists
+    if ($('select#months-list').length > 0) {
+        var months = {
+            'January' : '1',
+            'February' : '2',
+            'March' : '3',
+            'April' : '4',
+            'May' : '5',
+            'June' : '6',
+            'July' : '7',
+            'August' : '8',
+            'September' : '9',
+            'October' : '10',
+            'November' : '11',
+            'December' : '12',
+        }
+        $('select#months-list').change(function() {
+            var date = $(this).val().split(' ');
+            var url = "{% url 'hk_archives_with_month' year=9999 mlist_fqdn=mlist.name month=0 %}";
+            url = url.replace('0', months[date[0]]);
+            url = url.replace('9999', date[1]);
+            window.parent.location.href = url;
+        });
+    }
+
+});
+</script>
+{% endblock %}

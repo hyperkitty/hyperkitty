@@ -67,7 +67,7 @@ class ReattachTestCase(ViewTestCase):
         msg2 = self.store.get_message_by_id_from_list("list@example.com", "id2")
         self.store.search = Mock(return_value={"results": [msg2]})
         self.store.search_index = True
-        response = self.client.get(reverse('thread_reattach_suggest',
+        response = self.client.get(reverse('hk_thread_reattach_suggest',
                                    args=["list@example.com", threadid]))
         self.store.search.assert_called_with(
             u'dummy message', 'list@example.com', 1, 50)
@@ -78,7 +78,7 @@ class ReattachTestCase(ViewTestCase):
     def test_reattach(self):
         threadid1 = self.messages[0]["Message-ID-Hash"]
         threadid2 = self.messages[1]["Message-ID-Hash"]
-        response = self.client.post(reverse('thread_reattach',
+        response = self.client.post(reverse('hk_thread_reattach',
                                    args=["list@example.com", threadid2]),
                                    data={"parent": threadid1})
         now = datetime.datetime.now()
@@ -87,13 +87,13 @@ class ReattachTestCase(ViewTestCase):
                 now + datetime.timedelta(days=1)))
         self.assertEqual(len(threads), 1)
         self.assertEqual(threads[0].thread_id, threadid1)
-        expected_url = reverse('thread', args=["list@example.com", threadid1]) + "?msg=attached-ok"
+        expected_url = reverse('hk_thread', args=["list@example.com", threadid1]) + "?msg=attached-ok"
         self.assertRedirects(response, expected_url)
 
     def test_reattach_manual(self):
         threadid1 = self.messages[0]["Message-ID-Hash"]
         threadid2 = self.messages[1]["Message-ID-Hash"]
-        response = self.client.post(reverse('thread_reattach',
+        response = self.client.post(reverse('hk_thread_reattach',
                                     args=["list@example.com", threadid2]),
                                     data={"parent": "",
                                           "parent-manual": threadid1})
@@ -103,13 +103,13 @@ class ReattachTestCase(ViewTestCase):
                 now + datetime.timedelta(days=1)))
         self.assertEqual(len(threads), 1)
         self.assertEqual(threads[0].thread_id, threadid1)
-        expected_url = reverse('thread', args=["list@example.com", threadid1]) + "?msg=attached-ok"
+        expected_url = reverse('hk_thread', args=["list@example.com", threadid1]) + "?msg=attached-ok"
         self.assertRedirects(response, expected_url)
 
     def test_reattach_invalid(self):
         threadid = self.messages[0]["Message-ID-Hash"]
         self.store.attach_to_thread = Mock()
-        response = self.client.post(reverse('thread_reattach',
+        response = self.client.post(reverse('hk_thread_reattach',
                                     args=["list@example.com", threadid]),
                                     data={"parent": "invalid-data"})
         self.assertFalse(self.store.attach_to_thread.called)
@@ -125,7 +125,7 @@ class ReattachTestCase(ViewTestCase):
     def test_reattach_on_itself(self):
         threadid = self.messages[0]["Message-ID-Hash"]
         self.store.attach_to_thread = Mock()
-        response = self.client.post(reverse('thread_reattach',
+        response = self.client.post(reverse('hk_thread_reattach',
                                     args=["list@example.com", threadid]),
                                     data={"parent": threadid})
         self.assertFalse(self.store.attach_to_thread.called)
@@ -142,7 +142,7 @@ class ReattachTestCase(ViewTestCase):
         threadid = self.messages[0]["Message-ID-Hash"]
         threadid_unknown = "L36TVP2EFFDSXGVNQJCY44W5AB2YMJ65"
         self.store.attach_to_thread = Mock()
-        response = self.client.post(reverse('thread_reattach',
+        response = self.client.post(reverse('hk_thread_reattach',
                                     args=["list@example.com", threadid]),
                                     data={"parent": threadid_unknown})
         self.assertFalse(self.store.attach_to_thread.called)
@@ -154,7 +154,7 @@ class ReattachTestCase(ViewTestCase):
         threadid1 = self.messages[0]["Message-ID-Hash"]
         threadid2 = self.messages[1]["Message-ID-Hash"]
         self.store.attach_to_thread = Mock()
-        response = self.client.post(reverse('thread_reattach',
+        response = self.client.post(reverse('hk_thread_reattach',
                                     args=["list@example.com", threadid1]),
                                     data={"parent": threadid2})
         self.assertFalse(self.store.attach_to_thread.called)
@@ -194,7 +194,7 @@ class ThreadTestCase(ViewTestCase):
         return msg
 
     def do_tag_post(self, data):
-        url = reverse('tags', args=["list@example.com", self.threadid])
+        url = reverse('hk_tags', args=["list@example.com", self.threadid])
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, 200)
         return json.loads(response.content)
@@ -228,7 +228,7 @@ class ThreadTestCase(ViewTestCase):
         self._make_msg("msgid2", "msgid")
         self._make_msg("msgid3", "msgid2")
         self._make_msg("msgid4", "msgid3")
-        url = reverse('thread', args=["list@example.com", self.threadid])
+        url = reverse('hk_thread', args=["list@example.com", self.threadid])
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertTrue("num_comments" in response.context)
@@ -242,7 +242,7 @@ class ThreadTestCase(ViewTestCase):
             params = urlparse.parse_qs(link_mo.group(1))
             self.assertEqual(params, {u'In-Reply-To': [u'msgid'],
                                       u'Subject':     [u'Re: Dummy message']})
-        url = reverse('thread', args=["list@example.com", self.threadid])
+        url = reverse('hk_thread', args=["list@example.com", self.threadid])
         # Authenticated request
         response = self.client.get(url)
         soup = BeautifulSoup(response.content)

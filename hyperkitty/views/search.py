@@ -86,15 +86,15 @@ def search(request, page=1):
         if mlist is None:
             raise Http404("No archived mailing-list by that name.")
         if not is_mlist_authorized(request, mlist):
-            return render(request, "errors/private.html", {
+            return render(request, "hyperkitty/errors/private.html", {
                             "mlist": mlist,
                           }, status=403)
 
     if not store.search_index:
-        return render(request, "errors/nosearch.html", {"mlist": mlist})
+        return render(request, "hyperkitty/errors/nosearch.html", {"mlist": mlist})
 
     if not query:
-        return render(request, "search_results.html", {
+        return render(request, "hyperkitty/search_results.html", {
             'mlist' : mlist,
             "query": query or "",
             'messages': [],
@@ -133,4 +133,4 @@ def search(request, page=1):
         'total': total,
         'sort_mode': sort_mode,
     }
-    return render(request, "search_results.html", context)
+    return render(request, "hyperkitty/search_results.html", context)

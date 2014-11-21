@@ -1,0 +1,34 @@
+{% load url from future %}
+
+    <form method="post" class="likeform"
+          action="{% url 'hk_message_vote' mlist_fqdn=object.list_name message_id_hash=message_id_hash %}">
+    {% csrf_token %}
+    <i class="icomoon likestatus {{ object.likestatus }}"></i>
+    <span>+{{ object.likes }}/-{{ object.dislikes }}</span>
+    {% if object.myvote and object.myvote.value == 1 %}
+        <!-- if you like it, highlight thumbs up, disable thumbs down -->
+        <a href="#cancelvote" class="vote" data-vote="0">
+            <span class="fa fa-thumbs-up selected"></span>
+            <span class="hidden-tn hidden-xs">You like it (cancel)</span>
+        </a> / 
+        <span class="fa fa-thumbs-down disabled"></span>
+    {% elif object.myvote and object.myvote.value == -1 %}
+        <!-- if you don't like it, highlight thumbs down, disable thumbs up -->
+        <span class="fa fa-thumbs-up disabled"></span> / 
+        <a href="#cancelvote" class="vote" data-vote="0">
+            <span class="fa fa-thumbs-down selected"></span>
+            <span class="hidden-tn hidden-xs">You dislike it (cancel)</span>
+        </a>
+    {% else %}
+        <a class="youlike vote{% if not user.is_authenticated %} disabled" title="You must be logged-in to vote.{% endif %}"
+           href="#like" data-vote="1">
+            <span class="fa fa-thumbs-o-up"></span>
+            <span class="hidden-tn hidden-xs hidden-sm">Like</span>
+        </a> / 
+        <a class="youdislike vote{% if not user.is_authenticated %} disabled" title="You must be logged-in to vote.{% endif %}"
+           href="#dislike" data-vote="-1">
+            <span class="fa fa-thumbs-o-down"></span>
+            <span class="hidden-tn hidden-xs hidden-sm">Dislike</span>
+        </a>
+    {% endif %}
+    </form>
