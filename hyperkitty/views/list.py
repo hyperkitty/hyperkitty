@@ -49,7 +49,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
     if year is None and month is None:
         today = datetime.date.today()
         return redirect(reverse(
-                'archives_with_month', kwargs={
+                'hk_archives_with_month', kwargs={
                     "mlist_fqdn": mlist_fqdn,
                     'year': today.year,
                     'month': today.month}))
@@ -81,7 +81,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
     return _thread_list(request, mlist, threads, extra_context=extra_context)
 
 
-def _thread_list(request, mlist, threads, template_name='thread_list.html', extra_context={}):
+def _thread_list(request, mlist, threads, template_name='hyperkitty/thread_list.html', extra_context={}):
     if mlist is None:
         raise Http404("No archived mailing-list by that name.")
     store = get_store(request)
@@ -225,7 +225,7 @@ def overview(request, mlist_fqdn=None):
         'flagged_threads': favorites,
         'threads_posted_to': threads_posted_to,
     }
-    return render(request, "overview.html", context)
+    return render(request, "hyperkitty/overview.html", context)
 
 
 @check_mlist_private

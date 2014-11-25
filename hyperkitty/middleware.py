@@ -56,7 +56,7 @@ class KittyStoreDjangoMiddleware(object):
         self._local = local()
 
     def process_request(self, request):
-        if request.path == reverse("error_schemaupgrade"):
+        if request.path == reverse("hk_error_schemaupgrade"):
             return # Display the error page
         if "kittystore.store" in request.environ:
             return # Already set, for example by unit tests

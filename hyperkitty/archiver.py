@@ -87,7 +87,7 @@ class Archiver(object):
         :returns: The url string.
         """
         return urljoin(self.base_url, urlunquote(
-                reverse('list_overview', args=[mlist.fqdn_listname])))
+                reverse('hk_list_overview', args=[mlist.fqdn_listname])))
 
     def permalink(self, mlist, msg):
         """Return the url to the message in the archive.
@@ -102,7 +102,7 @@ class Archiver(object):
         """
         msg_id = msg['Message-Id'].strip().strip("<>")
         msg_hash = get_message_id_hash(msg_id)
-        return urljoin(self.base_url, urlunquote(reverse('message_index',
+        return urljoin(self.base_url, urlunquote(reverse('hk_message_index',
                     kwargs={"mlist_fqdn": mlist.fqdn_listname,
                             "message_id_hash": msg_hash})))
 

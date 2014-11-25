@@ -21,6 +21,6 @@
 from django.shortcuts import render
 
 def users(request):
-    return render(request, "errors/notimplemented.html", {
+    return render(request, "hyperkitty/errors/notimplemented.html", {
         "mockup": "http://blog.linuxgrrl.com/2013/08/20/hyperkitty-user-profile-idea/",
     })

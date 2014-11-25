@@ -83,4 +83,4 @@ def index(request):
         'initials': sorted(list(initials)),
         'sort_mode': sort_mode,
         }
-    return render(request, "index.html", context)
+    return render(request, "hyperkitty/index.html", context)

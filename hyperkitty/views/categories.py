@@ -21,6 +21,6 @@
 from django.shortcuts import render
 
 def categories(request):
-    return render(request, "errors/notimplemented.html", {
+    return render(request, "hyperkitty/errors/notimplemented.html", {
         "mockup": "http://blog.linuxgrrl.com/2013/09/11/hyperkitty-categories/",
     })

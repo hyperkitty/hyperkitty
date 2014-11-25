@@ -55,7 +55,7 @@ class MessageViewsTestCase(ViewTestCase):
 
 
     def test_vote_up(self):
-        url = reverse('message_vote', args=("list@example.com",
+        url = reverse('hk_message_vote', args=("list@example.com",
                       get_message_id_hash("msg")))
         resp = self.client.post(url, {"vote": "1"})
         self.assertEqual(resp.status_code, 200)
@@ -65,7 +65,7 @@ class MessageViewsTestCase(ViewTestCase):
 
 
     def test_vote_down(self):
-        url = reverse('message_vote', args=("list@example.com",
+        url = reverse('hk_message_vote', args=("list@example.com",
                       get_message_id_hash("msg")))
         resp = self.client.post(url, {"vote": "-1"})
         self.assertEqual(resp.status_code, 200)
@@ -90,7 +90,7 @@ class MessageViewsTestCase(ViewTestCase):
         self.assertEqual(msg1.likes, 1)
         self.assertEqual(msg2.dislikes, 1)
         for msg in (msg1, msg2):
-            url = reverse('message_vote', args=("list@example.com",
+            url = reverse('hk_message_vote', args=("list@example.com",
                           msg.message_id_hash))
             resp = self.client.post(url, {"vote": "0"})
             self.assertEqual(resp.status_code, 200)
@@ -103,7 +103,7 @@ class MessageViewsTestCase(ViewTestCase):
 
     def test_unauth_vote(self):
         self.client.logout()
-        url = reverse('message_vote', args=("list@example.com",
+        url = reverse('hk_message_vote', args=("list@example.com",
                       get_message_id_hash("msg")))
         resp = self.client.post(url, {"vote": "1"})
         self.assertEqual(resp.status_code, 403)
