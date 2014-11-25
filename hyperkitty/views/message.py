@@ -180,7 +180,7 @@ def new_message(request, mlist_fqdn):
         if form.is_valid():
             today = datetime.date.today()
             redirect_url = reverse(
-                    'archives_with_month', kwargs={
+                    'hk_archives_with_month', kwargs={
                         "mlist_fqdn": mlist_fqdn,
                         'year': today.year,
                         'month': today.month})
