@@ -6,8 +6,10 @@ Development
 Communication channels
 ======================
 
-Hang out on IRC and ask questions on ``#mailman`` or join the mailing list
+Hang out on IRC and ask questions on ``#mailman`` or join the `mailing list`_
 ``hyperkitty-devel@lists.fedorahosted.org``.
+
+.. _mailing list: https://lists.fedorahosted.org/mailman/listinfo/hyperkitty-devel
 
 
 Setting up HyperKitty for development
