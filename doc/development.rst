@@ -10,10 +10,10 @@ Hang out on IRC and ask questions on ``#mailman`` or join the mailing list
 ``hyperkitty-devel@lists.fedorahosted.org``.
 
 
-Setting up Hyperkitty for development
+Setting up HyperKitty for development
 =====================================
 
-The recommanded way to develop on HyperKitty is to use VirtualEnv. It will
+The recommended way to develop on HyperKitty is to use VirtualEnv. It will
 create an isolated Python environment where you can add HyperKitty and its
 dependencies without messing up your system Python install.
 
@@ -46,7 +46,7 @@ content::
     TEMPLATE_DEBUG = DEBUG
     USE_SSL = False
 
-It's also recommanded to change the database access paths in the ``DATABASES``,
+It's also recommended to change the database access paths in the ``DATABASES``,
 ``KITTYSTORE_URL`` and ``KITTYSTORE_SEARCH_INDEX`` variables.
 
 If you ever want to turn the ``DEBUG`` variable to ``False`` (by removing it
