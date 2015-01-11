@@ -14,7 +14,7 @@
                 <span class="name">
                     {% if email.sender.mailman_id %}
                     <a href="{% url 'hk_public_user_profile' user_id=email.sender.mailman_id %}"
-                       title="See {{ email.sender.name|escapeemail|escape }}'s profile"
+                       title="{% trans 'See the profile for {{ email.sender.name|escapeemail|escape }}' %}"
                        >{{email.sender.name|default:"(no name)"|escapeemail}}</a>
                     {% else %}
                        {{email.sender.name|default:"(no name)"|escapeemail}}
@@ -22,13 +22,13 @@
                 </span>
                 {% if use_mockups %}
                 <br>
-                <span class="rank">Rank 8</span>
+                <span class="rank">{% trans "Rank 8" %}</span>
                 {% endif %}
             </div>
         </div>
         {% if is_new %}
         <div class="right">
-            <i class="fa fa-envelope" title="Unread"></i>
+            <i class="fa fa-envelope" title="{% trans 'Unread' %}"></i>
         </div>
         {% endif %}
         <div class="email-date right">
@@ -47,13 +47,13 @@
             </span>
             {% endifchanged %}
             <div class="time">
-                <span title="Sender's time: {% localtime off %}{{email|date_with_senders_timezone|date:'DATETIME_FORMAT'}}{% endlocaltime %}">{{email.date|time:"TIME_FORMAT"}}</span>
+                <span title="{% trans 'Sender's time:' %} {% localtime off %}{{email|date_with_senders_timezone|date:'DATETIME_FORMAT'}}{% endlocaltime %}">{{email.date|time:"TIME_FORMAT"}}</span>
             </div>
 
         </div>
         <div class="messagelink right">
             (<a href="{% url 'hk_message_index' mlist_fqdn=email.mailinglist.name message_id_hash=email.message_id_hash %}"
-                title="{{ email.subject }}">permalink</a>)
+                title="{{ email.subject }}">{% trans "permalink" %}</a>)
         </div>
     </div> <!-- /email-header: gravatar, author-info, date, peramlink -->
 
@@ -63,7 +63,7 @@
 
     {% if unfolded and email.attachments.count %}
     <div class="attachments">
-        <p class="attachments">Attachments:</p>
+        <p class="attachments">{% trans "Attachments:" %}</p>
         <ul class="attachments-list list-unstyled">
         {% for attachment in email.attachments.all %}
             <li><a href="{% url 'hk_message_attachment' mlist_fqdn=email.mailinglist.name message_id_hash=email.message_id_hash counter=attachment.counter filename=attachment.name %}">{{attachment.name}}</a>
@@ -83,13 +83,13 @@
         {% if user.is_authenticated %}
         <a class="reply" href="#">
             <i class="fa fa-reply"></i>
-            Reply
+            {% trans "Reply" %}
         </a>
         {% else %}
-        <a class="reply reply-mailto" title="Login to reply online"
+        <a class="reply reply-mailto" title="{% trans 'Login to reply online' %}"
            href="mailto:{{ email.mailinglist.name }}?Subject={{ email.subject|reply_subject|urlencode }}&amp;In-Reply-To={{ email.message_id|urlencode }}">
             <i class="fa fa-reply"></i>
-            Reply
+            {% trans "Reply" %}
         </a>
         {% endif %}
 
@@ -97,7 +97,11 @@
         {% if not unfolded and email.attachments.count %}
         <div class="attachments dropdown">
             <a class="attachments" data-toggle="dropdown" href="#">
-                {{ email.attachments.count }} attachment{% if email.attachments.count > 1 %}s{% endif %}
+                {% blocktrans count attachments=email.attachments.count %}
+                {{ email.attachments.count }} attachment
+                {% plural %}
+                {{ email.attachments.count }} attachments
+                {% endblocktrans %}
                 <span class="caret"></span>
                 <!-- <i class="fa fa-caret-right"></i> -->
             </a>
@@ -120,11 +124,11 @@
                   action="{% url 'hk_message_reply' mlist_fqdn=email.mailinglist.name message_id_hash=email.message_id_hash %}">
                 {% csrf_token %}
                 <div class="reply-tools">
-                    <a class="btn quote" href="#">Quote</a>
-                    <label>{{ reply_form.newthread }} Create new thread</label>
+                    <a class="btn quote" href="#">{% trans "Quote" %}</a>
+                    <label>{{ reply_form.newthread }} {% trans "Create new thread" %}</label>
                     <a class="reply-mailto"
                        href="mailto:{{ email.mailinglist.name }}?Subject={{ email.subject|reply_subject|urlencode }}&amp;In-Reply-To={{ email.message_id|urlencode }}"
-                       >Use email software</a>
+                       >{% trans 'Use email software' %}</a>
                 </div>
                 {{ reply_form.non_field_errors }}
                 {% for field in reply_form %}
@@ -134,8 +138,8 @@
                 {% endfor %}
                 {# { reply_form.as_p } #}
                 <p class="buttons">
-                    <button type="submit" class="submit btn btn-primary">Send</button>
-                    or <a class="cancel" href="#">cancel</a>
+                    <button type="submit" class="submit btn btn-primary">{% trans "Send" %}</button>
+                    {% trans "or" %} <a class="cancel" href="#">{% trans "cancel" %}</a>
                 </p>
             </form>
         </div>

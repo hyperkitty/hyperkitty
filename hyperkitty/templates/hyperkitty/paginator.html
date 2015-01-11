@@ -10,7 +10,7 @@
     <li class="disabled">
         <a href="#">
     {% endif %}
-        &larr; {% if notbydate %}Previous{% else %}Newer{% endif %}
+        &larr; {% if notbydate %}{% trans "Previous" %}{% else %}{% trans "Newer" %}{% endif %}
         </a>
     </li>
 
@@ -31,7 +31,7 @@
     <li class="disabled">
         <a href="#">
     {% endif %}
-        {% if notbydate %}Next{% else %}Older{% endif %} &rarr;</a>
+        {% if notbydate %}{% trans "Next" %}{% else %}{% trans "Older" %}{% endif %} &rarr;</a>
     </li>
 </ul>
 </div>

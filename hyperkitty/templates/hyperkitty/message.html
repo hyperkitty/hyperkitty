@@ -19,7 +19,7 @@
         <div class="col-tn-2 message-back">
             <a href="{% url 'hk_thread' threadid=message.thread_id mlist_fqdn=mlist.name %}#{{message.message_id_hash}}">
                 <span class="fa fa-chevron-left icon"></span>
-                <span class="hidden-tn hidden-xs">thread</span>
+                <span class="hidden-tn hidden-xs">{% trans "thread" %}</span>
             </a>
         </div>
         <div class="col-tn-10">

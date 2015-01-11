@@ -26,12 +26,12 @@
 
         <div style="margin: 60px 40px 0 40px;">
             <div id="contentBox" style="width:50%; ">
-                <span class="hello"> 500 </span>
+                <span class="hello"> {% trans "Error 500" %} </span>
                 <br/><br/>
-                <span style="font-size:60px; color:#444;font-family: 'Times New Roman';"> Oh! Snap </span> 
+                <span style="font-size:60px; color:#444;font-family: 'Times New Roman';"> {% trans "Oh No!" %} </span>
                 <br/><br/>
-                <p>Sorry, but the requested page is unavailable due to a server hiccup.</p>
-                <a href ="{% url 'hk_root' %}">Go back home</a>
+                <p>{% trans "Sorry, but the requested page is unavailable due to a server hiccup." %}</p>
+                <a href ="{% url 'hk_root' %}">{% trans "Go back home" %}</a>
             </div>
         </div>
 

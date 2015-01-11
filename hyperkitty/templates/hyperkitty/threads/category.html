@@ -3,15 +3,15 @@
         <a class="label label-default{% if not user.is_authenticated %} disabled {% endif %}"
            {% if category %}style="background-color:{{category.color}}"{% endif %}
            {% if user.is_authenticated %}
-           title="Click to edit"
+           title="{% trans 'Click to edit' %}"
            {% else %}
-           title="You must be logged-in to edit."
+           title="{% trans 'You must be logged-in to edit.' %}"
            {% endif %}
            >
             {% if category %}
             {{ category.name|upper }}
             {% else %}
-            no category
+            {% trans "no category" %}
             {% endif %}
         </a>
         <form method="post" action="{% url 'hk_thread_set_category' mlist_fqdn=thread.mailinglist_id threadid=thread.thread_id %}">

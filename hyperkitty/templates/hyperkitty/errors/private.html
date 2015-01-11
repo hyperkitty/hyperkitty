@@ -4,7 +4,7 @@
 
 
 {% block title %}
-Error: private list - {{ mlist.display_name|default:mlist.name|escapeemail }} - {{ app_name|title }}
+{% trans "Error: private list" %} - {{ mlist.display_name|default:mlist.name|escapeemail }} - {{ app_name|title }}
 {% endblock %}
 
 {% block content %}
@@ -16,7 +16,7 @@ Error: private list - {{ mlist.display_name|default:mlist.name|escapeemail }} - 
 
     <div class="col-sm-10">
         <p class="text-danger">
-            This mailing-list is private, you must be subscribed to view the archives.
+            {% trans "This mailing list is private. You must be subscribed to view the archives." %}
         </p>
     </div>
 

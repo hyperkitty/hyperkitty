@@ -8,10 +8,10 @@
                    href="{% url 'hk_thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
                     >
                     {% if thread.favorite %}
-                    <i class="fa fa-star saved" title="Favorite"></i>
+                    <i class="fa fa-star saved" title="{% trans 'Favorite' %}"></i>
                     {% endif %}
                     {% if thread|is_unread_by:request.user %}
-                    <i class="fa fa-envelope" title="New messages in this thread"></i>
+                    <i class="fa fa-envelope" title="{% trans 'New messages in this thread' %}"></i>
                     {% endif %}
                     {{ starting_email.subject|strip_subject:mlist }}
                 </a>
@@ -45,10 +45,10 @@
                         </div>
                         <ul class="list-unstyled list-stats col-tn-12 col-sm-5">
                         <li>
-                            <i class="icomoon participant"></i> {{ thread.participants_count }} participants
+                            <i class="icomoon participant"></i> {{ thread.participants_count }} {% trans "participants" %}
                         </li>
                         <li>
-                            <i class="icomoon discussion"></i> {{ thread|num_comments }} comments
+                            <i class="icomoon discussion"></i> {{ thread|num_comments }} {% trans "comments" %}
                         </li>
                         </ul>
                     </div>
@@ -57,7 +57,7 @@
             <div class="thread-info">
                 <div class="tags">
                     {% if thread.tags|length %}
-                    Tags:
+                    {% trans "Tags:" %}
                     <ul class="list-unstyled tags">
                     {% for tag in thread.tags %}
                         <li>

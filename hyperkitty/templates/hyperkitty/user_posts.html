@@ -4,7 +4,7 @@
 
 
 {% block title %}
-Messages by {{ fullname }}{% if mlist %} - {{ mlist.display_name|default:mlist.name|escapeemail }} {% endif %} - {{ app_name|title }}
+{% trans "Messages by" %} {{ fullname }}{% if mlist %} - {{ mlist.display_name|default:mlist.name|escapeemail }} {% endif %} - {{ app_name|title }}
 {% endblock %}
 
 {% block content %}
@@ -17,11 +17,11 @@ Messages by {{ fullname }}{% if mlist %} - {{ mlist.display_name|default:mlist.n
 
         <div class="thread-list-header page-header">
             {% if mlist %}
-            <h1>Messages by {{ fullname }}
-                <small>in {{ mlist.display_name|default:mlist.name|escapeemail }}</small>
+            <h1>{% trans "Messages by" %} {{ fullname }}
+                <small>{% trans "in" %} {{ mlist.display_name|default:mlist.name|escapeemail }}</small>
             </h1>
             {% else %}
-            <h1>Messages by {{ fullname }}</h1>
+            <h1>{% trans "Messages by" %} {{ fullname }}</h1>
             {% endif %}
             <ul class="thread-list-info">
                 {% if mlist.display_name %}
@@ -30,11 +30,11 @@ Messages by {{ fullname }}{% if mlist %} - {{ mlist.display_name|default:mlist.n
                 </li>
                 {% endif %}
                 <li class="discussion">
-                    {{ messages.paginator.count }} messages
+                    {{ messages.paginator.count }} {% trans "messages" %}
                 </li>
                 <li>
                     <a href="{% url 'hk_public_user_profile' user_id=user_id %}">
-                        Back to {{ fullname }}'s profile
+                        {% trans "Back to {{ fullname }}'s profile" %}
                     </a>
                 </li>
             </ul>
@@ -44,7 +44,7 @@ Messages by {{ fullname }}{% if mlist %} - {{ mlist.display_name|default:mlist.n
         {% for message in messages %}
             {% include "hyperkitty/messages/summary_message.html" %}
         {% empty %}
-            <p>Sorry no email could be found by this user.</p>
+            <p>{% trans "Sorry no email could be found by this user." %}</p>
         {% endfor %}
 
         {% include "hyperkitty/paginator.html" with pager=messages %}

@@ -12,7 +12,7 @@
                         </span>
                     {% endif %}
                     {% if thread|is_unread_by:request.user %}
-                        <i class="fa fa-envelope" title="New messages in this thread"></i>
+                        <i class="fa fa-envelope" title="{% trans 'New messages in this thread' %}"></i>
                     {% endif %}
                     {{ thread.subject|strip_subject:mlist }}
                 </a>

@@ -28,7 +28,7 @@
                         {% if next_thread %}title="{{ next_thread.subject|strip_subject:mlist|escape }}"{% endif %}
                         href="{% url 'hk_thread' threadid=next_thread.thread_id mlist_fqdn=mlist.name %}">
                     <span class="fa fa-chevron-left"></span>
-                    <span class="hidden-tn hidden-xs">newer</span>
+                    <span class="hidden-tn hidden-xs">{% trans "newer" %}</span>
                 </a>
                {% endif %}
             </div>
@@ -42,7 +42,7 @@
                     href="{% url 'hk_thread' threadid=prev_thread.thread_id mlist_fqdn=mlist.name %}"
                     {% endif %}>
                     <span class="fa fa-chevron-right"></span>
-                    <span class="hidden-tn hidden-xs">older</span>
+                    <span class="hidden-tn hidden-xs">{% trans "older" %}</span>
                 </a>
             </div>
             <div class="thread-titles">
@@ -63,13 +63,13 @@
         <!-- nav tabs, for smaller screens -->
         <ul class="nav nav-tabs hidden-sm hidden-md hidden-lg">
             <li class="active">
-                <a href="#home">First Post</a>
+                <a href="#home">{% trans "First Post" %}</a>
             </li>
             <li>
-                <a href="#replies">Replies</a>
+                <a href="#replies">{% trans "Replies" %}</a>
             </li>
             <li>
-                <a href="#stats">Stats</a>
+                <a href="#stats">{% trans "Stats" %}</a>
             </li>
             <li class="dropdown">
                 {% include 'hyperkitty/threads/month_list.html' with show_dropdown=True %}
@@ -88,10 +88,10 @@
                     <p class="sort-mode">
                         {% if sort_mode == "date" %}
                         <a href="{% url 'hk_thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}?sort=thread"
-                            >Show replies by thread</a>
+                            >{% trans "Show replies by thread" %}</a>
                         {% else %}
                         <a href="{% url 'hk_thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}?sort=date"
-                            >Show replies by date</a>
+                            >{% trans "Show replies by date" %}</a>
                         {% endif %}
                     </p>
 
@@ -102,7 +102,7 @@
                         {% if is_bot %}
                             {% include 'hyperkitty/ajax/replies.html' %}
                         {% else %}
-                            <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
+                            <img alt="{% trans 'Loading...' %}" class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
                         {% endif %}
                     </div>
 

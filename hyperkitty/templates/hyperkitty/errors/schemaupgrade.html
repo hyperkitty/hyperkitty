@@ -2,7 +2,7 @@
 
 
 {% block title %}
-Error: the database schema needs an upgrade
+{% trans "Error: the database schema needs an upgrade" %}
     - {{ app_name|title }}
 {% endblock %}
 
@@ -15,11 +15,11 @@ Error: the database schema needs an upgrade
 
     <div class="col-sm-10">
         <p class="text-warning">
-            The database schema needs to be upgraded. Please refer to
+            {% trans 'The database schema needs to be upgraded. Please refer to
             <a href="http://hyperkitty.readthedocs.org/en/latest/install.html#upgrading">the documentation</a>
-            to perform this task.
+            to perform this task.' %}
         </p>
-        <p>When you're done, <a href="{% url 'hk_root' %}">go back</a> to the front page.</p>
+        <p>{% trans 'When you're done,' %} <a href="{% url 'hk_root' %}">{% trans "go back</a> to the front page." %}</p>
     </div>
 
 </div>

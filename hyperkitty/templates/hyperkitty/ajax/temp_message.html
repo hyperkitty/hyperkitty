@@ -8,7 +8,7 @@
 
         <div class="email-header">
             <div class="email-date inline-block pull-right">
-                <span class="date">Sent just now, not yet distributed</span>
+                <span class="date">{% trans "Sent just now, not yet distributed" %}</span>
             </div>
             <div class="gravatar{% if use_mockups %} pull-left{% endif %}">
                 {% gravatar user.email 40 %}
@@ -18,7 +18,7 @@
                 {% if use_mockups %}
                 <br />
                 <span class="rank">
-                    Rank 8
+                    {% trans "Rank 8" %}
                 </span>
                 {% endif %}
             </div>

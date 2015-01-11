@@ -15,20 +15,20 @@
                         <a href="{% url 'hk_message_index' mlist_fqdn=vote.email.mailinglist.name message_id_hash=vote.email.message_id_hash %}"
                             >{{ vote.email.subject }}</a>
                         <br>
-                        Original author: {{ vote.email.sender.name }}
+                        {% trans "Original author:" %} {{ vote.email.sender.name }}
                         <br>
-                        Started on: {{ vote.email.date|date:"D, j M Y H:i" }}
+                        {% trans "Started on:" %} {{ vote.email.date|date:"D, j M Y H:i" }}
                         <br>
                         <form method="post" class="likeform"
                               action="{% url 'hk_message_vote' mlist_fqdn=vote.email.mailinglist.name message_id_hash=vote.email.message_id_hash %}">
                             {% csrf_token %}
                             <input type="hidden" name="vote" value="0" />
                             {% if vote.value == 1 %}
-                            <span class="youlike">You like it
+                            <span class="youlike">{% trans "You like it" %}
                             {% elif vote.value == -1 %}
-                            <span class="youdislike">You dislike it
+                            <span class="youdislike">{% trans "You dislike it" %}
                             {% endif %}
-                            (<a href="#cancelvote" class="cancel">cancel</a>)</span>
+                            (<a href="#cancelvote" class="cancel">{% trans "cancel" %}</a>)</span>
                         </form>
                     </td>
                 </tr>
@@ -37,11 +37,11 @@
         <table class="table table-striped table-bordered table-condensed hidden-tn hidden-xs">
             <thead>
                 <tr>
-                    <th>List</th>
-                    <th>Subject</th>
-                    <th>Original author</th>
-                    <th>Start date</th>
-                    <th>Vote</th>
+                    <th>{% trans "List" %}</th>
+                    <th>{% trans "Subject" %}</th>
+                    <th>{% trans "Original author" %}</th>
+                    <th>{% trans "Start date" %}</th>
+                    <th>{% trans "Vote" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -61,11 +61,11 @@
                             {% csrf_token %}
                             <input type="hidden" name="vote" value="0" />
                             {% if vote.value == 1 %}
-                            <span class="youlike">You like it
+                            <span class="youlike">{% trans "You like it" %}
                             {% elif vote.value == -1 %}
-                            <span class="youdislike">You dislike it
+                            <span class="youdislike">{% trans "You dislike it" %}
                             {% endif %}
-                            (<a href="#cancelvote" class="cancel">cancel</a>)</span>
+                            (<a href="#cancelvote" class="cancel">{% trans "cancel" %}</a>)</span>
                         </form>
                     </td>
                 </tr>
@@ -74,5 +74,5 @@
         </table>
         {% include "hyperkitty/paginator.html" with pager=votes page_key="vpage" %}
     {% else %}
-        <p>No vote yet.</p>
+        <p>{% trans "No vote yet." %}</p>
     {% endif %}

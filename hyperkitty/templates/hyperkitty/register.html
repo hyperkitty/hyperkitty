@@ -11,7 +11,7 @@
 
 <div id="register">
 
-<h2>Register</h2>
+<h2>{% trans "Register" %}</h2>
 
 <form action="{{ request.path }}?next={{ next|urlencode }}" method="post" class="form-horizontal">
     {% crispy form %}

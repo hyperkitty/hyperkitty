@@ -5,7 +5,7 @@
 
 
 {% block title %}
-Create a new thread - {{ mlist.display_name|default:mlist.name|escapeemail }} - {{ app_name|title }}
+{% trans "Create a new thread" %} - {{ mlist.display_name|default:mlist.name|escapeemail }} - {{ app_name|title }}
 {% endblock %}
 
 {% block content %}
@@ -18,8 +18,8 @@ Create a new thread - {{ mlist.display_name|default:mlist.name|escapeemail }} - 
 
         <div class="message-header">
             <h1>
-                Create a new thread
-                <small>in {{ mlist.display_name|default:mlist.name|escapeemail }}</small>
+                {% trans "Create a new thread" %}
+                <small>{% trans 'in' %} {{ mlist.display_name|default:mlist.name|escapeemail }}</small>
             </h1>
         </div>
 
@@ -36,8 +36,8 @@ Create a new thread - {{ mlist.display_name|default:mlist.name|escapeemail }} - 
                 {% csrf_token %}
                 {{ post_form|crispy }}
                 <p class="buttons">
-                    <button type="submit" class="submit btn btn-primary">Send</button>
-                    or <a class="cancel" href="{% url 'hk_archives_latest' mlist_fqdn=mlist.name %}">cancel</a>
+                    <button type="submit" class="submit btn btn-primary">{% trans "Send" %}</button>
+                    {% trans "or" %} <a class="cancel" href="{% url 'hk_archives_latest' mlist_fqdn=mlist.name %}">{% trans "cancel" %}</a>
                 </p>
             </form>
         </div>
