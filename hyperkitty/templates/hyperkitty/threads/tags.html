@@ -1,3 +1,5 @@
+{% load url from future %}
+{% load i18n %}
 
         <span id="tag-title">{% trans "tags" %}</span>({{thread.tags.distinct.count}})
         <ul class="inline">

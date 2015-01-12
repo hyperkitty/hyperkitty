@@ -1,3 +1,5 @@
+{% load url from future %}
+{% load i18n %}
 
         {{ category_form.errors.category }}
         <a class="label label-default{% if not user.is_authenticated %} disabled {% endif %}"
