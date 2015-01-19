@@ -21,21 +21,23 @@
 
 """
 Class implementation of Mailman's IArchiver interface
+This will be imported by Mailman Core and must thus be Python3-compatible.
 """
+
 from __future__ import absolute_import, unicode_literals
 
 import os
 import sys
-from urlparse import urljoin
+try:
+    from urllib.parse import urljoin # PY3
+except ImportError:
+    from urlparse import urljoin # PY2
 
 from zope.interface import implements
 from mailman.interfaces.archiver import IArchiver
 from mailman.config import config
 from mailman.config.config import external_configuration
-from django.core.urlresolvers import reverse
-from django.utils.http import urlunquote
-from kittystore import get_store
-from kittystore.utils import get_message_id_hash
+import requests
 
 import logging
 logger = logging.getLogger(__name__)
@@ -48,9 +50,7 @@ class Archiver(object):
     name = "hyperkitty"
 
     def __init__(self):
-        self.store = None
         self.base_url = None
-        self.settings = None # will be filled by _load_conf()
         self._load_conf()
 
     def _load_conf(self):
@@ -62,23 +62,8 @@ class Archiver(object):
         archiver_config = external_configuration(
                 config.archiver.hyperkitty.configuration)
         self.base_url = archiver_config.get("general", "base_url")
-        settings_path = archiver_config.get("general", "django_settings")
-        if settings_path.endswith("/settings.py"):
-            # we want the directory
-            settings_path = os.path.dirname(settings_path)
-        #path_added = False
-        if settings_path not in sys.path:
-            #path_added = True
-            sys.path.append(settings_path)
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
-        try:
-            from django.conf import settings
-        except ImportError:
-            raise ImportError("Could not import Django's settings from %s"
-                              % settings_path)
-        self.settings = settings
-        #if path_added:
-        #    sys.path.remove(settings_path)
+        self.auth = (archiver_config.get("general", "api_user"),
+                     archiver_config.get("general", "api_pass"))
 
     def list_url(self, mlist):
         """Return the url to the top of the list's archive.
@@ -86,8 +71,10 @@ class Archiver(object):
         :param mlist: The IMailingList object.
         :returns: The url string.
         """
-        return urljoin(self.base_url, urlunquote(
-                reverse('hk_list_overview', args=[mlist.fqdn_listname])))
+        result = requests.get(urljoin(self.base_url, "api/mailman/urls"),
+            params={"mlist": mlist.fqdn_listname}, auth=self.auth)
+        url = result.json["url"]
+        return urljoin(self.base_url, url)
 
     def permalink(self, mlist, msg):
         """Return the url to the message in the archive.
@@ -101,10 +88,11 @@ class Archiver(object):
             be calculated.
         """
         msg_id = msg['Message-Id'].strip().strip("<>")
-        msg_hash = get_message_id_hash(msg_id)
-        return urljoin(self.base_url, urlunquote(reverse('hk_message_index',
-                    kwargs={"mlist_fqdn": mlist.fqdn_listname,
-                            "message_id_hash": msg_hash})))
+        result = requests.get(urljoin(self.base_url, "api/mailman/urls"),
+            params={"mlist": mlist.fqdn_listname, "msgid": msg_id},
+            auth=self.auth)
+        url = result.json["url"]
+        return urljoin(self.base_url, url)
 
     def archive_message(self, mlist, msg):
         """Send the message to the archiver.
@@ -114,12 +102,11 @@ class Archiver(object):
         :returns: The url string or None if the message's archive url cannot
             be calculated.
         """
-        if self.store is None:
-            self.store = get_store(self.settings)
-        self.store.add_to_list(mlist, msg)
-        self.store.commit()
-        # TODO: Update karma
-        url = self.permalink(mlist, msg)
+        result = requests.post(urljoin(self.base_url, "api/mailman/archive"),
+            data={"mlist": mlist.fqdn_listname},
+            files={"message": ("message.txt", msg.as_string())},
+            auth=self.auth)
+        url = urljoin(self.base_url, result.json["url"])
         logger.info("Archived message %s to %s",
                     msg['Message-Id'].strip(), url)
         return url
