@@ -36,7 +36,7 @@ from django.core.urlresolvers import reverse
 from mailman.email.message import Message
 
 import kittystore
-from kittystore.test import FakeList, SettingsModule
+from kittystore.test import SettingsModule
 
 from hyperkitty.models import Tag
 
@@ -49,7 +49,7 @@ class ReattachTestCase(ViewTestCase):
         self.user.is_staff = True
         self.user.save()
         self.client.login(username='testuser', password='testPass')
-        ml = FakeList("list@example.com")
+        ml = self.store.create_list("list@example.com")
         ml.subject_prefix = u"[example] "
         # Create 2 threads
         self.messages = []
@@ -59,7 +59,7 @@ class ReattachTestCase(ViewTestCase):
             msg["Message-ID"] = "<id%d>" % (msgnum+1)
             msg["Subject"] = "Dummy message"
             msg.set_payload("Dummy message")
-            msg["Message-ID-Hash"] = self.store.add_to_list(ml, msg)
+            msg["Message-ID-Hash"] = self.store.add_to_list("list@example.com", msg)
             self.messages.append(msg)
 
     def test_suggestions(self):
@@ -177,8 +177,8 @@ class ThreadTestCase(ViewTestCase):
         self.user.is_staff = True
         self.user.save()
         self.client.login(username='testuser', password='testPass')
-        self.ml = FakeList("list@example.com")
-        self.ml.subject_prefix = u"[example] "
+        ml = self.store.create_list("list@example.com")
+        ml.subject_prefix = u"[example] "
         msg = self._make_msg("msgid")
         self.threadid = msg["Message-ID-Hash"]
 
@@ -190,7 +190,7 @@ class ThreadTestCase(ViewTestCase):
         msg.set_payload("Dummy message")
         if reply_to is not None:
             msg["In-Reply-To"] = "<%s>" % reply_to
-        msg["Message-ID-Hash"] = self.store.add_to_list(self.ml, msg)
+        msg["Message-ID-Hash"] = self.store.add_to_list("list@example.com", msg)
         return msg
 
     def do_tag_post(self, data):

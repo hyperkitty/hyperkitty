@@ -106,6 +106,10 @@ urlpatterns = patterns('hyperkitty.views',
     url(r'^categories/$', 'categories.categories', name='hk_categories_overview'),
     url(r'^tags/$', 'tags.tags', name='hk_tags_overview'),
 
+    # Mailman archiver API
+    url(r'^api/mailman/urls$', 'mailman.urls', name='hk_mailman_urls'),
+    url(r'^api/mailman/archive$', 'mailman.archive', name='hk_mailman_archive'),
+
     # REST API
     url(r'^api/$', TemplateView.as_view(template_name="hyperkitty/api.html")),
     url(r'^api/list\/',

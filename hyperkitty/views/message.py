@@ -20,6 +20,8 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+from __future__ import absolute_import
+
 import urllib
 import datetime
 import json
@@ -35,7 +37,7 @@ from hyperkitty.lib import get_store
 from hyperkitty.lib.view_helpers import get_months
 from hyperkitty.lib.posting import post_to_list, PostingFailed, reply_subject
 from hyperkitty.lib.mailman import check_mlist_private
-from forms import ReplyForm, PostForm
+from .forms import ReplyForm, PostForm
 
 
 @check_mlist_private

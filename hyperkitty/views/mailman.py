@@ -19,10 +19,14 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+from __future__ import absolute_import
+
 import json
 from urlparse import urljoin
 from email import message_from_file
+from functools import wraps
 
+from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, Http404
@@ -33,6 +37,32 @@ from kittystore.utils import get_message_id_hash
 
 import logging
 logger = logging.getLogger(__name__)
+
+
+def basic_auth(func):
+    # Inspired by:
+    # https://djangosnippets.org/snippets/2468/
+    # https://djangosnippets.org/snippets/1304/*
+    # https://djangosnippets.org/snippets/243/
+    @wraps(func)
+    def _decorator(request, *args, **kwargs):
+        if request.META.has_key('HTTP_AUTHORIZATION'):
+            authentication = request.META['HTTP_AUTHORIZATION']
+            (authmeth, auth) = authentication.split(' ',1)
+            if 'basic' == authmeth.lower():
+                auth = auth.strip().decode('base64')
+                username, password = auth.split(':', 1)
+                if username == settings.MAILMAN_ARCHIVER_API_USER \
+                    and password == settings.MAILMAN_ARCHIVER_API_PASS:
+                    return func(request, *args, **kwargs)
+        response = HttpResponse("""
+            <html><title>Auth required</title><body>
+            <h1>Authorization Required</h1></body></html>""",
+            content_type="text/html")
+        response['WWW-Authenticate'] = 'Basic realm="Mailman Archiver API"'
+        response.status_code = 401
+        return response
+    return _decorator
 
 
 def _get_url(mlist_fqdn, msg_id=None):
@@ -52,12 +82,14 @@ def _get_url(mlist_fqdn, msg_id=None):
     return urlunquote(url)
 
 
+@basic_auth
 def urls(request):
     result = _get_url(request.GET["mlist"], request.GET.get("msgid"))
-    return HttpResponse(json.dumps(result),
+    return HttpResponse(json.dumps({"url": result}),
                         content_type='application/javascript')
 
 
+@basic_auth
 def archive(request):
     if request.method != 'POST':
         raise SuspiciousOperation
@@ -65,12 +97,11 @@ def archive(request):
     if "message" not in request.FILES:
         raise SuspiciousOperation
     store = get_store(request)
-    mlist = store.get_list(mlist_fqdn)
     msg = message_from_file(request.FILES['message'])
-    store.add_to_list(mlist, msg)
+    store.add_to_list(mlist_fqdn, msg)
     store.commit()
-    url = _get_msg_link(mlist_fqdn, msg['Message-Id'])
-    logger.info("Archived message %s to %s",
-                msg['Message-Id'].strip(), url)
+    url = _get_url(mlist_fqdn, msg['Message-Id'])
+    #logger.info("Archived message %s to %s",
+    #            msg['Message-Id'].strip(), url)
     return HttpResponse(json.dumps({"url": url}),
                         content_type='application/javascript')

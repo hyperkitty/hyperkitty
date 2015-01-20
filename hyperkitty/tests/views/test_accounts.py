@@ -20,6 +20,8 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+from __future__ import absolute_import, print_function, unicode_literals
+
 import datetime
 import uuid
 from traceback import format_exc
@@ -31,7 +33,6 @@ from django.test.utils import override_settings
 from mailman.email.message import Message
 
 from kittystore.utils import get_message_id_hash
-from kittystore.test import FakeList
 
 from hyperkitty.models import LastView
 
@@ -106,7 +107,7 @@ class LastViewsTestCase(ViewTestCase):
         self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
         self.client.login(username='testuser', password='testPass')
         # Create test data
-        ml = FakeList("list@example.com")
+        ml = self.store.create_list("list@example.com")
         ml.subject_prefix = u"[example] "
         # Create 3 threads
         messages = []
@@ -116,7 +117,7 @@ class LastViewsTestCase(ViewTestCase):
             msg["Message-ID"] = "<id%d>" % (msgnum+1)
             msg["Subject"] = "Dummy message"
             msg.set_payload("Dummy message")
-            self.store.add_to_list(ml, msg)
+            self.store.add_to_list("list@example.com", msg)
             messages.append(msg)
         # 1st is unread, 2nd is read, 3rd is updated
         LastView.objects.create(list_address="list@example.com", user=self.user,
@@ -129,7 +130,7 @@ class LastViewsTestCase(ViewTestCase):
         msg4["Subject"] = "Dummy message"
         msg4["In-Reply-To"] = "<id3>"
         msg4.set_payload("Dummy message")
-        self.store.add_to_list(ml, msg4)
+        self.store.add_to_list("list@example.com", msg4)
 
     def test_profile(self):
         response = self.client.get(reverse('hk_user_last_views'))

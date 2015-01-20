@@ -19,6 +19,8 @@
 # Author: Aamir Khan <syst3m.w0rm@gmail.com>
 #
 
+from __future__ import absolute_import
+
 import logging
 from urllib2 import HTTPError
 from uuid import UUID

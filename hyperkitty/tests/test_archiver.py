@@ -21,23 +21,26 @@
 
 
 import os
+import json
 import shutil
 import tempfile
+from StringIO import StringIO
 from textwrap import dedent
+from urllib import urlencode
 
 from mock import Mock, patch
 from pkg_resources import resource_string
 from zope.configuration import xmlconfig
-from mailman.config import config
+from django.conf import settings
 from mailman.email.message import Message
 from kittystore.test import FakeList
 
-from hyperkitty.tests.utils import TestCase
+from hyperkitty.tests.utils import ViewTestCase
 from hyperkitty.archiver import Archiver
 
 
 
-class ArchiverTestCase(TestCase):
+class ArchiverTestCase(ViewTestCase):
 
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp(prefix="hyperkitty-testing-")
@@ -46,18 +49,40 @@ class ArchiverTestCase(TestCase):
         [archiver.hyperkitty]
         configuration: {}
         """.format(conffile))
-        # Mailman's config has been initialized by the FakeMailmanClient
-        config.push('ArchiverTestCase config', test_config)
-        with open(conffile, 'w') as hkcfg:
-            hkcfg.write(dedent("""
-        [general]
-        base_url: http://lists.example.com
-        django_settings: {}/settings.py
-        """.format(self.tmpdir)))
         self.archiver = Archiver()
+        self.archiver._base_url = "http://lists.example.com"
+        self.archiver._auth = (settings.MAILMAN_ARCHIVER_API_USER,
+                               settings.MAILMAN_ARCHIVER_API_PASS)
+        # Patch requests
+        self.requests_patcher = patch("hyperkitty.archiver.requests")
+        requests = self.requests_patcher.start()
+        def internal_req(func, url, *a, **kw):
+            extra_args = {"data": {}}
+            if "params" in kw:
+                extra_args["data"].update(kw["params"])
+                del kw["params"]
+            if "data" in kw:
+                extra_args["data"].update(kw["data"])
+            if "files" in kw:
+                for field, fdata in kw["files"].items():
+                    extra_args["data"][field] = StringIO(fdata[1])
+                    extra_args["data"][field].name = fdata[0]
+            if "auth" in kw:
+                extra_args['HTTP_AUTHORIZATION'] = \
+                    'Basic ' + '{}:{}'.format(
+                        settings.MAILMAN_ARCHIVER_API_USER,
+                        settings.MAILMAN_ARCHIVER_API_PASS
+                        ).encode("base64").strip()
+            result = func(url, **extra_args)
+            result.json = json.loads(result.content)
+            return result
+        requests.get.side_effect = lambda url, *a, **kw: \
+            internal_req(self.client.get, url, *a, **kw)
+        requests.post.side_effect = lambda url, *a, **kw: \
+            internal_req(self.client.post, url, *a, **kw)
 
     def tearDown(self):
-        config.pop('ArchiverTestCase config')
+        self.requests_patcher.stop()
         shutil.rmtree(self.tmpdir)
 
     def _get_msg(self):
@@ -81,10 +106,7 @@ class ArchiverTestCase(TestCase):
             "http://lists.example.com/list/list@lists.example.com/message/QKODQBCADMDSP5YPOPKECXQWEQAMXZL3/"
             )
 
-    @patch("hyperkitty.archiver.get_store")
-    def test_archive_message(self, get_store):
-        store = Mock()
-        get_store.return_value = store
+    def test_archive_message(self):
         msg = self._get_msg()
         with patch("hyperkitty.archiver.logger") as logger:
             url = self.archiver.archive_message(
@@ -93,5 +115,4 @@ class ArchiverTestCase(TestCase):
         self.assertEqual(url,
             "http://lists.example.com/list/list@lists.example.com/message/QKODQBCADMDSP5YPOPKECXQWEQAMXZL3/"
             )
-        self.assertTrue(store.add_to_list.called)
-        self.assertTrue(store.commit.called)
+        self.assertEqual(self.store.get_list_size(u"list@lists.example.com"), 1)

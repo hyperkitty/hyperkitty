@@ -50,8 +50,24 @@ class Archiver(object):
     name = "hyperkitty"
 
     def __init__(self):
-        self.base_url = None
-        self._load_conf()
+        self._base_url = None
+        self._auth = None
+
+    @property
+    def base_url(self):
+        # Not running _load_conf() on init makes it easier to test:
+        # no valid mailman config is required
+        if self._base_url is None:
+            self._load_conf()
+        return self._base_url
+
+    @property
+    def auth(self):
+        # Not running _load_conf() on init makes it easier to test:
+        # no valid mailman config is required
+        if self._auth is None:
+            self._load_conf()
+        return self._auth
 
     def _load_conf(self):
         """
@@ -61,9 +77,9 @@ class Archiver(object):
         # Read our specific configuration file
         archiver_config = external_configuration(
                 config.archiver.hyperkitty.configuration)
-        self.base_url = archiver_config.get("general", "base_url")
-        self.auth = (archiver_config.get("general", "api_user"),
-                     archiver_config.get("general", "api_pass"))
+        self._base_url = archiver_config.get("general", "base_url")
+        self._auth = (archiver_config.get("general", "api_user"),
+                      archiver_config.get("general", "api_pass"))
 
     def list_url(self, mlist):
         """Return the url to the top of the list's archive.
@@ -107,6 +123,6 @@ class Archiver(object):
             files={"message": ("message.txt", msg.as_string())},
             auth=self.auth)
         url = urljoin(self.base_url, result.json["url"])
-        logger.info("Archived message %s to %s",
+        logger.info("HyperKitty archived message %s to %s",
                     msg['Message-Id'].strip(), url)
         return url

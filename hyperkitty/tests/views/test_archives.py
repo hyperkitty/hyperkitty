@@ -20,6 +20,8 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+from __future__ import absolute_import, print_function, unicode_literals
+
 import datetime
 from tempfile import mkdtemp
 from shutil import rmtree
@@ -32,7 +34,7 @@ from mailman.interfaces.archiver import ArchivePolicy
 from hyperkitty.tests.utils import TestCase, ViewTestCase
 
 import kittystore
-from kittystore.test import FakeList, SettingsModule
+from kittystore.test import SettingsModule
 
 
 
@@ -40,12 +42,11 @@ class ListArchivesTestCase(ViewTestCase):
 
     def setUp(self):
         # Create the list by adding a dummy message
-        ml = FakeList("list@example.com")
         msg = Message()
         msg["From"] = "dummy@example.com"
         msg["Message-ID"] = "<msg>"
         msg.set_payload("Dummy message")
-        self.store.add_to_list(ml, msg)
+        self.store.add_to_list("list@example.com", msg)
 
     def test_no_date(self):
         today = datetime.date.today()
@@ -81,7 +82,7 @@ class PrivateArchivesTestCase(TestCase):
         self.client.defaults = {"kittystore.store": self.store,
                                 "HTTP_USER_AGENT": "testbot",
                                 }
-        ml = FakeList("list@example.com")
+        ml = self.store.create_list("list@example.com")
         ml.subject_prefix = u"[example] "
         ml.archive_policy = ArchivePolicy.private
         msg = Message()
@@ -89,7 +90,7 @@ class PrivateArchivesTestCase(TestCase):
         msg["Message-ID"] = "<msgid>"
         msg["Subject"] = "Dummy message"
         msg.set_payload("Dummy message")
-        msg["Message-ID-Hash"] = self.msgid = self.store.add_to_list(ml, msg)
+        msg["Message-ID-Hash"] = self.msgid = self.store.add_to_list("list@example.com", msg)
 
     def tearDown(self):
         rmtree(self.tmpdir)

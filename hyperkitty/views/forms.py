@@ -20,6 +20,8 @@
 # Author: Aurélien Bompard <abompard@fedoraproject.org>
 #
 
+from __future__ import absolute_import
+
 from django import forms
 from django.core import validators
 from django.contrib.auth.models import User

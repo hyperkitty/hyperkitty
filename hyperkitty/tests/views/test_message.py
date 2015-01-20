@@ -20,6 +20,8 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+from __future__ import absolute_import, print_function, unicode_literals
+
 import json
 import uuid
 
@@ -29,7 +31,6 @@ from django.core.urlresolvers import reverse
 from mailman.email.message import Message
 
 from kittystore.utils import get_message_id_hash
-from kittystore.test import FakeList
 
 
 
@@ -46,12 +47,11 @@ class MessageViewsTestCase(ViewTestCase):
         session["user_id"] = self.uuid
         session.save()
         # Create a dummy message to test on
-        ml = FakeList("list@example.com")
         msg = Message()
         msg["From"] = "dummy@example.com"
         msg["Message-ID"] = "<msg>"
         msg.set_payload("Dummy message")
-        self.store.add_to_list(ml, msg)
+        self.store.add_to_list("list@example.com", msg)
 
 
     def test_vote_up(self):
@@ -75,14 +75,13 @@ class MessageViewsTestCase(ViewTestCase):
 
 
     def test_vote_cancel(self):
-        ml = FakeList("list@example.com")
         msg = Message()
         msg["From"] = "dummy@example.com"
         msg["Message-ID"] = "<msg1>"
         msg.set_payload("Dummy message")
-        self.store.add_to_list(ml, msg)
+        self.store.add_to_list("list@example.com", msg)
         msg.replace_header("Message-ID", "<msg2>")
-        self.store.add_to_list(ml, msg)
+        self.store.add_to_list("list@example.com", msg)
         msg1 = self.store.get_message_by_id_from_list("list@example.com", "msg1")
         msg1.vote(1, self.uuid)
         msg2 = self.store.get_message_by_id_from_list("list@example.com", "msg2")

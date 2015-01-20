@@ -19,6 +19,7 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+from __future__ import absolute_import
 
 from django.shortcuts import render
 from django.core.paginator import Paginator, Page
