@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*-
-# Copyright (C) 1998-2012 by the Free Software Foundation, Inc.
+#-*- coding: utf-8 -*-
+# Copyright (C) 2012-2015 by the Free Software Foundation, Inc.
 #
 # This file is part of HyperKitty.
 #
@@ -19,17 +19,22 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+from __future__ import absolute_import, unicode_literals
 
-from django import template
+from rest_framework import serializers, generics
+from hyperkitty.models import Tag
 
-from hyperkitty.lib import stripped_subject
 
-register = template.Library()
+class TagSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Tag
+        fields = ("url", "threads", "users", "name")
+        lookup_field = "name"
 
-@register.filter(name="count")
-def count(expr):
-    return expr.count()
 
-@register.filter(name="strip_subject")
-def strip_subject(subject, mlist):
-    return stripped_subject(mlist, subject)
+class TagList(generics.ListAPIView):
+    """List tags"""
+
+    queryset = Tag.objects.all()
+    lookup_field = "name"
+    serializer_class = TagSerializer

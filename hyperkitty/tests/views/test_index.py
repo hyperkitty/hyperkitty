@@ -22,26 +22,27 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
+from email.message import Message
+
 from django.core.urlresolvers import reverse
-from mailman.email.message import Message
-from mailman.interfaces.archiver import ArchivePolicy
 
-from hyperkitty.tests.utils import ViewTestCase
-
-import kittystore
+from hyperkitty.models import MailingList, ArchivePolicy
+from hyperkitty.lib.incoming import add_to_list
+from hyperkitty.tests.utils import TestCase
 
 
-class PrivateListTestCase(ViewTestCase):
+class PrivateListTestCase(TestCase):
 
     def setUp(self):
-        ml = self.store.create_list("list@example.com")
-        ml.archive_policy = ArchivePolicy.private
+        ml = MailingList.objects.create(
+            name="list@example.com", subject_prefix="[example] ",
+            archive_policy=ArchivePolicy.private.value)
         msg = Message()
         msg["From"] = "dummy@example.com"
         msg["Message-ID"] = "<msgid>"
         msg["Subject"] = "Dummy message"
         msg.set_payload("Dummy message")
-        msg["Message-ID-Hash"] = self.msgid = self.store.add_to_list("list@example.com", msg)
+        msg["Message-ID-Hash"] = self.msgid = add_to_list("list@example.com", msg)
 
     def _do_test(self, sort_mode):
         response = self.client.get(reverse("hk_root"), {"sort": sort_mode})

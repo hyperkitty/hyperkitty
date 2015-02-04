@@ -42,7 +42,7 @@
     </p>
 
     <form id="fav_form" name="favorite" method="post" class="favorite"
-          action="{% url 'hk_favorite' mlist_fqdn=mlist.name threadid=threadid %}">
+          action="{% url 'hk_favorite' mlist_fqdn=mlist.name threadid=thread.thread_id %}">
         {% csrf_token %}
         <input type="hidden" name="action" value="{{ fav_action }}" />
         <p>
@@ -55,7 +55,7 @@
 
     {% if user.is_staff %}
     <p><i class="icon-resize-small"></i>
-       <a href="{% url 'hk_thread_reattach' mlist_fqdn=mlist.name threadid=threadid %}"
+       <a href="{% url 'hk_thread_reattach' mlist_fqdn=mlist.name threadid=thread.thread_id %}"
           >Reattach this thread</a>
     </p>
     {% endif %}
@@ -65,8 +65,8 @@
     </div>
     <div id="add-tag">
         <form id="add-tag-form" name="addtag" method="post"
-              action="{% url 'hk_tags' mlist_fqdn=mlist.name threadid=threadid %}"
-              data-autocompleteurl="{% url 'hk_suggest_tags' mlist_fqdn=mlist.name threadid=threadid %}"
+              action="{% url 'hk_tags' mlist_fqdn=mlist.name threadid=thread.thread_id %}"
+              data-autocompleteurl="{% url 'hk_suggest_tags' mlist_fqdn=mlist.name threadid=thread.thread_id %}"
               >
             {% csrf_token %}
             {{ addtag_form.as_p }}

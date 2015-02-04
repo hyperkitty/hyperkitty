@@ -16,8 +16,8 @@
                     <a href="{% url 'hk_message_index' mlist_fqdn=sub.list_name message_id_hash=sub.first_post.message_id_hash %}"
                         >{{ sub.first_post.subject }}</a>
                     <br>
-                    <abbr title="{{ sub.first_post|get_date|date:"D, j M Y H:i"|escape }}">
-                    {{ sub.first_post|get_date|timesince }}</abbr> since first post
+                    <abbr title="{{ sub.first_post.date|date:"D, j M Y H:i"|escape }}">
+                    {{ sub.first_post.date|timesince }}</abbr> since first post
                     <br>
                     <a href="{{ sub.all_posts_url }}">{{ sub.posts_count }} post{{ sub.posts_count|pluralize }}</a><
                     <br>
@@ -49,8 +49,8 @@
                 </td>
                 {% if sub.first_post %}
                 <td>
-                    <abbr title="{{ sub.first_post|get_date|date:"l, j F Y H:i:s"|escape }}">
-                    {{ sub.first_post|get_date|timesince }}</abbr>
+                    <abbr title="{{ sub.first_post.date|date:"l, j F Y H:i:s"|escape }}">
+                    {{ sub.first_post.date|timesince }}</abbr>
                 </td>
                 <td>
                     <a href="{% url 'hk_message_index' mlist_fqdn=sub.list_name message_id_hash=sub.first_post.message_id_hash %}"
@@ -71,4 +71,3 @@
     {% else %}
     <p><em>no subscriptions</em></p>
     {% endif %}
-

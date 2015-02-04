@@ -6,22 +6,22 @@
         <table class="table table-bordered table-condensed hidden-sm hidden-md hidden-lg">
             <tbody>
             {% for vote in votes %}
-                {% ifchanged vote.list_name %}
+                {% ifchanged vote.email.mailinglist.name %}
                 <tr class="list-address">
-                    <td>{{ vote.list_name }}</td>
+                    <td>{{ vote.email.mailinglist.name }}</td>
                 </tr>
                 {% endifchanged %}
                 <tr>
                     <td>
-                        <a href="{% url 'hk_message_index' mlist_fqdn=vote.list_name message_id_hash=vote.message.message_id_hash %}"
-                            >{{ vote.message.subject }}</a>
+                        <a href="{% url 'hk_message_index' mlist_fqdn=vote.email.mailinglist.name message_id_hash=vote.email.message_id_hash %}"
+                            >{{ vote.email.subject }}</a>
                         <br>
-                        Original author: {{ vote.message.sender_name }}
+                        Original author: {{ vote.email.sender.name }}
                         <br>
-                        Started on: {{ vote.message|get_date|date:"D, j M Y H:i" }}
+                        Started on: {{ vote.email.date|date:"D, j M Y H:i" }}
                         <br>
                         <form method="post" class="likeform"
-                              action="{% url 'hk_message_vote' mlist_fqdn=vote.list_name message_id_hash=vote.message.message_id_hash %}">
+                              action="{% url 'hk_message_vote' mlist_fqdn=vote.email.mailinglist.name message_id_hash=vote.email.message_id_hash %}">
                             {% csrf_token %}
                             <input type="hidden" name="vote" value="0" />
                             {% if vote.value == 1 %}
@@ -49,16 +49,16 @@
             {% for vote in votes %}
                 <tr>
                     <td>
-                        <span class="hidden-md hidden-lg">{{ vote.list_name|until:"@" }}</span>
-                        <span class="hidden-sm">{{ vote.list_name }}</span>
+                        <span class="hidden-md hidden-lg">{{ vote.email.mailinglist.name|until:"@" }}</span>
+                        <span class="hidden-sm">{{ vote.email.mailinglist.name }}</span>
                     </td>
-                    <td><a href="{% url 'hk_message_index' mlist_fqdn=vote.list_name message_id_hash=vote.message.message_id_hash %}"
-                            >{{ vote.message.subject }}</a></td>
-                    <td>{{ vote.message.sender_name }}</td>
-                    <td>{{ vote.message|get_date|date:"l, j F Y H:i:s" }}</td>
+                    <td><a href="{% url 'hk_message_index' mlist_fqdn=vote.email.mailinglist.name message_id_hash=vote.email.message_id_hash %}"
+                            >{{ vote.email.subject }}</a></td>
+                    <td>{{ vote.email.sender.name }}</td>
+                    <td>{{ vote.email.date|date:"l, j F Y H:i:s" }}</td>
                     <td>
                         <form method="post" class="likeform"
-                              action="{% url 'hk_message_vote' mlist_fqdn=vote.list_name message_id_hash=vote.message.message_id_hash %}">
+                              action="{% url 'hk_message_vote' mlist_fqdn=vote.email.mailinglist.name message_id_hash=vote.email.message_id_hash %}">
                             {% csrf_token %}
                             <input type="hidden" name="vote" value="0" />
                             {% if vote.value == 1 %}

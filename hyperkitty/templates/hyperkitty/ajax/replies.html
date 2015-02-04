@@ -5,6 +5,7 @@
                 <div class="{% cycle 'odd' 'even' %}"
                     {% if email.level %}style="margin-left:{{ email.level|multiply:"2" }}em;"{% endif %}>
                     <!-- Start email -->
+                    <!-- email level: {{ email.level }} -->
                     {% include 'hyperkitty/messages/message.html' %}
                     <!-- End of email -->
                 </div>

@@ -19,7 +19,7 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import json
 from urlparse import urljoin
@@ -32,8 +32,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, Http404
 from django.utils.http import urlunquote
 
-from hyperkitty.lib import get_store
-from kittystore.utils import get_message_id_hash
+from hyperkitty.lib.incoming import add_to_list
+from hyperkitty.lib.utils import get_message_id_hash
 
 import logging
 logger = logging.getLogger(__name__)
@@ -96,12 +96,9 @@ def archive(request):
     mlist_fqdn = request.POST["mlist"]
     if "message" not in request.FILES:
         raise SuspiciousOperation
-    store = get_store(request)
     msg = message_from_file(request.FILES['message'])
-    store.add_to_list(mlist_fqdn, msg)
-    store.commit()
+    add_to_list(mlist_fqdn, msg)
     url = _get_url(mlist_fqdn, msg['Message-Id'])
-    #logger.info("Archived message %s to %s",
-    #            msg['Message-Id'].strip(), url)
+    logger.info("Archived message %s to %s", msg['Message-Id'], url)
     return HttpResponse(json.dumps({"url": url}),
                         content_type='application/javascript')

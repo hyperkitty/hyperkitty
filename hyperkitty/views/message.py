@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-# Copyright (C) 1998-2012 by the Free Software Foundation, Inc.
+# Copyright (C) 2014-2015 by the Free Software Foundation, Inc.
 #
 # This file is part of HyperKitty.
 #
@@ -16,27 +16,25 @@
 # You should have received a copy of the GNU General Public License along with
 # HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Author: Aamir Khan <syst3m.w0rm@gmail.com>
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import urllib
 import datetime
 import json
 
 from django.http import HttpResponse, Http404
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.core.exceptions import SuspiciousOperation
 from django.template import RequestContext, loader
 from django.contrib.auth.decorators import login_required
 
-from hyperkitty.lib import get_store
-from hyperkitty.lib.view_helpers import get_months
+from hyperkitty.lib.view_helpers import get_months, check_mlist_private
 from hyperkitty.lib.posting import post_to_list, PostingFailed, reply_subject
-from hyperkitty.lib.mailman import check_mlist_private
+from hyperkitty.models import MailingList, Email, Attachment
 from .forms import ReplyForm, PostForm
 
 
@@ -46,19 +44,19 @@ def index(request, mlist_fqdn, message_id_hash):
     Displays a single message identified by its message_id_hash (derived from
     message_id)
     '''
-    store = get_store(request)
-    message = store.get_message_by_hash_from_list(mlist_fqdn, message_id_hash)
-    if message is None:
-        raise Http404
-    message.sender_email = message.sender_email.strip()
-    message.myvote = message.get_vote_by_user_id(request.session.get("user_id"))
-    mlist = store.get_list(mlist_fqdn)
+    mlist = get_object_or_404(MailingList, name=mlist_fqdn)
+    message = get_object_or_404(Email,
+        mailinglist=mlist, message_id_hash=message_id_hash)
+    if request.user.is_authenticated():
+        message.myvote = message.votes.filter(user=request.user).first()
+    else:
+        message.myvote = None
 
     context = {
         'mlist' : mlist,
         'message': message,
         'message_id_hash' : message_id_hash,
-        'months_list': get_months(store, mlist.name),
+        'months_list': get_months(mlist),
         'month': message.date,
         'reply_form': ReplyForm(),
     }
@@ -71,13 +69,12 @@ def attachment(request, mlist_fqdn, message_id_hash, counter, filename):
     Sends the numbered attachment for download. The filename is not used for
     lookup, but validated nonetheless for security reasons.
     """
-    store = get_store(request)
-    message = store.get_message_by_hash_from_list(mlist_fqdn, message_id_hash)
-    if message is None:
-        raise Http404
-    attachment = store.get_attachment_by_counter(
-            mlist_fqdn, message.message_id, int(counter))
-    if attachment is None or attachment.name != filename:
+    mlist = get_object_or_404(MailingList, name=mlist_fqdn)
+    message = get_object_or_404(Email,
+        mailinglist=mlist, message_id_hash=message_id_hash)
+    attachment = get_object_or_404(Attachment,
+        email=message, counter=int(counter))
+    if attachment.name != filename:
         raise Http404
     # http://djangosnippets.org/snippets/1710/
     response = HttpResponse(attachment.content)
@@ -96,24 +93,18 @@ def vote(request, mlist_fqdn, message_id_hash):
     """ Vote for or against a given message identified by messageid. """
     if request.method != 'POST':
         raise SuspiciousOperation
-
     if not request.user.is_authenticated():
         return HttpResponse('You must be logged in to vote',
                             content_type="text/plain", status=403)
-    if "user_id" not in request.session:
-        return HttpResponse("Could not find or create your user ID in Mailman",
-                            content_type="text/plain", status=500)
-
-    store = get_store(request)
-    message = store.get_message_by_hash_from_list(mlist_fqdn, message_id_hash)
-    if message is None:
-        raise Http404
+    mlist = get_object_or_404(MailingList, name=mlist_fqdn)
+    message = get_object_or_404(Email,
+        mailinglist=mlist, message_id_hash=message_id_hash)
 
     value = int(request.POST['vote'])
-    message.vote(value, request.session["user_id"])
+    message.vote(value, request.user)
 
     # Extract all the votes for this message to refresh it
-    message.myvote = message.get_vote_by_user_id(request.session["user_id"])
+    message.myvote = message.votes.filter(user=request.user).first()
     t = loader.get_template('hyperkitty/messages/like_form.html')
     html = t.render(RequestContext(request, {
             "object": message,
@@ -138,13 +129,13 @@ def reply(request, mlist_fqdn, message_id_hash):
     if not form.is_valid():
         return HttpResponse(form.errors.as_text(),
                             content_type="text/plain", status=400)
-    store = get_store(request)
-    mlist = store.get_list(mlist_fqdn)
+    mlist = get_object_or_404(MailingList, name=mlist_fqdn)
     if form.cleaned_data["newthread"]:
         subject = form.cleaned_data["subject"]
         headers = {}
     else:
-        message = store.get_message_by_hash_from_list(mlist.name, message_id_hash)
+        message = get_object_or_404(Email,
+            mailinglist=mlist, message_id_hash=message_id_hash)
         subject = reply_subject(message.subject)
         headers = {"In-Reply-To": "<%s>" % message.message_id,
                    "References": "<%s>" % message.message_id, }
@@ -153,15 +144,19 @@ def reply(request, mlist_fqdn, message_id_hash):
     except PostingFailed, e:
         return HttpResponse(str(e), content_type="text/plain", status=500)
 
-    reply = {
-        "sender_name": "%s %s" % (request.user.first_name,
-                                  request.user.last_name),
-        "sender_email": request.user.email,
-        "content": form.cleaned_data["message"],
-        "level": message.thread_depth, # no need to increment, level = thread_depth - 1
-    }
-    t = loader.get_template('hyperkitty/ajax/temp_message.html')
-    html = t.render(RequestContext(request, { 'email': reply }))
+    # TODO: if newthread, don't insert the temp mail in the thread, redirect to the new thread. Should we insert the mail in the DB and flag it as "temporary", to be confirmed by a later reception from mailman?
+
+    if form.cleaned_data["newthread"]:
+        html = None
+    else:
+        reply = {
+            "sender_name": "%s %s" % (request.user.first_name,
+                                      request.user.last_name),
+            "content": form.cleaned_data["message"],
+            "level": message.thread_depth, # no need to increment, level = thread_depth - 1
+        }
+        t = loader.get_template('hyperkitty/ajax/temp_message.html')
+        html = t.render(RequestContext(request, { 'email': reply }))
     result = {"result": "The reply has been sent successfully.",
               "message_html": html}
     return HttpResponse(json.dumps(result),
@@ -174,8 +169,7 @@ def new_message(request, mlist_fqdn):
     """ Sends a new thread-starting message to the list.
     TODO: unit tests
     """
-    store = get_store(request)
-    mlist = store.get_list(mlist_fqdn)
+    mlist = get_object_or_404(MailingList, name=mlist_fqdn)
     failure = None
     if request.method == 'POST':
         form = PostForm(request.POST)
@@ -200,6 +194,6 @@ def new_message(request, mlist_fqdn):
         "mlist": mlist,
         "post_form": form,
         "failure": failure,
-        'months_list': get_months(store, mlist.name),
+        'months_list': get_months(mlist),
     }
     return render(request, "hyperkitty/message_new.html", context)

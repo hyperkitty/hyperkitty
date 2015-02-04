@@ -209,10 +209,13 @@ function setup_replies(baseElem) {
             data: data,
             success: function(response) {
                 var server_reply = $(response.message_html);
-                server_reply.insertAfter(form.parents(".email").first().parent());
+                if (server_reply) {
+                    // server_reply can be null if it's a new thread
+                    server_reply.insertAfter(form.parents(".email").first().parent());
+                }
                 form.parents(".reply-form").first().slideUp(function() {
                     form.find("textarea").val("");
-                    server_reply.slideDown();
+                    if (server_reply) server_reply.slideDown();
                 });
                 $('<div class="reply-result"><div class="alert alert-success">'
                   + response.result + '</div></div>')

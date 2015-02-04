@@ -1,0 +1,95 @@
+X-Account-Key: account5
+X-UIDL: 1348358555.28754.mrelay4-g25
+X-Mozilla-Status: 0001
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <devel-bounces@lists.fedoraproject.org>
+Delivered-To: free.fr-gauret@free.fr
+Received: (qmail 28730 invoked from network); 23 Sep 2012 00:02:35 -0000
+Received: from mx24-g26.free.fr (HELO bastion.fedoraproject.org) (212.27.42.86)
+  by mrelay4-g25.free.fr with SMTP; 23 Sep 2012 00:02:35 -0000
+Received: from bastion.fedoraproject.org ([209.132.181.2])
+	by mx1-g20.free.fr (MXproxy); Sun, 23 Sep 2012 02:02:35 +0200 (CEST)
+X-ProXaD-SC: state=HAM score=0
+Received: from lists.fedoraproject.org (collab03.vpn.fedoraproject.org [192.168.1.70])
+	by bastion01.phx2.fedoraproject.org (Postfix) with ESMTP id 4AA7922BBC;
+	Sun, 23 Sep 2012 00:02:20 +0000 (UTC)
+Received: from collab03.fedoraproject.org (localhost [127.0.0.1])
+	by lists.fedoraproject.org (Postfix) with ESMTP id E9B0040A18;
+	Sun, 23 Sep 2012 00:02:19 +0000 (UTC)
+X-Original-To: devel@lists.fedoraproject.org
+Delivered-To: devel@lists.fedoraproject.org
+Received: from smtp-mm03.fedoraproject.org (vm4.fedora.ibiblio.org
+	[152.19.134.143])
+	by lists.fedoraproject.org (Postfix) with ESMTP id 3086E40758
+	for <devel@lists.fedoraproject.org>;
+	Sun, 23 Sep 2012 00:02:16 +0000 (UTC)
+Received: from outrelay07.libero.it (outrelay07.libero.it [212.52.84.111])
+	by smtp-mm03.fedoraproject.org (Postfix) with ESMTP id 7E2F240379
+	for <devel@lists.fedoraproject.org>;
+	Sun, 23 Sep 2012 00:02:15 +0000 (UTC)
+X-libjamoibt: 1823
+Received: from [192.168.1.3] (151.60.56.156) by outrelay07.libero.it (8.6.033)
+	(authenticated as puntogil@libero.it)
+	id 5009F49C0CB6E303 for devel@lists.fedoraproject.org;
+	Sun, 23 Sep 2012 02:02:14 +0200
+Message-ID: <505E5185.5040208@libero.it>
+Date: Sun, 23 Sep 2012 02:02:13 +0200
+From: gil <puntogil@libero.it>
+User-Agent: Mozilla/5.0 (X11; Linux i686;
+	rv:15.0) Gecko/20120827 Thunderbird/15.0
+MIME-Version: 1.0
+To: devel@lists.fedoraproject.org
+Subject: gradle 1.0
+Content-Type: multipart/mixed; boundary="------------030501050807030508020004"
+X-BeenThere: devel@lists.fedoraproject.org
+X-Mailman-Version: 2.1.12
+Precedence: list
+Reply-To: Development discussions related to Fedora
+	<devel@lists.fedoraproject.org>
+List-Id: Development discussions related to Fedora
+	<devel.lists.fedoraproject.org>
+List-Unsubscribe: <https://admin.fedoraproject.org/mailman/options/devel>,
+	<mailto:devel-request@lists.fedoraproject.org?subject=unsubscribe>
+List-Archive: <http://lists.fedoraproject.org/pipermail/devel/>
+List-Post: <mailto:devel@lists.fedoraproject.org>
+List-Help: <mailto:devel-request@lists.fedoraproject.org?subject=help>
+List-Subscribe: <https://admin.fedoraproject.org/mailman/listinfo/devel>,
+	<mailto:devel-request@lists.fedoraproject.org?subject=subscribe>
+Sender: devel-bounces@lists.fedoraproject.org
+Errors-To: devel-bounces@lists.fedoraproject.org
+
+This is a multi-part message in MIME format.
+--------------030501050807030508020004
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
+
+This is a test message.
+
+
+--------------030501050807030508020004
+Content-Type: text/x-vcard; charset=utf-8;
+ name="puntogil.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="puntogil.vcf"
+
+begin:vcard
+fn:gil
+n:;gil
+version:2.1
+end:vcard
+
+
+--------------030501050807030508020004
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+LS0gCmRldmVsIG1haWxpbmcgbGlzdApkZXZlbEBsaXN0cy5mZWRvcmFwcm9qZWN0Lm9yZwpodHRw
+czovL2FkbWluLmZlZG9yYXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vZGV2ZWw=
+
+--------------030501050807030508020004--
+
+

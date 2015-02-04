@@ -19,6 +19,9 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+from __future__ import absolute_import, print_function, unicode_literals
+
+import os
 import uuid
 from copy import deepcopy
 
@@ -27,10 +30,6 @@ from mock import Mock, patch
 from django.test import TestCase as DjangoTestCase
 from django.conf import settings
 
-import kittystore
-from kittystore.test import SettingsModule
-from mailmanclient.tests.utils import FakeMailmanClient
-
 import hyperkitty.lib.mailman
 
 
@@ -38,9 +37,6 @@ OVERRIDE_SETTINGS = {
     "DEBUG": True,
     "TEMPLATE_DEBUG": True,
     "USE_SSL": False,
-    "KITTYSTORE_URL": 'sqlite:',
-    "KITTYSTORE_SEARCH_INDEX": None,
-    "KITTYSTORE_DEBUG": False,
     "USE_MOCKUPS": False,
     "ROOT_URLCONF": "hyperkitty.urls",
     "LOGIN_URL": '/accounts/login/',
@@ -65,43 +61,21 @@ class TestCase(DjangoTestCase):
         for key, value in OVERRIDE_SETTINGS.iteritems():
             self._old_settings[key] = getattr(settings, key)
             setattr(settings, key, value)
-        # Use the mocking mailman client
-        FakeMailmanClient.setUp()
-        self.set_mailman_client_mode("failing")
+        self.mailman_client = Mock()
+        self.mailman_client.get_user.side_effect = mailmanclient.MailmanConnectionError()
+        self.mailman_client.get_list.side_effect = mailmanclient.MailmanConnectionError()
         self._mm_client_patcher = patch("hyperkitty.lib.mailman.MailmanClient",
                                         lambda *a: self.mailman_client)
         self._mm_client_patcher.start()
 
-    def set_mailman_client_mode(self, mode):
-        if mode == "failing":
-            self.mailman_client = Mock()
-            self.mailman_client.get_user.side_effect = mailmanclient.MailmanConnectionError()
-        elif mode == "mocking":
-           self.mailman_client = FakeMailmanClient('%s/3.0' %
-                   settings.MAILMAN_REST_SERVER,
-                   settings.MAILMAN_API_USER,
-                   settings.MAILMAN_API_PASS)
-        else:
-            raise ValueError("Mailman client mode is either 'failing' or 'mocking'")
-
     def _post_teardown(self):
         self._mm_client_patcher.stop()
-        FakeMailmanClient.tearDown()
         for key, value in self._old_settings.iteritems():
             setattr(settings, key, value)
         super(TestCase, self)._post_teardown()
 
 
-class ViewTestCase(TestCase):
-    """A testcase class that sets up kittystore to make the web client work"""
 
-    def _pre_setup(self):
-        super(ViewTestCase, self)._pre_setup()
-        self.store = kittystore.get_store(SettingsModule(),
-                                     debug=False, auto_create=True)
-        self.client.defaults = {"kittystore.store": self.store,
-                                "HTTP_USER_AGENT": "testbot",
-                                }
-
-    def _post_teardown(self):
-        super(ViewTestCase, self)._post_teardown()
+def get_test_file(*fileparts):
+    return os.path.join(os.path.dirname(__file__), "testdata", *fileparts)
+get_test_file.__test__ = False

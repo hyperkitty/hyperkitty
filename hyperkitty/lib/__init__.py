@@ -18,19 +18,3 @@
 #
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
-
-
-def get_store(request):
-    return request.environ["kittystore.store"]
-
-
-def stripped_subject(mlist, subject):
-    if mlist is None:
-        return subject
-    if not subject:
-        return u"(no subject)"
-    if not mlist.subject_prefix:
-        return subject
-    if subject.lower().startswith(mlist.subject_prefix.lower()):
-        subject = subject[len(mlist.subject_prefix) : ]
-    return subject

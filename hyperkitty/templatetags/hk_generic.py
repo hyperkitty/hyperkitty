@@ -31,6 +31,7 @@ from django.utils.safestring import mark_safe
 from django.utils.timezone import utc
 
 import hyperkitty.lib.posting
+from hyperkitty.lib.utils import stripped_subject
 
 register = template.Library()
 
@@ -129,18 +130,12 @@ def escapeemail(text):
 
 
 @register.filter()
-def get_date(email_or_thread):
+def date_with_senders_timezone(email):
     """
-    Rebuild the date of an email or a thread taking the timezone into account.
+    Rebuild the date of an email taking the sender's timezone into account.
     """
-    if hasattr(email_or_thread, 'date'):
-        tz = tzoffset(None, email_or_thread.timezone * 60)
-        date_obj = email_or_thread.date.replace(tzinfo=tz)
-    elif hasattr(email_or_thread, 'date_active'):
-        date_obj = email_or_thread.date_active.replace(tzinfo=utc)
-    else:
-        raise ValueError(email_or_thread)
-    return date_obj
+    tz = tzoffset(None, email.timezone * 60)
+    return email.date.astimezone(tz)
 
 
 SNIPPED_RE = re.compile("^(\s*&gt;).*$", re.M)
@@ -252,15 +247,17 @@ def until(value, limit):
 def to_json(value):
     return json.dumps(value)
 
+
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
 
+
 @register.filter(is_safe=True)
-def num_comments(value):
+def num_comments(thread):
     """Returns the number of comments in a thread"""
     try:
-        return len(value) - 1
+        return thread.emails.count() - 1
     except (ValueError, TypeError):
         return ''
 
@@ -268,3 +265,12 @@ def num_comments(value):
 @register.filter
 def reply_subject(value):
     return hyperkitty.lib.posting.reply_subject(value)
+
+
+@register.filter(name="strip_subject")
+def strip_subject(subject, mlist):
+    return stripped_subject(mlist, subject)
+
+@register.filter
+def is_unread_by(thread, user):
+    return thread.is_unread_by(user)

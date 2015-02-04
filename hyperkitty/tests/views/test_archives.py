@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 1998-2012 by the Free Software Foundation, Inc.
+# Copyright (C) 2012-2015 by the Free Software Foundation, Inc.
 #
 # This file is part of HyperKitty.
 #
@@ -25,20 +25,19 @@ from __future__ import absolute_import, print_function, unicode_literals
 import datetime
 from tempfile import mkdtemp
 from shutil import rmtree
+from email.message import Message
 
+from mock import Mock
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from mailman.email.message import Message
-from mailman.interfaces.archiver import ArchivePolicy
 
-from hyperkitty.tests.utils import TestCase, ViewTestCase
-
-import kittystore
-from kittystore.test import SettingsModule
+from hyperkitty.models import MailingList, ArchivePolicy, Profile
+from hyperkitty.lib.incoming import add_to_list
+from hyperkitty.lib.mailman import FakeMMList
+from hyperkitty.tests.utils import TestCase
 
 
-
-class ListArchivesTestCase(ViewTestCase):
+class ListArchivesTestCase(TestCase):
 
     def setUp(self):
         # Create the list by adding a dummy message
@@ -46,7 +45,7 @@ class ListArchivesTestCase(ViewTestCase):
         msg["From"] = "dummy@example.com"
         msg["Message-ID"] = "<msg>"
         msg.set_payload("Dummy message")
-        self.store.add_to_list("list@example.com", msg)
+        add_to_list("list@example.com", msg)
 
     def test_no_date(self):
         today = datetime.date.today()
@@ -69,31 +68,39 @@ class ListArchivesTestCase(ViewTestCase):
         self.assertEqual(response.status_code, 404)
 
 
-
 class PrivateArchivesTestCase(TestCase):
 
     def setUp(self):
-        self.tmpdir = mkdtemp(prefix="hyperkitty-testing-")
+        #self.tmpdir = mkdtemp(prefix="hyperkitty-testing-")
         self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
+        Profile.objects.create(user=self.user)
         # Setup KittyStore with a working search index
-        ks_settings = SettingsModule()
-        ks_settings.KITTYSTORE_SEARCH_INDEX = self.tmpdir
-        self.store = kittystore.get_store(ks_settings, debug=False, auto_create=True)
-        self.client.defaults = {"kittystore.store": self.store,
-                                "HTTP_USER_AGENT": "testbot",
-                                }
-        ml = self.store.create_list("list@example.com")
-        ml.subject_prefix = u"[example] "
-        ml.archive_policy = ArchivePolicy.private
+        #ks_settings = SettingsModule()
+        #ks_settings.KITTYSTORE_SEARCH_INDEX = self.tmpdir
+        #self.store = kittystore.get_store(ks_settings, debug=False, auto_create=True)
+        #self.client.defaults = {"kittystore.store": self.store,
+        #                        "HTTP_USER_AGENT": "testbot",
+        #                        }
+        ml = MailingList.objects.create(
+            name="list@example.com", subject_prefix="[example] ",
+            archive_policy=ArchivePolicy.private.value)
         msg = Message()
         msg["From"] = "dummy@example.com"
         msg["Message-ID"] = "<msgid>"
         msg["Subject"] = "Dummy message"
         msg.set_payload("Dummy message")
-        msg["Message-ID-Hash"] = self.msgid = self.store.add_to_list("list@example.com", msg)
+        msg["Message-ID-Hash"] = self.msgid = add_to_list("list@example.com", msg)
+        # Set the mailman_client after the message has been added to the list,
+        # otherwise MailingList.update_from_mailman() will overwrite the list
+        # properties.
+        self.mailman_client.get_list.side_effect = lambda name: FakeMMList(name)
+        self.mm_user = Mock()
+        self.mm_user.user_id = "dummy"
+        self.mailman_client.get_user.side_effect = lambda name: self.mm_user
+        self.mm_user.subscription_list_ids = ["list@example.com",]
 
     def tearDown(self):
-        rmtree(self.tmpdir)
+        #rmtree(self.tmpdir)
         self.client.logout()
 
 
@@ -101,12 +108,13 @@ class PrivateArchivesTestCase(TestCase):
         response = self.client.get(url, query)
         self.assertEquals(response.status_code, 403)
         self.client.login(username='testuser', password='testPass')
-        # use a temp variable below because self.client.session is actually a
-        # property which returns a new instance en each call :-/
-        # http://blog.joshcrompton.com/2012/09/how-to-use-sessions-in-django-unit-tests.html
-        session = self.client.session
-        session["subscribed"] = ["list@example.com"]
-        session.save()
+        ## use a temp variable below because self.client.session is actually a
+        ## property which returns a new instance en each call :-/
+        ## http://blog.joshcrompton.com/2012/09/how-to-use-sessions-in-django-unit-tests.html
+        #session = self.client.session
+        #session["subscribed"] = ["list@example.com"]
+        #session.save()
+        #self.user.hyperkitty_profile.get_subscriptions = lambda: ["list@example.com"]
         response = self.client.get(url, query)
         self.assertContains(response, "Dummy message", status_code=200)
 
@@ -125,6 +133,7 @@ class PrivateArchivesTestCase(TestCase):
         self._do_test(reverse('hk_message_index', args=["list@example.com", self.msgid]))
 
     def test_search_list(self):
+        self.fail("Fulltext search is not yet implemented")
         self._do_test(reverse('hk_search'), {"list": "list@example.com", "query": "dummy"})
 
     def test_search_all_lists(self):

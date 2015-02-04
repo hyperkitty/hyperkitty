@@ -1,0 +1,97 @@
+Delivered-To: test@example.com
+Received: by 10.49.117.231 with SMTP id kh7csp13885qeb;
+        Wed, 3 Oct 2012 05:45:15 -0700 (PDT)
+Received: by 10.224.203.193 with SMTP id fj1mr7101635qab.13.1349268315076;
+        Wed, 03 Oct 2012 05:45:15 -0700 (PDT)
+Return-Path: <list1-bounces@mm3test.fedoraproject.org>
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net. [217.70.183.195])
+        by mx.google.com with ESMTP id en7si68113qab.70.2012.10.03.05.45.14;
+        Wed, 03 Oct 2012 05:45:15 -0700 (PDT)
+Received-SPF: neutral (google.com: 217.70.183.195 is neither permitted nor denied by best guess record for domain of list1-bounces@mm3test.fedoraproject.org) client-ip=217.70.183.195;
+Authentication-Results: mx.google.com; spf=neutral (google.com: 217.70.183.195 is neither permitted nor denied by best guess record for domain of list1-bounces@mm3test.fedoraproject.org) smtp.mail=list1-bounces@mm3test.fedoraproject.org
+X-Originating-IP: 10.0.21.133
+Received: from spool.mail.gandi.net (mspool2-d.mgt.gandi.net [10.0.21.133])
+	by relay3-d.mail.gandi.net (Postfix) with ESMTP id 48CE9A80D1
+	for <test@example.com>; Wed,  3 Oct 2012 14:45:04 +0200 (CEST)
+Received: from mfilter22-d.gandi.net (mfilter22-d.gandi.net [217.70.178.150])
+	by spool.mail.gandi.net (Postfix) with ESMTP id 45953178036
+	for <test@example.com>; Wed,  3 Oct 2012 14:45:04 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at mfilter22-d.gandi.net
+Received: from spool.mail.gandi.net ([10.0.21.133])
+	by mfilter22-d.gandi.net (mfilter22-d.gandi.net [10.0.15.180]) (amavisd-new, port 10024)
+	with ESMTP id O1qMpiiPArby for <test@example.com>;
+	Wed,  3 Oct 2012 14:45:02 +0200 (CEST)
+Received: from bastion.fedoraproject.org (bastion02.fedoraproject.org [209.132.181.3])
+	by spool.mail.gandi.net (Postfix) with ESMTP id C0264178072
+	for <test@example.com>; Wed,  3 Oct 2012 14:45:02 +0200 (CEST)
+Received: by bastion02.phx2.fedoraproject.org (Postfix)
+	id 024EB402B4; Wed,  3 Oct 2012 12:45:02 +0000 (UTC)
+Delivered-To: test@example.com
+Received: from mx1.redhat.com (ext-mx16.extmail.prod.ext.phx2.redhat.com [10.5.110.21])
+	by bastion02.phx2.fedoraproject.org (Postfix) with ESMTP id E58CE402A8
+	for <test@example.com>; Wed,  3 Oct 2012 12:45:01 +0000 (UTC)
+Received: from mm3test.fedoraproject.org (vm5.fedora.ibiblio.org [152.19.134.144])
+	by mx1.redhat.com (8.14.4/8.14.4) with ESMTP id q93Cj1N0011384
+	for <test@example.com>; Wed, 3 Oct 2012 08:45:01 -0400
+Received: from vm5.fedora.ibiblio.org (localhost [127.0.0.1])
+	by mm3test.fedoraproject.org (Postfix) with ESMTP id 1B41F1218B8;
+	Wed,  3 Oct 2012 12:45:01 +0000 (UTC)
+Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
+	by mm3test.fedoraproject.org (Postfix) with ESMTP id 9C1DC1218B8
+	for <list1@mm3test.fedoraproject.org>;
+	Wed,  3 Oct 2012 12:44:57 +0000 (UTC)
+Received: from home.bompard.org (unknown
+	[IPv6:2a01:e34:ef9a:9a70:5c81:6d56:6890:a71])
+	by smtp1-g21.free.fr (Postfix) with ESMTP id CEA1594011F
+	for <list1@mm3test.fedoraproject.org>;
+	Wed,  3 Oct 2012 14:44:53 +0200 (CEST)
+Message-ID: <506C3344.7020501@free.fr>
+Date: Wed, 03 Oct 2012 14:44:52 +0200
+From: =?UTF-8?B?QXVyw6lsaWVuIEJvbXBhcmQ=?= <gauret@free.fr>
+User-Agent: Mozilla/5.0 (X11; Linux i686;
+	rv:15.0) Gecko/20120911 Thunderbird/15.0.1
+MIME-Version: 1.0
+To: list1@mm3test.fedoraproject.org
+Content-Type: multipart/mixed; boundary="------------050607040206050605060208"
+X-Message-ID-Hash: 6J22Q6W7HJN5GPROHMVBLRYUKNONYUY5
+X-MailFrom: gauret@free.fr
+X-Mailman-Rule-Hits: member-moderation
+X-Mailman-Rule-Misses: approved; emergency; loop
+Subject: [List1] try 5
+X-Mailman-Version: 3.0.0b2+
+Precedence: list
+List-Id: <list1.mm3test.fedoraproject.org>
+List-Post: <mailto:list1@mm3test.fedoraproject.org>
+List-Subscribe: <http://mm3test.fedoraproject.org/listinfo/list1@mm3test.fedoraproject.org>,
+	<mailto:list1-join@mm3test.fedoraproject.org>
+Archived-At: /message/list1@mm3test.fedoraproject.org/6J22Q6W7HJN5GPROHMVBLRYUKNONYUY5/
+List-Unsubscribe: <http://mm3test.fedoraproject.org/listinfo/list1@mm3test.fedoraproject.org>,
+	<mailto:list1-leave@mm3test.fedoraproject.org>
+List-Archive: </archives/list1@mm3test.fedoraproject.org/>
+List-Help: <mailto:list1-request@mm3test.fedoraproject.org?subject=help>
+X-RedHat-Spam-Score: -1.899  (BAYES_00,FREEMAIL_FROM)
+X-Scanned-By: MIMEDefang 2.68 on 10.5.110.21
+
+This is a multi-part message in MIME format.
+--------------050607040206050605060208
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+This is a test, HTML message with accented letters : =C3=A9 =C3=A8 =C3=A7=
+ =C3=A0.
+And an attachment with an accented filename
+
+
+
+
+--------------050607040206050605060208
+Content-Type: text/plain; charset=UTF-8;
+	name="=?UTF-8?B?dG9kby1kw6lqZXVuZXIudHh0?="
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename*=UTF-8''%74%6F%64%6F%2D%64%C3%A9%6A%65%75%6E%65%72%2E%74%78%74
+
+VmlhbmRlCk1lbnRoZQpQYWluClZpbgoKQ3Vpc2luZTogcHLDqXBhcmVyIGwnYXDDqXJvLCBj
+b3VwZXIgZXQgZmFpcmUgcmlzc29sZXIgbGVzIHBhdGF0ZXMsIGV0IGZhaXJlIGxlcyBjb29r
+aWVzCg==
+--------------050607040206050605060208--

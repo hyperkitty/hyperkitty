@@ -37,56 +37,6 @@ class PaginationMiddleware(object):
 
 
 
-# KittyStore
-
-from threading import local
-from django.shortcuts import redirect
-from django.core.urlresolvers import reverse
-import kittystore
-
-class KittyStoreDjangoMiddleware(object):
-    """Django middleware.
-    Add KittyStore object in environ['kittystore.store']. Each thread contains
-    own store.
-    Inspired by http://pypi.python.org/pypi/middlestorm
-    """
-
-    def __init__(self):
-        """Create Django middleware."""
-        self._local = local()
-
-    def process_request(self, request):
-        if request.path == reverse("hk_error_schemaupgrade"):
-            return # Display the error page
-        if "kittystore.store" in request.environ:
-            return # Already set, for example by unit tests
-        try:
-            request.environ['kittystore.store'] = self._local.store
-        except AttributeError:
-            try:
-                store = kittystore.get_store(settings)
-            except kittystore.SchemaUpgradeNeeded:
-                return redirect("error_schemaupgrade")
-            except KeyError:
-                # Sometimes Alembic fails to unset a module proxy on schema
-                # check, but it's harmless. Just do it again.
-                # TODO: investigate this.
-                store = kittystore.get_store(settings)
-            request.environ['kittystore.store'] = \
-                    self._local.__dict__.setdefault('store', store)
-
-    def process_response(self, request, response):
-        if "kittystore.store" in request.environ:
-            # kittystore.store could be absent on automatic redirects for ex.
-            request.environ['kittystore.store'].commit()
-            #request.environ['kittystore.store'].close()
-        return response
-
-    def process_exception(self, request, exception):
-        request.environ['kittystore.store'].rollback()
-
-
-
 # http://stackoverflow.com/questions/2799450/django-https-for-just-login-page
 
 from django.http import HttpResponsePermanentRedirect
@@ -138,46 +88,47 @@ class TimezoneMiddleware(object):
         if not request.user.is_authenticated():
             return
         try:
-            user_profile = request.user.userprofile
+            profile = request.user.hyperkitty_profile
         except ObjectDoesNotExist:
             return
-        if user_profile.timezone:
-            timezone.activate(user_profile.timezone)
+        if profile.timezone:
+            timezone.activate(profile.timezone)
 
 
 
-# Cache some metadata from Mailman about the logged in user
-
-from urllib2 import HTTPError
-from uuid import UUID
-from mailmanclient import MailmanConnectionError
-from hyperkitty.lib.mailman import get_mailman_client
-
-class MailmanUserMetadata(object):
-
-    def process_view(self, request, view_func, view_args, view_kwargs):
-        if not request.user.is_authenticated():
-            return
-        if not request.user.email:
-            return # Can this really happen?
-        if "subscribed" in request.session and "user_id" in request.session:
-            return # Already set
-        client = get_mailman_client()
-        try:
-            user = client.get_user(request.user.email)
-        except MailmanConnectionError:
-            return
-        except HTTPError, err:
-            if err.code == 404:
-                user = client.create_user(request.user.email, "")
-            else:
-                return
-        if user.user_id is not None:
-            request.session["user_id"] = UUID(int=user.user_id)
-        request.session["subscribed"] = []
-        for list_id in user.subscription_list_ids:
-            try:
-                ml = client.get_list(list_id)
-                request.session["subscribed"].append(ml.fqdn_listname)
-            except (MailmanConnectionError, HTTPError):
-                continue
+## Cache some metadata from Mailman about the logged in user
+#
+#from urllib2 import HTTPError
+#from uuid import UUID
+#from mailmanclient import MailmanConnectionError
+#from hyperkitty.lib.mailman import get_mailman_client
+#
+#class MailmanUserMetadata(object):
+#
+#    def process_view(self, request, view_func, view_args, view_kwargs):
+#        if not request.user.is_authenticated():
+#            return
+#        if not request.user.email:
+#            return # Can this really happen?
+#        #if "subscribed" in request.session and "user_id" in request.session:
+#        if "subscribed" in request.session:
+#            return # Already set
+#        client = get_mailman_client()
+#        try:
+#            user = client.get_user(request.user.email)
+#        except MailmanConnectionError:
+#            return
+#        except HTTPError, err:
+#            if err.code == 404:
+#                user = client.create_user(request.user.email, "")
+#            else:
+#                return
+#        #if user.user_id is not None:
+#        #    request.session["user_id"] = user.user_id
+#        request.session["subscribed"] = []
+#        for list_id in user.subscription_list_ids:
+#            try:
+#                ml = client.get_list(list_id)
+#                request.session["subscribed"].append(ml.fqdn_listname)
+#            except (MailmanConnectionError, HTTPError):
+#                continue

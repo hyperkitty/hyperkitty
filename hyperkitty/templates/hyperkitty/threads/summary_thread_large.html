@@ -1,9 +1,8 @@
 {% load url from future %}
 {% load gravatar %}
 {% load hk_generic %}
-{% load kittystore %}
 
-        <div class="thread{% if thread.unread %} unread{% endif %}">
+        <div class="thread{% if thread|is_unread_by:request.user %} unread{% endif %}">
             <span class="thread-title">
                 <a name="{{thread.thread_id}}"
                    href="{% url 'hk_thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}"
@@ -11,15 +10,15 @@
                     {% if thread.favorite %}
                     <i class="fa fa-star saved" title="Favorite"></i>
                     {% endif %}
-                    {% if thread.unread %}
+                    {% if thread|is_unread_by:request.user %}
                     <i class="fa fa-envelope" title="New messages in this thread"></i>
                     {% endif %}
                     {{ thread.starting_email.subject|strip_subject:mlist }}
                 </a>
             </span>
             <span class="thread-date"
-                  title="{{ thread|get_date|date:"l, j F Y H:i:s" }}">
-                {{ thread|get_date|timesince }}
+                  title="{{ thread.date_active|date:"l, j F Y H:i:s" }}">
+                {{ thread.date_active|timesince }}
             </span>
             <div class="thread-info row">
                 <div class="thread-content col-tn-12 col-xs-10 col-lg-11">
@@ -30,8 +29,8 @@
                     </div>
                 </div>
                 <div class="gravatar col-tn-3 col-xs-2 col-lg-1">
-                    {% if thread.starting_email.sender_email %}
-                    {% gravatar thread.starting_email.sender_email 40 %}
+                    {% if thread.starting_email.sender.address %}
+                    {% gravatar thread.starting_email.sender.address 40 %}
                     <br />
                     {% endif %}
                     {{ thread.starting_email.sender_name|escapeemail }}

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 1998-2012 by the Free Software Foundation, Inc.
+# Copyright (C) 2014-2015 by the Free Software Foundation, Inc.
 #
 # This file is part of HyperKitty.
 #
@@ -20,30 +20,31 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import datetime
 import re
 import json
 from collections import namedtuple
 
+from django.conf import settings
 from django.http import HttpResponse, Http404
 from django.template import RequestContext, loader
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.core.urlresolvers import reverse
 from django.core.exceptions import SuspiciousOperation
 from django.utils.timezone import utc
 import robot_detection
 
-from hyperkitty.models import Tag, Favorite, LastView
+from hyperkitty.models import Tag, Tagging, Favorite, LastView, Thread, MailingList
 from hyperkitty.views.forms import AddTagForm, ReplyForm
-from hyperkitty.lib import get_store, stripped_subject
+from hyperkitty.lib.utils import stripped_subject
 from hyperkitty.lib.view_helpers import (get_months, get_category_widget,
-        FLASH_MESSAGES)
-from hyperkitty.lib.mailman import check_mlist_private
+        FLASH_MESSAGES, check_mlist_private)
+from hyperkitty.lib.analysis import compute_thread_order_and_depth
 
 
-def _get_thread_replies(request, thread, offset=1, limit=None):
+def _get_thread_replies(request, thread, limit, offset=1):
     '''
     Get and sort the replies for a thread.
     By default, offset = 1 to skip the original message.
@@ -54,49 +55,44 @@ def _get_thread_replies(request, thread, offset=1, limit=None):
     sort_mode = request.GET.get("sort", "thread")
     if sort_mode not in ("date", "thread"):
         raise SuspiciousOperation
+    if sort_mode == "thread":
+        sort_mode = "thread_order"
 
-    emails = thread.get_emails(sort=sort_mode, offset=offset, limit=limit)
+    emails = list(thread.emails.order_by(sort_mode)[offset:offset+limit])
     for email in emails:
         # Extract all the votes for this message
-        email.myvote = email.get_vote_by_user_id(request.session.get("user_id"))
-        if sort_mode == "thread":
+        if request.user.is_authenticated():
+            email.myvote = email.votes.filter(user=request.user).first()
+        else:
+            email.myvote = None
+        if sort_mode == "thread_order":
             email.level = email.thread_depth - 1 # replies start ragged left
             if email.level > 5:
                 email.level = 5
-
     return emails
 
 
 @check_mlist_private
 def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     ''' Displays all the email for a given thread identifier '''
-    store = get_store(request)
-    thread = store.get_thread(mlist_fqdn, threadid)
-    if not thread:
-        raise Http404
-    prev_thread, next_thread = store.get_thread_neighbors(mlist_fqdn, threadid)
+    mlist = get_object_or_404(MailingList, name=mlist_fqdn)
+    thread = get_object_or_404(Thread, mailinglist=mlist, thread_id=threadid)
 
     sort_mode = request.GET.get("sort", "thread")
-    thread.starting_email.myvote = thread.starting_email.get_vote_by_user_id(
-            request.session.get("user_id"))
+    if request.user.is_authenticated():
+        thread.starting_email.myvote = thread.starting_email.votes.filter(
+            user=request.user).first()
+    else:
+        thread.starting_email.myvote = None
 
     # Tags
     tag_form = AddTagForm()
-    try:
-        tags = Tag.objects.filter(threadid=threadid, list_address=mlist_fqdn)
-    except Tag.DoesNotExist:
-        tags = []
 
     # Favorites
     fav_action = "add"
-    if request.user.is_authenticated():
-        try:
-            Favorite.objects.get(list_address=mlist_fqdn, threadid=threadid,
-                                 user=request.user)
-        except Favorite.DoesNotExist:
-            pass
-        else:
-            fav_action = "rm"
+    if request.user.is_authenticated() and Favorite.objects.filter(
+            thread=thread, user=request.user).exists():
+        fav_action = "rm"
 
     # Category
     category, category_form = get_category_widget(request, thread.category)
@@ -106,25 +102,24 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     days_old = today - thread.starting_email.date.date()
     days_inactive = today - thread.last_email.date.date()
 
-    mlist = store.get_list(mlist_fqdn)
     subject = stripped_subject(mlist, thread.starting_email.subject)
 
     # Last view
     last_view = None
     if request.user.is_authenticated():
         last_view_obj, created = LastView.objects.get_or_create(
-                list_address=mlist_fqdn, threadid=threadid, user=request.user)
+                thread=thread, user=request.user)
         if not created:
             last_view = last_view_obj.view_date
             last_view_obj.save() # update timestamp
     # get the number of unread messages
     if last_view is None:
         if request.user.is_authenticated():
-            unread_count = len(thread)
+            unread_count = thread.emails.count()
         else:
             unread_count = 0
     else:
-        unread_count = thread.replies_after(last_view).count()
+        unread_count = thread.emails.filter(date__gt=last_view).count()
 
     # Flash messages
     flash_messages = []
@@ -143,30 +138,26 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
 
     context = {
         'mlist': mlist,
-        'threadid': threadid,
+        'thread': thread,
         'subject': subject,
-        'tags': tags,
         'addtag_form': tag_form,
         'month': thread.date_active,
-        'first_mail': thread.starting_email,
-        'prev_thread': prev_thread,
-        'next_thread': next_thread,
-        'months_list': get_months(store, mlist.name),
+        'months_list': get_months(mlist),
         'days_inactive': days_inactive.days,
         'days_old': days_old.days,
         'sort_mode': sort_mode,
         'fav_action': fav_action,
         'reply_form': ReplyForm(),
         'is_bot': is_bot,
-        'num_comments': len(thread) - 1,
-        'participants': thread.participants,
+        'num_comments': thread.emails.count() - 1,
+        'participants': sorted(thread.participants,
+                               key=lambda p: p.name.lower()),
         'last_view': last_view,
         'unread_count': unread_count,
         'category_form': category_form,
         'category': category,
         'flash_messages': flash_messages,
     }
-    context["participants"].sort(key=lambda p: p.name.lower())
 
     if is_bot:
         # Don't rely on AJAX to load the replies
@@ -181,9 +172,8 @@ def replies(request, mlist_fqdn, threadid):
     """Get JSON encoded lists with the replies and the participants"""
     chunk_size = 6 # must be an even number, or the even/odd cycle will be broken
     offset = int(request.GET.get("offset", "1"))
-    store = get_store(request)
-    thread = store.get_thread(mlist_fqdn, threadid)
-    mlist = store.get_list(mlist_fqdn)
+    thread = get_object_or_404(Thread,
+        mailinglist__name=mlist_fqdn, thread_id=threadid)
     # Last view
     last_view = request.GET.get("last_view")
     if last_view:
@@ -192,8 +182,7 @@ def replies(request, mlist_fqdn, threadid):
         except ValueError:
             last_view = None
     context = {
-        'mlist': mlist,
-        'threadid': threadid,
+        'threadid': thread,
         'reply_form': ReplyForm(),
         'last_view': last_view,
     }
@@ -219,6 +208,8 @@ def tags(request, mlist_fqdn, threadid):
     if not request.user.is_authenticated():
         return HttpResponse('You must be logged in to add a tag',
                             content_type="text/plain", status=403)
+    thread = get_object_or_404(Thread,
+        mailinglist__name=mlist_fqdn, thread_id=threadid)
 
     if request.method != 'POST':
         raise SuspiciousOperation
@@ -236,31 +227,28 @@ def tags(request, mlist_fqdn, threadid):
         raise SuspiciousOperation
     tagnames = [ t.strip() for t in re.findall(r"[\w'_ -]+", tagname) ]
     for tagname in tagnames:
-        try:
-            tag = Tag.objects.get(threadid=threadid, list_address=mlist_fqdn,
-                                  tag=tagname)
-        except Tag.DoesNotExist:
-            if action == "add":
-                tag = Tag(list_address=mlist_fqdn, threadid=threadid,
-                          tag=tagname, user=request.user)
-                tag.save()
-            elif action == "rm":
+        if action == "add":
+            tag = Tag.objects.get_or_create(name=tagname)[0]
+            Tagging.objects.get_or_create(
+                tag=tag, thread=thread, user=request.user)
+        elif action == "rm":
+            try:
+                Tagging.objects.get(tag__name=tagname, thread=thread,
+                                    user=request.user).delete()
+            except Tagging.DoesNotExist:
                 raise Http404("No such tag: %s" % tagname)
-        else:
-            if action == "rm":
-                tag.delete()
+            # cleanup
+            if not Tagging.objects.filter(tag__name=tagname).exists():
+                Tag.objects.filter(name=tagname).delete()
 
     # Now refresh the tag list
-    tags = Tag.objects.filter(threadid=threadid, list_address=mlist_fqdn)
-    FakeMList = namedtuple("MailingList", ["name"])
     tpl = loader.get_template('hyperkitty/threads/tags.html')
     html = tpl.render(RequestContext(request, {
-            "tags": tags,
-            "mlist": FakeMList(name=mlist_fqdn),
-            "threadid": threadid,
+            "thread": thread,
             }))
 
-    response = {"tags": [ t.tag for t in tags ], "html": html}
+    response = {"tags": [ t.name for t in thread.tags.distinct() ],
+                "html": html}
     return HttpResponse(json.dumps(response),
                         content_type='application/javascript')
 
@@ -268,14 +256,18 @@ def tags(request, mlist_fqdn, threadid):
 def suggest_tags(request, mlist_fqdn, threadid):
     term = request.GET.get("term")
     current_tags = Tag.objects.filter(
-            list_address=mlist_fqdn, threadid=threadid
-            ).values_list("tag", flat=True)
+            threads__mailing_list__name=mlist_fqdn,
+            threads__thread_id=threadid
+        ).values_list("name", flat=True)
     if term:
-        tags = Tag.objects.filter(list_address=mlist_fqdn, tag__istartswith=term)
+        tags = Tag.objects.filter(
+            threads__mailing_list__name=mlist_fqdn,
+            name__istartswith=term)
     else:
         tags = Tag.objects.all()
-    tags = tags.exclude(tag__in=current_tags).values_list("tag", flat=True)
-    tags = [ t.encode("utf8") for t in tags ]
+    tags = [ t.encode("utf-8") for t in
+             tags.exclude(name__in=current_tags
+                ).values_list("name", flat=True)[:20] ]
     return HttpResponse(json.dumps(tags), content_type='application/javascript')
 
 
@@ -285,24 +277,15 @@ def favorite(request, mlist_fqdn, threadid):
     if not request.user.is_authenticated():
         return HttpResponse('You must be logged in to have favorites',
                             content_type="text/plain", status=403)
-
     if request.method != 'POST':
         raise SuspiciousOperation
 
-    props = dict(list_address=mlist_fqdn, threadid=threadid, user=request.user)
+    thread = get_object_or_404(Thread,
+        mailinglist__name=mlist_fqdn, thread_id=threadid)
     if request.POST["action"] == "add":
-        try:
-            fav = Favorite.objects.get(**props)
-        except Favorite.DoesNotExist:
-            fav = Favorite(**props)
-        fav.save()
+        Favorite.objects.get_or_create(thread=thread, user=request.user)
     elif request.POST["action"] == "rm":
-        try:
-            fav = Favorite.objects.get(**props)
-        except Favorite.DoesNotExist:
-            pass
-        else:
-            fav.delete()
+        Favorite.objects.filter(thread=thread, user=request.user).delete()
     else:
         raise SuspiciousOperation
     return HttpResponse("success", content_type='text/plain')
@@ -317,22 +300,20 @@ def set_category(request, mlist_fqdn, threadid):
     if request.method != 'POST':
         raise SuspiciousOperation
 
-    store = get_store(request)
+    thread = get_object_or_404(Thread,
+        mailinglist__name=mlist_fqdn, thread_id=threadid)
     category, category_form = get_category_widget(request)
-    thread = store.get_thread(mlist_fqdn, threadid)
     if not category and thread.category:
         thread.category = None
-        store.commit()
+        thread.save()
     elif category and category.name != thread.category:
         thread.category = category.name
-        store.commit()
+        thread.save()
 
     # Now refresh the category widget
-    FakeMList = namedtuple("MailingList", ["name"])
     context = {
             "category_form": category_form,
-            "mlist": FakeMList(name=mlist_fqdn),
-            "threadid": threadid,
+            "thread": thread,
             "category": category,
             }
     return render(request, "hyperkitty/threads/category.html", context)
@@ -344,9 +325,8 @@ def reattach(request, mlist_fqdn, threadid):
         return HttpResponse('You must be a staff member to reattach a thread',
                             content_type="text/plain", status=403)
     flash_messages = []
-    store = get_store(request)
-    mlist = store.get_list(mlist_fqdn)
-    thread = store.get_thread(mlist_fqdn, threadid)
+    mlist = get_object_or_404(MailingList, name=mlist_fqdn)
+    thread = get_object_or_404(Thread, mailinglist=mlist, thread_id=threadid)
 
     if request.method == 'POST':
         parent_tid = request.POST.get("parent")
@@ -361,7 +341,8 @@ def reattach(request, mlist_fqdn, threadid):
                                    "msg": "Can't re-attach a thread to "
                                           "itself, check your thread ID."})
         else:
-            new_thread = store.get_thread(mlist_fqdn, parent_tid)
+            new_thread = Thread.objects.filter(
+                mailinglist__name=mlist_fqdn, thread_id=parent_tid).first()
             if new_thread is None:
                 flash_messages.append({"type": "warning",
                                        "msg": "Unknown thread, check your "
@@ -371,9 +352,20 @@ def reattach(request, mlist_fqdn, threadid):
                                        "msg": "Can't attach an older thread "
                                               "to a newer thread."})
             else:
-                for msg in thread.emails:
-                    store.attach_to_thread(msg, new_thread)
-                store.delete_thread(mlist_fqdn, threadid)
+                # TODO: move this to the models
+                old_starter = thread.starting_email
+                new_starter = new_thread.starting_email
+                old_starter.parent = new_starter
+                old_starter.save(update_fields=["parent_id"])
+                for email in thread.emails.all():
+                    email.thread = new_thread
+                    email.save()
+                    if email.date > new_thread.date_active:
+                        new_thread.date_active = email.date
+                new_thread.save()
+                compute_thread_order_and_depth(new_thread)
+                assert thread.emails.count() == 0
+                thread.delete()
                 return redirect(reverse(
                         'hk_thread', kwargs={
                             "mlist_fqdn": mlist_fqdn,
@@ -382,9 +374,9 @@ def reattach(request, mlist_fqdn, threadid):
 
 
     context = {
-        'mlist' : mlist,
+        'mlist': mlist,
         'thread': thread,
-        'months_list': get_months(store, mlist.name),
+        'months_list': get_months(mlist),
         'flash_messages': flash_messages,
     }
     return render(request, "hyperkitty/reattach.html", context)
@@ -392,9 +384,8 @@ def reattach(request, mlist_fqdn, threadid):
 
 @check_mlist_private
 def reattach_suggest(request, mlist_fqdn, threadid):
-    store = get_store(request)
-    mlist = store.get_list(mlist_fqdn)
-    thread = store.get_thread(mlist_fqdn, threadid)
+    mlist = get_object_or_404(MailingList, name=mlist_fqdn)
+    thread = get_object_or_404(Thread, mailinglist=mlist, thread_id=threadid)
 
     default_search_query = stripped_subject(
         mlist, thread.subject).lower().replace("re:", "")
@@ -402,7 +393,7 @@ def reattach_suggest(request, mlist_fqdn, threadid):
     if not search_query:
         search_query = default_search_query
     search_query = search_query.strip()
-    if store.search_index:
+    if getattr(settings, "SEARCH", False):
         search_result = store.search(search_query, mlist_fqdn, 1, 50)
         messages = search_result["results"]
     else:

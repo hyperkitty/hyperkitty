@@ -26,31 +26,29 @@ import datetime
 import json
 import re
 import urlparse
+from email.message import Message
 
 from mock import Mock
 from bs4 import BeautifulSoup
 
-from hyperkitty.tests.utils import ViewTestCase
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from mailman.email.message import Message
 
-import kittystore
-from kittystore.test import SettingsModule
-
-from hyperkitty.models import Tag
+from hyperkitty.lib.incoming import add_to_list
+from hyperkitty.models import MailingList, Thread, Tag, Tagging, Email
+from hyperkitty.tests.utils import TestCase
 
 
 
-class ReattachTestCase(ViewTestCase):
+class ReattachTestCase(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
         self.user.is_staff = True
         self.user.save()
         self.client.login(username='testuser', password='testPass')
-        ml = self.store.create_list("list@example.com")
-        ml.subject_prefix = u"[example] "
+        MailingList.objects.create(
+            name="list@example.com", subject_prefix = "[example] ")
         # Create 2 threads
         self.messages = []
         for msgnum in range(2):
@@ -59,12 +57,13 @@ class ReattachTestCase(ViewTestCase):
             msg["Message-ID"] = "<id%d>" % (msgnum+1)
             msg["Subject"] = "Dummy message"
             msg.set_payload("Dummy message")
-            msg["Message-ID-Hash"] = self.store.add_to_list("list@example.com", msg)
+            msg["Message-ID-Hash"] = add_to_list("list@example.com", msg)
             self.messages.append(msg)
 
     def test_suggestions(self):
         threadid = self.messages[0]["Message-ID-Hash"]
-        msg2 = self.store.get_message_by_id_from_list("list@example.com", "id2")
+        msg2 = Email.objects.get(message_id="id2")
+        self.fail("fulltext search is not implemented yet")
         self.store.search = Mock(return_value={"results": [msg2]})
         self.store.search_index = True
         response = self.client.get(reverse('hk_thread_reattach_suggest',
@@ -81,10 +80,7 @@ class ReattachTestCase(ViewTestCase):
         response = self.client.post(reverse('hk_thread_reattach',
                                    args=["list@example.com", threadid2]),
                                    data={"parent": threadid1})
-        now = datetime.datetime.now()
-        threads = list(self.store.get_threads("list@example.com",
-                now - datetime.timedelta(days=1),
-                now + datetime.timedelta(days=1)))
+        threads = Thread.objects.order_by("id")
         self.assertEqual(len(threads), 1)
         self.assertEqual(threads[0].thread_id, threadid1)
         expected_url = reverse('hk_thread', args=["list@example.com", threadid1]) + "?msg=attached-ok"
@@ -97,43 +93,31 @@ class ReattachTestCase(ViewTestCase):
                                     args=["list@example.com", threadid2]),
                                     data={"parent": "",
                                           "parent-manual": threadid1})
-        now = datetime.datetime.now()
-        threads = list(self.store.get_threads("list@example.com",
-                now - datetime.timedelta(days=1),
-                now + datetime.timedelta(days=1)))
-        self.assertEqual(len(threads), 1)
+        threads = Thread.objects.order_by("id")
         self.assertEqual(threads[0].thread_id, threadid1)
         expected_url = reverse('hk_thread', args=["list@example.com", threadid1]) + "?msg=attached-ok"
         self.assertRedirects(response, expected_url)
 
     def test_reattach_invalid(self):
         threadid = self.messages[0]["Message-ID-Hash"]
-        self.store.attach_to_thread = Mock()
         response = self.client.post(reverse('hk_thread_reattach',
                                     args=["list@example.com", threadid]),
                                     data={"parent": "invalid-data"})
-        self.assertFalse(self.store.attach_to_thread.called)
-        now = datetime.datetime.now()
-        threads = list(self.store.get_threads("list@example.com",
-                now - datetime.timedelta(days=1),
-                now + datetime.timedelta(days=1)))
-        self.assertEqual(len(threads), 2)
+        self.assertEqual(Thread.objects.count(), 2)
+        for thread in Thread.objects.all():
+            self.assertEqual(thread.emails.count(), 1)
         self.assertContains(response, '<div class="alert alert-warning">',
                 count=1, status_code=200)
         self.assertContains(response, "Invalid thread id, it should look")
 
     def test_reattach_on_itself(self):
         threadid = self.messages[0]["Message-ID-Hash"]
-        self.store.attach_to_thread = Mock()
         response = self.client.post(reverse('hk_thread_reattach',
                                     args=["list@example.com", threadid]),
                                     data={"parent": threadid})
-        self.assertFalse(self.store.attach_to_thread.called)
-        now = datetime.datetime.now()
-        threads = list(self.store.get_threads("list@example.com",
-                now - datetime.timedelta(days=1),
-                now + datetime.timedelta(days=1)))
-        self.assertEqual(len(threads), 2)
+        self.assertEqual(Thread.objects.count(), 2)
+        for thread in Thread.objects.all():
+            self.assertEqual(thread.emails.count(), 1)
         self.assertContains(response, '<div class="alert alert-warning">',
                 count=1, status_code=200)
         self.assertContains(response, "Can&#39;t re-attach a thread to itself")
@@ -141,11 +125,12 @@ class ReattachTestCase(ViewTestCase):
     def test_reattach_on_unknown(self):
         threadid = self.messages[0]["Message-ID-Hash"]
         threadid_unknown = "L36TVP2EFFDSXGVNQJCY44W5AB2YMJ65"
-        self.store.attach_to_thread = Mock()
         response = self.client.post(reverse('hk_thread_reattach',
                                     args=["list@example.com", threadid]),
                                     data={"parent": threadid_unknown})
-        self.assertFalse(self.store.attach_to_thread.called)
+        self.assertEqual(Thread.objects.count(), 2)
+        for thread in Thread.objects.all():
+            self.assertEqual(thread.emails.count(), 1)
         self.assertContains(response, '<div class="alert alert-warning">',
                 count=1, status_code=200)
         self.assertContains(response, "Unknown thread")
@@ -153,16 +138,12 @@ class ReattachTestCase(ViewTestCase):
     def test_reattach_old_to_new(self):
         threadid1 = self.messages[0]["Message-ID-Hash"]
         threadid2 = self.messages[1]["Message-ID-Hash"]
-        self.store.attach_to_thread = Mock()
         response = self.client.post(reverse('hk_thread_reattach',
                                     args=["list@example.com", threadid1]),
                                     data={"parent": threadid2})
-        self.assertFalse(self.store.attach_to_thread.called)
-        now = datetime.datetime.now()
-        threads = list(self.store.get_threads("list@example.com",
-                now - datetime.timedelta(days=1),
-                now + datetime.timedelta(days=1)))
-        self.assertEqual(len(threads), 2)
+        self.assertEqual(Thread.objects.count(), 2)
+        for thread in Thread.objects.all():
+            self.assertEqual(thread.emails.count(), 1)
         self.assertContains(response, '<div class="alert alert-error">',
                 count=1, status_code=200)
         self.assertContains(response, "Can&#39;t attach an older thread to a newer thread.",
@@ -170,15 +151,15 @@ class ReattachTestCase(ViewTestCase):
 
 
 
-class ThreadTestCase(ViewTestCase):
+class ThreadTestCase(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
         self.user.is_staff = True
         self.user.save()
         self.client.login(username='testuser', password='testPass')
-        ml = self.store.create_list("list@example.com")
-        ml.subject_prefix = u"[example] "
+        MailingList.objects.create(
+            name="list@example.com", subject_prefix = "[example] ")
         msg = self._make_msg("msgid")
         self.threadid = msg["Message-ID-Hash"]
 
@@ -190,7 +171,7 @@ class ThreadTestCase(ViewTestCase):
         msg.set_payload("Dummy message")
         if reply_to is not None:
             msg["In-Reply-To"] = "<%s>" % reply_to
-        msg["Message-ID-Hash"] = self.store.add_to_list("list@example.com", msg)
+        msg["Message-ID-Hash"] = add_to_list("list@example.com", msg)
         return msg
 
     def do_tag_post(self, data):
@@ -201,28 +182,70 @@ class ThreadTestCase(ViewTestCase):
 
     def test_add_tag(self):
         result = self.do_tag_post({ "tag": "testtag", "action": "add" })
-        self.assertEqual(result["tags"], [u"testtag"])
+        self.assertEqual(result["tags"], ["testtag"])
 
     def test_add_tag_stripped(self):
         result = self.do_tag_post({ "tag": " testtag ", "action": "add" })
-        self.assertEqual(result["tags"], [u"testtag"])
+        self.assertEqual(result["tags"], ["testtag"])
         self.assertEqual(Tag.objects.count(), 1)
-        self.assertEqual(Tag.objects.all()[0].tag, u"testtag")
+        self.assertEqual(Tag.objects.all()[0].name, "testtag")
 
     def test_add_tag_twice(self):
         # A second adding of the same tag should just be ignored
-        Tag(list_address="list@example.com", threadid=self.threadid,
-            tag="testtag", user=self.user).save()
+        thread = Thread.objects.get(thread_id=self.threadid)
+        tag = Tag.objects.create(name="testtag")
+        Tagging.objects.create(tag=tag, thread=thread, user=self.user)
         result = self.do_tag_post({ "tag": "testtag", "action": "add" })
         self.assertEqual(result["tags"], [u"testtag"])
         self.assertEqual(Tag.objects.count(), 1)
+        self.assertEqual(Tagging.objects.count(), 1)
 
     def test_add_multiple_tags(self):
-        result = self.do_tag_post({ "tag": "testtag 1, testtag 2 ; testtag 3", "action": "add" })
-        expected = [u"testtag 1", u"testtag 2", u"testtag 3"]
+        result = self.do_tag_post({
+            "tag": "testtag 1, testtag 2 ; testtag 3",
+            "action": "add" })
+        expected = ["testtag 1", "testtag 2", "testtag 3"]
         self.assertEqual(result["tags"], expected)
         self.assertEqual(Tag.objects.count(), 3)
-        self.assertEqual(sorted(t.tag for t in Tag.objects.all()), expected)
+        self.assertEqual(list(Tag.objects.values_list("name", flat=True)),
+                         expected)
+
+    def test_same_tag_by_different_users(self):
+        # If the same tag is added by different users, it must only show up once in the page
+        # AND if the current user is one of the taggers, the tag must be removable
+        user_2 = User.objects.create_user('testuser_2', 'test2@example.com', 'testPass')
+        self.do_tag_post({ "tag": "testtag", "action": "add" })
+        self.client.logout()
+        self.client.login(username='testuser_2', password='testPass')
+        result = self.do_tag_post({ "tag": "testtag", "action": "add" })
+        self.assertEqual(result["tags"], ["testtag"])
+
+    def test_tag_removal_form(self):
+        user_2 = User.objects.create_user('testuser_2', 'test2@example.com', 'testPass')
+        user_3 = User.objects.create_user('testuser_3', 'test3@example.com', 'testPass')
+        user_4 = User.objects.create_user('testuser_4', 'test4@example.com', 'testPass')
+        url = reverse('hk_thread', args=["list@example.com", self.threadid])
+        thread = Thread.objects.get(thread_id=self.threadid)
+        # Create tags
+        t1 = Tag.objects.create(name="t1")
+        t2 = Tag.objects.create(name="t2")
+        Tagging.objects.create(tag=t1, thread=thread, user=self.user)
+        Tagging.objects.create(tag=t1, thread=thread, user=user_2)
+        Tagging.objects.create(tag=t2, thread=thread, user=user_3)
+        def check_page(username, expected_num_form):
+            self.client.logout()
+            self.client.login(username=username, password='testPass')
+            response = self.client.get(url)
+            soup = BeautifulSoup(response.content)
+            tags = soup.find("div", id="tags")
+            self.assertEqual(len(tags.find_all("li")), 2)
+            self.assertEqual(len(tags.find_all("form")), expected_num_form)
+        # self.user, user_2 and user_3 should see one removal form
+        check_page("testuser", 1)
+        check_page("testuser_2", 1)
+        check_page("testuser_3", 1)
+        # user_4 should see no removal form
+        check_page("testuser_4", 0)
 
     def test_num_comments(self):
         self._make_msg("msgid2", "msgid")

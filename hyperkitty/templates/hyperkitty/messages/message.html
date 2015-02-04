@@ -1,5 +1,4 @@
 {% load url from future %}
-{% load kittystore %}
 {% load gravatar %}
 {% load hk_generic %}
 {% load tz %}
@@ -10,16 +9,16 @@
     <div id="{{email.message_id_hash}}" class="email-header">
         <div class="gravatar-wrapper">
             <div class="gravatar">
-                {% gravatar email.sender_email 40 %}
+                {% gravatar email.sender.address 40 %}
             </div>
             <div class="email-author">
                 <span class="name">
-                    {% if email.user_id %}
-                    <a href="{% url 'hk_public_user_profile' user_id=email.user_id.int %}"
-                       title="See {{ email.sender_name|escapeemail|escape }}'s profile"
-                       >{{email.sender_name|default:"(no name)"|escapeemail}}</a>
+                    {% if email.sender.mailman_id %}
+                    <a href="{% url 'hk_public_user_profile' user_id=email.sender.mailman_id %}"
+                       title="See {{ email.sender.name|escapeemail|escape }}'s profile"
+                       >{{email.sender.name|default:"(no name)"|escapeemail}}</a>
                     {% else %}
-                       {{email.sender_name|default:"(no name)"|escapeemail}}
+                       {{email.sender.name|default:"(no name)"|escapeemail}}
                     {% endif %}
                 </span>
                 {% if use_mockups %}
@@ -36,25 +35,25 @@
         <div class="email-date right">
             {% ifchanged %}
             <span class="date hidden-tn">
-                {{email|get_date|date:"l, j F"}}
+                {{email.date|date:"l, j F"}}
                 {% if unfolded %}
-                    {{email|get_date|date:"Y"}}
+                    {{email.date|date:"Y"}}
                 {% endif %}
             </span>
             <span class="date hidden-xs hidden-sm hidden-md hidden-lg">
-                {{email|get_date|date:"D, j M"}}
+                {{email.date|date:"D, j M"}}
                 {% if unfolded %}
-                '{{email|get_date|date:"y"}}
+                '{{email.date|date:"y"}}
                 {% endif %}
             </span>
             {% endifchanged %}
             <div class="time">
-                <span title="Sender's time: {% localtime off %}{{email|get_date|date:"D, j M H:i:s e"}}{% endlocaltime %}">{{email|get_date|date:"H:i:s"}}</span>
+                <span title="Sender's time: {% localtime off %}{{email|date_with_senders_timezone|date:'DATETIME_FORMAT'}}{% endlocaltime %}">{{email.date|time:"TIME_FORMAT"}}</span>
             </div>
 
         </div>
         <div class="messagelink right">
-            (<a href="{% url 'hk_message_index' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash %}"
+            (<a href="{% url 'hk_message_index' mlist_fqdn=email.mailinglist.name message_id_hash=email.message_id_hash %}"
                 title="{{ email.subject }}">permalink</a>)
         </div>
     </div> <!-- /email-header: gravatar, author-info, date, peramlink -->
@@ -63,12 +62,12 @@
         {{ email.content|snip_quoted|snip_pgp|wordwrap:90|urlizetrunc:76|escapeemail }}
     </div>
 
-    {% if unfolded and email.attachments|count %}
+    {% if unfolded and email.attachments.count %}
     <div class="attachments">
         <p class="attachments">Attachments:</p>
         <ul class="attachments-list list-unstyled">
-        {% for attachment in email.attachments %}
-            <li><a href="{% url 'hk_message_attachment' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash counter=attachment.counter filename=attachment.name %}">{{attachment.name}}</a>
+        {% for attachment in email.attachments.all %}
+            <li><a href="{% url 'hk_message_attachment' mlist_fqdn=email.mailinglist.name message_id_hash=email.message_id_hash counter=attachment.counter filename=attachment.name %}">{{attachment.name}}</a>
                 ({{attachment.content_type}} &mdash; {{attachment.size|filesizeformat}})
             </li>
         {% endfor %}
@@ -89,23 +88,23 @@
         </a>
         {% else %}
         <a class="reply reply-mailto" title="Login to reply online"
-           href="mailto:{{ mlist.name }}?Subject={{ email.subject|reply_subject|urlencode }}&amp;In-Reply-To={{ email.message_id|urlencode }}">
+           href="mailto:{{ email.mailinglist.name }}?Subject={{ email.subject|reply_subject|urlencode }}&amp;In-Reply-To={{ email.message_id|urlencode }}">
             <i class="fa fa-reply"></i>
             Reply
         </a>
         {% endif %}
 
         <!-- Attachments -->
-        {% if not unfolded and email.attachments|count %}
+        {% if not unfolded and email.attachments.count %}
         <div class="attachments dropdown">
             <a class="attachments" data-toggle="dropdown" href="#">
-                {{ email.attachments|count }} attachment{% if email.attachments|count > 1 %}s{% endif %}
+                {{ email.attachments.count }} attachment{% if email.attachments.count > 1 %}s{% endif %}
                 <span class="caret"></span>
                 <!-- <i class="fa fa-caret-right"></i> -->
             </a>
             <ul class="attachments-list list-unstyled dropdown-menu">
-            {% for attachment in email.attachments %}
-                <li><a href="{% url 'hk_message_attachment' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash counter=attachment.counter filename=attachment.name %}"
+            {% for attachment in email.attachments.all %}
+                <li><a href="{% url 'hk_message_attachment' mlist_fqdn=email.mailinglist.name message_id_hash=email.message_id_hash counter=attachment.counter filename=attachment.name %}"
                         title="{{attachment.content_type|escape}}, {{attachment.size|filesizeformat}}"
                         >{{attachment.name}}
                     </a>
@@ -119,13 +118,13 @@
         {% if user.is_authenticated %}
         <div class="reply-form dropdown">
             <form method="post" enctype="multipart/form-data"
-                  action="{% url 'hk_message_reply' mlist_fqdn=mlist.name message_id_hash=email.message_id_hash %}">
+                  action="{% url 'hk_message_reply' mlist_fqdn=email.mailinglist.name message_id_hash=email.message_id_hash %}">
                 {% csrf_token %}
                 <div class="reply-tools">
                     <a class="btn quote" href="#">Quote</a>
                     <label>{{ reply_form.newthread }} Create new thread</label>
                     <a class="reply-mailto"
-                       href="mailto:{{ mlist.name }}?Subject={{ email.subject|reply_subject|urlencode }}&amp;In-Reply-To={{ email.message_id|urlencode }}"
+                       href="mailto:{{ email.mailinglist.name }}?Subject={{ email.subject|reply_subject|urlencode }}&amp;In-Reply-To={{ email.message_id|urlencode }}"
                        >Use email software</a>
                 </div>
                 {{ reply_form.non_field_errors }}

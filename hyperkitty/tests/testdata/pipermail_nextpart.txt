@@ -1,0 +1,30 @@
+From vondruch at redhat.com  Tue Jul 10 11:29:44 2012
+From: vondruch at redhat.com (=?ISO-8859-2?Q?V=EDt_Ondruch?=)
+Date: Tue, 10 Jul 2012 13:29:44 +0200
+Subject: [Fedora-packaging] RPM macros
+Message-ID: <4FFC1228.3060409@redhat.com>
+
+Hi,
+
+I noticed that in revised haskell guidelines [1], there is mentioned the 
+ghc-rpm-macros package, which provides macros.ghc file, which in turns 
+provides some useful macros for packaging of Haskell packages. In Ruby, 
+we provide similar macro files in ruby-devel and rubygems-devel 
+subpackages respectively. Perl has their macros directly in the rpm 
+package itself.
+
+This seems to be a bit inconsistent to me. So my question is: shouldn't 
+we standardize some best practices with regards of RPM macros? For 
+example for Ruby, we placed the macros into -devel subpackages, because 
+we believe that it is just development dependency. Any opinions?
+
+
+Vit
+
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 190 bytes
+Desc: This is a digitally signed message part.
+URL: <http://lists.fedoraproject.org/pipermail/packaging/attachments/20120713/2377d1ee/attachment.sig>

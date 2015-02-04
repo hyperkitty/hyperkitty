@@ -19,20 +19,12 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
-from functools import wraps
-from uuid import UUID
-
+from urllib2 import HTTPError
 from django.conf import settings
-from django.core.urlresolvers import reverse
-from django.utils.decorators import available_attrs
-from django.shortcuts import render
-from django.http import Http404
-from mailman.interfaces.archiver import ArchivePolicy
-from mailmanclient import Client
-
-from hyperkitty.lib import get_store
+from django.utils.timezone import now
+from mailmanclient import Client, MailmanConnectionError
 
 
 MailmanClient = Client
@@ -58,69 +50,44 @@ def subscribe(list_address, user):
         member.preferences.save()
 
 
-def get_subscriptions(store, client, mm_user):
-    if not mm_user or not mm_user.user_id:
-        return []
-    user_id = UUID(int=mm_user.user_id)
-    ks_user = store.get_user(user_id)
-    subscriptions = []
-    for mlist_id in mm_user.subscription_list_ids:
-        mlist = client.get_list(mlist_id).fqdn_listname
-        # de-duplicate subscriptions
-        if mlist in [ s["list_name"] for s in subscriptions ]:
-            continue
-        posts_count = store.get_message_count_by_user_id(user_id, mlist)
-        if ks_user is None:
-            # no email sent and no vote cast yet
-            likes = dislikes = 0
-        else:
-            likes, dislikes = ks_user.get_votes_in_list(mlist)
-        all_posts_url = "%s?list=%s" % \
-                (reverse("hk_user_posts", args=[user_id.int]), mlist)
-        likestatus = "neutral"
-        if likes - dislikes >= 10:
-            likestatus = "likealot"
-        elif likes - dislikes > 0:
-            likestatus = "like"
-        subscriptions.append({
-            "list_name": mlist,
-            "first_post": store.get_first_post(mlist, user_id),
-            "likes": likes,
-            "dislikes": dislikes,
-            "likestatus": likestatus,
-            "all_posts_url": all_posts_url,
-            "posts_count": posts_count,
-        })
-    return subscriptions
+class FakeMMList:
+    def __init__(self, name):
+        self.fqdn_listname = name
+        self.display_name = name.partition("@")[0]
+        self.description = ""
+        self.subject_prefix = "[%s] " % self.display_name
+        self.archive_policy = "public"
+        self.created_at = now().isoformat()
 
 
-# View decorator: check that the list is authorized
-def check_mlist_private(func):
-    @wraps(func, assigned=available_attrs(func))
-    def inner(request, *args, **kwargs):
-        if "mlist_fqdn" in kwargs:
-            mlist_fqdn = kwargs["mlist_fqdn"]
-        else:
-            mlist_fqdn = args[0]
+def sync_with_mailman():
+    from hyperkitty.models import MailingList, Sender
+    for mlist in MailingList.objects.all():
+        mlist.update_from_mailman()
+    # Now sync Sender.mailman_id with Mailman's User.user_id
+    # There can be thousands of senders, break into smaller chuncks to avoid
+    # hogging up the memory
+    buffer_size = 1000
+    query = Sender.objects.filter(mailman_id__isnull=True)
+    prev_count = query.count()
+    lower_bound = 0
+    upper_bound = buffer_size
+    while True:
         try:
-            store = get_store(request)
-        except KeyError:
-            return func(request, *args, **kwargs) # Unittesting?
-        mlist = store.get_list(mlist_fqdn)
-        if mlist is None:
-            raise Http404("No archived mailing-list by that name.")
-        #return HttpResponse(request.session.get("subscribed", "NO KEY"), content_type="text/plain")
-        if not is_mlist_authorized(request, mlist):
-            return render(request, "hyperkitty/errors/private.html", {
-                            "mlist": mlist,
-                          }, status=403)
-        return func(request, *args, **kwargs)
-    return inner
-
-def is_mlist_authorized(request, mlist):
-    if mlist.archive_policy == ArchivePolicy.private and \
-            not (request.user.is_authenticated() and
-                 hasattr(request, "session") and
-                 mlist.name in request.session.get("subscribed", [])):
-        return False
-    return True
+            for sender in query[lower_bound:upper_bound]:
+                sender.set_mailman_id()
+        except MailmanConnectionError:
+            break # Can't refresh at this time
+        count = query.count()
+        if count == 0:
+            break # all done
+        if count == prev_count:
+            # no improvement...
+            if count < upper_bound:
+                break # ...and all users checked
+            else:
+                # there may be some more left
+                lower_bound = upper_bound
+                upper_bound += buffer_size
+        prev_count = count
+        logger.info("%d emails left to refresh" % count)

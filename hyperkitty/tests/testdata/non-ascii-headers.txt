@@ -1,0 +1,242 @@
+From vondruch at redhat.com  Tue Jul 10 11:29:44 2012
+From: vondruch at redhat.com (=?ISO-8859-2?Q?V=EDt_Ondruch?=)
+Date: Tue, 10 Jul 2012 13:29:44 +0200
+Subject: [Fedora-packaging] RPM macros
+Message-ID: <4FFC1228.3060409@redhat.com>
+
+Hi,
+
+I noticed that in revised haskell guidelines [1], there is mentioned the 
+ghc-rpm-macros package, which provides macros.ghc file, which in turns 
+provides some useful macros for packaging of Haskell packages. In Ruby, 
+we provide similar macro files in ruby-devel and rubygems-devel 
+subpackages respectively. Perl has their macros directly in the rpm 
+package itself.
+
+This seems to be a bit inconsistent to me. So my question is: shouldn't 
+we standardize some best practices with regards of RPM macros? For 
+example for Ruby, we placed the macros into -devel subpackages, because 
+we believe that it is just development dependency. Any opinions?
+
+
+Vit
+
+
+
+[1] http://lists.fedoraproject.org/pipermail/packaging/2012-July/008527.html
+
+From vondruch at redhat.com  Tue Jul 10 12:11:53 2012
+From: vondruch at redhat.com (=?UTF-8?B?VsOtdCBPbmRydWNo?=)
+Date: Tue, 10 Jul 2012 14:11:53 +0200
+Subject: [Fedora-packaging] RPM macros
+In-Reply-To: <4FFC1688.7090907@city-fan.org>
+References: <4FFC1228.3060409@redhat.com> <4FFC1688.7090907@city-fan.org>
+Message-ID: <4FFC1C09.6030907@redhat.com>
+
+Dne 10.7.2012 13:48, Paul Howarth napsal(a):
+> On 07/10/2012 12:29 PM, Vít Ondruch wrote:
+>> Hi,
+>>
+>> I noticed that in revised haskell guidelines [1], there is mentioned the
+>> ghc-rpm-macros package, which provides macros.ghc file, which in turns
+>> provides some useful macros for packaging of Haskell packages. In Ruby,
+>> we provide similar macro files in ruby-devel and rubygems-devel
+>> subpackages respectively. Perl has their macros directly in the rpm
+>> package itself.
+>>
+>> This seems to be a bit inconsistent to me. So my question is: shouldn't
+>> we standardize some best practices with regards of RPM macros? For
+>> example for Ruby, we placed the macros into -devel subpackages, because
+>> we believe that it is just development dependency. Any opinions?
+>
+> Perl has the macros in the main perl package rather than the 
+> perl-devel package because arch-independent perl module builds often 
+> don't need perl-devel - the packaging split is more fine-grained for 
+> perl and tends to become finer with each release as more and more bits 
+> are split out into their own subpackages since they have their own 
+> lives upstream.
+
+Thank you for your clarification. Actually, it is similar for Ruby. 
+Arch-independent packages do not require -devel package because of 
+build, but because of macros. And I find it more reasonable then to have 
+/etc/rpm/macros.ruby in my runtime system, where I have no use for this 
+file.
+
+
+Vit
+
+
+From bjorn at xn--rombobjrn-67a.se  Thu Jul 12 23:49:23 2012
+From: bjorn at xn--rombobjrn-67a.se (=?iso-8859-1?q?Bj=F6rn_Persson?=)
+Date: Fri, 13 Jul 2012 01:49:23 +0200
+Subject: [Fedora-fr-list] =?iso-8859-1?q?Compte-rendu_de_la_r=E9union_du_?=
+	=?iso-8859-1?q?1_novembre_2009?=
+In-Reply-To: <CACyNwR1VLMm019JTnju9gbXVq4=p2y+=NP8NuOh1XShtRVG+Nw@mail.gmail.com>
+References: <CACyNwR1VLMm019JTnju9gbXVq4=p2y+=NP8NuOh1XShtRVG+Nw@mail.gmail.com>
+Message-ID: <201207130149.23771.bjorn@xn--rombobjrn-67a.se>
+
+Simon A. Erat wrote:
+> First of all, whats the acronym FHS standing for?
+
+The Filesystem Hierarchy Standard:
+http://www.pathname.com/fhs/pub/fhs-2.3.html
+
+It's linked from the Packaging Guidelines, which I hope you read before you 
+made your package:
+https://fedoraproject.org/wiki/Packaging:Guidelines#Filesystem_Layout
+
+> 1) At first it was designed to be distributed as tarball, i want to keep
+> this option, as this allows an easy port/install to any other linux distro.
+>    (just extract anywhere of your choice and run from there)
+
+It's easier to do that if you give your relocatable directory tree an FHS-like 
+structure, with a prefix that can be set to "/usr", "/usr/local", 
+"/opt/Simon's-script-tools" or anything else, and place scripts in $prefix/bin, 
+read-only data in $prefix/share et cetera.
+
+You may still find that you need to make your scripts capable of adapting a bit 
+to different directory layouts.
+
+> i currently save any data in $HOME/bin/$USER-libs, and offering
+> $HOME/bin/$USER-scripts to be used for custom scripts using the functions
+> which Script-Tools provides.
+
+You shouldn't make subdirectories under $HOME/bin any more than under 
+/usr/bin. Although users' home directories are less standardized than system 
+directories, $HOME/bin is typically used for the users' own programs that they 
+want to be able to run from a command prompt. Programs in subdirectories 
+wouldn't be found unless the users added the subdirectories to PATH.
+
+Also, anything that ends with "libs" seems like a bad name for a directory to 
+save data in.
+
+Björn Persson
+-------------- next part --------------
+A non-text attachment was scrubbed...
+Name: signature.asc
+Type: application/pgp-signature
+Size: 190 bytes
+Desc: This is a digitally signed message part.
+URL: <http://lists.fedoraproject.org/pipermail/packaging/attachments/20120713/2377d1ee/attachment.sig>
+
+
+From mmaslano at redhat.com  Wed Jul 18 07:41:37 2012
+From: mmaslano at redhat.com (=?UTF-8?B?TWFyY2VsYSBNYcWhbMOhxYhvdsOh?=)
+Date: Wed, 18 Jul 2012 09:41:37 +0200
+Subject: =?UTF-8?Q?Re=3A_=5BFedora=2Dfr=2Dlist=5D_Compte=2Drendu_de_la_r=C3=A9union_du_?=
+	=?UTF-8?Q?1_novembre_2009?=
+In-Reply-To: <4FFC1228.3060409@redhat.com>
+References: <4FFC1228.3060409@redhat.com>
+Message-ID: <500668B1.8090904@redhat.com>
+
+On 07/10/2012 01:29 PM, Vít Ondruch wrote:
+> Hi,
+>
+> I noticed that in revised haskell guidelines [1], there is mentioned the
+> ghc-rpm-macros package, which provides macros.ghc file, which in turns
+> provides some useful macros for packaging of Haskell packages. In Ruby,
+> we provide similar macro files in ruby-devel and rubygems-devel
+> subpackages respectively. Perl has their macros directly in the rpm
+> package itself.
+>
+> This seems to be a bit inconsistent to me. So my question is: shouldn't
+> we standardize some best practices with regards of RPM macros? For
+> example for Ruby, we placed the macros into -devel subpackages, because
+> we believe that it is just development dependency. Any opinions?
+>
+>
+> Vit
+>
+>
+>
+> [1]
+> http://lists.fedoraproject.org/pipermail/packaging/2012-July/008527.html
+
+It depends what you need to do. Part of Perl macros is in a special 
+package perl-srpm-macros, which is required by redhat-rpm-config. We 
+should have all macros defined in perl-srpm-macros in buildroot 
+everytime, which was one of our issues during annual rebuild.
+
+Marcela
+
+
+From dan at danny.cz  Tue Jul 24 20:24:38 2012
+From: dan at danny.cz (Dan =?ISO-8859-1?Q?Hor=E1k?=)
+Date: Tue, 24 Jul 2012 22:24:38 +0200
+Subject: [Fedora-packaging] Distributing prebuilt bios roms with QEMU
+In-Reply-To: <20120724194842.GA5959@amd.home.annexia.org>
+References: <500EF313.4060800@redhat.com> <500EF6E0.1050300@redhat.com>
+	<20120724194842.GA5959@amd.home.annexia.org>
+Message-ID: <1343161478.3005.55.camel@eagle.danny.cz>
+
+Richard W.M. Jones píše v Út 24. 07. 2012 v 20:48 +0100: 
+> On Tue, Jul 24, 2012 at 03:26:24PM -0400, Tom Callaway wrote:
+> > I really do wish we could come up with a clever way to build these on
+> > the native platforms, but I also understand how difficult that is, and I
+> > really don't want to stonewall on that.
+> 
+> On the BZ we discussed cross-compiling them.  It would require
+> approx. 2 extra packages per architecture, ie. a cross gcc and a cross
+> binutils (since it's firmware, no libc is required of course).
+
+the cross-gcc and cross-binutils all(?) Linux kernel arches are already
+there, no libgcc yet, but it shouldn't be an issue for firmwares
+
+
+Dan
+
+
+From bjorn at xn--rombobjrn-67a.se  Sun Jul 29 18:57:00 2012
+From: bjorn at xn--rombobjrn-67a.se (=?ISO-8859-1?Q?Bj=F6rn?= Persson)
+Date: Sun, 29 Jul 2012 20:57 +0200
+Subject: [Fedora-packaging] May binaries be built from generated "source"
+	code?
+Message-ID: <1575009.Hf8WqyK1vx@hactar.xn--rombobjrn-67a.se>
+
+The Packaging Guidelines require that all binary programs and libraries be 
+built from source code. How should this requirement be interpreted when some 
+of the "source code" is itself automatically generated from other sources?
+
+GTKada is an Ada binding to GTK+. In the latest version, some of the Ada files 
+in the source tarball have been generated by a program that is included in the 
+tarball. Future versions will have even more generated code. The input to the 
+code generator is a GIR file, which as far as I understand is some kind of XML 
+representation of the GTK+ API. The GIR file has in turn been generated from 
+the C source code of GTK+. The GIR file is included in the GTKada tarball, but 
+the GTK+ source is not.
+
+Now I'm trying to figure out whether I can build the GTKada package from the 
+distributed generated Ada code, or whether I have to run the code generation 
+as a part of the build, possibly using the GIR file from the GTK+ package 
+instead of the one in the GTKada tarball.
+
+There are two reasons for the requirement listed in the guidelines:
+
+· "Security: Pre-packaged program binaries and program libraries not built 
+from the source code could contain parts that are malicious, dangerous, or 
+just broken. Also, these are functionally impossible to patch."
+The generated Ada code is nicely formatted and legible, and no harder to 
+review than hand-written source code. It would be possible to patch it, 
+although such a patch would of course not be upstreamable.
+
+· "Compiler Flags: Pre-packaged program binaries and program libraries not 
+built from the source code were probably not compiled with standard Fedora 
+compiler flags for security and optimization."
+This obviously doesn't apply to generated code that hasn't yet been through a 
+compiler.
+
+Thus, none of the stated reasons seem to be relevant to this case, and I can 
+see only one thing that could mean that I have to run the code generation as a 
+part of the build, namely the term "source code". My question is: Is it 
+required that all the steps in the process from the actual source code to 
+binary code take place on Fedora's build servers, or is it sufficient that 
+binaries are built from human-readable code even if that code isn't the actual 
+source code?
+
+In other words: Should I read "source code" literally, as "the ultimate source 
+code written by human programmers", or is it OK, for the purpose of this 
+requirement, to read it as "human-readable code in a textual programming 
+language"?
+
+Björn Persson
+

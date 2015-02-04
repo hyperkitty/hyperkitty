@@ -19,7 +19,7 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-from __future__ import with_statement, absolute_import
+from __future__ import with_statement, absolute_import, unicode_literals, print_function
 
 import os
 import mailbox
@@ -29,36 +29,28 @@ import gzip
 from cStringIO import StringIO
 
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseRedirect, Http404
+from django.http import HttpResponse, Http404
+from django.shortcuts import redirect
 
-from hyperkitty.lib import get_store
+from hyperkitty.models import MailingList, Email
 from hyperkitty.lib.compat import get_list_by_name, month_name_to_num
 
 
 def summary(request, list_name=None):
     if list_name is None:
-        return HttpResponseRedirect(reverse('hk_root'))
-    store = get_store(request)
-    mlist = get_list_by_name(list_name, store, request)
-    if mlist is None:
-        raise Http404("No archived mailing-list by that name.")
-    url = reverse('hk_list_overview', kwargs={'mlist_fqdn': mlist.name})
-    #return HttpResponse(request.build_absolute_uri(url))
-    return HttpResponseRedirect(url)
+        return redirect(reverse('hk_root'))
+    mlist = get_list_by_name(list_name, request.get_host())
+    return redirect(reverse('hk_list_overview',
+                            kwargs={'mlist_fqdn': mlist.name}))
 
 
 def arch_month(request, list_name, year, month_name, summary_type="thread"):
-    store = get_store(request)
-    mlist = get_list_by_name(list_name, store, request)
-    if mlist is None:
-        raise Http404("No archived mailing-list by that name.")
-    url = reverse('hk_archives_with_month', kwargs={
+    mlist = get_list_by_name(list_name, request.get_host())
+    return redirect(reverse('hk_archives_with_month', kwargs={
             'mlist_fqdn': mlist.name,
             'year': year,
             'month': str(month_name_to_num(month_name)).rjust(2, "0"),
-            })
-    #return HttpResponse(request.build_absolute_uri(url))
-    return HttpResponseRedirect(url)
+            }))
 
 
 def arch_month_mbox(request, list_name, year, month_name):
@@ -68,10 +60,7 @@ def arch_month_mbox(request, list_name, year, month_name):
     """
     return HttpResponse("Not implemented yet.",
                         content_type="text/plain", status=500)
-    store = get_store(request)
-    mlist = get_list_by_name(list_name, store, request)
-    if mlist is None:
-        raise Http404("No archived mailing-list by that name.")
+    mlist = get_list_by_name(list_name, request.get_host())
     month = month_name_to_num(month_name)
     year = int(year)
     begin_date = datetime.datetime(year, month, 1)
@@ -105,16 +94,13 @@ def arch_month_mbox(request, list_name, year, month_name):
 
 
 def message(request, list_name, year, month_name, msg_num):
-    store = get_store(request)
-    mlist = get_list_by_name(list_name, store, request)
-    if mlist is None:
-        raise Http404("No archived mailing-list by that name.")
-    message = store.get_message_by_number(mlist.name, int(msg_num))
-    if message is None:
+    mlist = get_list_by_name(list_name, request.get_host())
+    try:
+        message = Email.objects.filter(mailinglist=mlist
+            ).order_by("archived_date")[msg_num]
+    except IndexError:
         raise Http404("No such message in this mailing-list.")
-    url = reverse('hk_message_index', kwargs={
+    return redirect(reverse('hk_message_index', kwargs={
             'mlist_fqdn': mlist.name,
             'message_id': message.message_id_hash,
-            })
-    #return HttpResponse(request.build_absolute_uri(url))
-    return HttpResponseRedirect(url)
+            }))

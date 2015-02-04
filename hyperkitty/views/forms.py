@@ -28,15 +28,13 @@ from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy
 
-from hyperkitty.models import UserProfile
+from hyperkitty.models import Profile
 
 
 def isValidUsername(username):
-        try:
-            User.objects.get(username=username)
-        except User.DoesNotExist:
-            return
-        raise validators.ValidationError('The username "%s" is already taken.' % username)
+    if User.objects.filter(username=username).exists():
+        raise validators.ValidationError(
+            'The username "%s" is already taken.' % username)
 
 
 
@@ -67,7 +65,7 @@ class UserProfileForm(forms.Form):
     first_name = forms.CharField()
     last_name = forms.CharField()
     timezone = forms.ChoiceField(label="Time zone",
-                                 choices=UserProfile.TIMEZONES)
+                                 choices=Profile.TIMEZONES)
 
 
 

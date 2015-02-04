@@ -19,33 +19,32 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+from __future__ import absolute_import, unicode_literals, print_function
+
 import re
 import datetime
+
+from django.http import Http404
+from hyperkitty.models import MailingList
 
 PORT_IN_URL = re.compile(':\d+$')
 
 
-def get_list_by_name(list_name, store, request):
-    arch_list_names = store.get_list_names()
-    matching = []
-    for name in arch_list_names:
-        if name[:name.index("@")] == list_name:
-            matching.append(name)
-
+def get_list_by_name(list_name, domain):
+    matching = list(MailingList.objects.filter(name__startswith=list_name+"@"))
     if len(matching) == 0: # no candidate found
-        return None
+        raise Http404("No archived mailinglist by that name")
     if len(matching) == 1: # only one candidate
-        return store.get_list(matching[0])
+        return matching[0]
 
     # more than one result, try using the hostname
-    domain = request.get_host()
     domain = PORT_IN_URL.sub('', domain)
     list_fqdn = "%s@%s" % (list_name, domain)
-    if list_fqdn in matching:
-        return store.get_list(list_fqdn)
-
-    # return the first match, arbitrarily
-    return store.get_list(matching[0])
+    try:
+        return MailingList.objects.get(name=list_fqdn)
+    except MailingList.DoesNotExist:
+        # return the first match, arbitrarily
+        return matching[0]
 
 def month_name_to_num(month_name):
     """map month names to months numbers"""

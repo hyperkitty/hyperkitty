@@ -1,7 +1,6 @@
 {% extends "hyperkitty/base.html" %}
 {% load url from future %}
 {% load hk_generic %}
-{% load kittystore %}
 
 
 {% block title %}
@@ -21,7 +20,7 @@ Reattach a thread - {{ mlist.display_name|default:mlist.name|escapeemail }} - {{
         <p>Thread to re-attach:
             <a href="{% url 'hk_thread' mlist_fqdn=mlist.name threadid=thread.thread_id %}"
                >{{ thread.subject }}</a>
-            (started {{ thread.starting_email|get_date }}, last active: {{ thread|get_date }})
+            (started {{ thread.starting_email.date }}, last active: {{ thread.date_active }})
         </p>
         <form action="{% url 'hk_thread_reattach_suggest' mlist_fqdn=mlist.name threadid=thread.thread_id %}"
               method="GET" class="search">

@@ -12,7 +12,7 @@
                 <span class="date">Sent just now, not yet distributed</span>
             </div>
             <div class="gravatar{% if use_mockups %} pull-left{% endif %}">
-                {% gravatar email.sender_email 40 %}
+                {% gravatar user.email 40 %}
             </div>
             <div class="email-author inline-block">
                 <span class="name">{{email.sender_name|escapeemail}}</span>

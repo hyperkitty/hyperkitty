@@ -1,0 +1,8 @@
+From test at example.com  Fri Apr  6 22:43:55 2007
+From: test at example.com (Dummy Person)
+Date: Fri,  6 Apr 2007 15:43:55 -0700 (PDT)
+Subject: Dummy subject
+Message-ID: <20070406224355.899B9180064@test.example.com>
+Content-Type: text/plain; charset=non-existing-codec
+
+This message specifies an unknown content-type

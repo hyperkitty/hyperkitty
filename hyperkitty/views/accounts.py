@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 1998-2012 by the Free Software Foundation, Inc.
+# Copyright (C) 2014-2015 by the Free Software Foundation, Inc.
 #
 # This file is part of HyperKitty.
 #
@@ -16,12 +16,11 @@
 # You should have received a copy of the GNU General Public License along with
 # HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Author: Aamir Khan <syst3m.w0rm@gmail.com>
+# Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
-import logging
 from urllib2 import HTTPError
 from uuid import UUID
 
@@ -41,15 +40,15 @@ from social_auth.backends import SocialAuthBackend
 import dateutil.parser
 import mailmanclient
 
-from hyperkitty.models import UserProfile, Favorite, LastView
+from hyperkitty.models import (Profile, Favorite, LastView, MailingList, Sender,
+    Email, Vote)
 from hyperkitty.views.forms import RegistrationForm, UserProfileForm
-from hyperkitty.lib import get_store
-from hyperkitty.lib.view_helpers import FLASH_MESSAGES
+from hyperkitty.lib.view_helpers import FLASH_MESSAGES, is_mlist_authorized
 from hyperkitty.lib.paginator import paginate
-from hyperkitty.lib.mailman import get_mailman_client, get_subscriptions, \
-                                   is_mlist_authorized
+from hyperkitty.lib.mailman import get_mailman_client
 
 
+import logging
 logger = logging.getLogger(__name__)
 
 
@@ -71,14 +70,11 @@ def login_view(request, *args, **kwargs):
 def user_profile(request):
     if not request.user.is_authenticated():
         return redirect('hk_user_login')
-
-    store = get_store(request)
-
     # try to render the user profile.
     try:
-        user_profile = request.user.userprofile
-    except ObjectDoesNotExist:
-        user_profile = UserProfile.objects.create(user=request.user)
+        user_profile = request.user.hyperkitty_profile
+    except ObjectDoesNotExist: # TODO: move that to a post-login action
+        user_profile = Profile.objects.create(user=request.user)
 
     # get the Mailman user
     try:
@@ -111,24 +107,15 @@ def user_profile(request):
                 })
 
     # Favorites
-    try:
-        favorites = Favorite.objects.filter(user=request.user)
-    except Favorite.DoesNotExist:
-        favorites = []
-    for fav in favorites:
-        thread = store.get_thread(fav.list_address, fav.threadid)
-        fav.thread = thread
-        if thread is None:
-            fav.delete() # thread has gone away?
-    favorites = [ f for f in favorites if f.thread is not None ]
+    favorites = Favorite.objects.filter(user=request.user)
 
     # Emails
-    emails = []
+    addresses = []
     if mm_user is not None:
         for addr in mm_user.addresses:
             addr = unicode(addr)
             if addr != request.user.email:
-                emails.append(addr)
+                addresses.append(addr)
 
     # Flash messages
     flash_messages = []
@@ -146,7 +133,7 @@ def user_profile(request):
     context = {
         'user_profile' : user_profile,
         'form': form,
-        'emails': emails,
+        'addresses': addresses,
         'favorites': favorites,
         'flash_messages': flash_messages,
         'gravatar_url': gravatar_url,
@@ -170,9 +157,10 @@ def user_registration(request):
     if request.POST:
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            u = User.objects.create_user(form.cleaned_data['username'],
-                                         form.cleaned_data['email'],
-                                         form.cleaned_data['password1'])
+            u = DjangoUser.objects.create_user(
+                form.cleaned_data['username'],
+                form.cleaned_data['email'],
+                form.cleaned_data['password1'])
             u.is_active = True
             u.save()
             user = authenticate(username=form.cleaned_data['username'],
@@ -195,27 +183,10 @@ def user_registration(request):
 
 @login_required
 def last_views(request):
-    store = get_store(request)
     # Last viewed threads
-    try:
-        last_views = LastView.objects.filter(user=request.user
-                                            ).order_by("-view_date")
-    except Favorite.DoesNotExist:
-        last_views = []
+    last_views = LastView.objects.filter(user=request.user
+        ).order_by("-view_date")
     last_views = paginate(last_views, request.GET.get('lvpage'))
-    for last_view in last_views:
-        thread = store.get_thread(last_view.list_address, last_view.threadid)
-        last_view.thread = thread
-        if thread is None:
-            last_view.delete()
-            continue
-        if thread.date_active.replace(tzinfo=utc) > last_view.view_date:
-            # small optimization: only query the replies if necessary
-            thread.unread = thread.replies_after(last_view.view_date).count()
-        else:
-            thread.unread = 0
-    last_views = [ lv for lv in last_views if lv.thread is not None ]
-
     return render(request, 'hyperkitty/ajax/last_views.html', {
                 "last_views": last_views,
             })
@@ -223,15 +194,8 @@ def last_views(request):
 
 @login_required
 def votes(request):
-    store = get_store(request)
-    if "user_id" not in request.session:
-        return HttpResponse("Could not find or create your user ID in Mailman",
-                            content_type="text/plain", status=500)
-    user = store.get_user(request.session["user_id"])
-    if user is None:
-        votes = [] # User not found in KittyStore: no emails sent yet
-    else:
-        votes = paginate(user.votes, request.GET.get('vpage'))
+    votes = paginate(request.user.votes.all(),
+                     request.GET.get('vpage'))
     return render(request, 'hyperkitty/ajax/votes.html', {
                 "votes": votes,
             })
@@ -239,15 +203,42 @@ def votes(request):
 
 @login_required
 def subscriptions(request):
-    store = get_store(request)
-    # get the Mailman user
-    try:
-        mm_client = get_mailman_client()
-        mm_user = mm_client.get_user(request.user.email)
-    except (HTTPError, mailmanclient.MailmanConnectionError):
-        mm_client = mm_user = None
-    # Subscriptions
-    subscriptions = get_subscriptions(store, mm_client, mm_user)
+    #if "user_id" not in request.session:
+    #    return HttpResponse("Could not find or create your user ID in Mailman",
+    #                        content_type="text/plain", status=500)
+    profile = request.user.hyperkitty_profile
+    mm_user_id = profile.get_mailman_user_id()
+    subscriptions = []
+    for mlist_name in profile.get_subscriptions():
+        try:
+            mlist = MailingList.objects.get(name=mlist_name)
+        except MailingList.DoesNotExist:
+            mlist = None # no archived email yet
+        posts_count = likes = dislikes = 0
+        first_post = all_posts_url = None
+        if mlist is not None:
+            posts_count = profile.emails.filter(mailinglist__name=mlist_name).count()
+            likes, dislikes = profile.get_votes_in_list(mlist_name)
+            first_post = profile.get_first_post(mlist)
+            if mm_user_id is not None:
+                all_posts_url = "%s?list=%s" % (
+                    reverse("hk_user_posts", args=[mm_user_id]),
+                    mlist_name)
+        likestatus = "neutral"
+        if likes - dislikes >= 10:
+            likestatus = "likealot"
+        elif likes - dislikes > 0:
+            likestatus = "like"
+        subscriptions.append({
+            "list_name": mlist_name,
+            "mlist": mlist,
+            "posts_count": posts_count,
+            "first_post": first_post,
+            "likes": likes,
+            "dislikes": dislikes,
+            "likestatus": likestatus,
+            "all_posts_url": all_posts_url,
+        })
     return render(request, 'hyperkitty/fragments/user_subscriptions.html', {
                 "subscriptions": subscriptions,
             })
@@ -260,48 +251,50 @@ def public_profile(request, user_id):
         addresses = []
         subscription_list_ids = []
         user_id = None
-    store = get_store(request)
-    user_id = UUID(int=int(user_id))
+    user_id_uuid = UUID(int=int(user_id))
+    #db_user = User.objects.filter(mailman_id=str(user_id_uuid)).first()
     try:
         client = get_mailman_client()
         mm_user = client.get_user(user_id)
     except HTTPError:
         raise Http404("No user with this ID: %s" % user_id)
     except mailmanclient.MailmanConnectionError:
-        db_user = store.get_user(user_id) # fallback to kittystore if possible
-        if db_user is None:
-            return HttpResponse("Can't connect to Mailman",
-                                content_type="text/plain", status=500)
+        #if db_user is None:
+        #    return HttpResponse("Can't connect to Mailman",
+        #                        content_type="text/plain", status=500)
         mm_user = FakeMailmanUser()
-        mm_user.display_name = list(db_user.senders)[0].name
-        mm_user.addresses = db_user.addresses
-    fullname = mm_user.display_name
-    if not fullname:
-        fullname = store.get_sender_name(user_id)
-    # Subscriptions
-    subscriptions = get_subscriptions(store, client, mm_user)
-    likes = sum([s["likes"] for s in subscriptions])
-    dislikes = sum([s["dislikes"] for s in subscriptions])
+        mm_user.user_id = user_id
+        #mm_user.addresses = db_user.addresses
+    #XXX: don't list subscriptions, there's a privacy issue here.
+    # # Subscriptions
+    # subscriptions = get_subscriptions(mm_user, db_user)
+    votes = Vote.objects.filter(email__sender__mailman_id=user_id)
+    likes = votes.filter(value=1).count()
+    dislikes = votes.filter(value=-1).count()
     likestatus = "neutral"
     if likes - dislikes >= 10:
         likestatus = "likealot"
     elif likes - dislikes > 0:
         likestatus = "like"
-    try:
-        email = unicode(mm_user.addresses[0])
-    except KeyError:
-        email = None
+    # No email display on the public profile, we have enough spam
+    # as it is, thank you very much
+    #try:
+    #    email = unicode(mm_user.addresses[0])
+    #except KeyError:
+    #    email = None
+    fullname = mm_user.display_name
+    if not fullname:
+        fullname = Sender.objects.filter(mailman_id=user_id).exclude(name=""
+            ).values_list("name", flat=True).first()
     if mm_user.created_on is not None:
         creation = dateutil.parser.parse(mm_user.created_on)
     else:
         creation = None
+    posts_count = Email.objects.filter(sender__mailman_id=user_id).count()
     context = {
         "fullname": fullname,
-        "mm_user": mm_user,
-        "email": email,
         "creation": creation,
-        "subscriptions": subscriptions,
-        "posts_count": sum([s["posts_count"] for s in subscriptions]),
+        "posts_count": posts_count,
         "likes": likes,
         "dislikes": dislikes,
         "likestatus": likestatus,
@@ -310,36 +303,37 @@ def public_profile(request, user_id):
 
 
 def posts(request, user_id):
-    store = get_store(request)
     mlist_fqdn = request.GET.get("list")
     if mlist_fqdn is None:
         mlist = None
         return HttpResponse("Not implemented yet", status=500)
     else:
-        mlist = store.get_list(mlist_fqdn)
-        if mlist is None:
+        try:
+            mlist = MailingList.objects.get(name=mlist_fqdn)
+        except MailingList.DoesNotExist:
             raise Http404("No archived mailing-list by that name.")
         if not is_mlist_authorized(request, mlist):
             return render(request, "hyperkitty/errors/private.html", {
                             "mlist": mlist,
                           }, status=403)
 
-    user_id = UUID(int=int(user_id))
-    # Get the user's full name
-    try:
-        client = get_mailman_client()
-        mm_user = client.get_user(user_id)
-    except HTTPError:
-        raise Http404("No user with this ID: %s" % user_id)
-    except mailmanclient.MailmanConnectionError:
-        fullname = None
-    else:
-        fullname = mm_user.display_name
-    if not fullname:
-        fullname = store.get_sender_name(user_id)
+    #user_id_uuid = UUID(int=int(user_id))
+    ## Get the user's full name
+    #try:
+    #    client = get_mailman_client()
+    #    mm_user = client.get_user(user_id)
+    #except HTTPError:
+    #    raise Http404("No user with this ID: %s" % user_id)
+    #except mailmanclient.MailmanConnectionError:
+    #    fullname = None
+    #else:
+    #    fullname = get_fullname(mm_user)
 
+    fullname = Sender.objects.filter(mailman_id=user_id).exclude(name=""
+        ).values_list("name", flat=True).first()
     # Get the messages and paginate them
-    messages = store.get_messages_by_user_id(user_id, mlist_fqdn)
+    messages = Email.objects.filter(
+        mailinglist=mlist, sender__mailman_id=user_id)
     try:
         page_num = int(request.GET.get('page', "1"))
     except ValueError:
@@ -347,11 +341,11 @@ def posts(request, user_id):
     messages = paginate(messages, page_num)
 
     for message in messages:
-        message.myvote = message.get_vote_by_user_id(
-                request.session.get("user_id"))
+        message.myvote = message.votes.filter(
+            user=request.user).first()
 
     context = {
-        'user_id': user_id.int,
+        'user_id': user_id,
         'mlist' : mlist,
         'messages': messages,
         'fullname': fullname,

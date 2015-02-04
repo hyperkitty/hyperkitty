@@ -1,6 +1,5 @@
 {% load url from future %}
 {% load hk_generic %}
-{% load kittystore %}
 
         <div class="thread row">
             <span class="thread-title col-tn-12">
@@ -13,7 +12,7 @@
                             {{ thread.category_widget.name|upper }}
                         </span>
                     {% endif %}
-                    {% if thread.unread %}
+                    {% if thread|is_unread_by:request.user %}
                         <i class="fa fa-envelope" title="New messages in this thread"></i>
                     {% endif %}
                     {{ thread.subject|strip_subject:mlist }}

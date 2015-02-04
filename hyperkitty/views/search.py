@@ -19,18 +19,19 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
-from django.shortcuts import render
+from django.conf import settings
+from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, Page
 from django.http import Http404
 
-from hyperkitty.models import Tag
-from hyperkitty.lib import get_store
+from hyperkitty.models import Tag, MailingList
 from hyperkitty.lib.paginator import paginate
 
 from hyperkitty.views.list import _thread_list
-from hyperkitty.lib.mailman import check_mlist_private, is_mlist_authorized
+from hyperkitty.lib.view_helpers import (
+    check_mlist_private, is_mlist_authorized)
 
 
 class SearchPaginator(Paginator):
@@ -50,20 +51,10 @@ class SearchPaginator(Paginator):
 @check_mlist_private
 def search_tag(request, mlist_fqdn, tag):
     '''Returns threads having a particular tag'''
-    store = get_store(request)
-    mlist = store.get_list(mlist_fqdn)
-
-    try:
-        tags = Tag.objects.filter(tag=tag)
-    except Tag.DoesNotExist:
-        tags = {}
-
-    threads = []
-    for t in tags:
-        thread = store.get_thread(mlist_fqdn, t.threadid)
-        if thread is not None:
-            threads.append(thread)
-
+    mlist = get_object_or_404(MailingList, name=mlist_fqdn)
+    #tags = Tag.objects.filter(tag=tag).distinct()
+    threads = Thread.objects.filter(mailinglist__name=mlist_fqdn, tags__tag=tag)
+    #tags = Tag.objects.filter(thread__mailinglist__name=mlist_fqdn, tag=tag)
     extra_context = {
         "tag": tag,
         "list_title": "Search results for tag \"%s\"" % tag,
@@ -75,7 +66,6 @@ def search_tag(request, mlist_fqdn, tag):
 def search(request, page=1):
     """ Returns messages corresponding to a query """
     results_per_page = 10
-    store = get_store(request)
     query = request.GET.get("query")
     mlist_fqdn = request.GET.get("list")
     sort_mode = request.GET.get('sort')
@@ -83,15 +73,17 @@ def search(request, page=1):
     if mlist_fqdn is None:
         mlist = None
     else:
-        mlist = store.get_list(mlist_fqdn)
-        if mlist is None:
+        try:
+            mlist = MailingList.objects.get(name=mlist_fqdn)
+        except MailingList.DoesNotExist:
             raise Http404("No archived mailing-list by that name.")
         if not is_mlist_authorized(request, mlist):
             return render(request, "hyperkitty/errors/private.html", {
                             "mlist": mlist,
                           }, status=403)
 
-    if not store.search_index:
+    # TODO: fulltext search engine necessary from here
+    if not getattr(settings, "SEARCH", False):
         return render(request, "hyperkitty/errors/nosearch.html", {"mlist": mlist})
 
     if not query:
@@ -116,8 +108,8 @@ def search(request, page=1):
         sortedby = "date"
         reverse = True
 
-    query_result = store.search(query, mlist_fqdn, page_num, results_per_page,
-                                sortedby=sortedby, reverse=reverse)
+    query_result = search(query, mlist_fqdn, page_num, results_per_page,
+                          sortedby=sortedby, reverse=reverse)
     total = query_result["total"]
     messages = [ m for m in query_result["results"] if m is not None ]
     for message in messages:

@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-# Copyright (C) 1998-2012 by the Free Software Foundation, Inc.
+# Copyright (C) 2014-2015 by the Free Software Foundation, Inc.
 #
 # This file is part of HyperKitty.
 #
@@ -16,44 +16,34 @@
 # You should have received a copy of the GNU General Public License along with
 # HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Author: Aamir Khan <syst3m.w0rm@gmail.com>
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import datetime
 
 from django.shortcuts import render
 from django.conf import settings
-from mailman.interfaces.archiver import ArchivePolicy
 
-from hyperkitty.lib import get_store
-from hyperkitty.lib.view_helpers import show_mlist
-from hyperkitty.lib.mailman import is_mlist_authorized
+from hyperkitty.lib.view_helpers import show_mlist, is_mlist_authorized
+from hyperkitty.models import MailingList
 
 
 def index(request):
     now = datetime.datetime.now()
-    store = get_store(request)
-    lists = [ l for l in store.get_lists()
-              if not settings.FILTER_VHOST or show_mlist(l, request) ]
+    lists = [
+        ml for ml in MailingList.objects.all()
+        if not settings.FILTER_VHOST or show_mlist(ml, request) ]
     initials = set()
     for mlist in lists:
-        if mlist.archive_policy != ArchivePolicy.private:
-            mlist.is_private = False
+        if not mlist.is_private:
             mlist.can_view = True
         else:
-            mlist.is_private = True
             if is_mlist_authorized(request, mlist):
                 mlist.can_view = True
             else:
                 mlist.can_view = False
-        if mlist.created_at and \
-                now - mlist.created_at <= datetime.timedelta(days=30):
-            mlist.is_new = True
-        else:
-            mlist.is_new = False
         initials.add(mlist.name[0])
 
     # sorting
@@ -63,15 +53,15 @@ def index(request):
     if sort_mode == "name":
         pass # already sorted by name
     elif sort_mode == "active":
-        lists.sort(key=lambda l: l.recent_threads_count, reverse=True)
         # Don't show private lists when sorted by activity, to avoid disclosing
         # info about the private list's activity
         lists = [ l for l in lists if l.is_private == False ]
+        lists.sort(key=lambda l: l.recent_threads_count, reverse=True)
     elif sort_mode == "popular":
-        lists.sort(key=lambda l: l.recent_participants_count, reverse=True)
         # Don't show private lists when sorted by popularity, to avoid disclosing
         # info about the private list's popularity
         lists = [ l for l in lists if l.is_private == False ]
+        lists.sort(key=lambda l: l.recent_participants_count, reverse=True)
     elif sort_mode == "creation":
         lists.sort(key=lambda l: l.created_at, reverse=True)
     else:

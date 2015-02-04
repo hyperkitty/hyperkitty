@@ -19,13 +19,22 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+from __future__ import absolute_import, unicode_literals
 
 import datetime
+from functools import wraps
+from uuid import UUID
 
+from django.core.urlresolvers import reverse
+from django.http import Http404
 from django.utils.timezone import utc
+from django.utils.decorators import available_attrs
+from django.shortcuts import render
+from mailmanclient import MailmanConnectionError
 
-from hyperkitty.models import ThreadCategory, LastView
+from hyperkitty.models import ThreadCategory, LastView, Email, MailingList
 from hyperkitty.views.forms import CategoryForm
+from hyperkitty.lib.mailman import get_mailman_client
 
 
 FLASH_MESSAGES = {
@@ -35,7 +44,7 @@ FLASH_MESSAGES = {
 }
 
 
-def get_months(store, list_name):
+def get_months(mlist):
     """ Return a dictionnary of years, months for which there are
     potentially archives available for a given list (based on the
     oldest post on the list).
@@ -43,7 +52,8 @@ def get_months(store, list_name):
     :arg list_name, name of the mailing list in which this email
     should be searched.
     """
-    date_first = store.get_start_date(list_name)
+    date_first = mlist.emails.order_by("date"
+        ).values_list("date", flat=True).first()
     if not date_first:
         return {}
     archives = {}
@@ -63,7 +73,8 @@ def get_display_dates(year, month, day):
         start_day = 1
     else:
         start_day = int(day)
-    begin_date = datetime.datetime(int(year), int(month), start_day)
+    begin_date = datetime.datetime(
+        int(year), int(month), start_day, tzinfo=utc)
 
     if day is None:
         end_date = begin_date + datetime.timedelta(days=32)
@@ -115,51 +126,86 @@ def get_category_widget(request=None, current_category=None):
     return category, category_form
 
 
-def is_thread_unread(request, mlist_name, thread):
-    """Returns True or False if the thread is unread or not."""
-    unread = False
-    if request.user.is_authenticated():
-        try:
-            last_view_obj = LastView.objects.get(
-                    list_address=mlist_name,
-                    threadid=thread.thread_id,
-                    user=request.user)
-        except LastView.DoesNotExist:
-            unread = True
-        else:
-            if thread.date_active.replace(tzinfo=utc) \
-                    > last_view_obj.view_date:
-                unread = True
-    return unread
-
-
-def get_recent_list_activity(store, mlist):
-    """Return the number of emails posted in the last 30 days"""
-    begin_date, end_date = mlist.get_recent_dates()
-    days = daterange(begin_date, end_date)
-
-    # Use get_messages and not get_threads to count the emails, because
-    # recently active threads include messages from before the start date
-    emails_in_month = store.get_message_dates(
-            list_name=mlist.name, start=begin_date, end=end_date)
-    # graph
-    emails_per_date = {}
-    # populate with all days before adding data.
-    for day in days:
-        emails_per_date[day.strftime("%Y-%m-%d")] = 0
-    # now count the emails
-    for email_date in emails_in_month:
-        date_str = email_date.strftime("%Y-%m-%d")
-        if date_str not in emails_per_date:
-            continue # outside the range
-        emails_per_date[date_str] += 1
-    # return the proper format for the javascript chart function
-    return [ {"date": d, "count": emails_per_date[d]}
-             for d in sorted(emails_per_date) ]
-
-
 def show_mlist(mlist, request):
     def get_domain(host):
         return ".".join(host.split(".")[-2:])
     return (get_domain(mlist.name.partition("@")[2])
             == get_domain(request.get_host()))
+
+
+# View decorator: check that the list is authorized
+def check_mlist_private(func):
+    @wraps(func, assigned=available_attrs(func))
+    def inner(request, *args, **kwargs):
+        if "mlist_fqdn" in kwargs:
+            mlist_fqdn = kwargs["mlist_fqdn"]
+        else:
+            mlist_fqdn = args[0]
+        try:
+            mlist = MailingList.objects.get(name=mlist_fqdn)
+        except MailingList.DoesNotExist:
+            raise Http404("No archived mailing-list by that name.")
+        if not is_mlist_authorized(request, mlist):
+            return render(request, "hyperkitty/errors/private.html", {
+                            "mlist": mlist,
+                          }, status=403)
+        return func(request, *args, **kwargs)
+    return inner
+
+
+def is_mlist_authorized(request, mlist):
+    if mlist.is_private and not (
+            request.user.is_authenticated() and mlist.name in
+            request.user.hyperkitty_profile.get_subscriptions() ):
+        return False
+    return True
+
+
+##def get_subscriptions(mm_user):
+#    #try:
+#    #    mm_client = get_mailman_client()
+#    #except (HTTPError, MailmanConnectionError):
+#    #    return []
+#    sub_names = set()
+#    for mlist_id in mm_user.subscription_list_ids:
+#        mlist_name = mm_client.get_list(mlist_id).fqdn_listname
+#        ## de-duplicate subscriptions
+#        #if mlist_name in [ s["list_name"] for s in sub_names ]:
+#        #    continue
+#        sub_names.add(mlist_name)
+#    return sub_names
+
+#def get_subscriptions(user)
+#    subscriptions = []
+#    for mlist_name in sorted(list(sub_names)):
+#        posts_count = Email.objects.filter(
+#            mailinglist__name=mlist_name,
+#            sender__user__mailman_id=str(user_uuid)).count()
+#        if hk_user is None:
+#            likes = dislikes = 0
+#            first_post = None
+#        else:
+#            likes, dislikes = hk_user.get_votes_in_list(mlist_name)
+#            try:
+#                mlist = MailingList.objects.get(name=mlist_name)
+#            except MailingList.DoesNotExist:
+#                first_post = None
+#            first_post = hk_user.get_first_post(mlist)
+#        all_posts_url = "%s?list=%s" % (
+#            reverse("hk_user_posts", args=[mm_user.user_id]),
+#            mlist_name)
+#        likestatus = "neutral"
+#        if likes - dislikes >= 10:
+#            likestatus = "likealot"
+#        elif likes - dislikes > 0:
+#            likestatus = "like"
+#        subscriptions.append({
+#            "list_name": mlist_name,
+#            "posts_count": posts_count,
+#            "first_post": first_post,
+#            "likes": likes,
+#            "dislikes": dislikes,
+#            "likestatus": likestatus,
+#            "all_posts_url": all_posts_url,
+#        })
+#    return subscriptions

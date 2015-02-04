@@ -1,0 +1,91 @@
+Return-Path: <list1-bounces@mm3test.fedoraproject.org>
+Delivered-To: test@example.com
+Received: (qmail 13691 invoked from network); 2 Oct 2012 15:52:27 -0000
+Received: from mx16-g26.free.fr (HELO mm3test.fedoraproject.org) (212.27.42.55)
+  by mrelay1-g25.free.fr with SMTP; 2 Oct 2012 15:52:27 -0000
+Received: from mm3test.fedoraproject.org ([152.19.134.144])
+	by mx1-g20.free.fr (MXproxy) for test@example.com;
+	Tue,  2 Oct 2012 17:52:27 +0200 (CEST)
+X-ProXaD-SC: state=HAM score=0
+Received: from vm5.fedora.ibiblio.org (localhost [127.0.0.1])
+	by mm3test.fedoraproject.org (Postfix) with ESMTP id DC46212057E
+	for <test@example.com>; Tue,  2 Oct 2012 15:52:13 +0000 (UTC)
+Received: from mail-qa0-f53.google.com (mail-qa0-f53.google.com
+	[209.85.216.53])
+	by mm3test.fedoraproject.org (Postfix) with ESMTP id E321F120502
+	for <list1@mm3test.fedoraproject.org>;
+	Tue,  2 Oct 2012 15:50:18 +0000 (UTC)
+Received: by qaas11 with SMTP id s11so719463qaa.5
+	for <list1@mm3test.fedoraproject.org>;
+	Tue, 02 Oct 2012 08:50:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20120113;
+	h=mime-version:sender:from:date:x-google-sender-auth:message-id
+	:subject:to:content-type;
+	bh=e8BR+8jPBSP5O/RrgP1pqvO1/IMWF11Bh461y3FF+3I=;
+	b=lp4ST+8RSmk0O8ka9D0rbVk1MH02MzuQm/BCpqSW6ypbSCoSQZYIO3wCU0WFGZJMTu
+	W+b13GCmhThG4REHa5m8Liok+TmrAdG1eJm0SAihjZTTbDMsxeXbFIqYm33cWFeoqqpv
+	a9U2b45t7oQScuwZJdnMnK6LKgSH8LnSBuQJQ2nbPl8QlIkUuyyytJqZ9n/bar1VsAMS
+	yUQhMLhakWsBRvOQL4YkSMa8QZB7bjsT+OBJs2lWfOeDZMRbaMMw99Iri5ekXW9YChES
+	+YgVFWkpzY8UgCl1v/4U+f8d6B/V+UxC4QGMt6/t2WVaWNvLfcVK6zf4Xz0j6RxoiNb1
+	+elA==
+Received: by 10.49.48.109 with SMTP id k13mr5822578qen.44.1349193020870; Tue,
+	02 Oct 2012 08:50:20 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 10.49.117.231 with HTTP; Tue, 2 Oct 2012 08:50:00 -0700 (PDT)
+From: Aurelien Bompard <test@example.com>
+Date: Tue, 2 Oct 2012 17:50:00 +0200
+X-Google-Sender-Auth: nM2EQKgDrBvnGOuMzxnkzkPC9ro
+Message-ID: <CAHmoxtXXb3un1C=ZvYNtz-eYghm-GH925gDVHyjhvL2YEsZ-Yw@mail.gmail.com>
+To: list1@mm3test.fedoraproject.org
+Content-Type: multipart/mixed; boundary=047d7b6d9730be0f6104cb157a6f
+X-MailFrom: abompard@gmail.com
+X-Mailman-Rule-Hits: nonmember-moderation
+X-Mailman-Rule-Misses: approved; emergency; loop; member-moderation;
+	administrivia; implicit-dest; max-recipients; max-size;
+	news-moderation; no-subject; suspicious-header
+X-Message-ID-Hash: MAWB5CJS67HFZZUBFWN47URCDJBI75WT
+X-Mailman-Approved-At: Tue, 02 Oct 2012 15:52:11 +0000
+Subject: [List1] another try
+X-Mailman-Version: 3.0.0b2+
+Precedence: list
+List-Id: <list1.mm3test.fedoraproject.org>
+List-Post: <mailto:list1@mm3test.fedoraproject.org>
+List-Subscribe: <http://mm3test.fedoraproject.org/listinfo/list1@mm3test.fedoraproject.org>,
+	<mailto:list1-join@mm3test.fedoraproject.org>
+Archived-At: /hyperkitty/message/list1@mm3test.fedoraproject.org/3EGA7GL3TZXZRHSVS42I3VR63YPHV7I3/
+List-Unsubscribe: <http://mm3test.fedoraproject.org/listinfo/list1@mm3test.fedoraproject.org>,
+	<mailto:list1-leave@mm3test.fedoraproject.org>
+List-Archive: </hyperkitty/archives/list1@mm3test.fedoraproject.org/>
+List-Help: <mailto:list1-request@mm3test.fedoraproject.org?subject=help>
+
+--047d7b6d9730be0f6104cb157a6f
+Content-Type: multipart/alternative; boundary=047d7b6d9730be0f5d04cb157a6d
+
+--047d7b6d9730be0f5d04cb157a6d
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+This is a test, HTML message with accented letters : =E9 =E8 =E7 =E0.
+And an attachment with an accented filename
+
+--047d7b6d9730be0f5d04cb157a6d
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+
+This is a test, HTML message with accented letters : =E9 =E8 =E7 =E0.<br>An=
+d an attachment with an accented filename<br>
+
+--047d7b6d9730be0f5d04cb157a6d--
+--047d7b6d9730be0f6104cb157a6f
+Content-Type: text/plain; charset=UTF-8;
+	name="=?ISO-8859-1?Q?todo=2Dd=E9jeuner=2Etxt?="
+Content-Disposition: attachment;
+	filename="=?ISO-8859-1?Q?todo=2Dd=E9jeuner=2Etxt?="
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_h7t6o6wf0
+
+VmlhbmRlCk1lbnRoZQpQYWluClZpbgoKQ3Vpc2luZTogcHLDqXBhcmVyIGwnYXDDqXJvLCBjb3Vw
+ZXIgZXQgZmFpcmUgcmlzc29sZXIgbGVzIHBhdGF0ZXMsIGV0IGZhaXJlIGxlcyBjb29raWVzCg==
+--047d7b6d9730be0f6104cb157a6f--
+
+

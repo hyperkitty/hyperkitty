@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 1998-2012 by the Free Software Foundation, Inc.
+# Copyright (C) 2014-2015 by the Free Software Foundation, Inc.
 #
 # This file is part of HyperKitty.
 #
@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License along with
 # HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Author: Aamir Khan <syst3m.w0rm@gmail.com>
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
@@ -26,15 +25,14 @@ import datetime
 import uuid
 from traceback import print_exc, format_exc
 
-from mock import Mock
+from mock import Mock, patch
 from django.http import HttpRequest
 from django.core.urlresolvers import reverse
-import kittystore
-from kittystore.test import SettingsModule
+from django.utils.timezone import utc
 
 from hyperkitty.lib.view_helpers import get_display_dates, show_mlist
 from hyperkitty.lib.paginator import paginate
-from hyperkitty.lib.mailman import get_subscriptions
+from hyperkitty.models import MailingList
 
 from hyperkitty.tests.utils import TestCase
 
@@ -43,21 +41,21 @@ class GetDisplayDatesTestCase(TestCase):
 
     def test_month(self):
         begin_date, end_date = get_display_dates('2012', '6', None)
-        self.assertEqual(begin_date, datetime.datetime(2012, 6, 1))
-        self.assertEqual(end_date, datetime.datetime(2012, 7, 1))
+        self.assertEqual(begin_date, datetime.datetime(2012, 6, 1, tzinfo=utc))
+        self.assertEqual(end_date, datetime.datetime(2012, 7, 1, tzinfo=utc))
 
     def test_month_december(self):
         try:
             begin_date, end_date = get_display_dates('2012', '12', None)
         except ValueError, e:
             self.fail(e)
-        self.assertEqual(begin_date, datetime.datetime(2012, 12, 1))
-        self.assertEqual(end_date, datetime.datetime(2013, 1, 1))
+        self.assertEqual(begin_date, datetime.datetime(2012, 12, 1, tzinfo=utc))
+        self.assertEqual(end_date, datetime.datetime(2013, 1, 1, tzinfo=utc))
 
     def test_day(self):
         begin_date, end_date = get_display_dates('2012', '4', '2')
-        self.assertEqual(begin_date, datetime.datetime(2012, 4, 2))
-        self.assertEqual(end_date, datetime.datetime(2012, 4, 3))
+        self.assertEqual(begin_date, datetime.datetime(2012, 4, 2, tzinfo=utc))
+        self.assertEqual(end_date, datetime.datetime(2012, 4, 3, tzinfo=utc))
 
 
 class PaginateTestCase(TestCase):
@@ -114,14 +112,10 @@ class PaginateTestCase(TestCase):
 # view_helpers.show_mlist()
 #
 
-class FakeKSList(object):
-    def __init__(self, name):
-        self.name = name
-
 class ShowMlistTestCase(TestCase):
 
     def _do_test(self, listdomain, vhost, expected):
-        mlist = FakeKSList("test@%s" % listdomain)
+        mlist = MailingList.objects.get_or_create(name="test@{}".format(listdomain))[0]
         req = HttpRequest()
         req.META["HTTP_HOST"] = vhost
         self.assertEqual(show_mlist(mlist, req), expected)
@@ -149,41 +143,3 @@ class ShowMlistTestCase(TestCase):
 
     def test_different_single_component_domain(self):
         self._do_test("intranet", "extranet", False)
-
-
-#
-# mailman.get_subscriptions()
-#
-
-class FakeMMList:
-    def __init__(self, name):
-        self.fqdn_listname = name
-
-class MMGetSubTestCase(TestCase):
-
-    def setUp(self):
-        self.store = kittystore.get_store(
-                SettingsModule(), debug=False, auto_create=True)
-        self.client = Mock()
-        self.client.get_list.side_effect = lambda name: FakeMMList(name)
-        self.mm_user = Mock()
-        self.mm_user.user_id = uuid.uuid1().int
-
-    def test_user_not_in_ks(self):
-        # The user is not in KittyStore yet, this should not prevent the
-        # listing of the subscriptions in Mailman
-        self.mm_user.subscription_list_ids = ["test@example.com",]
-        try:
-            subs = get_subscriptions(self.store, self.client, self.mm_user)
-        except AttributeError, e:
-            #print_exc()
-            self.fail("Subscriptions should be available even if "
-                      "the user has never voted yet\n%s" % format_exc())
-        expected = [{
-            'first_post': None, 'posts_count': 0,
-            'likes': 0, 'dislikes': 0, 'likestatus': 'neutral',
-            'list_name': "test@example.com",
-            'all_posts_url': "%s?list=test@example.com"
-                    % reverse("hk_user_posts", args=[self.mm_user.user_id]),
-            }]
-        self.assertEqual(subs, expected)

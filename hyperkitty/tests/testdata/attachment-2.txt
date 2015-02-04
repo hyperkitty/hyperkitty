@@ -1,0 +1,109 @@
+X-Account-Key: account5
+X-UIDL: 1348590469.25417.mrelay8-g25
+X-Mozilla-Status: 0001
+X-Mozilla-Status2: 00000000
+X-Mozilla-Keys:                                                                                 
+Return-Path: <devel-bounces@lists.fedoraproject.org>
+Delivered-To: free.fr-gauret@free.fr
+Received: (qmail 25389 invoked from network); 25 Sep 2012 16:27:49 -0000
+Received: from mx16-g26.free.fr (HELO bastion.fedoraproject.org) (212.27.42.55)
+  by mrelay8-g25.free.fr with SMTP; 25 Sep 2012 16:27:49 -0000
+Received: from bastion.fedoraproject.org ([209.132.181.2])
+	by mx1-g20.free.fr (MXproxy); Tue, 25 Sep 2012 18:27:49 +0200 (CEST)
+X-ProXaD-SC: state=HAM score=0
+Received: from lists.fedoraproject.org (collab03.vpn.fedoraproject.org [192.168.1.70])
+	by bastion01.phx2.fedoraproject.org (Postfix) with ESMTP id 5247C2202E;
+	Tue, 25 Sep 2012 16:27:30 +0000 (UTC)
+Received: from collab03.fedoraproject.org (localhost [127.0.0.1])
+	by lists.fedoraproject.org (Postfix) with ESMTP id D266040591;
+	Tue, 25 Sep 2012 16:27:29 +0000 (UTC)
+X-Original-To: devel@lists.fedoraproject.org
+Delivered-To: devel@lists.fedoraproject.org
+Received: from smtp-mm01.fedoraproject.org (smtp-mm01.fedoraproject.org
+	[80.239.156.217])
+	by lists.fedoraproject.org (Postfix) with ESMTP id 6C99840591
+	for <devel@lists.fedoraproject.org>;
+	Tue, 25 Sep 2012 11:54:36 +0000 (UTC)
+Received: from mail.thelounge.net (mail.thelounge.net [91.118.73.15])
+	by smtp-mm01.fedoraproject.org (Postfix) with ESMTP id AE85BC0080
+	for <devel@lists.fedoraproject.org>;
+	Tue, 25 Sep 2012 11:54:35 +0000 (UTC)
+Received: from rh.thelounge.net (rh.thelounge.net [10.0.0.99])
+	(using TLSv1 with cipher DHE-RSA-CAMELLIA256-SHA (256/256 bits))
+	(No client certificate requested)
+	by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 3XR10p4mGSz33
+	for <devel@lists.fedoraproject.org>;
+	Tue, 25 Sep 2012 13:54:34 +0200 (CEST)
+Message-ID: <50619B7A.2030404@thelounge.net>
+Date: Tue, 25 Sep 2012 13:54:34 +0200
+From: Reindl Harald <h.reindl@thelounge.net>
+Organization: the lounge interactive design
+User-Agent: Mozilla/5.0 (X11; Linux x86_64;
+	rv:15.0) Gecko/20120914 Thunderbird/15.0.1
+MIME-Version: 1.0
+To: Mailing-List fedora-devel <devel@lists.fedoraproject.org>
+Subject: request: remove "gd.tuwien.ac.at" from mirror-lists
+X-Enigmail-Version: 1.4.4
+OpenPGP: id=7F780279;
+	url=http://arrakis.thelounge.net/gpg/h.reindl_thelounge.net.pub.txt
+X-Mailman-Approved-At: Tue, 25 Sep 2012 16:27:27 +0000
+X-BeenThere: devel@lists.fedoraproject.org
+X-Mailman-Version: 2.1.12
+Precedence: list
+Reply-To: Development discussions related to Fedora
+	<devel@lists.fedoraproject.org>
+List-Id: Development discussions related to Fedora
+	<devel.lists.fedoraproject.org>
+List-Unsubscribe: <https://admin.fedoraproject.org/mailman/options/devel>,
+	<mailto:devel-request@lists.fedoraproject.org?subject=unsubscribe>
+List-Archive: <http://lists.fedoraproject.org/pipermail/devel/>
+List-Post: <mailto:devel@lists.fedoraproject.org>
+List-Help: <mailto:devel-request@lists.fedoraproject.org?subject=help>
+List-Subscribe: <https://admin.fedoraproject.org/mailman/listinfo/devel>,
+	<mailto:devel-request@lists.fedoraproject.org?subject=subscribe>
+Content-Type: multipart/mixed; boundary="===============8632363506430537088=="
+Sender: devel-bounces@lists.fedoraproject.org
+Errors-To: devel-bounces@lists.fedoraproject.org
+
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--===============8632363506430537088==
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig472FDA8B19C158E487EA5823"
+
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig472FDA8B19C158E487EA5823
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+This is a test message
+Non-ascii chars: Hofm=C3=BChlgasse
+
+--------------enig472FDA8B19C158E487EA5823
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://www.enigmail.net/
+
+iEYEARECAAYFAlBhm3oACgkQhmBjz394AnmMnQCcC+6tWcqE1dPQmIdRbLXgKGVp
+EeUAn2OqtaXaXaQV7rx+SmOldmSzcFw4
+=OEJv
+-----END PGP SIGNATURE-----
+
+--------------enig472FDA8B19C158E487EA5823--
+
+--===============8632363506430537088==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+
+LS0gCmRldmVsIG1haWxpbmcgbGlzdApkZXZlbEBsaXN0cy5mZWRvcmFwcm9qZWN0Lm9yZwpodHRw
+czovL2FkbWluLmZlZG9yYXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vZGV2ZWw=
+
+--===============8632363506430537088==--
+
+

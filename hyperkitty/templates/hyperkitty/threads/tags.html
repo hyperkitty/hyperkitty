@@ -1,17 +1,16 @@
 {% load url from future %}
 
-        <span id="tag-title">tags </span>({{tags|length}})
-        {% if tags|length %}
+        <span id="tag-title">tags </span>({{thread.tags.distinct.count}})
         <ul class="inline">
-            {% for tag in tags %}
+            {% for tag in thread.tags.distinct %}
             <li>
-                <a href="{% url 'hk_search_tag' mlist_fqdn=mlist.name tag=tag.tag %}"
-                   title="Search for tag {{ tag.tag|escape }}">{{ tag.tag }}</a>
-                {% if user == tag.user %}
-                <form method="post" class="rmtag" action="{% url 'hk_tags' mlist_fqdn=mlist.name threadid=threadid %}">
+                <a href="{% url 'hk_search_tag' mlist_fqdn=thread.mailinglist.name tag=tag.name %}"
+                   title="Search for tag {{ tag.name|escape }}">{{ tag.name }}</a>
+                {% if user in tag.users.all %}
+                <form method="post" class="rmtag" action="{% url 'hk_tags' mlist_fqdn=thread.mailinglist.name threadid=thread.thread_id %}">
                     {% csrf_token %}
                     <input type="hidden" name="action" value="rm" />
-                    <input type="hidden" name="tag" value="{{ tag.tag|escape }}" />
+                    <input type="hidden" name="tag" value="{{ tag.name|escape }}" />
                     <a href="#rmtag" title="Remove">&times;</a>
                 </form>
                 {% endif %}
@@ -19,4 +18,3 @@
             </li>
             {% endfor %}
         </ul>
-        {% endif %}

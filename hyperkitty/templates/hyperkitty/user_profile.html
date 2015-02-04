@@ -53,14 +53,14 @@
                                     <div class="ellipsis-overflow">{{ user.email }}</div>
                                 </td>
                             </tr>
-                            {% if emails %}
+                            {% if addresses %}
                             <tr>
                                 <th>{% trans 'Other emails:' %}</th>
                                 <td>
                                     <div class="ellipsis-overflow">
                                         <ul class="list-unstyled">
-                                            {% for email in emails %}
-                                            <li>{{ email }}</li>
+                                            {% for address in addresses %}
+                                            <li>{{ address }}</li>
                                             {% endfor %}
                                         </ul>
                                     </div>
@@ -93,10 +93,10 @@
             <ul>
             {% for fav in favorites %}
                 <li>
-                    <a href="{% url 'hk_thread' mlist_fqdn=fav.list_address threadid=fav.threadid %}"
-                        >{{ fav.thread.starting_email.subject }}</a> by {{ fav.thread.starting_email.sender_name }}
-                        <span class="hidden-sm hidden-md hidden-lg">({{ fav.thread|get_date|date:"D, j M Y H:i" }})</span>
-                        <span class="hidden-tn hidden-xs">({{ fav.thread|get_date|date:"l, j F Y H:i:s" }})</span>
+                    <a href="{% url 'hk_thread' mlist_fqdn=fav.thread.mailinglist.name threadid=fav.thread.thread_id %}"
+                        >{{ fav.thread.starting_email.subject }}</a> by {{ fav.thread.starting_email.sender.name }}
+                        <span class="hidden-sm hidden-md hidden-lg">({{ fav.thread.date_active|date:"D, j M Y H:i" }})</span>
+                        <span class="hidden-tn hidden-xs">({{ fav.thread.date_active|date:"l, j F Y H:i:s" }})</span>
                 </li>
             {% endfor %}
             </ul>

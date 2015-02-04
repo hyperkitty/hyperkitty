@@ -3,7 +3,6 @@
 {% load url from future %}
 {% load gravatar %}
 {% load hk_generic %}
-{% load kittystore %}
 
 
 {% block title %}
@@ -23,24 +22,29 @@
             <div class="thread-category">
                 {% include 'hyperkitty/threads/category.html' %}
             </div>
+            {% with prev_thread=thread.prev_thread next_thread=thread.next_thread %}
             <div class="col-tn-2">
                 {% if next_thread %}
-                <button id="next-thread" class="btn btn-default btn-xs {% if not next_thread %}disabled{% endif %}"
-                        {% if next_thread %}title="{{ next_thread.subject|strip_subject:mlist|escape }}"{% endif %}>
+                <a id="next-thread" class="btn btn-default btn-xs {% if not next_thread %}disabled{% endif %}"
+                        {% if next_thread %}title="{{ next_thread.subject|strip_subject:mlist|escape }}"{% endif %}
+                        href="{% url 'hk_thread' threadid=next_thread.thread_id mlist_fqdn=mlist.name %}">
                     <span class="fa fa-chevron-left"></span>
                     <span class="hidden-tn hidden-xs">newer</span>
-                </button>
+                </a>
                {% endif %}
             </div>
             <div class="col-tn-8">
                 <h3>{{ subject }}</h3>
             </div>
             <div class="col-tn-2 right">
-                <button id="prev-thread" class="btn btn-default btn-xs {% if not prev_thread %}disabled{% endif %}"
-                    {% if prev_thread %}title="{{ prev_thread.subject|strip_subject:mlist|escape }}"{% endif %}>
+                <a id="prev-thread" class="btn btn-default btn-xs {% if not prev_thread %}disabled{% endif %}"
+                    {% if prev_thread %}
+                    title="{{ prev_thread.subject|strip_subject:mlist|escape }}"
+                    href="{% url 'hk_thread' threadid=prev_thread.thread_id mlist_fqdn=mlist.name %}"
+                    {% endif %}>
                     <span class="fa fa-chevron-right"></span>
                     <span class="hidden-tn hidden-xs">older</span>
-                </button>
+                </a>
             </div>
             <div class="thread-titles">
                 {% if next_thread %}
@@ -54,6 +58,7 @@
                    title="{{ prev_thread.subject|strip_subject:mlist|escape }}">{{ prev_thread.subject|strip_subject:mlist|truncatesmart:"35" }}</a>
                 {% endif %}
             </div>
+            {% endwith %}
         </div> <!-- /thread-header -->
 
         <!-- nav tabs, for smaller screens -->
@@ -71,22 +76,22 @@
                 {% include 'hyperkitty/threads/month_list.html' with show_dropdown=True %}
             </li>
         </ul> <!-- /navtab -->
-        
+
         <div class="row">
             <div class="col-sm-9">
                 <!-- main section, the email thread -->
                 <div id="thread-content">
 
                     <!-- Start first email -->
-                    {% include 'hyperkitty/messages/message.html' with email=first_mail unfolded='True' %}
+                    {% include 'hyperkitty/messages/message.html' with email=thread.starting_email unfolded='True' %}
                     <!-- End first email -->
 
                     <p class="sort-mode">
                         {% if sort_mode == "date" %}
-                        <a href="{% url 'hk_thread' threadid=threadid mlist_fqdn=mlist.name %}?sort=thread"
+                        <a href="{% url 'hk_thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}?sort=thread"
                             >Show replies by thread</a>
                         {% else %}
-                        <a href="{% url 'hk_thread' threadid=threadid mlist_fqdn=mlist.name %}?sort=date"
+                        <a href="{% url 'hk_thread' threadid=thread.thread_id mlist_fqdn=mlist.name %}?sort=date"
                             >Show replies by date</a>
                         {% endif %}
                     </p>
@@ -128,7 +133,7 @@
         //enable tooltips for thread buttons
         $("btn#next-thread").tooltip();
         $("btn#prev-thread").tooltip();
-        
+
         setup_category();
         setup_tags();
         setup_favorites();
@@ -136,7 +141,7 @@
         // Hide quotes by default in the thread view
         fold_quotes();
         // Load the replies
-        update_thread_replies("{% url 'hk_thread_replies' threadid=threadid mlist_fqdn=mlist.name %}?sort={{sort_mode}}&last_view={{last_view|date:'U'}}");
+        update_thread_replies("{% url 'hk_thread_replies' threadid=thread.thread_id mlist_fqdn=mlist.name %}?sort={{sort_mode}}&last_view={{last_view|date:'U'}}");
         setup_unreadnavbar("#unreadnavbar");
     });
 </script>

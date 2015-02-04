@@ -22,8 +22,6 @@
 
 from django.conf.urls import patterns, include, url
 from django.views.generic.base import TemplateView
-from hyperkitty.api import ListResource, EmailResource, ThreadResource
-from hyperkitty.api import TagResource
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.contrib.auth.views import logout as logout_view
@@ -33,6 +31,7 @@ from django.contrib import admin
 admin.autodiscover()
 
 from hyperkitty.views import TextTemplateView
+from hyperkitty import api
 
 
 urlpatterns = patterns('hyperkitty.views',
@@ -112,13 +111,27 @@ urlpatterns = patterns('hyperkitty.views',
 
     # REST API
     url(r'^api/$', TemplateView.as_view(template_name="hyperkitty/api.html")),
-    url(r'^api/list\/',
-        ListResource.as_view(), name="hk_api_list"),
-    url(r'^api/email\/(?P<mlist_fqdn>[^/@]+@[^/@]+)\/(?P<messageid>.*)/',
-        EmailResource.as_view(), name="hk_api_email"),
-    url(r'^api/thread\/(?P<mlist_fqdn>[^/@]+@[^/@]+)\/(?P<threadid>.*)/',
-        ThreadResource.as_view(), name="hk_api_thread"),
-    url(r'^api/tag\/', TagResource.as_view(), name="hk_api_tag"),
+    url(r'^api/lists/$',
+        api.MailingListList.as_view(), name="hk_api_mailinglist_list"),
+    url(r'^api/list/(?P<name>[^/@]+@[^/@]+)/$',
+        api.MailingListDetail.as_view(), name="hk_api_mailinglist_detail"),
+    url(r'^api/list/(?P<mlist_fqdn>[^/@]+@[^/@]+)\/threads/$',
+        api.ThreadList.as_view(), name="hk_api_thread_list"),
+    url(r'^api/list/(?P<mlist_fqdn>[^/@]+@[^/@]+)\/thread/(?P<thread_id>[^/]+)/$',
+        api.ThreadDetail.as_view(), name="hk_api_thread_detail"),
+    url(r'^api/list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/emails/$',
+        api.EmailList.as_view(), name="hk_api_email_list"),
+    url(r'^api/list/(?P<mlist_fqdn>[^/@]+@[^/@]+)\/email/(?P<message_id_hash>.*)/$',
+        api.EmailDetail.as_view(), name="hk_api_email_detail"),
+    url(r'^api/list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/thread/(?P<thread_id>[^/]+)/emails/$',
+        api.EmailList.as_view(), name="hk_api_thread_email_list"),
+    #url(r'^api/sender/(?P<address>[^/@]+@[^/@]+)/$',
+    #    api.SenderDetail.as_view(), name="hk_api_sender_detail"),
+    url(r'^api/sender/(?P<address>[^/@]+@[^/@]+)/emails/$',
+        api.EmailListBySender.as_view(), name="hk_api_sender_email_list"),
+    url(r'^api/tags/$', api.TagList.as_view(), name="hk_api_tag_list"),
+    #url(r'^', include(restrouter.urls)),
+    #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     # Errors
     url(r'^error/schemaupgrade$',

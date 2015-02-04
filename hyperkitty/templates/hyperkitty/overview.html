@@ -3,7 +3,6 @@
 {% load url from future %}
 {% load hk_generic %}
 {% load gravatar %}
-{% load kittystore %}
 
 
 {% block title %}
@@ -175,7 +174,7 @@
                     #{{forloop.counter}}
                 </div>
                 <div class="inline-block gravatar col-tn-3 col-xs-4 col-md-3">
-                    {% gravatar poster.email 40 %}
+                    {% gravatar poster.address 40 %}
                     <br />
                 </div>
                 <div class="gravatar-details inline-block col-tn-7 col-xs-6 col-md-7">

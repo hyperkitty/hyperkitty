@@ -6,29 +6,29 @@
         <table class="table table-bordered table-condensed hidden-sm hidden-md hidden-lg">
             <tbody>
             {% for lv in last_views %}
-                {% ifchanged lv.list_address %}
+                {% ifchanged lv.mailinglist.name %}
                 <tr class="list-address">
-                    <td>{{ lv.list_address }}</td>
+                    <td>{{ lv.mailinglist.name }}</td>
                 </tr>
                 {% endifchanged %}
                 <tr>
                     <td>
-                        {% if thread.unread %}
+                        {% with num_unread=lv.num_unread starting_email=lv.thread.starting_email %}
+                        {% if num_unread %}
                         <i class="unread icon-eye-close" title="New comments"></i>
                         {% endif %}
-                        <a href="{% url 'hk_thread' mlist_fqdn=lv.list_address threadid=lv.threadid %}"
-                            >{{ lv.thread.starting_email.subject }}</a>
+                        <a href="{% url 'hk_thread' mlist_fqdn=lv.thread.mailinglist.name threadid=lv.thread.thread_id %}"
+                            >{{ starting_email.subject }}</a>
                         <br>
-                        Original author: {{ lv.thread.starting_email.sender_name }}
+                        Original author: {{ starting_email.sender.name }}
                         <br>
-                        Started on: {{ lv.thread.starting_email|get_date|date:"D, j M Y H:i" }}
+                        Started on: {{ starting_email.date|date:"D, j M Y H:i" }}
                         <br>
-                        Last activity: {{ lv.thread|get_date|timesince }}
+                        Last activity: {{ lv.thread.date_active|timesince }}
                         <br>
-                        Replies: {{ lv.thread|length }} 
-                        {% if thread.unread %}
-                        / {{ thread.unread }} new
-                        {% endif %}
+                        Replies: {{ lv.thread|num_comments }}
+                        {% if num_unread %} / {{ num_unread }} new {% endif %}
+                        {% endwith %}
                     </td>
                 </tr>
             {% endfor %}
@@ -49,26 +49,26 @@
             <tbody>
             {% for lv in last_views %}
                 <tr>
+                    {% with num_unread=lv.num_unread starting_email=lv.thread.starting_email %}
                     <td>
-                        {% if thread.unread %}
+                        {% if num_unread %}
                         <i class="unread icon-eye-close" title="New comments"></i>
                         {% endif %}
                     </td>
                     <td>
-                        <span class="hidden-md hidden-lg">{{ lv.list_address|until:"@" }}</span>
-                        <span class="hidden-sm">{{ lv.list_address }}</span>
+                        <span class="hidden-md hidden-lg">{{ lv.mailinglist.name|until:"@" }}</span>
+                        <span class="hidden-sm">{{ lv.mailinglist.name }}</span>
                     </td>
-                    <td><a href="{% url 'hk_thread' mlist_fqdn=lv.list_address threadid=lv.threadid %}"
-                            >{{ lv.thread.starting_email.subject }}</a></td>
-                    <td>{{ lv.thread.starting_email.sender_name }}</td>
-                    <td>{{ lv.thread.starting_email|get_date|date:"l, j F Y H:i:s" }}</td>
-                    <td>{{ lv.thread|get_date|timesince }}</td>
+                    <td><a href="{% url 'hk_thread' mlist_fqdn=lv.thread.mailinglist.name threadid=lv.thread.thread_id %}"
+                            >{{ starting_email.subject }}</a></td>
+                    <td>{{ starting_email.sender.name }}</td>
+                    <td>{{ starting_email.date }}</td>
+                    <td>{{ lv.thread.date_active|timesince }}</td>
                     <td>
                         {{ lv.thread|num_comments }}
-                        {% if thread.unread %}
-                        / {{ thread.unread }} new
-                        {% endif %}
+                        {% if num_unread %} / {{ num_unread }} new {% endif %}
                     </td>
+                    {% endwith %}
                 </tr>
             {% endfor %}
             </tbody>

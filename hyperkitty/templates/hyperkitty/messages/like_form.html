@@ -1,7 +1,7 @@
 {% load url from future %}
 
     <form method="post" class="likeform"
-          action="{% url 'hk_message_vote' mlist_fqdn=object.list_name message_id_hash=message_id_hash %}">
+          action="{% url 'hk_message_vote' mlist_fqdn=object.mailinglist.name message_id_hash=message_id_hash %}">
     {% csrf_token %}
     <i class="icomoon likestatus {{ object.likestatus }}"></i>
     <span>+{{ object.likes }}/-{{ object.dislikes }}</span>

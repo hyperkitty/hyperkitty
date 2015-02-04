@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) 1998-2012 by the Free Software Foundation, Inc.
+# Copyright (C) 2014-2015 by the Free Software Foundation, Inc.
 #
 # This file is part of HyperKitty.
 #
@@ -16,29 +16,25 @@
 # You should have received a copy of the GNU General Public License along with
 # HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Author: Aamir Khan <syst3m.w0rm@gmail.com>
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 
 import datetime
 
 import json
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.utils import formats
 from django.utils.dateformat import format as date_format
 from django.http import Http404, HttpResponse
 
-from hyperkitty.models import Tag, Favorite
-from hyperkitty.lib import get_store
-from hyperkitty.lib.view_helpers import FLASH_MESSAGES, \
-        get_category_widget, get_months, get_display_dates, \
-        is_thread_unread, get_recent_list_activity
+from hyperkitty.models import Tag, Favorite, MailingList
+from hyperkitty.lib.view_helpers import (FLASH_MESSAGES, get_category_widget,
+    get_months, get_display_dates, daterange, check_mlist_private)
 from hyperkitty.lib.paginator import paginate
-from hyperkitty.lib.mailman import check_mlist_private
 
 
 if settings.USE_MOCKUPS:
@@ -61,9 +57,8 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
     except ValueError:
         # Wrong date format, for example 9999/0/0
         raise Http404("Wrong date format")
-    store = get_store(request)
-    mlist = store.get_list(mlist_fqdn)
-    threads = store.get_threads(mlist_fqdn, start=begin_date, end=end_date)
+    mlist = get_object_or_404(MailingList, name=mlist_fqdn)
+    threads = mlist.get_threads_between(begin_date, end_date)
     if day is None:
         list_title = date_format(begin_date, "F Y")
         no_results_text = "for this month"
@@ -78,48 +73,29 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         "no_results_text": no_results_text,
     }
     if day is None:
-        month_activity = mlist.get_month_activity(int(year), int(month))
-        extra_context["participants"] = month_activity.participants_count
+        extra_context["participants"] = \
+            mlist.get_participants_count_for_month(int(year), int(month))
     return _thread_list(request, mlist, threads, extra_context=extra_context)
 
 
 def _thread_list(request, mlist, threads, template_name='hyperkitty/thread_list.html', extra_context={}):
-    if mlist is None:
-        raise Http404("No archived mailing-list by that name.")
-    store = get_store(request)
-
     threads = paginate(threads, request.GET.get('page'))
-
     participants = set()
     for thread in threads:
         if "participants" not in extra_context:
             participants.update(thread.participants)
-
         # Favorites
         thread.favorite = False
         if request.user.is_authenticated():
             try:
-                Favorite.objects.get(list_address=mlist.name,
-                                     threadid=thread.thread_id,
-                                     user=request.user)
+                Favorite.objects.get(thread=thread, user=request.user)
             except Favorite.DoesNotExist:
                 pass
             else:
                 thread.favorite = True
-
-        # Tags
-        try:
-            thread.tags = Tag.objects.filter(threadid=thread.thread_id,
-                                             list_address=mlist.name)
-        except Tag.DoesNotExist:
-            thread.tags = []
-
         # Category
         thread.category_hk, thread.category_form = \
                 get_category_widget(request, thread.category)
-
-        # Unread status
-        thread.unread = is_thread_unread(request, mlist.name, thread)
 
     flash_messages = []
     flash_msg = request.GET.get("msg")
@@ -132,7 +108,7 @@ def _thread_list(request, mlist, threads, template_name='hyperkitty/thread_list.
         'mlist' : mlist,
         'threads': threads,
         'participants': len(participants),
-        'months_list': get_months(store, mlist.name),
+        'months_list': get_months(mlist),
         'flash_messages': flash_messages,
     }
     context.update(extra_context)
@@ -143,24 +119,16 @@ def _thread_list(request, mlist, threads, template_name='hyperkitty/thread_list.
 def overview(request, mlist_fqdn=None):
     if not mlist_fqdn:
         return redirect('/')
-
-    store = get_store(request)
-    mlist = store.get_list(mlist_fqdn)
-    if mlist is None:
-        raise Http404("No archived mailing-list by that name.")
+    mlist = get_object_or_404(MailingList, name=mlist_fqdn)
     begin_date, end_date = mlist.get_recent_dates()
-    threads_result = store.get_threads(
-            list_name=mlist.name, start=begin_date, end=end_date)
-
     threads = []
-    for thread_obj in threads_result:
+    for thread_obj in mlist.recent_threads:
         thread_obj.category_widget = get_category_widget(
                 None, thread_obj.category)[0]
-        thread_obj.unread = is_thread_unread(request, mlist.name, thread_obj)
         threads.append(thread_obj)
 
     # top threads are the one with the most answers
-    top_threads = sorted(threads, key=lambda t: len(t), reverse=True)
+    top_threads = sorted(threads, key=lambda t: t.emails.count(), reverse=True)
 
     # active threads are the ones that have the most recent posting
     active_threads = sorted(threads, key=lambda t: t.date_active, reverse=True)
@@ -175,11 +143,7 @@ def overview(request, mlist_fqdn=None):
         authors = []
 
     # Top posters
-    top_posters = []
-    for poster in store.get_top_participants(list_name=mlist.name,
-                start=begin_date, end=end_date, limit=5):
-        top_posters.append({"name": poster[0], "email": poster[1],
-                            "count": poster[2]})
+    top_posters = mlist.get_top_participants(begin_date, end_date, limit=5)
 
     # Popular threads
     pop_threads = sorted([ t for t in threads if t.likes - t.dislikes > 0 ],
@@ -191,6 +155,7 @@ def overview(request, mlist_fqdn=None):
     for thread in active_threads:
         if not thread.category:
             continue
+        thread.unread = thread.is_unread_by(request.user)
         # don't use defaultdict, use .setdefault():
         # http://stackoverflow.com/questions/4764110/django-template-cant-loop-defaultdict
         if len(threads_by_category.setdefault(thread.category, [])) >= 5:
@@ -199,20 +164,14 @@ def overview(request, mlist_fqdn=None):
 
     # Personalized discussion groups: flagged/favorited threads and threads by user
     if request.user.is_authenticated():
-        try:
-            favorites = Favorite.objects.filter(list_address=mlist.name, user=request.user)
-        except Favorite.DoesNotExist:
-            favorites = []
-        if "user_id" in request.session:
-            threads_posted_to = store.get_threads_user_posted_to(
-                request.session["user_id"], mlist.name).all()
-        else:
-            threads_posted_to = []
+        favorites = [ f.thread for f in Favorite.objects.filter(
+            thread__mailinglist=mlist, user=request.user) ]
+        mm_user_id = request.user.hyperkitty_profile.get_mailman_user_id
+        threads_posted_to = mlist.threads.filter(
+            emails__sender__mailman_id=mm_user_id)
     else:
         favorites = []
         threads_posted_to = []
-    favorites = [ store.get_thread(mlist.name, f.threadid) for f in favorites ]
-    favorites = [ thread for thread in favorites if thread is not None ] # cleanup
 
     context = {
         'view_name': 'overview',
@@ -223,7 +182,7 @@ def overview(request, mlist_fqdn=None):
         'top_posters': top_posters,
         'pop_threads': pop_threads[:20],
         'threads_by_category': threads_by_category,
-        'months_list': get_months(store, mlist.name),
+        'months_list': get_months(mlist),
         'flagged_threads': favorites,
         'threads_posted_to': threads_posted_to,
     }
@@ -232,8 +191,29 @@ def overview(request, mlist_fqdn=None):
 
 @check_mlist_private
 def recent_activity(request, mlist_fqdn):
-    store = get_store(request)
-    mlist = store.get_list(mlist_fqdn)
-    evolution = get_recent_list_activity(store, mlist)
+    """Return the number of emails posted in the last 30 days"""
+    mlist = get_object_or_404(MailingList, name=mlist_fqdn)
+    begin_date, end_date = mlist.get_recent_dates()
+    days = daterange(begin_date, end_date)
+
+    # Use get_messages and not get_threads to count the emails, because
+    # recently active threads include messages from before the start date
+    emails_in_month = mlist.emails.filter(
+        date__gte=begin_date,
+        date__lt=end_date)
+    # graph
+    emails_per_date = {}
+    # populate with all days before adding data.
+    for day in days:
+        emails_per_date[day.strftime("%Y-%m-%d")] = 0
+    # now count the emails
+    for email in emails_in_month:
+        date_str = email.date.strftime("%Y-%m-%d")
+        if date_str not in emails_per_date:
+            continue # outside the range
+        emails_per_date[date_str] += 1
+    # return the proper format for the javascript chart function
+    evolution = [ {"date": d, "count": emails_per_date[d]}
+             for d in sorted(emails_per_date) ]
     return HttpResponse(json.dumps({"evolution": evolution}),
                         content_type='application/javascript')
