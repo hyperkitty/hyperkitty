@@ -22,7 +22,6 @@ BuildArch:      noarch
 BuildRequires:  python-devel
 BuildRequires:  python-sphinx
 # Unit tests in %%check
-BuildRequires:  kittystore
 BuildRequires:  django-gravatar2
 BuildRequires:  django-rest-framework >= 2.2.0
 BuildRequires:  django-social-auth >= 0.7.1
@@ -41,10 +40,6 @@ BuildRequires:  python-django-south
 # Unit tests only
 BuildRequires:  python-beautifulsoup4
 BuildRequires:  python-mock
-%if 0%{?fedora} && 0%{?fedora} < 20
-# Needed for Django < 1.6
-BuildRequires:  python-django-discover-runner
-%endif
 
 # SELinux
 BuildRequires:  checkpolicy, selinux-policy-devel, /usr/share/selinux/devel/policyhelp
@@ -55,7 +50,6 @@ Requires:       django-social-auth >= 0.7.1
 Requires:       django-rest-framework >= 2.2.0
 #Requires:       mailman >= 3:3.0.0
 Requires:       mailman3
-Requires:       kittystore
 Requires:       django-crispy-forms
 Requires:       python-django-compressor
 Requires:       python-BeautifulSoup
@@ -68,10 +62,6 @@ Requires:       django-paintstore
 Requires:       django-browserid >= 0.10.1
 Requires:       python-django >= 1.5
 Requires:       python-django-south
-%if 0%{?fedora} && 0%{?fedora} < 20
-# Needed for Django < 1.6
-Requires:       python-django-discover-runner
-%endif
 
 
 %description

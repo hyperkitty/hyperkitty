@@ -1,9 +1,8 @@
-Django>=1.5
+Django>=1.6
 django-gravatar2
 django-social-auth>=0.7.1
-djangorestframework>=2.2.0
-mailman>=3.0.0b2
-kittystore
+djangorestframework>=3.0.0
+mailman>=3.0.0b3
 South
 django-crispy-forms
 rjsmin
