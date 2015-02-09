@@ -30,7 +30,6 @@ from django.conf import settings
 from django.db import models, IntegrityError
 from django.db.models.signals import (
     post_init, pre_save, pre_delete, post_delete)
-from django.contrib.auth import get_user_model
 from django.contrib import admin
 from django.dispatch import receiver
 from django.core.cache import cache
@@ -69,7 +68,7 @@ class ArchivePolicy(Enum):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(get_user_model(),
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,
                                 related_name="hyperkitty_profile")
 
     karma = models.IntegerField(default=1)
@@ -559,7 +558,7 @@ class Vote(models.Model):
     A User's vote on a message
     """
     email = models.ForeignKey("Email", related_name="votes")
-    user = models.ForeignKey(get_user_model(), related_name="votes")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="votes")
     value = models.SmallIntegerField(db_index=True)
 
 admin.site.register(Vote)
@@ -568,7 +567,7 @@ admin.site.register(Vote)
 class Tagging(models.Model):
 
     thread = models.ForeignKey("Thread")
-    user = models.ForeignKey(get_user_model())
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     tag = models.ForeignKey("Tag")
 
     def __unicode__(self):
@@ -579,8 +578,10 @@ class Tagging(models.Model):
 class Tag(models.Model):
 
     name = models.CharField(max_length=255, db_index=True)
-    threads = models.ManyToManyField("Thread", through="Tagging", related_name="tags")
-    users = models.ManyToManyField(get_user_model(), through="Tagging", related_name="tags")
+    threads = models.ManyToManyField("Thread",
+        through="Tagging", related_name="tags")
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL,
+        through="Tagging", related_name="tags")
 
     class Meta:
         ordering = ["name"]
@@ -591,7 +592,7 @@ class Tag(models.Model):
 
 #class Tag(models.Model):
 #    thread = models.ForeignKey("Thread", related_name="tags")
-#    user = models.ForeignKey(get_user_model(), related_name="tags")
+#    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="tags")
 #    tag = models.CharField(max_length=255)
 #
 #    def __unicode__(self):
@@ -603,7 +604,7 @@ admin.site.register(Tag)
 
 class Favorite(models.Model):
     thread = models.ForeignKey("Thread", related_name="favorites")
-    user = models.ForeignKey(get_user_model(), related_name="favorites")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="favorites")
 
     def __unicode__(self):
         return u"%s is a favorite of %s" % (
@@ -614,7 +615,7 @@ admin.site.register(Favorite)
 
 class LastView(models.Model):
     thread = models.ForeignKey("Thread", related_name="lastviews")
-    user = models.ForeignKey(get_user_model(), related_name="lastviews")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="lastviews")
     view_date = models.DateTimeField(auto_now=True)
 
     def __unicode__(self):
