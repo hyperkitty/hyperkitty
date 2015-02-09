@@ -27,6 +27,7 @@ import json
 import re
 import urlparse
 from email.message import Message
+from unittest import skip
 
 from mock import Mock
 from bs4 import BeautifulSoup
@@ -60,10 +61,10 @@ class ReattachTestCase(TestCase):
             msg["Message-ID-Hash"] = add_to_list("list@example.com", msg)
             self.messages.append(msg)
 
+    @skip("fulltext search is not implemented yet")
     def test_suggestions(self):
         threadid = self.messages[0]["Message-ID-Hash"]
         msg2 = Email.objects.get(message_id="id2")
-        self.fail("fulltext search is not implemented yet")
         self.store.search = Mock(return_value={"results": [msg2]})
         self.store.search_index = True
         response = self.client.get(reverse('hk_thread_reattach_suggest',

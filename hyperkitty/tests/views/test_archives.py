@@ -26,6 +26,7 @@ import datetime
 from tempfile import mkdtemp
 from shutil import rmtree
 from email.message import Message
+from unittest import skip
 
 from mock import Mock
 from django.contrib.auth.models import User
@@ -132,8 +133,8 @@ class PrivateArchivesTestCase(TestCase):
     def test_message_view(self):
         self._do_test(reverse('hk_message_index', args=["list@example.com", self.msgid]))
 
+    @skip("Fulltext search is not yet implemented")
     def test_search_list(self):
-        self.fail("Fulltext search is not yet implemented")
         self._do_test(reverse('hk_search'), {"list": "list@example.com", "query": "dummy"})
 
     def test_search_all_lists(self):
