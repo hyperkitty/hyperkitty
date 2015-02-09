@@ -2,7 +2,7 @@
 #%%global prerel 1
 
 Name:           hyperkitty
-Version:        0.9.4
+Version:        0.9.5
 Release:        %{?prerel:0.}1%{?dist}
 Summary:        A web interface to access GNU Mailman v3 archives
 
@@ -35,8 +35,10 @@ BuildRequires:  python-robot-detection
 BuildRequires:  pytz
 BuildRequires:  django-paintstore
 BuildRequires:  django-browserid
-BuildRequires:  python-django
+BuildRequires:  python-django >= 1.6
 BuildRequires:  python-django-south
+BuildRequires:  python-dateutil < 2.0
+BuildRequires:  python-networkx
 # Unit tests only
 BuildRequires:  python-beautifulsoup4
 BuildRequires:  python-mock
@@ -48,8 +50,6 @@ BuildRequires:  hardlink
 Requires:       django-gravatar2
 Requires:       django-social-auth >= 0.7.1
 Requires:       django-rest-framework >= 2.2.0
-#Requires:       mailman >= 3:3.0.0
-Requires:       mailman3
 Requires:       django-crispy-forms
 Requires:       python-django-compressor
 Requires:       python-BeautifulSoup
@@ -60,8 +60,10 @@ Requires:       python-robot-detection
 Requires:       pytz
 Requires:       django-paintstore
 Requires:       django-browserid >= 0.10.1
-Requires:       python-django >= 1.5
+Requires:       python-django >= 1.6
 Requires:       python-django-south
+Requires:       python-dateutil < 2.0
+Requires:       python-networkx
 
 
 %description
