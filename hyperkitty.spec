@@ -39,6 +39,7 @@ BuildRequires:  python-django >= 1.6
 BuildRequires:  python-django-south
 BuildRequires:  python-dateutil < 2.0
 BuildRequires:  python-networkx
+BuildRequires:  python-enum34
 # Unit tests only
 BuildRequires:  python-beautifulsoup4
 BuildRequires:  python-mock
@@ -64,6 +65,7 @@ Requires:       python-django >= 1.6
 Requires:       python-django-south
 Requires:       python-dateutil < 2.0
 Requires:       python-networkx
+Requires:       python-enum34
 
 
 %description

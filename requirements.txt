@@ -18,3 +18,4 @@ beautifulsoup4
 python-dateutil < 2.0
 mock
 networkx
+enum34
