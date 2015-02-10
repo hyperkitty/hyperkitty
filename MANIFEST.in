@@ -3,4 +3,5 @@ include AUTHORS.txt COPYING.txt pylintrc ez_setup.py requirements.txt hyperkitty
 recursive-include hyperkitty *.py *.html *.js
 graft hyperkitty/static
 graft hyperkitty/fixtures
+graft hyperkitty/tests/testdata
 include doc/conf.py doc/Makefile doc/*.rst
