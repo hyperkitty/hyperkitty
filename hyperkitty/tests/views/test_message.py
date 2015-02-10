@@ -31,6 +31,7 @@ from mock import patch
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core import mail
+from django.utils import timezone
 from django_gravatar.helpers import get_gravatar_url
 
 from hyperkitty.lib.utils import get_message_id_hash
@@ -110,7 +111,10 @@ class MessageViewsTestCase(TestCase):
     def test_message_page(self):
         url = reverse('hk_message_index', args=("list@example.com",
                       get_message_id_hash("msg")))
-        response = self.client.get(url)
+        with self.settings(USE_L10N=False, DATETIME_FORMAT='Y-m-d H:i:s',
+                           TIME_FORMAT="H:i:s"):
+            with timezone.override(timezone.utc):
+                response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Dummy message")
         self.assertContains(response, "Dummy Sender", count=1)
@@ -120,9 +124,8 @@ class MessageViewsTestCase(TestCase):
             get_gravatar_url("dummy@example.com", 40).replace("&", "&amp;"))
         self.assertContains(response, "list@example.com", count=2)
         self.assertContains(response, url)
-        sender_time_re = re.compile(
-            "Sender's time: .* 2015 13:00:00\">11:00:00</span>")
-        self.assertNotEqual(sender_time_re.search(response.content), None)
+        sender_time = '<span title="Sender\'s time: 2015-02-02 13:00:00">10:00:00</span>'
+        self.assertIn(sender_time, response.content.decode("utf-8"))
 
     def test_reply(self):
         self.user.first_name = "Django"
