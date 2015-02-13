@@ -37,7 +37,7 @@ BuildRequires:  django-paintstore
 BuildRequires:  django-browserid
 BuildRequires:  python-django >= 1.6
 BuildRequires:  python-django-south
-BuildRequires:  python-dateutil < 2.0
+BuildRequires:  python-dateutil
 BuildRequires:  python-networkx
 BuildRequires:  python-enum34
 # Unit tests only
@@ -63,7 +63,7 @@ Requires:       django-paintstore
 Requires:       django-browserid >= 0.10.1
 Requires:       python-django >= 1.6
 Requires:       python-django-south
-Requires:       python-dateutil < 2.0
+Requires:       python-dateutil
 Requires:       python-networkx
 Requires:       python-enum34
 
