@@ -19,17 +19,26 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, unicode_literals, print_function
 
 from rest_framework import serializers
 from hyperkitty.models import Sender
 
 
+class OptionalHyperlinkedRelatedField(serializers.HyperlinkedRelatedField):
+    def to_representation(self, obj):
+        value = getattr(obj, self.lookup_field)
+        if value is None:
+            return None
+        return super(OptionalHyperlinkedRelatedField, self).to_representation(obj)
+
+
 class SenderSerializer(serializers.HyperlinkedModelSerializer):
-    emails = serializers.HyperlinkedRelatedField(
+    emails = OptionalHyperlinkedRelatedField(
         view_name='hk_api_sender_email_list', read_only=True,
-        lookup_field="address", source="*")
+        lookup_field="mailman_id", source="*", required=False)
+    # emails is None if mailmain_id is None
     class Meta:
         model = Sender
-        fields = ("name", "address", "mailman_id", "emails")
+        fields = ("name", "mailman_id", "emails")
         lookup_field = "address"
