@@ -38,8 +38,8 @@ from traceback import print_exc
 from dateutil.parser import parse as parse_date
 from dateutil import tz
 from django.conf import settings
-from django.db import transaction, Error as DatabaseError
 from django.core.management.base import BaseCommand, CommandError
+from django.db import transaction, Error as DatabaseError
 from django.utils.timezone import utc
 
 from hyperkitty.lib.incoming import add_to_list
@@ -47,10 +47,7 @@ from hyperkitty.lib.mailman import sync_with_mailman
 from hyperkitty.lib.analysis import compute_thread_order_and_depth
 from hyperkitty.models import Email, Attachment, Thread
 
-#from kittystore import SchemaUpgradeNeeded
-#from kittystore.scripts import get_store_from_options, StoreFromOptionsError
-#from kittystore.caching import sync_mailman
-#from kittystore.search import make_delayed
+#from hyperkitty.lib.utils import timeit, showtimes
 
 
 PREFIX_RE = re.compile("^\[([\w\s_-]+)\] ")
@@ -106,6 +103,7 @@ class DbImporter(object):
         self.verbose = options["verbosity"] >= 2
         self.since = options.get("since")
         self.total_imported = 0
+        self.impacted_thread_ids = set()
 
     def _is_too_old(self, message):
         if not self.since:
@@ -117,12 +115,12 @@ class DbImporter(object):
             date = parse_date(date)
         except ValueError, e:
             print("Can't parse date string in message %s: %s"
-                  % (message["message-id"], date))
+                  % (message["message-id"], date.decode("ascii", "replace")))
             print(e)
             return False
         if date.tzinfo is None:
             date = date.replace(tzinfo=utc)
-        return date < self.since
+        return date <= self.since
 
     def from_mbox(self, mbfile):
         """
@@ -185,6 +183,9 @@ class DbImporter(object):
             ## Commit every time to be able to rollback on error
             #if not transaction.get_autocommit():
             #    transaction.commit()
+            # Store the list of impacted threads to be able to compute the
+            # thread_order and thread_depth values
+            self.impacted_thread_ids.add(email.thread_id)
             cnt_imported += 1
         #self.store.search_index.flush() # Now commit to the search index
         if self.verbose:
@@ -287,9 +288,6 @@ class Command(BaseCommand):
                 if options["since"].tzinfo is None:
                     options["since"] = options["since"].replace(
                         tzinfo=tz.tzlocal())
-                if options["verbosity"] >= 2:
-                    self.stdout.write("Only emails after %s will be imported"
-                                     % options["since"])
             except ValueError, e:
                 raise CommandError("invalid value for '--since': %s" % e)
 
@@ -308,6 +306,17 @@ class Command(BaseCommand):
         #if settings.DATABASES["default"]["ENGINE"] != "django.db.backends.sqlite3":
         #    transaction.set_autocommit(False)
         settings.HYPERKITTY_BATCH_MODE = True
+        # Only import emails older than the latest email in the DB
+        latest_email_date = Email.objects.filter(
+                mailinglist__name=list_address
+            ).values("date").order_by("-date").first()
+        if latest_email_date:
+            if not options["since"] or \
+                options["since"] < latest_email_date["date"]:
+                options["since"] = latest_email_date["date"]
+        if options["since"] and options["verbosity"] >= 2:
+            self.stdout.write("Only emails after %s will be imported"
+                             % options["since"])
         importer = DbImporter(list_address, options)
         # disable mailman client for now
         for mbfile in args:
@@ -315,8 +324,6 @@ class Command(BaseCommand):
                 self.stdout.write("Importing from mbox file %s to %s"
                                   % (mbfile, list_address))
             importer.from_mbox(mbfile)
-            #from hyperkitty.lib.incoming import showtimes
-            #showtimes()
             if options["verbosity"] >= 2:
                 total_in_list = Email.objects.filter(
                     mailinglist__name=list_address).count()
@@ -324,8 +331,13 @@ class Command(BaseCommand):
                                   % total_in_list)
         if options["verbosity"] >= 1:
             self.stdout.write("Computing thread structure")
-        for thread in Thread.objects.all():
+        #timeit("start")
+        for thread in Thread.objects.filter(
+            thread_id__in=importer.impacted_thread_ids):
+            #timeit("before")
             compute_thread_order_and_depth(thread)
+            #timeit("after")
+        #showtimes()
         if not options["no_sync_mailman"]:
             if options["verbosity"] >= 1:
                 self.stdout.write("Synchronizing properties with Mailman")

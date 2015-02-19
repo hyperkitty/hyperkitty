@@ -42,28 +42,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-#import time
-#from collections import defaultdict
-#LASTTIME = None
-#TIMES = defaultdict(list)
-#def timeit(name):
-#    global LASTTIME, TIMES
-#    now = time.time()
-#    if LASTTIME is not None:
-#        spent = now - LASTTIME
-#        TIMES[name].append(spent)
-#        print("{}: {}".format(name, spent))
-#    LASTTIME = now
-#def showtimes():
-#    global TIMES
-#    import numpy
-#    for name, values in TIMES.items():
-#        if not values:
-#            continue
-#        values = numpy.array(values)
-#        print("{} stats: {} -- {}".format(name,
-#            numpy.mean(values), numpy.std(values) ))
-
 def add_to_list(list_name, message):
     #timeit("1 start")
     mlist = MailingList.objects.get_or_create(name=list_name)[0]
