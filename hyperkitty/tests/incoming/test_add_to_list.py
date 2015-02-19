@@ -287,6 +287,34 @@ class TestAddToList(TestCase):
         stored_msg = Email.objects.all()[0]
         self.assertEqual(stored_msg.sender.name, "Sender Name")
 
+    def test_no_sender_address(self):
+        msg = Message()
+        msg["From"] = "Sender Name <>"
+        msg["Message-ID"] = "<dummy>"
+        msg.set_payload("Dummy message")
+        try:
+            add_to_list("example-list", msg)
+        except IntegrityError as e:
+            self.fail(e)
+        self.assertEqual(Email.objects.count(), 1)
+        stored_msg = Email.objects.all()[0]
+        self.assertEqual(stored_msg.sender.name, "Sender Name")
+        self.assertEqual(stored_msg.sender.address, "sendername@example.com")
+
+    def test_no_sender_name_or_address(self):
+        msg = Message()
+        msg["From"] = ""
+        msg["Message-ID"] = "<dummy>"
+        msg.set_payload("Dummy message")
+        try:
+            add_to_list("example-list", msg)
+        except IntegrityError as e:
+            self.fail(e)
+        self.assertEqual(Email.objects.count(), 1)
+        stored_msg = Email.objects.all()[0]
+        self.assertEqual(stored_msg.sender.name, "")
+        self.assertEqual(stored_msg.sender.address, "unknown@example.com")
+
 
 #class TestStormStoreWithSearch(unittest.TestCase):
 #

@@ -23,6 +23,7 @@ from __future__ import absolute_import, unicode_literals
 
 
 import datetime
+import re
 from email.utils import unquote
 
 from django.conf import settings
@@ -94,6 +95,14 @@ def add_to_list(list_name, message):
         sender_address = from_email.decode("ascii").strip()
     except (UnicodeDecodeError, UnicodeEncodeError):
         raise ValueError("Non-ascii sender address", message)
+    if not sender_address:
+        if from_name:
+            sender_address = re.sub("[^a-z0-9]", "", from_name.lower())
+            if not sender_address:
+                sender_address = "unknown"
+            sender_address = "{}@example.com".format(sender_address)
+        else:
+            sender_address = "unknown@example.com"
     sender = Sender.objects.get_or_create(address=sender_address)[0]
     sender.name = from_name # update the name if needed
     sender.save()
