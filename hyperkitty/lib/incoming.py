@@ -92,8 +92,8 @@ def add_to_list(list_name, message):
     # Headers
     email.subject = header_to_unicode(message.get('Subject'))
     if email.subject is not None:
-        # limit subject size to 2000 chars or PostgreSQL may complain
-        email.subject = email.subject[:2000]
+        # limit subject size to 512, it's a varchar field
+        email.subject = email.subject[:512]
     msg_date = parsedate(message.get("Date"))
     if msg_date is None:
         # Absent or unparseable date

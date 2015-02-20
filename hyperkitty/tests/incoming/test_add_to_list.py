@@ -315,6 +315,21 @@ class TestAddToList(TestCase):
         self.assertEqual(stored_msg.sender.name, "")
         self.assertEqual(stored_msg.sender.address, "unknown@example.com")
 
+    def test_long_subject(self):
+        msg = Message()
+        msg["From"] = "dummy@example.com"
+        msg["Message-ID"] = "<dummy>"
+        msg["Subject"] = "x" * 600
+        msg.set_payload("Dummy message")
+        try:
+            add_to_list("example-list", msg)
+        except IntegrityError as e:
+            self.fail(e)
+        self.assertEqual(Email.objects.count(), 1)
+        stored_msg = Email.objects.all()[0]
+        self.assertEqual(len(stored_msg.subject), 512)
+
+
 
 #class TestStormStoreWithSearch(unittest.TestCase):
 #
