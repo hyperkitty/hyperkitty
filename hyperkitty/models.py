@@ -375,18 +375,18 @@ def Email_reset_parent_id(sender, **kwargs):
     children = email.children.order_by("date")
     if not children:
         return
-    if email.parent_id is None:
+    if email.parent is None:
         # temporarily set the email's parent_id to not None, to allow the next
         # email to be the starting email (there's a check on_save for duplicate
         # thread starters)
-        email.parent_id = email.id
-        email.save(update_fields["parent_id"])
+        email.parent = email
+        email.save(update_fields=["parent"])
         starter = children[0]
-        starter.parent_id = None
+        starter.parent = None
         starter.save()
-        children.all().update(parent_id=starter.id)
+        children.all().update(parent=starter)
     else:
-        children.update(parent_id=email.parent_id)
+        children.update(parent=email.parent)
 
 @receiver(post_delete, sender=Email)
 def Email_update_or_clean_thread(sender, **kwargs):
