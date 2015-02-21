@@ -41,13 +41,18 @@ def get_message_id_hash(msg_id):
 
     See <http://wiki.list.org/display/DEV/Stable+URLs#StableURLs-Headers> for
     details. Example:
-
-    >>> get_message_id_hash('<87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp>')
-    'JJIGKPKB6CVDX6B2CUG4IHAJRIQIOUTP'
-
     """
     msg_id = email.utils.unquote(msg_id)
     return unicode(b32encode(sha1(msg_id).digest()))
+
+
+def get_message_id(message):
+    msg_id = email.utils.unquote(message['Message-Id']).decode("ascii")
+    # Protect against extremely long Message-Ids (there is no limit in the
+    # email spec), it's set to VARCHAR(255) in the database
+    if len(msg_id) >= 255:
+        msg_id = msg_id[:254]
+    return msg_id
 
 
 IN_BRACKETS_RE = re.compile("[^<]*<([^>]+)>.*")

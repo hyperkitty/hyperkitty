@@ -45,6 +45,7 @@ from django.utils.timezone import utc
 from hyperkitty.lib.incoming import add_to_list
 from hyperkitty.lib.mailman import sync_with_mailman
 from hyperkitty.lib.analysis import compute_thread_order_and_depth
+from hyperkitty.lib.utils import get_message_id
 from hyperkitty.models import Email, Attachment, Thread
 
 #from hyperkitty.lib.utils import timeit, showtimes
@@ -174,7 +175,7 @@ class DbImporter(object):
                 continue
             email = Email.objects.get(
                 mailinglist__name=self.list_address,
-                message_id=unquote(message["message-id"]))
+                message_id=get_message_id(message))
             # And insert the attachments
             for counter, att in enumerate(attachments):
                 att["counter"] = counter

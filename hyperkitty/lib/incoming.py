@@ -24,7 +24,6 @@ from __future__ import absolute_import, unicode_literals
 
 import datetime
 import re
-from email.utils import unquote
 
 from django.conf import settings
 from django.utils import timezone
@@ -32,7 +31,7 @@ from mailmanclient import MailmanConnectionError
 
 from hyperkitty.lib.signals import new_email, new_thread
 from hyperkitty.lib.utils import (get_message_id_hash, get_ref, parseaddr,
-    parsedate, header_to_unicode)
+    parsedate, header_to_unicode, get_message_id)
 from hyperkitty.lib.scrub import Scrubber
 from hyperkitty.lib.analysis import compute_thread_order_and_depth
 from hyperkitty.models import (MailingList, Sender, Email, Attachment, Thread,
@@ -55,11 +54,7 @@ def add_to_list(list_name, message):
     if not message.has_key("Message-Id"):
         raise ValueError("No 'Message-Id' header in email", message)
     #timeit("2 after ml, before checking email & sender")
-    msg_id = unquote(message['Message-Id']).decode("ascii")
-    # Protect against extremely long Message-Ids (there is no limit in the
-    # email spec), it's set to VARCHAR(255) in the database
-    if len(msg_id) >= 255:
-        msg_id = msg_id[:254]
+    msg_id = get_message_id(message)
     if Email.objects.filter(mailinglist=mlist, message_id=msg_id).count() > 0:
         logger.info("Duplicate email with message-id '{}'".format(msg_id))
         return get_message_id_hash(msg_id)
