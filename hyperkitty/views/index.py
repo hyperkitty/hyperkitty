@@ -44,6 +44,10 @@ def index(request):
                 mlist.can_view = True
             else:
                 mlist.can_view = False
+        if mlist.can_view:
+            mlist.recent_threads_count = mlist.recent_threads.count()
+        else:
+            mlist.recent_threads_count = None
         initials.add(mlist.name[0])
 
     # sorting
