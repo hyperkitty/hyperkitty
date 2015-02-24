@@ -30,9 +30,11 @@ import os
 import re
 import urllib
 import logging
+import sys
 from optparse import make_option
 from email.utils import unquote
 from traceback import print_exc
+from math import floor
 
 
 from dateutil.parser import parse as parse_date
@@ -142,6 +144,9 @@ class DbImporter(object):
             self.total_imported += 1
             if self.verbose:
                 print("%s (%d/%d)" % (message["Message-Id"], self.total_imported, total_in_mbox))
+            else:
+                sys.stdout.write("\r%d%%" % floor(100.0 * self.total_imported / total_in_mbox))
+                sys.stdout.flush()
             # Un-wrap the subject line if necessary
             if message["subject"]:
                 message.replace_header("subject",
@@ -192,6 +197,8 @@ class DbImporter(object):
         if self.verbose:
             print('  %s email read' % cnt_read)
             print('  %s email added to the database' % cnt_imported)
+        else:
+            sys.stdout.write("")
 
     def extract_attachments(self, message):
         """Parse message to search for attachments"""
