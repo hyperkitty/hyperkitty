@@ -131,7 +131,7 @@ def overview(request, mlist_fqdn=None):
         threads.append(thread_obj)
 
     # top threads are the one with the most answers
-    top_threads = sorted(threads, key=lambda t: t.emails.count(), reverse=True)
+    top_threads = sorted(threads, key=lambda t: t.emails_count, reverse=True)
 
     # active threads are the ones that have the most recent posting
     active_threads = sorted(threads, key=lambda t: t.date_active, reverse=True)

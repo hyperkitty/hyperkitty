@@ -119,7 +119,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     # get the number of unread messages
     if last_view is None:
         if request.user.is_authenticated():
-            unread_count = thread.emails.count()
+            unread_count = thread.emails_count
         else:
             unread_count = 0
     else:
@@ -153,7 +153,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'fav_action': fav_action,
         'reply_form': ReplyForm(),
         'is_bot': is_bot,
-        'num_comments': thread.emails.count() - 1,
+        'num_comments': thread.emails_count - 1,
         'participants': sorted(thread.participants,
                                key=lambda p: p.name.lower()),
         'last_view': last_view,

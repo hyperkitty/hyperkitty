@@ -257,7 +257,7 @@ def get_item(dictionary, key):
 def num_comments(thread):
     """Returns the number of comments in a thread"""
     try:
-        return thread.emails.count() - 1
+        return thread.emails_count - 1
     except (ValueError, TypeError):
         return ''
 

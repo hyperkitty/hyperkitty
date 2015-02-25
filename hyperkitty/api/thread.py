@@ -57,7 +57,7 @@ class ThreadSerializer(serializers.HyperlinkedModelSerializer):
                   "replies_count", "next_thread", "prev_thread")
 
     def get_replies_count(self, obj):
-        return obj.emails.count() - 1
+        return obj.emails_count - 1
 
 
 class ThreadList(generics.ListAPIView):
