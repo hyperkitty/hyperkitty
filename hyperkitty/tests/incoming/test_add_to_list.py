@@ -271,10 +271,10 @@ class TestAddToList(TestCase):
                 msg.set_payload("Dummy message")
                 add_to_list("example-list", msg)
         now = timezone.now()
-        yesterday = now - datetime.timedelta(days=1)
+        #yesterday = now - datetime.timedelta(days=1)
         mlist = MailingList.objects.get(name="example-list")
         result = [(p.name, p.address, p.count) for p in
-                   mlist.get_top_participants(yesterday, now) ]
+                   mlist.top_posters ]
         self.assertEqual(expected, result)
 
     def test_get_sender_name(self):

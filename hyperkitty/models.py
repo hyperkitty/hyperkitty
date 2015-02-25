@@ -29,10 +29,9 @@ from uuid import UUID
 from django.conf import settings
 from django.db import models, IntegrityError
 from django.db.models.signals import (
-    post_init, pre_save, pre_delete, post_delete)
+    post_init, pre_save, post_save, pre_delete, post_delete)
 from django.contrib import admin
 from django.dispatch import receiver
-from django.core.cache import cache
 from django.utils.timezone import now, utc
 
 import pytz
@@ -45,6 +44,7 @@ from mailmanclient import MailmanConnectionError
 from hyperkitty.lib.mailman import get_mailman_client
 from hyperkitty.lib.signals import new_email, new_thread
 from hyperkitty.lib.analysis import compute_thread_order_and_depth
+from hyperkitty.lib.cache import cache
 
 import logging
 logger = logging.getLogger(__name__)
@@ -184,17 +184,18 @@ class MailingList(models.Model):
     @property
     def recent_participants_count(self):
         begin_date, end_date = self.get_recent_dates()
-        return self.get_participants_count_between(begin_date, end_date)
-        #return session.cache.get_or_create(
-        #    str("list:%s:recent_participants_count" % self.name),
-        #    lambda: self.get_participants_count_between(begin_date, end_date),
-        #    86400)
+        return cache.get_or_set(
+            "MailingList:%s:recent_participants_count" % self.name,
+            lambda: self.get_participants_count_between(begin_date, end_date),
+            3600 * 6) # 6 hours
 
     @property
     def recent_threads(self):
-        # CACHING
         begin_date, end_date = self.get_recent_dates()
-        return self.get_threads_between(begin_date, end_date)
+        return cache.get_or_set(
+            "MailingList:%s:recent_threads" % self.name,
+            lambda: self.get_threads_between(begin_date, end_date),
+            3600 * 6) # 6 hours
 
     def get_participants_count_for_month(self, year, month):
         # CACHING
@@ -203,20 +204,27 @@ class MailingList(models.Model):
         end_date = end_date.replace(day=1)
         return self.get_participants_count_between(begin_date, end_date)
 
-    def get_top_participants(self, start, end, limit=None):
+    @property
+    def top_posters(self):
+        begin_date, end_date = self.get_recent_dates()
         query = Sender.objects.filter(
             emails__mailinglist=self,
-            emails__date__gte=start,
-            emails__date__lt=end,
+            emails__date__gte=begin_date,
+            emails__date__lt=end_date,
             ).annotate(count=models.Count("emails")
             ).order_by("-count")
-        # Compatibility:
-        #query = query.values_list("name", "address", "num_emails")
-        #print(query.query)
-        if limit is not None:
-            return query[:limit]
-        else:
-            return query
+        # Because of South, ResultSets are not pickleizable directly, they must
+        # be converted to lists (there's an extra field without the _deferred
+        # attribute that causes tracebacks)
+        return cache.get_or_set(
+            "MailingList:%s:top_posters" % self.name,
+            lambda: list(query[:5]),
+            3600 * 6) # 6 hours
+        # It's not actually necessary to convert back to instances since it's
+        # only used in templates where access to instance attributes or
+        # dictionnary keys is identical
+        #return [ Sender.objects.get(address=data["address"]) for data in sender_ids ]
+        #return sender_ids
 
     def update_from_mailman(self):
         try:
@@ -243,29 +251,12 @@ class MailingList(models.Model):
             setattr(self, propname, value)
         self.save()
 
-@receiver(new_email)
-def refresh_mailinglist_cache(sender, **kwargs):
-    pass
-    #cache = event.store.db.cache
-    ## recent activity
-    #begin_date = event.mlist.get_recent_dates()[0]
-    #if event.message.date >= begin_date:
-    #    cache.delete(str("list:%s:recent_participants_count" % event.mlist.name))
-    #    event.mlist.recent_participants_count
-    #    cache.delete(str("list:%s:recent_threads_count" % event.mlist.name))
-    #    event.mlist.recent_threads_count
-    ## month activity
-    #year, month = event.message.date.year, event.message.date.month
-    #cache.delete(str("list:%s:participants_count:%s:%s"
-    #                 % (event.mlist.name, year, month)))
-    #event.mlist.get_month_activity(year, month)
-
 
 
 class Sender(models.Model):
     address = models.EmailField(max_length=255, primary_key=True)
     name = models.CharField(max_length=255)
-    mailman_id = models.CharField(max_length=255, null=True)
+    mailman_id = models.CharField(max_length=255, null=True, db_index=True)
 
     def set_mailman_id(self):
         try:
@@ -292,7 +283,7 @@ class Email(models.Model):
     sender = models.ForeignKey("Sender", related_name="emails")
     subject = models.CharField(max_length="512", db_index=True)
     content = models.TextField()
-    date = models.DateTimeField()
+    date = models.DateTimeField(db_index=True)
     timezone = models.SmallIntegerField()
     in_reply_to = models.CharField(max_length=255, null=True, blank=True)
     parent = models.ForeignKey("self",
@@ -331,15 +322,13 @@ class Email(models.Model):
             return # Vote already recorded (should I raise an exception?)
         if value not in (0, 1, -1):
             raise ValueError("A vote can only be +1 or -1 (or 0 to cancel)")
-        # The vote can be added, changed or cancelled. Keep it simple and
-        # delete likes and dislikes cached values.
-        # TODO: delete cached values
         if existing is not None:
             # vote changed or cancelled
             if value == 0:
                 existing.delete()
             else:
                 existing.value = value
+                existing.save()
         else:
             # new vote
             vote = Vote(email=self, user=user, value=value)
@@ -427,18 +416,13 @@ class Thread(models.Model):
     thread_id = models.CharField(max_length=255, db_index=True)
     date_active = models.DateTimeField(db_index=True, default=now)
     category = models.ForeignKey("ThreadCategory", related_name="threads", null=True)
-    _starting_email_cache = None
 
     @property
     def starting_email(self):
-        if self._starting_email_cache is None:
-            try:
-                self._starting_email_cache = \
-                    self.emails.get(parent_id__isnull=True)
-            except Email.DoesNotExist:
-                self._starting_email_cache = \
-                    self.emails.order_by("date").first()
-        return self._starting_email_cache
+        try:
+            return self.emails.get(parent_id__isnull=True)
+        except Email.DoesNotExist:
+            return self.emails.order_by("date").first()
 
     @property
     def last_email(self):
@@ -451,8 +435,10 @@ class Thread(models.Model):
 
     @property
     def participants_count(self):
-        # TODO: Cache this
-        return self.participants.count()
+        return cache.get_or_set(
+            "Thread:%s:participants_count" % self.id,
+            lambda: self.participants.count(),
+            None)
 
     def replies_after(self, date):
         return self.emails.filter(date__gt=date)
@@ -474,28 +460,33 @@ class Thread(models.Model):
     #    self.category_id = category.id
     #category = property(_get_category, _set_category)
 
-    #@property
-    #def emails_count(self):
-    #    # TODO: Cache this
-    #    return self.emails.count()
+    @property
+    def emails_count(self):
+        return cache.get_or_set(
+            "Thread:%s:emails_count" % self.id,
+            lambda: self.emails.count(),
+            None)
 
     @property
     def subject(self):
-        # TODO: Cache this
-        return self.starting_email.subject
+        return cache.get_or_set(
+            "Thread:%s:subject" % self.id,
+            lambda: self.starting_email.subject,
+            None)
 
     def _getvotes(self):
-        return Vote.objects.filter(email__thread_id=self.id)
+        return cache.get_or_set(
+            "Thread:%s:votes" % self.id,
+            lambda: Vote.objects.filter(email__thread_id=self.id),
+            None)
 
     @property
     def likes(self):
-        # TODO: Cache this
-        return self._getvotes().filter(value=1).count()
+        return len([ v for v in self._getvotes() if v.value == 1 ])
 
     @property
     def dislikes(self):
-        # TODO: Cache this
-        return self._getvotes().filter(value=-1).count()
+        return len([ v for v in self._getvotes() if v.value == -1 ])
 
     @property
     def likestatus(self):
@@ -532,24 +523,34 @@ class Thread(models.Model):
         return self.date_active.replace(tzinfo=utc) > last_view.view_date
 
 
-@receiver(new_email)
-def refresh_thread_cache(sender, **kwargs):
-    pass
-    #cache = event.store.db.cache
-    #cache.delete(str("list:%s:thread:%s:emails_count"
-    #                 % (event.message.list_name, event.message.thread_id)))
-    #event.message.thread.emails_count
-    #cache.delete(str("list:%s:thread:%s:participants_count"
-    #                 % (event.message.list_name, event.message.thread_id)))
-    #event.message.thread.participants_count
+@receiver([post_save, post_delete], sender=Email)
+def refresh_email_count_cache(sender, **kwargs):
+    email = kwargs["instance"]
+    cache.delete("Thread:%s:emails_count" % email.thread_id)
+    cache.delete("Thread:%s:participants_count" % email.thread_id)
+    cache.delete("MailingList:%s:recent_participants_count" % email.mailinglist_id)
+    cache.delete("MailingList:%s:top_posters" % email.mailinglist_id)
+    # don't warm up the cache in batch mode (mass import)
+    if not getattr(settings, "HYPERKITTY_BATCH_MODE", False):
+        email.thread.emails_count
+        email.thread.participants_count
+        email.mailinglist.recent_participants_count
+        email.mailinglist.top_posters
 
-@receiver(new_thread)
-def cache_thread_subject(sender, **kwargs):
-    pass
-    #event.store.db.cache.set(
-    #        str("list:%s:thread:%s:subject"
-    #            % (event.thread.list_name, event.thread.thread_id)),
-    #        event.thread.starting_email.subject)
+
+@receiver([post_save, post_delete], sender=Thread)
+def refresh_thread_count_cache(sender, **kwargs):
+    thread = kwargs["instance"]
+    cache.delete("MailingList:%s:recent_threads" % thread.mailinglist_id)
+    # don't warm up the cache in batch mode (mass import)
+    if not getattr(settings, "HYPERKITTY_BATCH_MODE", False):
+        thread.mailinglist.recent_threads
+
+
+#@receiver(new_thread)
+#def cache_thread_subject(sender, **kwargs):
+#    thread = kwargs["instance"]
+#    thread.subject
 
 
 
@@ -562,6 +563,15 @@ class Vote(models.Model):
     value = models.SmallIntegerField(db_index=True)
 
 admin.site.register(Vote)
+
+@receiver([pre_save, pre_delete], sender=Vote)
+def Vote_clean_cache(sender, **kwargs):
+    """Delete cached vote values for Email and Thread instance"""
+    vote = kwargs["instance"]
+    cache.delete("Thread:%s:votes" % vote.email.thread_id)
+    #vote.email.thread.likes # re-populate the cache?
+    cache.delete("Email:%s:votes" % vote.email_id)
+
 
 
 class Tagging(models.Model):

@@ -29,6 +29,7 @@ import mailmanclient
 from mock import Mock, patch
 from django.test import TestCase as DjangoTestCase
 from django.conf import settings
+from django.core.cache import cache
 
 import hyperkitty.lib.mailman
 
@@ -72,6 +73,7 @@ class TestCase(DjangoTestCase):
         self._mm_client_patcher.stop()
         for key, value in self._old_settings.iteritems():
             setattr(settings, key, value)
+        cache.clear()
         super(TestCase, self)._post_teardown()
 
 

@@ -182,10 +182,10 @@ def set_or_create_thread(email):
         date_active=email.date)
     #signal_results = new_thread.send_robust("Mailman", thread=thread)
     signal_results = new_thread.send("Mailman", thread=thread)
-    for receiver, result in signal_results:
-        if isinstance(result, Exception):
-            logger.warning(
-                "Signal 'new_thread' to {} raised an exception: {}".format(
-                receiver.func_name, result))
+    #for receiver, result in signal_results:
+    #    if isinstance(result, Exception):
+    #        logger.warning(
+    #            "Signal 'new_thread' to {} raised an exception: {}".format(
+    #            receiver.func_name, result))
     email.thread = thread
 # TODO: vérifier parmi les emails avec un in-reply-to qui ne pointe vers rien, si il ne faudraient pas en fait les rattacher à l'email en cours. Ca peut arriver si je reçois la réponse avant le message d'origine (pour cause de pb de serveur de mail par exemple). À désactiver lors d'import bulk.

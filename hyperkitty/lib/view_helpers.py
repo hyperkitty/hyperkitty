@@ -35,6 +35,7 @@ from mailmanclient import MailmanConnectionError
 from hyperkitty.models import ThreadCategory, LastView, Email, MailingList
 from hyperkitty.views.forms import CategoryForm
 from hyperkitty.lib.mailman import get_mailman_client
+from hyperkitty.lib.cache import cache
 
 
 FLASH_MESSAGES = {
@@ -52,8 +53,11 @@ def get_months(mlist):
     :arg list_name, name of the mailing list in which this email
     should be searched.
     """
-    date_first = mlist.emails.order_by("date"
-        ).values_list("date", flat=True).first()
+    date_first = cache.get_or_set(
+        "MailingList:%s:first_date" % mlist.name,
+        lambda: mlist.emails.order_by("date"
+            ).values_list("date", flat=True).first(),
+        None)
     if not date_first:
         return {}
     archives = {}

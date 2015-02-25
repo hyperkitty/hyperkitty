@@ -32,7 +32,6 @@ from datetime import timedelta
 import dateutil.parser, dateutil.tz
 from django.utils import timezone
 
-from hyperkitty.models import Email
 
 
 def get_message_id_hash(msg_id):
@@ -137,6 +136,7 @@ def stripped_subject(mlist, subject):
     if subject.lower().startswith(mlist.subject_prefix.lower()):
         subject = subject[len(mlist.subject_prefix) : ]
     return subject
+
 
 
 import time

@@ -142,9 +142,6 @@ def overview(request, mlist_fqdn=None):
     else:
         authors = []
 
-    # Top posters
-    top_posters = mlist.get_top_participants(begin_date, end_date, limit=5)
-
     # Popular threads
     pop_threads = sorted([ t for t in threads if t.likes - t.dislikes > 0 ],
                          key=lambda t: t.likes - t.dislikes,
@@ -179,7 +176,6 @@ def overview(request, mlist_fqdn=None):
         'top_threads': top_threads[:20],
         'most_active_threads': active_threads[:20],
         'top_author': authors,
-        'top_posters': top_posters,
         'pop_threads': pop_threads[:20],
         'threads_by_category': threads_by_category,
         'months_list': get_months(mlist),
