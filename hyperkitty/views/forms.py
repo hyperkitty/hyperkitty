@@ -139,8 +139,4 @@ class PostForm(forms.Form):
     #                             widget=AttachmentFileInput)
 
 class CategoryForm(forms.Form):
-    CATEGORIES = [ (c.name, c.name.upper())
-                   for c in ThreadCategory.objects.all() ] \
-                 + [("", "no category")]
-    category = forms.ChoiceField(label="", required=False,
-        choices=CATEGORIES)
+    category = forms.ChoiceField(label="", required=False)

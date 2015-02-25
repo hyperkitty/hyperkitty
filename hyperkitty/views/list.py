@@ -31,7 +31,7 @@ from django.utils import formats
 from django.utils.dateformat import format as date_format
 from django.http import Http404, HttpResponse
 
-from hyperkitty.models import Tag, Favorite, MailingList
+from hyperkitty.models import Tag, Favorite, MailingList, ThreadCategory
 from hyperkitty.lib.view_helpers import (FLASH_MESSAGES, get_category_widget,
     get_months, get_display_dates, daterange, check_mlist_private)
 from hyperkitty.lib.paginator import paginate
@@ -81,6 +81,9 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
 def _thread_list(request, mlist, threads, template_name='hyperkitty/thread_list.html', extra_context={}):
     threads = paginate(threads, request.GET.get('page'))
     participants = set()
+    categories = [ (c.name, c.name.upper())
+                   for c in ThreadCategory.objects.all() ] \
+                 + [("", "no category")]
     for thread in threads:
         if "participants" not in extra_context:
             participants.update(thread.participants)
@@ -95,7 +98,7 @@ def _thread_list(request, mlist, threads, template_name='hyperkitty/thread_list.
                 thread.favorite = True
         # Category
         thread.category_hk, thread.category_form = \
-                get_category_widget(request, thread.category)
+            get_category_widget(request, thread.category, categories)
 
     flash_messages = []
     flash_msg = request.GET.get("msg")

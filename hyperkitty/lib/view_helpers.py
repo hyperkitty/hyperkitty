@@ -94,7 +94,7 @@ def daterange(start_date, end_date):
         yield start_date + datetime.timedelta(n)
 
 
-def get_category_widget(request=None, current_category=None):
+def get_category_widget(request=None, current_category=None, categories=()):
     """
     Returns the category form and the applicable category object (or None if no
     category is set for this thread).
@@ -110,6 +110,7 @@ def get_category_widget(request=None, current_category=None):
             category_form = CategoryForm(request.POST)
         else:
             category_form = CategoryForm(initial={"category": current_category or ""})
+        category_form["category"].field.choices = categories
     else:
         category_form = None
     if request and request.method == "POST" and category_form.is_valid():

@@ -36,7 +36,7 @@ from django.core.exceptions import SuspiciousOperation
 from django.utils.timezone import utc
 import robot_detection
 
-from hyperkitty.models import Tag, Tagging, Favorite, LastView, Thread, MailingList
+from hyperkitty.models import Tag, Tagging, Favorite, LastView, Thread, MailingList, ThreadCategory
 from hyperkitty.views.forms import AddTagForm, ReplyForm
 from hyperkitty.lib.utils import stripped_subject
 from hyperkitty.lib.view_helpers import (get_months, get_category_widget,
@@ -95,7 +95,11 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         fav_action = "rm"
 
     # Category
-    category, category_form = get_category_widget(request, thread.category)
+    categories = [ (c.name, c.name.upper())
+                   for c in ThreadCategory.objects.all() ] \
+                 + [("", "no category")]
+    category, category_form = get_category_widget(
+        request, thread.category, categories)
 
     # Extract relative dates
     today = datetime.date.today()
