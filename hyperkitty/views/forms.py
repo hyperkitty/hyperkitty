@@ -28,7 +28,7 @@ from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy
 
-from hyperkitty.models import Profile
+from hyperkitty.models import Profile, ThreadCategory
 
 
 def isValidUsername(username):
@@ -139,4 +139,8 @@ class PostForm(forms.Form):
     #                             widget=AttachmentFileInput)
 
 class CategoryForm(forms.Form):
-    category = forms.ChoiceField(label="", required=False)
+    CATEGORIES = [ (c.name, c.name.upper())
+                   for c in ThreadCategory.objects.all() ] \
+                 + [("", "no category")]
+    category = forms.ChoiceField(label="", required=False,
+        choices=CATEGORIES)

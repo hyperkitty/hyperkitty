@@ -100,16 +100,12 @@ def get_category_widget(request=None, current_category=None):
     if request is not provided or None, don't return the category form, return
     None instead.
     """
-    categories = [ (c.name, c.name.upper())
-                   for c in ThreadCategory.objects.all() ] \
-                 + [("", "no category")]
 
     if request:
         if request.method == "POST":
             category_form = CategoryForm(request.POST)
         else:
             category_form = CategoryForm(initial={"category": current_category or ""})
-        category_form["category"].field.choices = categories
     else:
         category_form = None
     if request and request.method == "POST" and category_form.is_valid():
