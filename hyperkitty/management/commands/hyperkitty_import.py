@@ -198,7 +198,7 @@ class DbImporter(object):
             print('  %s email read' % cnt_read)
             print('  %s email added to the database' % cnt_imported)
         else:
-            sys.stdout.write("")
+            print()
 
     def extract_attachments(self, message):
         """Parse message to search for attachments"""
