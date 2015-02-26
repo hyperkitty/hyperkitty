@@ -29,9 +29,10 @@ import mailmanclient
 from mock import Mock, patch
 from django.test import TestCase as DjangoTestCase
 from django.conf import settings
-from django.core.cache import cache
+from django.core.cache import get_cache
 
 import hyperkitty.lib.mailman
+from hyperkitty.lib.cache import cache
 
 
 OVERRIDE_SETTINGS = {
@@ -62,6 +63,7 @@ class TestCase(DjangoTestCase):
         for key, value in OVERRIDE_SETTINGS.iteritems():
             self._old_settings[key] = getattr(settings, key)
             setattr(settings, key, value)
+        cache.backend = get_cache("default")
         self.mailman_client = Mock()
         self.mailman_client.get_user.side_effect = mailmanclient.MailmanConnectionError()
         self.mailman_client.get_list.side_effect = mailmanclient.MailmanConnectionError()
@@ -71,9 +73,10 @@ class TestCase(DjangoTestCase):
 
     def _post_teardown(self):
         self._mm_client_patcher.stop()
+        cache.clear()
         for key, value in self._old_settings.iteritems():
             setattr(settings, key, value)
-        cache.clear()
+        cache.backend = get_cache("default")
         super(TestCase, self)._post_teardown()
 
 

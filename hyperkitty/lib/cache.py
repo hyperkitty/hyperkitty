@@ -22,15 +22,15 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-from django.core.cache import cache as django_cache
+from django.core.cache import get_cache
 
 
 MISSING = object()
 
 class CacheProxy:
 
-    def __init__(self, backend):
-        self.backend = backend
+    def __init__(self):
+        self.backend = get_cache("default")
 
     def __getattr__(self, name):
         return getattr(self.backend, name)
@@ -45,5 +45,5 @@ class CacheProxy:
                 self.backend.set(key, value, timeout)
         return value
 
-cache = CacheProxy(django_cache)
+cache = CacheProxy()
 
