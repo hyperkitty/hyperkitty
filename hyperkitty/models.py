@@ -576,10 +576,13 @@ def refresh_email_count_cache(sender, **kwargs):
     cache.delete("MailingList:%s:top_posters" % email.mailinglist_id)
     # don't warm up the cache in batch mode (mass import)
     if not getattr(settings, "HYPERKITTY_BATCH_MODE", False):
-        email.thread.emails_count
-        email.thread.participants_count
-        email.mailinglist.recent_participants_count
-        email.mailinglist.top_posters
+        try:
+            email.thread.emails_count
+            email.thread.participants_count
+            email.mailinglist.recent_participants_count
+            email.mailinglist.top_posters
+        except (Thread.DoesNotExist, MailingList.DoesNotExist):
+            pass # it's post_delete, those may have been deleted too
 
 
 @receiver([post_save, post_delete], sender=Thread)
