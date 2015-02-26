@@ -69,6 +69,8 @@ def _get_thread_replies(request, thread, limit, offset=1):
             email.level = email.thread_depth - 1 # replies start ragged left
             if email.level > 5:
                 email.level = 5
+            elif email.level < 0:
+                email.level = 0
     return emails
 
 
