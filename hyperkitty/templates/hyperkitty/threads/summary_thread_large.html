@@ -33,7 +33,7 @@
                     {% gravatar thread.starting_email.sender.address 40 %}
                     <br />
                     {% endif %}
-                    {{ thread.starting_email.sender_name|escapeemail }}
+                    {{ thread.starting_email.sender.name|escapeemail }}
                 </div>
                 <div class="thread-extras col-tn-9 col-xs-10 col-lg-11">
                     <div class="row">
