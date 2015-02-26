@@ -211,11 +211,14 @@ class MailingList(models.Model):
             3600 * 6) # 6 hours
 
     def get_participants_count_for_month(self, year, month):
-        # CACHING
-        begin_date = datetime.datetime(year, month, 1, tzinfo=utc)
-        end_date = begin_date + datetime.timedelta(days=32)
-        end_date = end_date.replace(day=1)
-        return self.get_participants_count_between(begin_date, end_date)
+        def _get_value():
+            begin_date = datetime.datetime(year, month, 1, tzinfo=utc)
+            end_date = begin_date + datetime.timedelta(days=32)
+            end_date = end_date.replace(day=1)
+            return self.get_participants_count_between(begin_date, end_date)
+        return cache.get_or_set(
+            "MailingList:%s:p_count_for:%s:%s" % (self.name, year, month),
+            _get_value, None)
 
     @property
     def top_posters(self):
@@ -574,6 +577,8 @@ def refresh_email_count_cache(sender, **kwargs):
     cache.delete("MailingList:%s:top_posters" % email.mailinglist_id)
     cache.delete(make_template_fragment_key(
         "thread_participants", [email.thread_id]))
+    cache.delete("MailingList:%s:p_count_for:%s:%s"
+                 % (email.mailinglist_id, email.date.year, email.date.month))
     # don't warm up the cache in batch mode (mass import)
     if not getattr(settings, "HYPERKITTY_BATCH_MODE", False):
         try:
@@ -581,6 +586,8 @@ def refresh_email_count_cache(sender, **kwargs):
             email.thread.participants_count
             email.mailinglist.recent_participants_count
             email.mailinglist.top_posters
+            email.mailinglist.get_participants_count_for_month(
+                email.date.year, email.date.month)
         except (Thread.DoesNotExist, MailingList.DoesNotExist):
             pass # it's post_delete, those may have been deleted too
 
