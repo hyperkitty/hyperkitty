@@ -416,13 +416,22 @@ class Thread(models.Model):
     thread_id = models.CharField(max_length=255, db_index=True)
     date_active = models.DateTimeField(db_index=True, default=now)
     category = models.ForeignKey("ThreadCategory", related_name="threads", null=True)
+    _starting_email_cache = None
 
     @property
     def starting_email(self):
-        try:
-            return self.emails.get(parent_id__isnull=True)
-        except Email.DoesNotExist:
-            return self.emails.order_by("date").first()
+        # Also cache in the instance because we're going to use it a lot
+        # It's not enough though, because Django's ORM returns different model
+        # instances for each query, so use the regular cache too
+        def _get_email():
+            try:
+                return self.emails.get(parent_id__isnull=True)
+            except Email.DoesNotExist:
+                return self.emails.order_by("date").first()
+        if self._starting_email_cache is None:
+            self._starting_email_cache = cache.get_or_set(
+                "Thread:%s:starting_email" % self.id, _get_email, None)
+        return self._starting_email_cache
 
     @property
     def last_email(self):
@@ -545,6 +554,13 @@ def refresh_thread_count_cache(sender, **kwargs):
     # don't warm up the cache in batch mode (mass import)
     if not getattr(settings, "HYPERKITTY_BATCH_MODE", False):
         thread.mailinglist.recent_threads
+
+
+@receiver(pre_delete, sender=Email)
+def Thread_invalidate_starting_email_cache(sender, **kwargs):
+    email = kwargs["instance"]
+    if email.thread.starting_email == email:
+        cache.delete("Thread:%s:starting_email" % email.thread_id)
 
 
 #@receiver(new_thread)
