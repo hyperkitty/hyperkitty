@@ -274,3 +274,7 @@ def strip_subject(subject, mlist):
 @register.filter
 def is_unread_by(thread, user):
     return thread.is_unread_by(user)
+
+@register.filter
+def sort_by_name(p_list):
+    return sorted(p_list, key=lambda p: p.name.lower())

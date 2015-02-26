@@ -1,6 +1,7 @@
 {% load url from future %}
 {% load gravatar %}
 {% load hk_generic %}
+{% load cache %}
 
 <!-- right column -->
 <section id="thread-overview-info">
@@ -32,7 +33,7 @@
     </div>
     <div>
         <i class="icomoon participant"></i>
-        {{ participants|length }} participants
+        {{ thread.participants_count }} participants
     </div>
     <p class="unread">
         {% if user.is_authenticated %}
@@ -72,10 +73,11 @@
             {{ addtag_form.as_p }}
         </form>
     </div>
+    {% cache 86400 thread_participants thread.id %}
     <div id="participants">
-        <span id="participants_title">participants</span> ({{participants|length}})
+        <span id="participants_title">participants</span> ({{ thread.participants_count }})
         <ul class="list-unstyled">
-            {% for participant in participants %}
+            {% for participant in thread.participants|sort_by_name %}
             <li class="row">
                 <div class="participant-gravatar col-tn-2 col-sm-4 col-md-2">{% gravatar participant.email 48 %}</div>
                 <div class="participant-name col-tn-8">{{ participant.name|escapeemail }}</div>
@@ -83,6 +85,7 @@
             {% endfor %}
         </ul>
     </div>
+    {% endcache %}
 </section>
 
 {% if user.is_authenticated %}

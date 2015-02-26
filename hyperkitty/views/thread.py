@@ -104,7 +104,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     # Extract relative dates
     today = datetime.date.today()
     days_old = today - thread.starting_email.date.date()
-    days_inactive = today - thread.last_email.date.date()
+    days_inactive = today - thread.date_active.date()
 
     subject = stripped_subject(mlist, thread.starting_email.subject)
 
@@ -154,8 +154,6 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
         'reply_form': ReplyForm(),
         'is_bot': is_bot,
         'num_comments': thread.emails_count - 1,
-        'participants': sorted(thread.participants,
-                               key=lambda p: p.name.lower()),
         'last_view': last_view,
         'unread_count': unread_count,
         'category_form': category_form,

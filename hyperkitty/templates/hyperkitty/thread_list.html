@@ -33,10 +33,12 @@
             </h1>
             <span class="list-address col-tn-12">{{ mlist.name }}</span>
             <ul class="list-unstyled list-stats thread-list-info col-tn-6 col-xs-8">
+                {% if participants_count %}
                 <li>
                     <i class="icomoon participant"></i>
-                    {{ participants }} participants
+                    {{ participants_count }} participants
                 </li>
+                {% endif %}
                 <li>
                     <i class="icomoon discussion"></i>
                     {{ threads.paginator.count }} discussions

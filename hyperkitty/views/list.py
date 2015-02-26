@@ -73,20 +73,17 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
         "no_results_text": no_results_text,
     }
     if day is None:
-        extra_context["participants"] = \
+        extra_context["participants_count"] = \
             mlist.get_participants_count_for_month(int(year), int(month))
     return _thread_list(request, mlist, threads, extra_context=extra_context)
 
 
 def _thread_list(request, mlist, threads, template_name='hyperkitty/thread_list.html', extra_context={}):
-    threads = paginate(threads, request.GET.get('page'))
-    participants = set()
     categories = [ (c.name, c.name.upper())
                    for c in ThreadCategory.objects.all() ] \
                  + [("", "no category")]
+    threads = paginate(threads, request.GET.get('page'))
     for thread in threads:
-        if "participants" not in extra_context:
-            participants.update(thread.participants)
         # Favorites
         thread.favorite = False
         if request.user.is_authenticated():
@@ -110,7 +107,6 @@ def _thread_list(request, mlist, threads, template_name='hyperkitty/thread_list.
     context = {
         'mlist' : mlist,
         'threads': threads,
-        'participants': len(participants),
         'months_list': get_months(mlist),
         'flash_messages': flash_messages,
     }

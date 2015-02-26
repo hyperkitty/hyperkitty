@@ -33,6 +33,7 @@ from django.db.models.signals import (
 from django.contrib import admin
 from django.dispatch import receiver
 from django.utils.timezone import now, utc
+from django.core.cache.utils import make_template_fragment_key
 
 import pytz
 import dateutil.parser
@@ -447,10 +448,6 @@ class Thread(models.Model):
         return self._starting_email_cache
 
     @property
-    def last_email(self):
-        return self.emails.order_by("-date").first()
-
-    @property
     def participants(self):
         """Set of email senders in this thread"""
         return Sender.objects.filter(emails__thread_id=self.id).distinct()
@@ -572,8 +569,11 @@ def refresh_email_count_cache(sender, **kwargs):
     email = kwargs["instance"]
     cache.delete("Thread:%s:emails_count" % email.thread_id)
     cache.delete("Thread:%s:participants_count" % email.thread_id)
-    cache.delete("MailingList:%s:recent_participants_count" % email.mailinglist_id)
+    cache.delete("MailingList:%s:recent_participants_count"
+                 % email.mailinglist_id)
     cache.delete("MailingList:%s:top_posters" % email.mailinglist_id)
+    cache.delete(make_template_fragment_key(
+        "thread_participants", [email.thread_id]))
     # don't warm up the cache in batch mode (mass import)
     if not getattr(settings, "HYPERKITTY_BATCH_MODE", False):
         try:
