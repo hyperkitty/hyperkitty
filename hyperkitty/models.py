@@ -85,7 +85,7 @@ class Profile(models.Model):
 
     @property
     def addresses(self):
-        addresses = set(self.user.email)
+        addresses = set([self.user.email,])
         mm_user = self.get_mailman_user()
         if mm_user:
             # TODO: caching
@@ -100,34 +100,46 @@ class Profile(models.Model):
         return likes, dislikes
 
     def get_mailman_user(self):
-        # TODO: Caching: cache the mailman user id
+        # Only cache the user_id, not the whole user instance, because
+        # mailmanclient is not pickle-safe
+        cache_key = "User:%s:mailman_user_id" % self.id
+        user_id = cache.get(cache_key)
         try:
             mm_client = get_mailman_client()
-            return mm_client.get_user(self.user.email)
+            if user_id is None:
+                mm_user = mm_client.get_user(self.user.email)
+                cache.set(cache_key, mm_user.user_id, None)
+                return mm_user
+            else:
+                return mm_client.get_user(user_id)
         except (HTTPError, MailmanConnectionError):
             return None
 
     def get_mailman_user_id(self):
-        # TODO: Caching: cache the mailman user id
         mm_user = self.get_mailman_user()
         if mm_user is None:
             return None
         return mm_user.user_id
 
     def get_subscriptions(self):
-        # TODO: Caching
-        mm_client = get_mailman_client()
-        mm_user = self.get_mailman_user()
-        if mm_user is None:
-            return []
-        sub_names = set()
-        for mlist_id in mm_user.subscription_list_ids:
-            mlist_name = mm_client.get_list(mlist_id).fqdn_listname
-            ## de-duplicate subscriptions
-            #if mlist_name in [ s["list_name"] for s in sub_names ]:
-            #    continue
-            sub_names.add(mlist_name)
-        return list(sorted(sub_names))
+        def _get_value():
+            mm_user = self.get_mailman_user()
+            if mm_user is None:
+                return []
+            mm_client = get_mailman_client()
+            sub_names = set()
+            for mlist_id in mm_user.subscription_list_ids:
+                mlist_name = mm_client.get_list(mlist_id).fqdn_listname
+                ## de-duplicate subscriptions
+                #if mlist_name in [ s["list_name"] for s in sub_names ]:
+                #    continue
+                sub_names.add(mlist_name)
+            return list(sorted(sub_names))
+        # TODO: how should this be invalidated? Subscribe to a signal in
+        # mailman when a new subscription occurs?
+        return cache.get_or_set(
+            "User:%s:subscriptions" % self.id,
+            _get_value, 60 * 10) # 10 minutes
 
     def get_first_post(self, mlist):
         return self.emails.filter(mailinglist=mlist
@@ -333,6 +345,7 @@ class Email(models.Model):
             # new vote
             vote = Vote(email=self, user=user, value=value)
             vote.save()
+
 
 @receiver([post_init, pre_save], sender=Email)
 def Email_set_message_id_hash(sender, **kwargs):

@@ -26,6 +26,8 @@ from django.conf import settings
 from django.utils.timezone import now
 from mailmanclient import Client, MailmanConnectionError
 
+from hyperkitty.lib.cache import cache
+
 
 MailmanClient = Client
 def get_mailman_client():
@@ -48,6 +50,7 @@ def subscribe(list_address, user):
                 "%s %s" % (user.first_name, user.last_name))
         member.preferences["delivery_status"] = "by_user"
         member.preferences.save()
+        cache.delete("User:%s:subscriptions" % user.id)
 
 
 class FakeMMList:

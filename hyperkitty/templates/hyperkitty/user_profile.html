@@ -53,13 +53,13 @@
                                     <div class="ellipsis-overflow">{{ user.email }}</div>
                                 </td>
                             </tr>
-                            {% if addresses %}
+                            {% if other_addresses %}
                             <tr>
                                 <th>{% trans 'Other emails:' %}</th>
                                 <td>
                                     <div class="ellipsis-overflow">
                                         <ul class="list-unstyled">
-                                            {% for address in addresses %}
+                                            {% for address in other_addresses %}
                                             <li>{{ address }}</li>
                                             {% endfor %}
                                         </ul>

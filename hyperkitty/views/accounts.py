@@ -77,11 +77,7 @@ def user_profile(request):
         user_profile = Profile.objects.create(user=request.user)
 
     # get the Mailman user
-    try:
-        mm_client = get_mailman_client()
-        mm_user = mm_client.get_user(request.user.email)
-    except (HTTPError, mailmanclient.MailmanConnectionError):
-        mm_client = mm_user = None
+    mm_user = user_profile.get_mailman_user()
 
     if request.method == 'POST':
         form = UserProfileForm(request.POST)
@@ -110,12 +106,8 @@ def user_profile(request):
     favorites = Favorite.objects.filter(user=request.user)
 
     # Emails
-    addresses = []
-    if mm_user is not None:
-        for addr in mm_user.addresses:
-            addr = unicode(addr)
-            if addr != request.user.email:
-                addresses.append(addr)
+    other_addresses = user_profile.addresses[:]
+    other_addresses.remove(request.user.email)
 
     # Flash messages
     flash_messages = []
@@ -133,7 +125,7 @@ def user_profile(request):
     context = {
         'user_profile' : user_profile,
         'form': form,
-        'addresses': addresses,
+        'other_addresses': other_addresses,
         'favorites': favorites,
         'flash_messages': flash_messages,
         'gravatar_url': gravatar_url,
