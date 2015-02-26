@@ -531,6 +531,28 @@ class Thread(models.Model):
             return True
         return self.date_active.replace(tzinfo=utc) > last_view.view_date
 
+    def attach_to(self, thread):
+        if not isinstance(thread, Thread):
+            thread = Thread.objects.filter(
+                mailinglist=self.mailinglist, thread_id=thread).first()
+            if thread is None:
+                raise ValueError("Unknown thread, check your thread ID.")
+        current_starter = self.starting_email
+        new_starter = thread.starting_email
+        if current_starter.date <= new_starter.date:
+            raise ValueError("Can't attach an older thread "
+                             "to a newer thread.")
+        current_starter.parent = new_starter
+        current_starter.save(update_fields=["parent_id"])
+        for email in self.emails.all():
+            email.thread = thread
+            email.save()
+            if email.date > thread.date_active:
+                thread.date_active = email.date
+        thread.save()
+        compute_thread_order_and_depth(thread)
+        assert self.emails.count() == 0
+        self.delete()
 
 @receiver([post_save, post_delete], sender=Email)
 def refresh_email_count_cache(sender, **kwargs):

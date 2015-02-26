@@ -345,31 +345,11 @@ def reattach(request, mlist_fqdn, threadid):
                                    "msg": "Can't re-attach a thread to "
                                           "itself, check your thread ID."})
         else:
-            new_thread = Thread.objects.filter(
-                mailinglist__name=mlist_fqdn, thread_id=parent_tid).first()
-            if new_thread is None:
-                flash_messages.append({"type": "warning",
-                                       "msg": "Unknown thread, check your "
-                                              "thread ID."})
-            elif thread.starting_email.date <= new_thread.starting_email.date:
-                flash_messages.append({"type": "error",
-                                       "msg": "Can't attach an older thread "
-                                              "to a newer thread."})
+            try:
+                thread.attach_to(parent_tid)
+            except ValueError as e:
+                flash_messages.append({"type": "error", "msg": str(e)})
             else:
-                # TODO: move this to the models
-                old_starter = thread.starting_email
-                new_starter = new_thread.starting_email
-                old_starter.parent = new_starter
-                old_starter.save(update_fields=["parent_id"])
-                for email in thread.emails.all():
-                    email.thread = new_thread
-                    email.save()
-                    if email.date > new_thread.date_active:
-                        new_thread.date_active = email.date
-                new_thread.save()
-                compute_thread_order_and_depth(new_thread)
-                assert thread.emails.count() == 0
-                thread.delete()
                 return redirect(reverse(
                         'hk_thread', kwargs={
                             "mlist_fqdn": mlist_fqdn,

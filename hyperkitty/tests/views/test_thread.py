@@ -132,7 +132,7 @@ class ReattachTestCase(TestCase):
         self.assertEqual(Thread.objects.count(), 2)
         for thread in Thread.objects.all():
             self.assertEqual(thread.emails.count(), 1)
-        self.assertContains(response, '<div class="alert alert-warning">',
+        self.assertContains(response, '<div class="alert alert-error">',
                 count=1, status_code=200)
         self.assertContains(response, "Unknown thread")
 
