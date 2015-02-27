@@ -95,6 +95,35 @@ TEXTWRAP_RE = re.compile("\n\s*")
 class DownloadError(Exception): pass
 
 
+class ProgressMarker(object):
+
+    def __init__(self, verbose):
+        self.verbose = verbose
+        self.total = None
+        self.count = 0
+        self.count_imported = 0
+        self.spinner_seq = ('|', '/', '-', '\\')
+
+    def tick(self, msgid=None):
+        if self.total:
+            msg = "%d%%" % floor(100.0 * self.count / self.total)
+        else:
+            msg = self.spinner_seq[self.count % len(self.spinner_seq)]
+        if self.verbose:
+            print("%s (%d/%d, %s)" % (msgid, self.count, self.total, msg))
+        else:
+            sys.stdout.write("\r%s" % msg)
+            sys.stdout.flush()
+        self.count += 1
+
+    def finish(self):
+        if self.verbose:
+            print('  %s emails read' % self.count)
+            print('  %s email added to the database' % self.count_imported)
+        else:
+            print()
+
+
 class DbImporter(object):
     """
     Import email messages into the KittyStore database using its API.
@@ -105,7 +134,6 @@ class DbImporter(object):
         self.no_download = options["no_download"]
         self.verbose = options["verbosity"] >= 2
         self.since = options.get("since")
-        self.total_imported = 0
         self.impacted_thread_ids = set()
 
     def _is_too_old(self, message):
@@ -134,19 +162,13 @@ class DbImporter(object):
         # TODO: search index
         #self.store.search_index = make_delayed(self.store.search_index)
         mbox = mailbox.mbox(mbfile)
-        total_in_mbox = len(mbox)
-        cnt_imported = 0
-        cnt_read = 0
+        progress_marker = ProgressMarker(self.verbose)
+        if not self.since:
+            progress_marker.total = len(mbox)
         for message in mbox:
             if self._is_too_old(message):
                 continue
-            cnt_read += 1
-            self.total_imported += 1
-            if self.verbose:
-                print("%s (%d/%d)" % (message["Message-Id"], self.total_imported, total_in_mbox))
-            else:
-                sys.stdout.write("\r%d%%" % floor(100.0 * self.total_imported / total_in_mbox))
-                sys.stdout.flush()
+            progress_marker.tick(message["Message-Id"])
             # Un-wrap the subject line if necessary
             if message["subject"]:
                 message.replace_header("subject",
@@ -192,13 +214,9 @@ class DbImporter(object):
             # Store the list of impacted threads to be able to compute the
             # thread_order and thread_depth values
             self.impacted_thread_ids.add(email.thread_id)
-            cnt_imported += 1
+            progress_marker.count_imported += 1
         #self.store.search_index.flush() # Now commit to the search index
-        if self.verbose:
-            print('  %s email read' % cnt_read)
-            print('  %s email added to the database' % cnt_imported)
-        else:
-            print()
+        progress_marker.finish()
 
     def extract_attachments(self, message):
         """Parse message to search for attachments"""
