@@ -54,15 +54,15 @@ urlpatterns = patterns('hyperkitty.views',
 
     # List archives and overview
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/(?P<year>\d{4})/(?P<month>\d\d?)/(?P<day>\d\d?)/$',
-        'list.archives', name='hk_archives_with_day'),
+        'mlist.archives', name='hk_archives_with_day'),
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/(?P<year>\d{4})/(?P<month>\d\d?)/$',
-        'list.archives', name='hk_archives_with_month'),
+        'mlist.archives', name='hk_archives_with_month'),
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/latest$',
-        'list.archives', name='hk_archives_latest'),
+        'mlist.archives', name='hk_archives_latest'),
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/$',
-        'list.overview', name='hk_list_overview'),
+        'mlist.overview', name='hk_list_overview'),
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/recent-activity$',
-        'list.recent_activity', name='hk_list_recent_activity'),
+        'mlist.recent_activity', name='hk_list_recent_activity'),
 
     # Message
     url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/message/(?P<message_id_hash>\w+)/$',

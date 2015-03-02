@@ -29,7 +29,7 @@ from django.http import Http404
 from hyperkitty.models import Tag, MailingList
 from hyperkitty.lib.paginator import paginate
 
-from hyperkitty.views.list import _thread_list
+from hyperkitty.views.mlist import _thread_list
 from hyperkitty.lib.view_helpers import (
     check_mlist_private, is_mlist_authorized)
 
