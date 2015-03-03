@@ -162,6 +162,15 @@ sed -i -e 's,/path/to/rw,%{_localstatedir}/lib/%{name}/sites/default/db,g' \
     %{buildroot}%{_sysconfdir}/%{name}/sites/default/settings.py
 touch --reference hyperkitty_standalone/settings.py \
     %{buildroot}%{_sysconfdir}/%{name}/sites/default/settings.py
+# Cron job
+mkdir -p %{buildroot}%{_sysconfdir}/cron.daily
+cat > %{buildroot}%{_sysconfdir}/cron.daily/%{name}.sh < EOF
+#!/bin/sh
+%{_bindir}/django-admin hyperkitty_maintenance \
+    --pythonpath=%{_sysconfdir}/%{name}/sites/default \
+    --settings=settings --verbosity 0
+EOF
+chmod +x %{buildroot}%{_sysconfdir}/cron.daily/%{name}.sh
 
 # SELinux
 for selinuxvariant in %{selinux_variants}; do
@@ -211,6 +220,7 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}
 %config(noreplace) %attr(640,root,apache) %{_sysconfdir}/%{name}/sites/default/settings.py
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/%{name}.conf
+%config(noreplace) %attr(755,root,root) %{_sysconfdir}/cron.daily/%{name}.sh
 %{python_sitelib}/%{name}
 %{python_sitelib}/%{pypi_name}-*.egg-info
 %dir %{_localstatedir}/lib/%{name}

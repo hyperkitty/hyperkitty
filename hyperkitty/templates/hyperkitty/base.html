@@ -104,10 +104,10 @@
                 </ul>
 
                 <form name="search" method="get" action="{% url 'hk_search' %}" class="navbar-form navbar-right" role="search">
-                    {% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
+                    {% if mlist %}<input type="hidden" name="mlist" value="{{ mlist.name }}" />{% endif %}
                     <div class="form-group">
                         <div class="input-group">
-                            <input name="query" type="text" class="form-control"
+                            <input name="q" type="text" class="form-control"
                                    placeholder="Search {% if mlist %}this list{% else %}all lists{% endif %}"
                                    {% if query %}value="{{ query }}"{% endif %}
                                    />

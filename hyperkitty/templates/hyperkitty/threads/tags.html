@@ -4,7 +4,7 @@
         <ul class="inline">
             {% for tag in thread.tags.distinct %}
             <li>
-                <a href="{% url 'hk_search_tag' mlist_fqdn=thread.mailinglist.name tag=tag.name %}"
+                <a href="{#% url 'hk_search_tag' mlist_fqdn=thread.mailinglist.name tag=tag.name %#}"
                    title="Search for tag {{ tag.name|escape }}">{{ tag.name }}</a>
                 {% if user in tag.users.all %}
                 <form method="post" class="rmtag" action="{% url 'hk_tags' mlist_fqdn=thread.mailinglist.name threadid=thread.thread_id %}">

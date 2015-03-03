@@ -23,53 +23,25 @@ from __future__ import absolute_import, unicode_literals
 
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
-from django.core.paginator import Paginator, Page
+from django.core.paginator import Paginator, Page, InvalidPage
 from django.http import Http404
+from haystack.query import EmptySearchQuerySet, SearchQuerySet
+from haystack.forms import SearchForm
 
-from hyperkitty.models import Tag, MailingList
+from hyperkitty.models import Tag, MailingList, ArchivePolicy
 from hyperkitty.lib.paginator import paginate
-
 from hyperkitty.views.mlist import _thread_list
 from hyperkitty.lib.view_helpers import (
     check_mlist_private, is_mlist_authorized)
 
 
-class SearchPaginator(Paginator):
-    """
-    A paginator which does not split the object_list into pages, because Whoosh
-    already handles that
-    """
-    def __init__(self, object_list, per_page, total):
-        super(SearchPaginator, self).__init__(object_list, per_page)
-        self._count = total
 
-    def page(self, number):
-        "Returns the object list without paginating"""
-        return Page(self.object_list, number, self)
-
-
-@check_mlist_private
-def search_tag(request, mlist_fqdn, tag):
-    '''Returns threads having a particular tag'''
-    mlist = get_object_or_404(MailingList, name=mlist_fqdn)
-    #tags = Tag.objects.filter(tag=tag).distinct()
-    threads = Thread.objects.filter(mailinglist__name=mlist_fqdn, tags__tag=tag)
-    #tags = Tag.objects.filter(thread__mailinglist__name=mlist_fqdn, tag=tag)
-    extra_context = {
-        "tag": tag,
-        "list_title": "Search results for tag \"%s\"" % tag,
-        "no_results_text": "for this tag",
-    }
-    return _thread_list(request, mlist, threads, extra_context=extra_context)
-
-
-def search(request, page=1):
+def search(request):
     """ Returns messages corresponding to a query """
     results_per_page = 10
-    query = request.GET.get("query")
-    mlist_fqdn = request.GET.get("list")
-    sort_mode = request.GET.get('sort')
+    load_all = True
 
+    mlist_fqdn = request.GET.get("mlist")
     if mlist_fqdn is None:
         mlist = None
     else:
@@ -82,48 +54,58 @@ def search(request, page=1):
                             "mlist": mlist,
                           }, status=403)
 
-    # TODO: fulltext search engine necessary from here
-    if not getattr(settings, "SEARCH", False):
-        return render(request, "hyperkitty/errors/nosearch.html", {"mlist": mlist})
 
-    if not query:
-        return render(request, "hyperkitty/search_results.html", {
-            'mlist' : mlist,
-            "query": query or "",
-            'messages': [],
-            'total': 0,
-            'sort_mode': sort_mode,
-        })
+    query = ''
+    results = EmptySearchQuerySet()
+    sqs = SearchQuerySet()
 
-    try:
-        page_num = int(request.GET.get('page', "1"))
-    except ValueError:
-        page_num = 1
+    # Remove private non-subscribed lists
+    if mlist is not None:
+        sqs = sqs.filter(mailinglist__exact=mlist.name)
+    else:
+        # TODO: tests for that
+        excluded_mlists = MailingList.objects.filter(
+            archive_policy=ArchivePolicy.private.value)
+        if request.user.is_authenticated():
+            subscriptions = request.user.hyperkitty_profile.get_subscriptions()
+            excluded_mlists = excluded_mlists.exclude(name__in=subscriptions)
+        excluded_mlists = excluded_mlists.values_list("name", flat=True)
+        sqs = sqs.exclude(mailinglist__in=excluded_mlists)
 
-    sortedby = None
-    reverse = False
+    # Sorting
+    sort_mode = request.GET.get('sort')
     if sort_mode == "date-asc":
-        sortedby = "date"
+        sqs = sqs.order_by("date")
     elif sort_mode == "date-desc":
-        sortedby = "date"
-        reverse = True
+        sqs = sqs.order_by("-date")
 
-    query_result = search(query, mlist_fqdn, page_num, results_per_page,
-                          sortedby=sortedby, reverse=reverse)
-    total = query_result["total"]
-    messages = [ m for m in query_result["results"] if m is not None ]
+    # Handle data
+    if request.GET.get('q'):
+        form = SearchForm(
+            request.GET, searchqueryset=sqs, load_all=load_all)
+        if form.is_valid():
+            query = form.cleaned_data['q']
+            results = form.search()
+    else:
+        form = SearchForm(searchqueryset=sqs, load_all=load_all)
+
+    messages = paginate(results, page_num=request.GET.get('page'))
     for message in messages:
-        message.myvote = message.get_vote_by_user_id(
-                request.session.get("user_id"))
+        if request.user.is_authenticated():
+            message.object.myvote = message.object.votes.filter(user=request.user).first()
+        else:
+            message.object.myvote = None
 
-    paginator = SearchPaginator(messages, 10, total)
-    messages = paginate(messages, page_num, paginator=paginator)
 
     context = {
         'mlist' : mlist,
-        "query": query,
+        'form': form,
         'messages': messages,
-        'total': total,
+        'query': query,
         'sort_mode': sort_mode,
+        'suggestion': None,
     }
+    if results.query.backend.include_spelling:
+        context['suggestion'] = form.get_suggestion()
+
     return render(request, "hyperkitty/search_results.html", context)

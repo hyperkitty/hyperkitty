@@ -18,7 +18,7 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
 
         <div class="thread-list-header row">
             {% if mlist %}
-            <h1 class="col-tn-12">
+            <h1>
                 <a href="{% url 'hk_list_overview' mlist_fqdn=mlist.name %}"
                    class="list-name">
                     {% if mlist.display_name %}
@@ -28,12 +28,11 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
                     {% endif %}
                 </a>
                 <small>search results</small>
-            </h1>
             {% else %}
-            <h1>Search results</h1>
+            <h1>Search results
             {% endif %}
-            <h1><small class="col-tn-12">for query "{{ query }}"</small></h1>
-            
+            <small>for query "{{ query }}"</small></h1>
+
             {% if mlist.display_name %}
             <span class="list-address hidden-tn hidden-xs hidden-sm col-md-4">
                 {{ mlist.name|escapeemail }}
@@ -42,14 +41,14 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
             <ul class="list-unstyled list-stats col-tn-12 col-sm-6 col-md-4">
                 <li>
                     <span class="icomoon discussion"></span>
-                    {{ total }} messages
+                    {{ messages.paginator.count }} messages
                 </li>
             </ul>
 
             <form method="get" action="{% url 'hk_search' %}" class="form-inline pull-right right col-tn-12 col-sm-6 col-md-4">
-                <input type="hidden" name="query" value="{{ query|escape }}" />
+                <input type="hidden" name="q" value="{{ query|escape }}" />
                 <input type="hidden" name="page" value="{{ messages.number }}" />
-                {% if mlist %}<input type="hidden" name="list" value="{{ mlist.name }}" />{% endif %}
+                {% if mlist %}<input type="hidden" name="mlist" value="{{ mlist.name }}" />{% endif %}
                 <!--<p>-->
                 <!--<span class="col-tn-3">Sort by:</span>-->
                 <select name="sort" id="sort-search" class="form-control">
@@ -65,7 +64,7 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
                 </select>
                 <!--<button type="submit" class="btn btn-default btn-sm col-tn-3">Update</button>-->
             </form>
-            
+
 
         </div>
 
@@ -73,7 +72,7 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
         {% if query %}
             {% for message in messages %}
                 <!--<div class="search-result">-->
-                {% include "hyperkitty/messages/summary_message.html" %}
+                {% include "hyperkitty/messages/summary_message.html" with message=message.object %}
                 <!--</div>-->
             {% empty %}
                 <p>Sorry no email could be found for this query.</p>

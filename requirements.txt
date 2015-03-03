@@ -19,3 +19,4 @@ python-dateutil < 2.0
 mock
 networkx
 enum34
+django-haystack

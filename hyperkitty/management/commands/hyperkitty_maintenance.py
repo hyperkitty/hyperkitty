@@ -30,11 +30,15 @@ from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Count
+from haystack.management.commands.update_index import \
+    Command as UpdateIndexCommand
 
 from hyperkitty.models import Thread
 from hyperkitty.lib.mailman import sync_with_mailman
 from hyperkitty.lib.analysis import compute_thread_order_and_depth
 
+
+# TODO: add an exclusive lock to prevent concurrent runs
 
 class Command(BaseCommand):
     help = "Do HyperKitty maintenance tasks"
@@ -65,6 +69,14 @@ class Command(BaseCommand):
             self.stdout.write("Deleting {} orphan thread(s)".format(
                 threads.count()))
         threads.delete()
+
+        # Update the fulltext index
+        update_cmd = UpdateIndexCommand()
+        if options["long"]:
+            update_cmd.handle("hyperkitty", remove=True, **options)
+        else:
+            # only update the last day (25 hours to be sure)
+            update_cmd.handle("hyperkitty", age=25, **options)
 
         # Compute thread order and depth for all threads (long)
         if options["long"]:

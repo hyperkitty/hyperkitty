@@ -97,8 +97,6 @@ urlpatterns = patterns('hyperkitty.views',
 
     # Search
     url(r'^search$', 'search.search', name='hk_search'),
-    url(r'^list/(?P<mlist_fqdn>[^/@]+@[^/@]+)/tag/(?P<tag>.*)/$',
-        'search.search_tag', name='hk_search_tag'),
 
 
     # Categories and Tags

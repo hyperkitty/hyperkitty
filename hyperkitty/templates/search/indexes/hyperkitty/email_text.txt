@@ -1,0 +1,6 @@
+{{ object.subject }}
+{{ object.sender.name }}
+{{ object.content }}
+{% for att in object.attachments.all %}
+    {{ att.name }}
+{% endfor %}

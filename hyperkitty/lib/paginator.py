@@ -20,18 +20,24 @@
 #
 
 
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger, Page
+from django.http import Http404
+from django.core.paginator import (Paginator, EmptyPage, PageNotAnInteger,
+    Page, InvalidPage)
 from django.utils import six
 
 
-def paginate(objects, page_num, max_page_range=10, paginator=None):
+def paginate(objects=None, page_num=1, max_page_range=10, paginator=None,
+             results_per_page=10):
+    if objects is None and paginator is None:
+        raise TypeError("You must either provide an 'objects' argument "
+                        "or a 'paginator' argument")
     try:
         page_num = int(page_num)
     except (TypeError, ValueError):
         page_num = 1
     if paginator is None:
         # else use the provided instance
-        paginator = Paginator(objects, 10)
+        paginator = Paginator(objects, results_per_page)
     try:
         objects = paginator.page(page_num)
     except PageNotAnInteger:
@@ -40,6 +46,8 @@ def paginate(objects, page_num, max_page_range=10, paginator=None):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         objects = paginator.page(paginator.num_pages)
+    except InvalidPage:
+        raise Http404("No such page of results!")
     # Calculate the displayed page range
     if paginator.num_pages > max_page_range:
         objects.page_range = [ 1 ]
@@ -61,4 +69,3 @@ def paginate(objects, page_num, max_page_range=10, paginator=None):
     else:
         objects.page_range = [ p+1 for p in range(paginator.num_pages) ]
     return objects
-

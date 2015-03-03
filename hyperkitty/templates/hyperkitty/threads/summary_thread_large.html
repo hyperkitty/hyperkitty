@@ -61,7 +61,7 @@
                     <ul class="list-unstyled tags">
                     {% for tag in thread.tags %}
                         <li>
-                            <a href="{% url 'hk_search_tag' mlist_fqdn=mlist.name tag=tag.tag %}">{{tag.tag}}</a>
+                            <a href="{#% url 'hk_search_tag' mlist_fqdn=mlist.name tag=tag.tag %#}">{{tag.tag}}</a>
                         </li>
                     {% endfor %}
                     </ul>
