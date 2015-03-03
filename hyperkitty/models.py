@@ -310,6 +310,9 @@ class Email(models.Model):
     thread_depth = models.IntegerField(default=0)
     thread_order = models.IntegerField(default=0, db_index=True)
 
+    class Meta:
+        unique_together = ("mailinglist", "message_id")
+
     @property
     def likes(self):
         # TODO: caching
@@ -417,6 +420,9 @@ class Attachment(models.Model):
     size = models.IntegerField()
     content = models.BinaryField()
 
+    class Meta:
+        unique_together = ("email", "counter")
+
 @receiver(pre_save, sender=Attachment)
 def Attachment_set_size(sender, **kwargs):
     instance = kwargs["instance"]
@@ -434,6 +440,9 @@ class Thread(models.Model):
     date_active = models.DateTimeField(db_index=True, default=now)
     category = models.ForeignKey("ThreadCategory", related_name="threads", null=True)
     _starting_email_cache = None
+
+    class Meta:
+        unique_together = ("mailinglist", "thread_id")
 
     @property
     def starting_email(self):
@@ -623,6 +632,9 @@ class Vote(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="votes")
     value = models.SmallIntegerField(db_index=True)
 
+    class Meta:
+        unique_together = ("email", "user")
+
 admin.site.register(Vote)
 
 @receiver([pre_save, pre_delete], sender=Vote)
@@ -648,7 +660,7 @@ class Tagging(models.Model):
 
 class Tag(models.Model):
 
-    name = models.CharField(max_length=255, db_index=True)
+    name = models.CharField(max_length=255, db_index=True, unique=True)
     threads = models.ManyToManyField("Thread",
         through="Tagging", related_name="tags")
     users = models.ManyToManyField(settings.AUTH_USER_MODEL,
@@ -660,17 +672,8 @@ class Tag(models.Model):
     def __unicode__(self):
         return 'Tag %s' % (unicode(self.name))
 
-
-#class Tag(models.Model):
-#    thread = models.ForeignKey("Thread", related_name="tags")
-#    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="tags")
-#    tag = models.CharField(max_length=255)
-#
-#    def __unicode__(self):
-#        return u'Tag %s on thread %s in list %s' % (unicode(self.tag),
-#                unicode(self.thread.thread_id), unicode(self.mailinglist_name))
-
 admin.site.register(Tag)
+
 
 
 class Favorite(models.Model):
@@ -682,6 +685,7 @@ class Favorite(models.Model):
             unicode(self.thread), unicode(self.user))
 
 admin.site.register(Favorite)
+
 
 
 class LastView(models.Model):
@@ -702,6 +706,7 @@ class LastView(models.Model):
             return self.thread.emails.filter(date__gt=self.view_date).count()
 
 admin.site.register(LastView)
+
 
 
 class ThreadCategory(models.Model):
