@@ -1,10 +1,12 @@
 {% load url from future %}
 
     <form method="post" class="likeform"
-          action="{% url 'hk_message_vote' mlist_fqdn=object.mailinglist.name message_id_hash=message_id_hash %}">
+          action="{% url 'hk_message_vote' mlist_fqdn=object.mailinglist_id message_id_hash=message_id_hash %}">
     {% csrf_token %}
-    <i class="icomoon likestatus {{ object.likestatus }}"></i>
-    <span>+{{ object.likes }}/-{{ object.dislikes }}</span>
+    {% with votes=object.get_votes %}
+    <i class="icomoon likestatus {{ votes.status }}"></i>
+    <span>+{{ votes.likes }}/-{{ votes.dislikes }}</span>
+    {% endwith %}
     {% if object.myvote and object.myvote.value == 1 %}
         <!-- if you like it, highlight thumbs up, disable thumbs down -->
         <a href="#cancelvote" class="vote" data-vote="0">

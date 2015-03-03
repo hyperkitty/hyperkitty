@@ -111,7 +111,8 @@ def vote(request, mlist_fqdn, message_id_hash):
             "message_id_hash": message_id_hash,
             }))
 
-    result = { "like": message.likes, "dislike": message.dislikes,
+    votes = message.get_votes()
+    result = { "like": votes["likes"], "dislike": votes["dislikes"],
                "html": html, }
     return HttpResponse(json.dumps(result),
                         content_type='application/javascript')

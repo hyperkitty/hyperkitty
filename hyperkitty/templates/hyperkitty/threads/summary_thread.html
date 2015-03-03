@@ -30,8 +30,10 @@
                         {{ thread|num_comments }}
                     </li>
                     <li class="hidden-tn">
-                        <i class="icomoon likestatus {{ thread.likestatus }}"></i>
-                        <span class="likestatus">+{{ thread.likes }}/-{{ thread.dislikes }}</span>
+                        {% with votes=thread.get_votes %}
+                        <i class="icomoon likestatus {{ votes.status }}"></i>
+                        <span class="likestatus">+{{ votes.likes }}/-{{ votes.dislikes }}</span>
+                        {% endwith %}
                     </li>
                 </ul>
             </div>

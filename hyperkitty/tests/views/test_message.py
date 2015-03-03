@@ -88,15 +88,16 @@ class MessageViewsTestCase(TestCase):
         msg2 = Email.objects.get(mailinglist__name="list@example.com",
                                  message_id="msg2")
         msg2.vote(-1, self.user)
-        self.assertEqual(msg1.likes, 1)
-        self.assertEqual(msg2.dislikes, 1)
+        self.assertEqual(msg1.get_votes()["likes"], 1)
+        self.assertEqual(msg2.get_votes()["dislikes"], 1)
         for msg in (msg1, msg2):
             url = reverse('hk_message_vote', args=("list@example.com",
                           msg.message_id_hash))
             resp = self.client.post(url, {"vote": "0"})
             self.assertEqual(resp.status_code, 200)
-            self.assertEqual(msg.likes, 0)
-            self.assertEqual(msg.dislikes, 0)
+            votes = msg.get_votes()
+            self.assertEqual(votes["likes"], 0)
+            self.assertEqual(votes["dislikes"], 0)
             result = json.loads(resp.content)
             self.assertEqual(result["like"], 0)
             self.assertEqual(result["dislike"], 0)

@@ -67,6 +67,34 @@ class ArchivePolicy(Enum):
     public = 2
 
 
+def get_votes(instance):
+    def _getvalue():
+        if isinstance(instance, Thread):
+            filters = {"email__thread_id": instance.id}
+        elif isinstance(instance, Email):
+            filters = {"email_id": instance.id}
+        else:
+            ValueError("The 'get_votes' function only accepts 'Email' "
+                       "and 'Thread' instance")
+        votes = list(Vote.objects.filter(**filters).values_list(
+            "value", flat=True))
+        return (
+                len([ v for v in votes if v == 1 ]),
+                len([ v for v in votes if v == -1 ]),
+            )
+    votes = cache.get_or_set("%s:%s:votes"
+        % (instance.__class__.__name__, instance.id), _getvalue, None)
+    likes, dislikes = votes
+    # XXX: use an Enum?
+    if likes - dislikes >= 10:
+        status = "likealot"
+    elif likes - dislikes > 0:
+        status = "like"
+    else:
+        status = "neutral"
+    return {"likes": likes, "dislikes": dislikes, "status": status}
+
+
 
 class Profile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL,
@@ -313,25 +341,9 @@ class Email(models.Model):
     class Meta:
         unique_together = ("mailinglist", "message_id")
 
-    @property
-    def likes(self):
-        # TODO: caching
-        return self.votes.filter(value=1).count()
 
-    @property
-    def dislikes(self):
-        # TODO: caching
-        return self.votes.filter(value=-1).count()
-
-    @property
-    def likestatus(self):
-        likes, dislikes = self.likes, self.dislikes
-        # TODO: use an Enum?
-        if likes - dislikes >= 10:
-            return "likealot"
-        if likes - dislikes > 0:
-            return "like"
-        return "neutral"
+    def get_votes(self):
+        return get_votes(self)
 
     def vote(self, value, user):
         # Checks if the user has already voted for this message.
@@ -451,9 +463,9 @@ class Thread(models.Model):
         # instances for each query, so use the regular cache too
         def _get_email():
             try:
-                return self.emails.get(parent_id__isnull=True)
+                return self.emails.select_related("sender").get(parent_id__isnull=True)
             except Email.DoesNotExist:
-                return self.emails.order_by("date").first()
+                return self.emails.select_related("sender").order_by("date").first()
         if self._starting_email_cache is None:
             self._starting_email_cache = cache.get_or_set(
                 "Thread:%s:starting_email" % self.id, _get_email, None)
@@ -505,30 +517,8 @@ class Thread(models.Model):
             lambda: self.starting_email.subject,
             None)
 
-    def _getvotes(self):
-        return cache.get_or_set(
-            "Thread:%s:votes" % self.id,
-            lambda: Vote.objects.filter(email__thread_id=self.id),
-            None)
-
-    @property
-    def likes(self):
-        return len([ v for v in self._getvotes() if v.value == 1 ])
-
-    @property
-    def dislikes(self):
-        return len([ v for v in self._getvotes() if v.value == -1 ])
-
-    @property
-    def likestatus(self):
-        # TODO: deduplicate with the equivalent function in the Email class
-        likes, dislikes = self.likes, self.dislikes
-        # XXX: use an Enum?
-        if likes - dislikes >= 10:
-            return "likealot"
-        if likes - dislikes > 0:
-            return "like"
-        return "neutral"
+    def get_votes(self):
+        return get_votes(self)
 
     @property
     def prev_thread(self): # TODO: Make it a relationship
@@ -642,7 +632,7 @@ def Vote_clean_cache(sender, **kwargs):
     """Delete cached vote values for Email and Thread instance"""
     vote = kwargs["instance"]
     cache.delete("Thread:%s:votes" % vote.email.thread_id)
-    #vote.email.thread.likes # re-populate the cache?
+    # re-populate the cache?
     cache.delete("Email:%s:votes" % vote.email_id)
 
 

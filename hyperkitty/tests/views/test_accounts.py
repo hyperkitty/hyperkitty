@@ -48,7 +48,7 @@ class AccountViewsTestCase(TestCase):
             'testuser', 'test@example.com', 'testPass')
         self.profile = Profile.objects.create(user=self.user)
 
-    def _send_message(self): 
+    def _send_message(self):
         msg = Message()
         msg["From"] = "Dummy Sender <dummy@example.com>"
         msg["Message-ID"] = "<msg>"

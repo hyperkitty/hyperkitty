@@ -161,9 +161,10 @@ class VoteTestCase(TestCase):
         msg1.vote(1, self.user)
         self.assertEqual(Thread.objects.count(), 1)
         thread = Thread.objects.all()[0]
-        self.assertEqual(thread.likes, 1)
-        self.assertEqual(thread.dislikes, 0)
-        self.assertEqual(thread.likestatus, "like")
+        votes = thread.get_votes()
+        self.assertEqual(votes["likes"], 1)
+        self.assertEqual(votes["dislikes"], 0)
+        self.assertEqual(votes["status"], "like")
 
     def test_msg2(self):
         # Second message in thread is voted against
@@ -174,9 +175,10 @@ class VoteTestCase(TestCase):
         msg2.vote(-1, self.user)
         self.assertEqual(Thread.objects.count(), 1)
         thread = Thread.objects.all()[0]
-        self.assertEqual(thread.likes, 0)
-        self.assertEqual(thread.dislikes, 1)
-        self.assertEqual(thread.likestatus, "neutral")
+        votes = thread.get_votes()
+        self.assertEqual(votes["likes"], 0)
+        self.assertEqual(votes["dislikes"], 1)
+        self.assertEqual(votes["status"], "neutral")
 
     def test_likealot(self):
         # All messages in thread are voted for
@@ -190,9 +192,10 @@ class VoteTestCase(TestCase):
             msg.vote(1, self.user)
         self.assertEqual(Thread.objects.count(), 1)
         thread = Thread.objects.all()[0]
-        self.assertEqual(thread.likes, 10)
-        self.assertEqual(thread.dislikes, 0)
-        self.assertEqual(thread.likestatus, "likealot")
+        votes = thread.get_votes()
+        self.assertEqual(votes["likes"], 10)
+        self.assertEqual(votes["dislikes"], 0)
+        self.assertEqual(votes["status"], "likealot")
 
     def test_same_msgid_different_lists(self):
         # Vote on messages with the same msgid but on different lists
@@ -207,8 +210,9 @@ class VoteTestCase(TestCase):
             msg.vote(1, self.user)
         self.assertEqual(Thread.objects.count(), 2)
         for thread in Thread.objects.all():
-            self.assertEqual(thread.likes, 1)
-            self.assertEqual(thread.dislikes, 0)
+            votes = thread.get_votes()
+            self.assertEqual(votes["likes"], 1)
+            self.assertEqual(votes["dislikes"], 0)
 
 
 class ProfileTestCase(TestCase):

@@ -15,7 +15,7 @@
             no category
             {% endif %}
         </a>
-        <form method="post" action="{% url 'hk_thread_set_category' mlist_fqdn=thread.mailinglist.name threadid=thread.thread_id %}">
+        <form method="post" action="{% url 'hk_thread_set_category' mlist_fqdn=thread.mailinglist_id threadid=thread.thread_id %}">
             {% csrf_token %}
             {{ category_form.as_p }}
         </form>

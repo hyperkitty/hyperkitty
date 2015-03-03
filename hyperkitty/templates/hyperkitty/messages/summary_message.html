@@ -6,7 +6,7 @@
             <div>
                 <span class="thread-title">
                     <a name="{{message.message_id_hash}}"
-                       href="{% url 'hk_message_index' mlist_fqdn=message.mailinglist.name message_id_hash=message.message_id_hash %}"
+                       href="{% url 'hk_message_index' mlist_fqdn=message.mailinglist_id message_id_hash=message.message_id_hash %}"
                        >{{ message.subject|strip_subject:mlist }}</a></span>
                 <span class="thread-date">{{ message.date|timesince }}</span>
             </div>
