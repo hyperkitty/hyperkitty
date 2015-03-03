@@ -39,6 +39,6 @@ class EmailIndex(indexes.SearchIndex, indexes.Indexable):
     def get_updated_field(self):
         return 'archived_date'
 
-    #def index_queryset(self, using=None):
-    #    """Used when the entire index for model is updated."""
-    #    return self.get_model().objects.filter(pub_date__lte=datetime.datetime.now())
+    def load_all_queryset(self):
+        # Pull other objects related to the Email in search results.
+        return self.get_model().objects.all().select_related("sender", "thread")

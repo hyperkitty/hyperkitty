@@ -25,7 +25,7 @@ from django.conf import settings
 from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, Page, InvalidPage
 from django.http import Http404
-from haystack.query import EmptySearchQuerySet, SearchQuerySet
+from haystack.query import EmptySearchQuerySet, RelatedSearchQuerySet
 from haystack.forms import SearchForm
 
 from hyperkitty.models import Tag, MailingList, ArchivePolicy
@@ -57,7 +57,7 @@ def search(request):
 
     query = ''
     results = EmptySearchQuerySet()
-    sqs = SearchQuerySet()
+    sqs = RelatedSearchQuerySet()
 
     # Remove private non-subscribed lists
     if mlist is not None:
