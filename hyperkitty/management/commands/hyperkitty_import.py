@@ -174,12 +174,7 @@ class DbImporter(object):
                 message.replace_header("subject",
                         TEXTWRAP_RE.sub(" ", message["subject"]))
             # Parse message to search for attachments
-            try:
-                attachments = self.extract_attachments(message)
-            except DownloadError, e:
-                print("Could not download one of the attachments! "
-                      "Skipping this message. Error: %s" % e.args[0])
-                continue
+            attachments = self.extract_attachments(message)
             # Now insert the message
             try:
                 add_to_list(self.list_address, message)
@@ -228,51 +223,51 @@ class DbImporter(object):
         # Regular attachments
         attachments = ATTACHMENT_RE.findall(message_text)
         for att in attachments:
-            all_attachments.append({
-                "name": att[0], "content_type": att[1],
-                "content": self.download_attachment(att[2]),
-                })
+            all_attachments.append(self.get_attachment(
+                att[0], att[1], att[2]))
         # Embedded messages
         embedded = EMBEDDED_MSG_RE.findall(message_text)
         for att in embedded:
-            all_attachments.append({
-                "name": att[0], "content_type": 'message/rfc822',
-                "content": self.download_attachment(att[1]),
-                })
+            all_attachments.append(self.get_attachment(
+                att[0], "message/rfc822", att[1]))
         # HTML attachments
         html_attachments = HTML_ATTACH_RE.findall(message_text)
         for att in html_attachments:
             url = att.strip("<>")
-            all_attachments.append({
-                "name": os.path.basename(url), "content_type": 'text/html',
-                "content": self.download_attachment(url),
-                })
+            all_attachments.append(self.get_attachment(
+                os.path.basename(url), "message/rfc822", url))
         # Text without charset
         text_no_charset = TEXT_NO_CHARSET_RE.findall(message_text)
         for att in text_no_charset:
-            all_attachments.append({
-                "name": att[0], "content_type": 'text/plain',
-                "content": self.download_attachment(att[1]),
-                })
+            all_attachments.append(self.get_attachment(
+                att[0], "text/plain", att[1]))
         ## Other, probably inline text/plain
         #if has_attach and not (attachments or embedded
         #                       or html_attachments or text_no_charset):
         #    print message_text
         return all_attachments
 
+    def get_attachment(self, name, content_type, url):
+        content = self.download_attachment(url)
+        if not content:
+            content_type = "text/plain"
+            content = b"not available"
+        return {"name": name, "content_type": content_type,
+                "content": content, }
+
     def download_attachment(self, url):
         url = url.strip(" <>")
         if self.no_download:
             if self.verbose:
                 print("NOT downloading attachment from %s" % url)
-            content = ""
+            content = None
         else:
             if self.verbose:
                 print("Downloading attachment from %s" % url)
             try:
                 content = urllib.urlopen(url).read()
             except IOError, e:
-                raise DownloadError(e)
+                content = None
         return content
 
 
