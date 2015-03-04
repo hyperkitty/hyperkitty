@@ -51,11 +51,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-# TODO:
-# - caching
-# - simplify methods
-
-
 
 class ArchivePolicy(Enum):
     """
@@ -211,11 +206,10 @@ class MailingList(models.Model):
         # We filter on emails dates instead of threads dates because that would
         # also include last month's participants when threads carry from one
         # month to the next
-        # TODO: caching
+        # TODO: caching?
         return self.emails.filter(
                 date__gte=begin_date, date__lt=end_date
             ).values("sender_id").distinct().count()
-        #result = Email.objects.filter(mailinglist=self, date__gte=begin_date, date__lt=end_date).values("sender_id").distinct().count()
 
     def get_threads_between(self, begin_date, end_date):
         return self.threads.filter(

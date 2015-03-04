@@ -37,11 +37,11 @@ from django.core.urlresolvers import reverse
 
 from hyperkitty.lib.incoming import add_to_list
 from hyperkitty.models import MailingList, Thread, Tag, Tagging, Email
-from hyperkitty.tests.utils import TestCase
+from hyperkitty.tests.utils import TestCase, SearchEnabledTestCase
 
 
 
-class ReattachTestCase(TestCase):
+class ReattachTestCase(SearchEnabledTestCase):
 
     def setUp(self):
         self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
@@ -61,18 +61,16 @@ class ReattachTestCase(TestCase):
             msg["Message-ID-Hash"] = add_to_list("list@example.com", msg)
             self.messages.append(msg)
 
-    @skip("fulltext search is not implemented yet")
     def test_suggestions(self):
         threadid = self.messages[0]["Message-ID-Hash"]
         msg2 = Email.objects.get(message_id="id2")
-        self.store.search = Mock(return_value={"results": [msg2]})
-        self.store.search_index = True
         response = self.client.get(reverse('hk_thread_reattach_suggest',
                                    args=["list@example.com", threadid]))
-        self.store.search.assert_called_with(
-            u'dummy message', 'list@example.com', 1, 50)
         other_threadid = self.messages[1]["Message-ID-Hash"]
         expected = '<input type="radio" name="parent" value="%s" />' % other_threadid
+        self.assertEqual(len(response.context["suggested_threads"]), 1)
+        self.assertEqual(response.context["suggested_threads"][0].thread_id,
+                         other_threadid)
         self.assertContains(response, expected, count=1, status_code=200)
 
     def test_reattach(self):

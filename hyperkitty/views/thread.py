@@ -35,6 +35,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import SuspiciousOperation
 from django.utils.timezone import utc
 import robot_detection
+from haystack.query import SearchQuerySet
 
 from hyperkitty.models import Tag, Tagging, Favorite, LastView, Thread, MailingList, ThreadCategory
 from hyperkitty.views.forms import AddTagForm, ReplyForm
@@ -377,15 +378,14 @@ def reattach_suggest(request, mlist_fqdn, threadid):
     if not search_query:
         search_query = default_search_query
     search_query = search_query.strip()
-    if getattr(settings, "SEARCH", False):
-        search_result = store.search(search_query, mlist_fqdn, 1, 50)
-        messages = search_result["results"]
-    else:
-        messages = []
+    messages = SearchQuerySet().filter(
+        mailinglist__exact=mlist_fqdn, content=search_query)[:50]
     suggested_threads = []
     for msg in messages:
-        if msg.thread not in suggested_threads and msg.thread_id != threadid:
-            suggested_threads.append(msg.thread)
+        sugg_thread = msg.object.thread
+        if sugg_thread not in suggested_threads \
+            and sugg_thread.thread_id != threadid:
+            suggested_threads.append(sugg_thread)
 
     context = {
         'mlist' : mlist,

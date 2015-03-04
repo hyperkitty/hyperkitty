@@ -23,8 +23,12 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 import os
 import uuid
+import shutil
+import tempfile
 from copy import deepcopy
+from unittest import SkipTest
 
+import haystack
 import mailmanclient
 from mock import Mock, patch
 from django.test import TestCase as DjangoTestCase
@@ -35,33 +39,33 @@ import hyperkitty.lib.mailman
 from hyperkitty.lib.cache import cache
 
 
-OVERRIDE_SETTINGS = {
-    "DEBUG": True,
-    "TEMPLATE_DEBUG": True,
-    "USE_SSL": False,
-    "USE_MOCKUPS": False,
-    "ROOT_URLCONF": "hyperkitty.urls",
-    "LOGIN_URL": '/accounts/login/',
-    "LOGIN_REDIRECT_URL": '/',
-    "LOGIN_ERROR_URL": '/accounts/login/',
-    "COMPRESS_ENABLED": False,
-    "COMPRESS_PRECOMPILERS": (),
-    "CACHES": {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-        },
-    },
-}
-
-
 class TestCase(DjangoTestCase):
+
+    override_settings = {
+        "DEBUG": True,
+        "TEMPLATE_DEBUG": True,
+        "USE_SSL": False,
+        "USE_MOCKUPS": False,
+        "ROOT_URLCONF": "hyperkitty.urls",
+        "LOGIN_URL": '/accounts/login/',
+        "LOGIN_REDIRECT_URL": '/',
+        "LOGIN_ERROR_URL": '/accounts/login/',
+        "COMPRESS_ENABLED": False,
+        "COMPRESS_PRECOMPILERS": (),
+        "CACHES": {
+            'default': {
+                'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+            },
+        },
+    }
+
 
     def _pre_setup(self):
         super(TestCase, self)._pre_setup()
         # Override settings
         self._old_settings = {}
-        for key, value in OVERRIDE_SETTINGS.iteritems():
-            self._old_settings[key] = getattr(settings, key)
+        for key, value in self.override_settings.iteritems():
+            self._old_settings[key] = getattr(settings, key, None)
             setattr(settings, key, value)
         cache.backend = get_cache("default")
         self.mailman_client = Mock()
@@ -75,9 +79,42 @@ class TestCase(DjangoTestCase):
         self._mm_client_patcher.stop()
         cache.clear()
         for key, value in self._old_settings.iteritems():
-            setattr(settings, key, value)
+            if value is None:
+                delattr(settings, key)
+            else:
+                setattr(settings, key, value)
         cache.backend = get_cache("default")
         super(TestCase, self)._post_teardown()
+
+
+class SearchEnabledTestCase(TestCase):
+
+    def _pre_setup(self):
+        try:
+            import whoosh
+        except ImportError:
+            raise SkipTest("The Whoosh library is not available")
+        self.tmpdir = tempfile.mkdtemp(prefix="hyperkitty-testing-")
+        self.override_settings["HAYSTACK_CONNECTIONS"] = {
+            'default': {
+                'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+                'PATH': os.path.join(self.tmpdir, 'fulltext_index'),
+            },
+        }
+        #self.override_settings["HAYSTACK_SIGNAL_PROCESSOR"] = \
+        #    'haystack.signals.RealtimeSignalProcessor'
+        super(SearchEnabledTestCase, self)._pre_setup()
+        # connect to the backend using the new settings
+        #reload(haystack)
+        haystack.connections.reload("default")
+        haystack.signal_processor = haystack.signals.RealtimeSignalProcessor(
+            haystack.connections, haystack.connection_router)
+
+    def _post_teardown(self):
+        haystack.signal_processor.teardown()
+        shutil.rmtree(self.tmpdir)
+        super(SearchEnabledTestCase, self)._post_teardown()
+
 
 
 

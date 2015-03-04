@@ -26,7 +26,6 @@ import datetime
 from tempfile import mkdtemp
 from shutil import rmtree
 from email.message import Message
-from unittest import skip
 
 from mock import Mock
 from django.contrib.auth.models import User
@@ -107,7 +106,7 @@ class PrivateArchivesTestCase(TestCase):
 
     def _do_test(self, url, query={}):
         response = self.client.get(url, query)
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
         self.client.login(username='testuser', password='testPass')
         ## use a temp variable below because self.client.session is actually a
         ## property which returns a new instance en each call :-/
@@ -117,7 +116,8 @@ class PrivateArchivesTestCase(TestCase):
         #session.save()
         #self.user.hyperkitty_profile.get_subscriptions = lambda: ["list@example.com"]
         response = self.client.get(url, query)
-        self.assertContains(response, "Dummy message", status_code=200)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Dummy message")
 
 
     def test_month_view(self):
@@ -132,13 +132,3 @@ class PrivateArchivesTestCase(TestCase):
 
     def test_message_view(self):
         self._do_test(reverse('hk_message_index', args=["list@example.com", self.msgid]))
-
-    @skip("Fulltext search is not yet implemented")
-    def test_search_list(self):
-        self._do_test(reverse('hk_search'), {"list": "list@example.com", "query": "dummy"})
-
-    def test_search_all_lists(self):
-        # When searching all lists, we only search public lists regardless of
-        # the user's subscriptions
-        response = self.client.get(reverse('hk_search'), {"query": "dummy"})
-        self.assertNotContains(response, "Dummy message", status_code=200)

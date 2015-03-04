@@ -19,7 +19,7 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, unicode_literals, print_function
 
 from django.conf import settings
 from django.shortcuts import render, get_object_or_404
@@ -63,7 +63,6 @@ def search(request):
     if mlist is not None:
         sqs = sqs.filter(mailinglist__exact=mlist.name)
     else:
-        # TODO: tests for that
         excluded_mlists = MailingList.objects.filter(
             archive_policy=ArchivePolicy.private.value)
         if request.user.is_authenticated():

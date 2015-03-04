@@ -27,7 +27,6 @@ BuildRequires:  django-rest-framework >= 2.2.0
 BuildRequires:  django-social-auth >= 0.7.1
 BuildRequires:  django-crispy-forms
 BuildRequires:  python-django-compressor
-BuildRequires:  python-BeautifulSoup
 BuildRequires:  python-rjsmin
 BuildRequires:  nodejs-less
 BuildRequires:  python-mailman-client
@@ -40,9 +39,11 @@ BuildRequires:  python-django-south
 BuildRequires:  python-dateutil
 BuildRequires:  python-networkx
 BuildRequires:  python-enum34
+BuildRequires:  python-django-haystack
 # Unit tests only
 BuildRequires:  python-beautifulsoup4
 BuildRequires:  python-mock
+BuildRequires:  python-whoosh
 
 # SELinux
 BuildRequires:  checkpolicy, selinux-policy-devel, /usr/share/selinux/devel/policyhelp
@@ -53,7 +54,6 @@ Requires:       django-social-auth >= 0.7.1
 Requires:       django-rest-framework >= 2.2.0
 Requires:       django-crispy-forms
 Requires:       python-django-compressor
-Requires:       python-BeautifulSoup
 Requires:       python-rjsmin
 Requires:       nodejs-less
 Requires:       python-mailman-client
@@ -66,6 +66,7 @@ Requires:       python-django-south
 Requires:       python-dateutil
 Requires:       python-networkx
 Requires:       python-enum34
+Requires:       python-django-haystack
 
 
 %description
