@@ -30,8 +30,9 @@ class EmailIndex(indexes.SearchIndex, indexes.Indexable):
 
     text = indexes.CharField(document=True, use_template=True)
     mailinglist = indexes.CharField(model_attr='mailinglist__name')
+    subject = indexes.CharField(model_attr='subject', boost=1.25)
     date = indexes.DateTimeField(model_attr='date')
-    sender = indexes.CharField(model_attr='sender__name')
+    sender = indexes.CharField(model_attr='sender__name', boost=1.125)
 
     def get_model(self):
         return Email
