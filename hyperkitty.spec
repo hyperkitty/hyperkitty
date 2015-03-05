@@ -144,10 +144,7 @@ cp -p hyperkitty_standalone/{manage,settings,urls,wsgi}.py \
 touch --reference hyperkitty_standalone/manage.py \
     %{buildroot}%{_sysconfdir}/%{name}/sites/default/__init__.py
 # Mailman config file
-sed -e 's,/path/to/hyperkitty_standalone,%{_sysconfdir}/%{name}/sites/default,g' \
-    hyperkitty_standalone/hyperkitty.cfg \
-    > %{buildroot}%{_sysconfdir}/%{name}/sites/default/hyperkitty.cfg
-touch --reference hyperkitty_standalone/hyperkitty.cfg \
+cp -p hyperkitty_standalone/hyperkitty.cfg \
     %{buildroot}%{_sysconfdir}/%{name}/sites/default/hyperkitty.cfg
 # Apache HTTPd config file
 mkdir -p %{buildroot}/%{_sysconfdir}/httpd/conf.d/
@@ -165,15 +162,13 @@ sed -i -e 's,/path/to/rw,%{_localstatedir}/lib/%{name}/sites/default/db,g' \
     %{buildroot}%{_sysconfdir}/%{name}/sites/default/settings.py
 touch --reference hyperkitty_standalone/settings.py \
     %{buildroot}%{_sysconfdir}/%{name}/sites/default/settings.py
-# Cron job
+# Cron jobs
 mkdir -p %{buildroot}%{_sysconfdir}/cron.daily
-cat > %{buildroot}%{_sysconfdir}/cron.daily/%{name}.sh < EOF
-#!/bin/sh
-%{_bindir}/django-admin hyperkitty_maintenance \
-    --pythonpath=%{_sysconfdir}/%{name}/sites/default \
-    --settings=settings --verbosity 0
-EOF
-chmod +x %{buildroot}%{_sysconfdir}/cron.daily/%{name}.sh
+sed -e 's,/path/to/hyperkitty_standalone,%{_sysconfdir}/%{name}/sites/default,g' \
+    hyperkitty_standalone/crontab \
+    > %{buildroot}%{_sysconfdir}/cron.d/%{name}
+touch --reference hyperkitty_standalone/crontab \
+    %{buildroot}%{_sysconfdir}/cron.d/%{name}
 
 # SELinux
 for selinuxvariant in %{selinux_variants}; do
@@ -223,7 +218,7 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}
 %config(noreplace) %attr(640,root,apache) %{_sysconfdir}/%{name}/sites/default/settings.py
 %config(noreplace) %{_sysconfdir}/httpd/conf.d/%{name}.conf
-%config(noreplace) %attr(755,root,root) %{_sysconfdir}/cron.daily/%{name}.sh
+%config(noreplace) %{_sysconfdir}/cron.d/%{name}
 %{python_sitelib}/%{name}
 %{python_sitelib}/%{pypi_name}-*.egg-info
 %dir %{_localstatedir}/lib/%{name}
