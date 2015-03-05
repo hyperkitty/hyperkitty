@@ -199,14 +199,21 @@
         }
         a {
             display: block;
-            padding: 0.25em 1em;
+            padding: 0 1em;
             outline: none;
+            border-top: 1px solid @navbarColor;
+            border-bottom: 1px solid @navbarColor;
             &:hover {
                 background-color: @linkHoverColor;
                 text-decoration: none;
+                border-top: 1px solid @linkHoverColor;
+                border-bottom: 1px solid @linkHoverColor;
             }
-            &:active {
+            &.active {
                 background-color: @linkHoverColor;
+                text-decoration: none;
+                border-top: 1px solid @rowBorderColor;
+                border-bottom: 1px solid @rowBorderColor;
             }
         }
     }
