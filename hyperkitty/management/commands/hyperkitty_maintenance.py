@@ -30,6 +30,7 @@ from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Count
+from haystack.query import SearchQuerySet
 from haystack.management.commands.update_index import \
     Command as UpdateIndexCommand
 
@@ -71,14 +72,26 @@ class Command(BaseCommand):
         threads.delete()
 
         # Update the fulltext index
-        update_cmd = UpdateIndexCommand()
-        if options["long"]:
-            update_cmd.handle("hyperkitty", remove=True, **options)
-        else:
-            # only update the last day (25 hours to be sure)
-            update_cmd.handle("hyperkitty", age=25, **options)
+        self.update_fulltext_index(options["verbosity"])
 
         # Compute thread order and depth for all threads (long)
         if options["long"]:
             for thread in Thread.objects.all():
                 compute_thread_order_and_depth(thread)
+
+    def update_fulltext_index(self, verbosity):
+        update_cmd = UpdateIndexCommand()
+        # Find the last email in the index:
+        try:
+            last_email = SearchQuerySet().latest('archived_date')
+        except IndexError:
+            update_cmd.start_date = None
+        else:
+            update_cmd.start_date = last_email.object.archived_date
+        # set defaults
+        update_cmd.verbosity = verbosity
+        update_cmd.batchsize = None
+        update_cmd.end_date = None
+        update_cmd.remove = True
+        update_cmd.workers = 0
+        update_cmd.update_backend("hyperkitty", "default")
