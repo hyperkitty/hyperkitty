@@ -18,3 +18,4 @@ python-dateutil < 2.0
 networkx
 enum34
 django-haystack
+django-extensions
