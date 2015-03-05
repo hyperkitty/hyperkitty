@@ -163,7 +163,7 @@ sed -i -e 's,/path/to/rw,%{_localstatedir}/lib/%{name}/sites/default/db,g' \
 touch --reference hyperkitty_standalone/settings.py \
     %{buildroot}%{_sysconfdir}/%{name}/sites/default/settings.py
 # Cron jobs
-mkdir -p %{buildroot}%{_sysconfdir}/cron.daily
+mkdir -p %{buildroot}%{_sysconfdir}/cron.d
 sed -e 's,/path/to/hyperkitty_standalone,%{_sysconfdir}/%{name}/sites/default,g' \
     hyperkitty_standalone/crontab \
     > %{buildroot}%{_sysconfdir}/cron.d/%{name}
