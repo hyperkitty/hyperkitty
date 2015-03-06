@@ -22,7 +22,7 @@
 from __future__ import absolute_import, unicode_literals
 
 import json
-from urlparse import urljoin
+from urlparse import urljoin, urlparse
 from email import message_from_file
 from functools import wraps
 
@@ -91,6 +91,19 @@ def urls(request):
 
 @basic_auth
 def archive(request):
+    allowed_from = urlparse(settings.MAILMAN_REST_SERVER).netloc
+    allowed_from = allowed_from.partition(":")[0]
+    if request.META["REMOTE_ADDR"] != allowed_from and \
+        request.META["REMOTE_HOST"] != allowed_from:
+        logger.info("Access to the archiving API endpoint was forbidden from "
+                    "IP {}, your MAILMAN_REST_SERVER setting may be "
+                    "misconfigured".format(request.META["REMOTE_ADDR"]))
+        response = HttpResponse("""
+            <html><title>Forbidden</title><body>
+            <h1>Access is forbidden</h1></body></html>""",
+            content_type="text/html")
+        response.status_code = 403
+        return response
     if request.method != 'POST':
         raise SuspiciousOperation
     mlist_fqdn = request.POST["mlist"]
