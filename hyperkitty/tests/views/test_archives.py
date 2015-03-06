@@ -73,7 +73,6 @@ class PrivateArchivesTestCase(TestCase):
     def setUp(self):
         #self.tmpdir = mkdtemp(prefix="hyperkitty-testing-")
         self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
-        Profile.objects.create(user=self.user)
         # Setup KittyStore with a working search index
         #ks_settings = SettingsModule()
         #ks_settings.KITTYSTORE_SEARCH_INDEX = self.tmpdir

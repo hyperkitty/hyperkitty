@@ -70,13 +70,7 @@ def login_view(request, *args, **kwargs):
 def user_profile(request):
     if not request.user.is_authenticated():
         return redirect('hk_user_login')
-    # try to render the user profile.
-    try:
-        user_profile = request.user.hyperkitty_profile
-    except ObjectDoesNotExist: # TODO: move that to a post-login action
-        user_profile = Profile.objects.create(user=request.user)
-
-    # get the Mailman user
+    user_profile = request.user.hyperkitty_profile
     mm_user = user_profile.get_mailman_user()
 
     if request.method == 'POST':

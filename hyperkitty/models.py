@@ -34,6 +34,7 @@ from django.contrib import admin
 from django.dispatch import receiver
 from django.utils.timezone import now, utc
 from django.core.cache.utils import make_template_fragment_key
+from django.contrib.auth import get_user_model
 
 import pytz
 import dateutil.parser
@@ -77,8 +78,8 @@ def get_votes(instance):
                 len([ v for v in votes if v == 1 ]),
                 len([ v for v in votes if v == -1 ]),
             )
-    votes = cache.get_or_set("%s:%s:votes"
-        % (instance.__class__.__name__, instance.id), _getvalue, None)
+    cache_key = "%s:%s:votes" % (instance.__class__.__name__, instance.id)
+    votes = cache.get_or_set(cache_key, _getvalue, None)
     likes, dislikes = votes
     # XXX: use an Enum?
     if likes - dislikes >= 10:
@@ -170,6 +171,12 @@ class Profile(models.Model):
             ).order_by("archived_date").first()
 
 admin.site.register(Profile)
+
+@receiver(post_save, sender=get_user_model())
+def create_profile(sender, **kwargs):
+    user = kwargs["instance"]
+    if not Profile.objects.filter(user=user).exists():
+        Profile.objects.create(user=user)
 
 
 class MailingList(models.Model):

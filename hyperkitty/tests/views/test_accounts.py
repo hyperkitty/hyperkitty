@@ -35,7 +35,7 @@ from django.test.utils import override_settings
 from hyperkitty.lib.utils import get_message_id_hash
 from hyperkitty.lib.incoming import add_to_list
 from hyperkitty.lib.mailman import FakeMMList
-from hyperkitty.models import (LastView, Profile, MailingList, Thread,
+from hyperkitty.models import (LastView, MailingList, Thread,
     Email, Favorite)
 from hyperkitty.tests.utils import TestCase
 
@@ -46,7 +46,6 @@ class AccountViewsTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             'testuser', 'test@example.com', 'testPass')
-        self.profile = Profile.objects.create(user=self.user)
 
     def _send_message(self):
         msg = Message()
@@ -161,7 +160,6 @@ class LastViewsTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             'testuser', 'test@example.com', 'testPass')
-        self.profile = Profile.objects.create(user=self.user)
         self.client.login(username='testuser', password='testPass')
         # Create test data
         ml = MailingList.objects.create(
@@ -235,7 +233,6 @@ class SubscriptionsTestCase(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             'testuser', 'testuser@example.com', 'testPass')
-        self.profile = Profile.objects.create(user=self.user)
         self.mailman_client.get_list.side_effect = lambda name: FakeMMList(name)
         self.mm_user = Mock()
         self.mailman_client.get_user.side_effect = lambda name: self.mm_user

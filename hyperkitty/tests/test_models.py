@@ -31,7 +31,7 @@ from django.contrib.auth.models import User
 
 from hyperkitty.lib.incoming import add_to_list
 from hyperkitty.lib.mailman import FakeMMList
-from hyperkitty.models import MailingList, Email, Thread, Sender, Tag, Profile
+from hyperkitty.models import MailingList, Email, Thread, Sender, Tag
 from hyperkitty.tests.utils import TestCase
 
 
@@ -219,7 +219,6 @@ class ProfileTestCase(TestCase):
 
     def setUp(self):
         self.user = User.objects.create(username="dummy")
-        self.profile = Profile.objects.create(user=self.user)
 
     def test_get_subscriptions(self):
         self.mailman_client.get_list.side_effect = lambda name: FakeMMList(name)
@@ -229,7 +228,7 @@ class ProfileTestCase(TestCase):
         self.mm_user.subscription_list_ids = ["test@example.com",]
         MailingList.objects.create(name="test@example.com")
         try:
-            subs = self.profile.get_subscriptions()
+            subs = self.user.hyperkitty_profile.get_subscriptions()
         except AttributeError, e:
             #print_exc()
             self.fail("Subscriptions should be available even if "
@@ -245,4 +244,5 @@ class ProfileTestCase(TestCase):
         msg1.vote(1, self.user)
         msg2 = Email.objects.get(message_id="msg2")
         msg2.vote(-1, self.user)
-        self.assertEqual(self.profile.get_votes_in_list("example-list"), (1, 1))
+        self.assertEqual( (1, 1),
+            self.user.hyperkitty_profile.get_votes_in_list("example-list"))

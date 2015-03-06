@@ -34,7 +34,7 @@ from django.test.utils import override_settings
 from hyperkitty.lib.utils import get_message_id_hash
 from hyperkitty.lib.incoming import add_to_list
 from hyperkitty.lib.mailman import FakeMMList
-from hyperkitty.models import Profile, MailingList, ArchivePolicy
+from hyperkitty.models import MailingList, ArchivePolicy
 from hyperkitty.tests.utils import SearchEnabledTestCase
 
 
@@ -44,7 +44,6 @@ class SearchViewsTestCase(SearchEnabledTestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             'testuser', 'test@example.com', 'testPass')
-        self.profile = Profile.objects.create(user=self.user)
         self.mailman_client.get_list.side_effect = lambda name: FakeMMList(name)
         self.mm_user = Mock()
         self.mailman_client.get_user.side_effect = lambda name: self.mm_user
