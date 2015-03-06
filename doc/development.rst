@@ -24,10 +24,6 @@ First, create the virtualenv and activate it::
 
 Then download the components of HyperKitty::
 
-    git clone https://github.com/hyperkitty/kittystore.git
-    cd kittystore
-    python setup.py develop
-    cd ..
     git clone https://github.com/hyperkitty/hyperkitty.git
     cd hyperkitty
     python setup.py develop
@@ -46,12 +42,12 @@ content::
     TEMPLATE_DEBUG = DEBUG
     USE_SSL = False
 
-It's also recommanded to change the database access paths in the ``DATABASES``,
-``KITTYSTORE_URL`` and ``KITTYSTORE_SEARCH_INDEX`` variables.
+It's also recommanded to change the database access paths in the ``DATABASES``
+and ``HAYSTACK_CONNECTIONS`` variables.
 
 If you ever want to turn the ``DEBUG`` variable to ``False`` (by removing it
-from ``settings_local.py``), you'll have to run three additional commands at
-first and each time you change the static files::
+from ``settings_local.py``), you'll have to run two additional commands then
+and each time you change the static files::
 
     django-admin collectstatic --pythonpath hyperkitty_standalone --settings settings
     django-admin compress --pythonpath hyperkitty_standalone --settings settings

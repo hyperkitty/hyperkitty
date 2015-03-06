@@ -19,7 +19,7 @@ commands::
 
 You will also need to install Node.js and LESS (version >= 1.5) using your package
 manager or the project's installation documentation. If you are using Fedora 20, you
-can just run ``yum install nodejs-less``. If you are using Fedora 19 (or earlier),
+can just run ``yum install nodejs-less``. If you are using an earlier version,
 you can install the correct version of LESS via rpm: http://pkgs.org/download/nodejs-less
 
 Setup your django project
@@ -33,10 +33,9 @@ First, get the project directory from the source code management system::
     git clone https://github.com/hyperkitty/hyperkitty_standalone.git
 
 Second, change the database setting in ``hyperkitty_standalone/settings.py`` to
-your preferred database. HyperKitty uses two databases, one to store the metadata
-and other to store the emails. Edit this file to reflect the correct database
-credentials. The configuration variables are ``DATABASES`` (at the top of the
-file) and ``KITTYSTORE_URL`` (at the bottom).
+your preferred database. Edit this file to reflect the correct database
+credentials, the configuration variable is ``DATABASES`` (at the top of the
+file).
 
 Or better yet, instead of changing the ``settings.py`` file itself, copy the
 values you want to change to a file called ``settings_local.py`` and change
@@ -95,14 +94,12 @@ To receive incoming emails from Mailman, you must add the following lines to
     [archiver.hyperkitty]
     class: hyperkitty.archiver.Archiver
     enable: yes
-    configuration: /path/to/hyperkitty_standalone/settings.py
+    configuration: /path/to/hyperkitty_standalone/hyperkitty.cfg
 
-.. warning::
-    The user that Mailman runs under (usually "mailman") must be able to read
-    both the ``settings.py`` and ``settings_local.py`` files. Remember that
-    those files also contain the database passwords, so make sure the
-    permissions are correct. We suggest adding the mailman user to the apache
-    group, and only giving this group read access to those files.
+And set the URL to your HyperKitty installation in the hyperkitty.cfg file.
+It is also recommanded, but not mandatory, to change the API password in this
+file and in the ``MAILMAN_ARCHIVER_API_PASS`` variable in ``settings.py`` (or
+``settings_local.py``).
 
 After having made these changes, you must restart Mailman. Check its log files
 to make sure the emails are correctly archived. You should not see "``Broken
@@ -131,48 +128,33 @@ base and run the commands that will update the database schemas. Before
 updating any of those databases, it is recommended to shut down the webserver
 which serves HyperKitty (Apache HTTPd for example).
 
-There are two main databases in HyperKitty. The one from KittyStore and the one
-from HyperKitty itself. To update the KittyStore database, just run::
+To update the HyperKitty database, run::
 
-    kittystore-updatedb -p hyperkitty_standalone -s settings
+    django-admin syncdb  --migrate --pythonpath hyperkitty_standalone --settings settings
 
-This command may take a long time to complete, don't interrupt it.
-
-Then, to update the HyperKitty database, run::
-
-    django-admin syncdb  --pythonpath hyperkitty_standalone --settings settings
-    django-admin migrate --pythonpath hyperkitty_standalone --settings settings
-
-After those commands complete, your database will be updated, you can start
-your webserver again, and restart Mailman (to take the KittyStore upgrade into
-account).
+After this command complete, your database will be updated, you can start
+your webserver again.
 
 
 Maintenance
 ===========
 
-HyperKitty imports some properties from Mailman, like the list description, its
-privacy status, etc. This import is done and refreshed on each message arrival.
-If you change some properties in Mailman and you want to manually refresh them
-in HyperKitty, you can run the following command::
-
-    kittystore-sync-mailman -p {path-to-hyperkitty_standalone} -s settings
-
-This command will refresh list properties and user IDs, and may take several
-minutes to complete.
+There are a few tasks in HyperKitty that need to be run at regular intervals.
+The ``hyperkitty_standalone`` directory contains an example ``crontab`` file
+that you can put in your ``/etc/cron.d`` directory.
 
 
 RPMs
 ====
-Some preliminary RPMs for Fedora 19 are available from the repository described in this repo file::
+Some preliminary RPMs for Fedora 20 are available from the repository described in this repo file::
 
     http://repos.fedorapeople.org/repos/abompard/hyperkitty/hyperkitty.repo
 
-Only Fedora 19 has packages for now, the plan is to build RPMs for RHEL 7 when
-it's out, and submit HyperKitty and Mailman3 for inclusion into Fedora when
-Mailman3 itself is out. At the moment, the packages are rather stable, but the
-dependencies can change a lot. These packages have been tested on Fedora 19
-with the targeted SELinux policy set to enforcing.
+Only Fedora 20 has packages for now, but there will be RPMs for EPEL7 (RHEL-7
+compatible), and the plan is to submit HyperKitty and Mailman3 for inclusion
+into Fedora when Mailman3 itself is out. At the moment, the packages are rather
+stable, but the dependencies can change a lot. These packages have been tested
+on Fedora 20 with the targeted SELinux policy set to enforcing.
 
 
 License
