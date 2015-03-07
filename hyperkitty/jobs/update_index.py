@@ -49,6 +49,9 @@ class Job(BaseJob):
         update_cmd.verbosity = 1
         update_cmd.batchsize = None
         update_cmd.end_date = None
-        update_cmd.remove = True
         update_cmd.workers = 0
+        # Setting remove to True is extremely slow, it needs to scan the entire
+        # index and database. About 15 minutes on Fedora's lists, so not for a
+        # frequent operation.
+        update_cmd.remove = False
         update_cmd.update_backend("hyperkitty", "default")
