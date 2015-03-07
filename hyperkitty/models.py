@@ -172,8 +172,12 @@ class Profile(models.Model):
 
 admin.site.register(Profile)
 
-@receiver(post_save, sender=get_user_model())
+@receiver(post_save)
 def create_profile(sender, **kwargs):
+    # Filter on the User class here instead of the decorator because the user
+    # model may not have been loaded at that time
+    if sender != get_user_model():
+        return
     user = kwargs["instance"]
     if not Profile.objects.filter(user=user).exists():
         Profile.objects.create(user=user)
