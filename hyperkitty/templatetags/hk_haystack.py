@@ -28,4 +28,4 @@ def nolongterms(text):
     Remove terms longer than 255 chars, or Xapian will choke on them:
     https://github.com/notanumber/xapian-haystack/issues/77
     """
-    ' '.join(word for word in text.split() if len(word) < 255)
+    return ' '.join(word for word in text.split() if len(word) < 255)
