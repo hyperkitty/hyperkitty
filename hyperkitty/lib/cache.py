@@ -22,7 +22,7 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-from django.core.cache import get_cache
+from django.core.cache import cache as django_cache
 
 
 MISSING = object()
@@ -30,7 +30,7 @@ MISSING = object()
 class CacheProxy:
 
     def __init__(self):
-        self.backend = get_cache("default")
+        self.backend = django_cache
 
     def __getattr__(self, name):
         return getattr(self.backend, name)

@@ -8,13 +8,13 @@ from __future__ import absolute_import, print_function, unicode_literals
 from email.message import Message
 
 from mock import Mock
-from django.test import TestCase
 from django.utils.timezone import now
 
 from hyperkitty.models import MailingList, Email, Thread, Sender
 from hyperkitty.lib.signals import new_email, new_thread
 from hyperkitty.lib.incoming import add_to_list
 from hyperkitty.lib.utils import get_message_id_hash
+from hyperkitty.tests.utils import TestCase
 
 
 class EventsTestCase(TestCase):

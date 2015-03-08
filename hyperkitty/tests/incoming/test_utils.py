@@ -29,12 +29,11 @@ import dateutil
 from email.message import Message
 from email import message_from_file
 
-from django.test import TestCase
 from django.utils import timezone
 from django.utils.tzinfo import FixedOffset
 
 from hyperkitty.lib import utils
-from hyperkitty.tests.utils import get_test_file
+from hyperkitty.tests.utils import TestCase, get_test_file
 
 
 class TestUtils(TestCase):

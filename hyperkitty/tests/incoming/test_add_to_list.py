@@ -7,14 +7,13 @@ import datetime
 from email.message import Message
 from email import message_from_file
 
-from django.test import TestCase
 from django.utils import timezone
 from django.db import IntegrityError
 
 from hyperkitty.models import MailingList, Email, Thread, Attachment
 from hyperkitty.lib.incoming import add_to_list
 from hyperkitty.lib.utils import get_message_id_hash
-from hyperkitty.tests.utils import get_test_file
+from hyperkitty.tests.utils import TestCase, get_test_file
 
 
 class TestFetch(TestCase):

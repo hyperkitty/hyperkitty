@@ -27,13 +27,12 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 from email.message import Message
 
-from django.test import TestCase
 from django.utils.timezone import now
 
 from hyperkitty.models import MailingList, Email, Thread, Sender
 from hyperkitty.lib.analysis import compute_thread_order_and_depth
 from hyperkitty.lib.incoming import add_to_list
-#from hyperkitty.tests.utils import TestCase
+from hyperkitty.tests.utils import TestCase
 
 
 

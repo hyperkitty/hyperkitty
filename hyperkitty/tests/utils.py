@@ -31,6 +31,7 @@ from unittest import SkipTest
 import haystack
 import mailmanclient
 from mock import Mock, patch
+from django import VERSION as DJANGO_VERSION
 from django.test import TestCase as DjangoTestCase
 from django.conf import settings
 from django.core.cache import get_cache
@@ -52,11 +53,11 @@ class TestCase(DjangoTestCase):
         "LOGIN_ERROR_URL": '/accounts/login/',
         "COMPRESS_ENABLED": False,
         "COMPRESS_PRECOMPILERS": (),
-        "CACHES": {
-            'default': {
-                'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
-            },
-        },
+        #"CACHES": {
+        #    'default': {
+        #        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        #    },
+        #},
     }
 
 
@@ -67,7 +68,11 @@ class TestCase(DjangoTestCase):
         for key, value in self.override_settings.iteritems():
             self._old_settings[key] = getattr(settings, key, None)
             setattr(settings, key, value)
-        cache.backend = get_cache("default")
+        #if DJANGO_VERSION[:2] < (1, 7):
+        #    cache.backend = get_cache("default") # in 1.7 it's a proxy
+        #else:
+        #    from django.core.cache import caches
+        #    #print("~"*40, caches.all())
         self.mailman_client = Mock()
         self.mailman_client.get_user.side_effect = mailmanclient.MailmanConnectionError()
         self.mailman_client.get_list.side_effect = mailmanclient.MailmanConnectionError()
@@ -83,7 +88,8 @@ class TestCase(DjangoTestCase):
                 delattr(settings, key)
             else:
                 setattr(settings, key, value)
-        cache.backend = get_cache("default")
+        #if DJANGO_VERSION[:2] < (1, 7):
+        #    cache.backend = get_cache("default")
         super(TestCase, self)._post_teardown()
 
 

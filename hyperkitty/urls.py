@@ -20,6 +20,7 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+from django import VERSION as DJANGO_VERSION
 from django.conf.urls import patterns, include, url
 from django.views.generic.base import TemplateView
 
@@ -28,9 +29,9 @@ from django.contrib.auth.views import logout as logout_view
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
-admin.autodiscover()
+if DJANGO_VERSION[:2] < (1, 7):
+    admin.autodiscover()
 
-from hyperkitty.views import TextTemplateView
 from hyperkitty import api
 
 
@@ -142,7 +143,7 @@ urlpatterns = patterns('hyperkitty.views',
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
     # Robots.txt
-    url(r'^robots\.txt$', TextTemplateView.as_view(template_name="robots.txt")),
+    url(r'^robots\.txt$', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
 
     # Social Auth
     url(r'', include('social_auth.urls'), {"SSL": True}),

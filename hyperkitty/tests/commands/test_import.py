@@ -6,9 +6,8 @@ from __future__ import absolute_import, print_function, unicode_literals
 from email.message import Message
 from textwrap import dedent
 
-from django.test import TestCase
-
 from hyperkitty.management.commands.hyperkitty_import import DbImporter
+from hyperkitty.tests.utils import TestCase
 
 
 class DbImporterTestCase(TestCase):

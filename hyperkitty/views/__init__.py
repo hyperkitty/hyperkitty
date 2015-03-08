@@ -18,14 +18,3 @@
 #
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
-
-from __future__ import absolute_import
-
-from django.views.generic.base import TemplateView
-
-# https://docs.djangoproject.com/en/1.4/topics/generic-views-migration/#mimetype
-
-class TextTemplateView(TemplateView):
-    def render_to_response(self, context, **kwargs):
-        return super(TextTemplateView, self).render_to_response(context,
-                        content_type='text/plain', **kwargs)
