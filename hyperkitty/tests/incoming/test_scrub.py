@@ -16,6 +16,15 @@ from hyperkitty.tests.utils import get_test_file
 
 class TestScrubber(unittest.TestCase):
 
+    def _check_html_attachment(self, value, expected):
+        """
+        Python's mimetype module does not give predictable results:
+        https://mail.python.org/pipermail/python-list/2014-February/678963.html
+        """
+        self.assertEqual(value[0], expected[0])
+        self.assertIn(value[1], [u"attachment.html", u"attachment.htm"])
+        self.assertEqual(value[2:4], expected[2:4])
+
     def test_attachment_1(self):
         with open(get_test_file("attachment-1.txt")) as email_file:
             msg = message_from_file(email_file)
@@ -58,7 +67,7 @@ class TestScrubber(unittest.TestCase):
         contents, attachments = scrubber.scrub()
         self.assertEqual(len(attachments), 2)
         # HTML part
-        self.assertEqual(attachments[0][0:4],
+        self._check_html_attachment(attachments[0],
                 (3, u"attachment.html", "text/html", "iso-8859-1"))
         self.assertEqual(len(attachments[0][4]), 3134)
         # Image attachment
@@ -75,7 +84,7 @@ class TestScrubber(unittest.TestCase):
         contents, attachments = scrubber.scrub()
         self.assertEqual(len(attachments), 1)
         # HTML part
-        self.assertEqual(attachments[0][0:4],
+        self._check_html_attachment(attachments[0],
                 (2, u"attachment.html", "text/html", "iso-8859-1"))
         self.assertEqual(len(attachments[0][4]), 2723)
         # Scrubbed content
@@ -124,7 +133,7 @@ class TestScrubber(unittest.TestCase):
         contents, attachments = scrubber.scrub()
         self.assertEqual(len(attachments), 2)
         # HTML part
-        self.assertEqual(attachments[0][0:4],
+        self._check_html_attachment(attachments[0],
                 (3, u"attachment.html", "text/html", "iso-8859-1"))
         self.assertEqual(len(attachments[0][4]), 114)
         # text attachment
