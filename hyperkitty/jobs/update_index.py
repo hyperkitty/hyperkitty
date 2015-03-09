@@ -46,7 +46,7 @@ class Job(BaseJob):
         else:
             update_cmd.start_date = last_email.object.archived_date
         # set defaults
-        update_cmd.verbosity = 1
+        update_cmd.verbosity = 0
         update_cmd.batchsize = None
         update_cmd.end_date = None
         update_cmd.workers = 0

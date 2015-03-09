@@ -35,7 +35,6 @@ class Job(BaseJob):
     when = "monthly"
 
     def execute(self):
-        threads = Thread.objects.annotate(
-            num_emails=Count("emails")).filter(num_emails=0)
-        print("Deleting {} orphan thread(s)".format(threads.count()))
-        threads.delete()
+        Thread.objects.annotate(
+            num_emails=Count("emails")
+        ).filter(num_emails=0).delete()
