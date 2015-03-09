@@ -22,25 +22,24 @@
 from __future__ import absolute_import, unicode_literals
 
 from urllib2 import HTTPError
-from uuid import UUID
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
-from django.core.exceptions import SuspiciousOperation, ObjectDoesNotExist
+from django.core.exceptions import SuspiciousOperation
 from django.contrib.auth import authenticate, login, get_backends
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.views import login as django_login_view
 from django.shortcuts import render, redirect
 from django.utils.http import is_safe_url
-from django.utils.timezone import utc, get_current_timezone
+from django.utils.timezone import get_current_timezone
 from django.http import Http404, HttpResponse
 #from django.utils.translation import gettext as _
 from social_auth.backends import SocialAuthBackend
 import dateutil.parser
 import mailmanclient
 
-from hyperkitty.models import (Profile, Favorite, LastView, MailingList, Sender,
+from hyperkitty.models import (Favorite, LastView, MailingList, Sender,
     Email, Vote)
 from hyperkitty.views.forms import RegistrationForm, UserProfileForm
 from hyperkitty.lib.view_helpers import FLASH_MESSAGES, is_mlist_authorized
@@ -71,6 +70,8 @@ def user_profile(request):
     if not request.user.is_authenticated():
         return redirect('hk_user_login')
     profile = request.user.hyperkitty_profile
+    # TODO: Create the profile if it does not exist. Use case: hyperkitty is
+    # added to an existing Django project with existing users
     mm_user = profile.get_mailman_user()
 
     if request.method == 'POST':
@@ -237,8 +238,6 @@ def public_profile(request, user_id):
         addresses = []
         subscription_list_ids = []
         user_id = None
-    #user_id_uuid = UUID(int=int(user_id))
-    #db_user = User.objects.filter(mailman_id=str(user_id_uuid)).first()
     try:
         client = get_mailman_client()
         mm_user = client.get_user(user_id)
@@ -302,18 +301,6 @@ def posts(request, user_id):
             return render(request, "hyperkitty/errors/private.html", {
                             "mlist": mlist,
                           }, status=403)
-
-    #user_id_uuid = UUID(int=int(user_id))
-    ## Get the user's full name
-    #try:
-    #    client = get_mailman_client()
-    #    mm_user = client.get_user(user_id)
-    #except HTTPError:
-    #    raise Http404("No user with this ID: %s" % user_id)
-    #except mailmanclient.MailmanConnectionError:
-    #    fullname = None
-    #else:
-    #    fullname = get_fullname(mm_user)
 
     fullname = Sender.objects.filter(mailman_id=user_id).exclude(name=""
         ).values_list("name", flat=True).first()

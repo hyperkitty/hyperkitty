@@ -28,7 +28,7 @@ from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy
 
-from hyperkitty.models import Profile, ThreadCategory
+from hyperkitty.models import Profile
 
 # pylint: disable=too-few-public-methods
 

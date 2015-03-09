@@ -26,8 +26,6 @@ This will be imported by Mailman Core and must thus be Python3-compatible.
 
 from __future__ import absolute_import, unicode_literals
 
-import os
-import sys
 try:
     from urllib.parse import urljoin # PY3  # pylint: disable=no-name-in-module
 except ImportError:

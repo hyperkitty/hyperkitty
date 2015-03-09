@@ -41,7 +41,7 @@ from dateutil.parser import parse as parse_date
 from dateutil import tz
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction, Error as DatabaseError
+from django.db import Error as DatabaseError
 from django.utils.timezone import utc
 
 from hyperkitty.lib.incoming import add_to_list

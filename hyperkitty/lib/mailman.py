@@ -21,7 +21,6 @@
 
 from __future__ import absolute_import, unicode_literals
 
-from urllib2 import HTTPError
 from django.conf import settings
 from django.utils.timezone import now
 from mailmanclient import Client, MailmanConnectionError

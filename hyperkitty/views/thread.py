@@ -25,9 +25,7 @@ from __future__ import absolute_import, unicode_literals
 import datetime
 import re
 import json
-from collections import namedtuple
 
-from django.conf import settings
 from django.http import HttpResponse, Http404
 from django.template import RequestContext, loader
 from django.shortcuts import render, redirect, get_object_or_404
@@ -42,7 +40,6 @@ from hyperkitty.views.forms import AddTagForm, ReplyForm
 from hyperkitty.lib.utils import stripped_subject
 from hyperkitty.lib.view_helpers import (get_months, get_category_widget,
         FLASH_MESSAGES, check_mlist_private)
-from hyperkitty.lib.analysis import compute_thread_order_and_depth
 
 
 def _get_thread_replies(request, thread, limit, offset=1):

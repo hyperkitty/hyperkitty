@@ -24,9 +24,7 @@
 from __future__ import absolute_import, unicode_literals, print_function
 
 import datetime
-from collections import namedtuple
 from urllib2 import HTTPError
-from uuid import UUID
 
 from django.conf import settings
 from django.db import models, IntegrityError
@@ -46,7 +44,6 @@ from mailmanclient import MailmanConnectionError
 
 
 from hyperkitty.lib.mailman import get_mailman_client
-from hyperkitty.lib.signals import new_email, new_thread
 from hyperkitty.lib.analysis import compute_thread_order_and_depth
 from hyperkitty.lib.cache import cache
 

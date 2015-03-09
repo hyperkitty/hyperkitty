@@ -21,18 +21,14 @@
 
 from __future__ import absolute_import, unicode_literals, print_function
 
-from django.conf import settings
-from django.shortcuts import render, get_object_or_404
-from django.core.paginator import Paginator, Page, InvalidPage
+from django.shortcuts import render
 from django.http import Http404
 from haystack.query import EmptySearchQuerySet, RelatedSearchQuerySet
 from haystack.forms import SearchForm
 
-from hyperkitty.models import Tag, MailingList, ArchivePolicy
+from hyperkitty.models import MailingList, ArchivePolicy
 from hyperkitty.lib.paginator import paginate
-from hyperkitty.views.mlist import _thread_list
-from hyperkitty.lib.view_helpers import (
-    check_mlist_private, is_mlist_authorized)
+from hyperkitty.lib.view_helpers import is_mlist_authorized
 
 
 

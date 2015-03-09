@@ -34,7 +34,7 @@ from django.contrib.auth.models import User
 
 from hyperkitty.lib.incoming import add_to_list
 from hyperkitty.lib.mailman import FakeMMList
-from hyperkitty.models import MailingList, Email, Thread, Sender, Tag
+from hyperkitty.models import MailingList, Email, Thread, Tag
 from hyperkitty.tests.utils import TestCase
 
 

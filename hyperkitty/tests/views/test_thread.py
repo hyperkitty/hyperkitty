@@ -22,14 +22,11 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-import datetime
 import json
 import re
 import urlparse
 from email.message import Message
-from unittest import skip
 
-from mock import Mock
 from bs4 import BeautifulSoup
 
 from django.contrib.auth.models import User

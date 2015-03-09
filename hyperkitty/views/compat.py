@@ -32,7 +32,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect
 
-from hyperkitty.models import MailingList, Email
+from hyperkitty.models import Email
 from hyperkitty.lib.compat import get_list_by_name, month_name_to_num
 
 

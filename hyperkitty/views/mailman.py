@@ -22,14 +22,14 @@
 from __future__ import absolute_import, unicode_literals
 
 import json
-from urlparse import urljoin, urlparse
+from urlparse import urlparse
 from email import message_from_file
 from functools import wraps
 
 from django.conf import settings
 from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.utils.http import urlunquote
 
 from hyperkitty.lib.incoming import add_to_list

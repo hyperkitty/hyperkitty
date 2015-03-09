@@ -22,12 +22,8 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import datetime
-import uuid
-from traceback import print_exc, format_exc
 
-from mock import Mock, patch
 from django.http import HttpRequest
-from django.core.urlresolvers import reverse
 from django.utils.timezone import utc
 
 from hyperkitty.lib.view_helpers import get_display_dates, show_mlist

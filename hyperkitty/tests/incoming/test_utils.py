@@ -22,9 +22,7 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-import unittest
 import datetime
-import dateutil
 from email.message import Message
 from email import message_from_file
 

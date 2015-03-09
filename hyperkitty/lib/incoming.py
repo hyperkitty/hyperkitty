@@ -22,7 +22,6 @@
 from __future__ import absolute_import, unicode_literals, division
 
 
-import datetime
 import re
 
 from django.conf import settings

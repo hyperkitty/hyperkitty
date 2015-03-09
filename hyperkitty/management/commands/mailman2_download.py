@@ -35,7 +35,6 @@ from datetime import date
 from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
-from hyperkitty.lib.mailman import sync_with_mailman
 
 
 MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July',

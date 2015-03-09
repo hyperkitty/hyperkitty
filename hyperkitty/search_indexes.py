@@ -21,7 +21,6 @@
 
 from __future__ import absolute_import, unicode_literals, print_function
 
-import datetime
 from haystack import indexes
 from hyperkitty.models import Email
 

@@ -25,15 +25,13 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import datetime
-from tempfile import mkdtemp
-from shutil import rmtree
 from email.message import Message
 
 from mock import Mock
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 
-from hyperkitty.models import MailingList, ArchivePolicy, Profile
+from hyperkitty.models import MailingList, ArchivePolicy
 from hyperkitty.lib.incoming import add_to_list
 from hyperkitty.lib.mailman import FakeMMList
 from hyperkitty.tests.utils import TestCase
@@ -73,15 +71,7 @@ class ListArchivesTestCase(TestCase):
 class PrivateArchivesTestCase(TestCase):
 
     def setUp(self):
-        #self.tmpdir = mkdtemp(prefix="hyperkitty-testing-")
         self.user = User.objects.create_user('testuser', 'test@example.com', 'testPass')
-        # Setup KittyStore with a working search index
-        #ks_settings = SettingsModule()
-        #ks_settings.KITTYSTORE_SEARCH_INDEX = self.tmpdir
-        #self.store = kittystore.get_store(ks_settings, debug=False, auto_create=True)
-        #self.client.defaults = {"kittystore.store": self.store,
-        #                        "HTTP_USER_AGENT": "testbot",
-        #                        }
         MailingList.objects.create(
             name="list@example.com", subject_prefix="[example] ",
             archive_policy=ArchivePolicy.private.value)
@@ -101,7 +91,6 @@ class PrivateArchivesTestCase(TestCase):
         self.mm_user.subscription_list_ids = ["list@example.com",]
 
     def tearDown(self):
-        #rmtree(self.tmpdir)
         self.client.logout()
 
 

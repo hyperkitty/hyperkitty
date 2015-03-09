@@ -23,8 +23,6 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import json
-import re
-import uuid
 from email.message import Message
 
 from mock import patch

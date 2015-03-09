@@ -5,7 +5,6 @@ from __future__ import absolute_import, print_function, unicode_literals
 
 from email.message import Message
 
-from mock import Mock
 from django.utils.timezone import now
 
 from hyperkitty.models import MailingList, Email, Thread, Sender

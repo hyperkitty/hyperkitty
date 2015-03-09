@@ -24,8 +24,7 @@ from __future__ import absolute_import, unicode_literals, division
 
 from django.http import Http404
 from django.core.paginator import (Paginator, EmptyPage, PageNotAnInteger,
-    Page, InvalidPage)
-from django.utils import six
+    InvalidPage)
 
 
 def paginate(objects=None, page_num=1, max_page_range=10, paginator=None,

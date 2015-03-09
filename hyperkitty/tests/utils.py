@@ -22,21 +22,18 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 import os
-import uuid
 import shutil
 import tempfile
-from copy import deepcopy
 from unittest import SkipTest
 
 import haystack
 import mailmanclient
 from mock import Mock, patch
-from django import VERSION as DJANGO_VERSION
+#from django import VERSION as DJANGO_VERSION
 from django.test import TestCase as DjangoTestCase
 from django.conf import settings
-from django.core.cache import get_cache
+#from django.core.cache import get_cache
 
-import hyperkitty.lib.mailman
 from hyperkitty.lib.cache import cache
 
 
