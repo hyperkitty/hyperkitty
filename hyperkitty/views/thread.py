@@ -78,6 +78,7 @@ def _get_thread_replies(request, thread, limit, offset=1):
 @check_mlist_private
 def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     ''' Displays all the email for a given thread identifier '''
+    # pylint: disable=unused-argument
     mlist = get_object_or_404(MailingList, name=mlist_fqdn)
     thread = get_object_or_404(Thread, mailinglist=mlist, thread_id=threadid)
 

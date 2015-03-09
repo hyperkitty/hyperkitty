@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=R0904,C0103
-# - Too many public methods
-# - Invalid name XXX (should match YYY)
+# pylint: disable=too-many-public-methods,invalid-name
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -88,7 +86,7 @@ class EventsTestCase(TestCase):
     def test_do_not_catch_exceptions(self):
         class SpecificError(Exception):
             pass
-        def boom(sender, **kwargs):
+        def boom(sender, **kwargs): # pylint: disable=unused-argument
             raise SpecificError
         new_email.connect(boom)
         msg = self._make_message()

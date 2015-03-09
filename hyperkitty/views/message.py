@@ -69,6 +69,7 @@ def attachment(request, mlist_fqdn, message_id_hash, counter, filename):
     Sends the numbered attachment for download. The filename is not used for
     lookup, but validated nonetheless for security reasons.
     """
+    # pylint: disable=unused-argument
     mlist = get_object_or_404(MailingList, name=mlist_fqdn)
     message = get_object_or_404(Email,
         mailinglist=mlist, message_id_hash=message_id_hash)

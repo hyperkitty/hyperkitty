@@ -194,6 +194,7 @@ def overview(request, mlist_fqdn=None):
 @check_mlist_private
 def recent_activity(request, mlist_fqdn):
     """Return the number of emails posted in the last 30 days"""
+    # pylint: disable=unused-argument
     mlist = get_object_or_404(MailingList, name=mlist_fqdn)
     begin_date, end_date = mlist.get_recent_dates()
     days = daterange(begin_date, end_date)

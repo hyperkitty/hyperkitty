@@ -20,6 +20,8 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+# pylint: disable=unused-argument
+
 from django.conf import settings
 
 def export_settings(request):

@@ -20,7 +20,6 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-
 from django.conf import settings
 
 
@@ -44,6 +43,7 @@ from django.http import HttpResponsePermanentRedirect
 SSL = 'SSL'
 
 class SSLRedirect(object):
+    # pylint: disable=unused-argument
 
     def process_view(self, request, view_func, view_args, view_kwargs):
         want_secure = view_kwargs.pop(SSL, False)

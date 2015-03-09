@@ -45,6 +45,7 @@ def summary(request, list_name=None):
 
 
 def arch_month(request, list_name, year, month_name, summary_type="thread"):
+    # pylint: disable=unused-argument
     mlist = get_list_by_name(list_name, request.get_host())
     return redirect(reverse('hk_archives_with_month', kwargs={
             'mlist_fqdn': mlist.name,
@@ -58,6 +59,7 @@ def arch_month_mbox(request, list_name, year, month_name):
     The messages must be rebuilt before being added to the mbox file, including
     headers and the textual content, making sure to escape email addresses.
     """
+    # pylint: disable=unused-argument
     return HttpResponse("Not implemented yet.",
                         content_type="text/plain", status=500)
     mlist = get_list_by_name(list_name, request.get_host())
@@ -93,6 +95,7 @@ def arch_month_mbox(request, list_name, year, month_name):
 
 
 def message(request, list_name, year, month_name, msg_num):
+    # pylint: disable=unused-argument
     mlist = get_list_by_name(list_name, request.get_host())
     try:
         msg = Email.objects.filter(mailinglist=mlist

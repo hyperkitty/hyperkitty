@@ -242,6 +242,7 @@ class Scrubber(object):
 
 
     def parse_attachment(self, part, counter, filter_html=True):
+        # pylint: disable=unused-argument
         # Store name, content-type and size
         # Figure out the attachment type and get the decoded data
         decodedpayload = part.get_payload(decode=True)
