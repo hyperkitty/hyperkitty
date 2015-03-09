@@ -198,8 +198,8 @@ class Scrubber(object):
                 # if sanitize == 2, there could be text/html parts so keep them
                 # but skip any other parts.
                 partctype = part.get_content_type()
-                if partctype <> 'text/plain' and (partctype <> 'text/html' or
-                                                  sanitize <> 2):
+                if partctype != 'text/plain' and (partctype != 'text/html' or
+                                                  sanitize != 2):
                     #text.append(_('Skipped content of type %(partctype)s\n'))
                     continue
                 try:

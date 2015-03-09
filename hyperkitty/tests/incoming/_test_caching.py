@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+# pylint: disable=all
 # pylint: disable=R0904,C0103
 # - Too many public methods
 # - Invalid name XXX (should match YYY)
@@ -14,10 +15,10 @@ from mock import Mock
 from mailman.email.message import Message
 from mailman.interfaces.archiver import ArchivePolicy
 
-import kittystore.utils
-from kittystore import get_store
-from kittystore.caching import mailman_user
-from kittystore.test import FakeList, SettingsModule
+#import kittystore.utils
+#from kittystore import get_store
+#from kittystore.caching import mailman_user
+#from kittystore.test import FakeList, SettingsModule
 
 
 class ListCacheTestCase(unittest.TestCase):

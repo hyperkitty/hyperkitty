@@ -69,8 +69,7 @@ def arch_month_mbox(request, list_name, year, month_name):
     else:
         end_month = 1
     end_date = datetime.datetime(year, end_month, 1)
-    messages = store.get_messages(mlist.name, start=begin_date, end=end_date)
-    messages.reverse() # they are sorted recent first by default
+    messages = Email.objects.filter(mailinglist=mlist, date__gte=begin_date, date__lte=end_date).order_by("date")
     mboxfile, mboxfilepath = tempfile.mkstemp(prefix="hyperkitty-",
                                               suffix=".mbox.gz")
     os.close(mboxfile)

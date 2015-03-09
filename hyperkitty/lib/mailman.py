@@ -28,6 +28,9 @@ from mailmanclient import Client, MailmanConnectionError
 
 from hyperkitty.lib.cache import cache
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 MailmanClient = Client
 def get_mailman_client():

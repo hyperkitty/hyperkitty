@@ -185,12 +185,6 @@ class TestUtils(TestCase):
         self.assertEqual(utils.get_message_id_hash(msg_id), expected)
 
     def test_get_message_id(self):
-        msgid = '87myycy5eh.fsf@uwakimon.sk.tsukuba.ac.jp'
-        msg = Message()
-        msg["Message-Id"] = '<' + msgid + '>'
-        self.assertEqual(utils.get_message_id_hash(msg_id), expected)
-
-    def test_get_message_id(self):
         msg = Message()
         msg["Message-Id"] = '<%s>' % ('x' * 300)
         self.assertEqual(utils.get_message_id(msg), 'x' * 254)

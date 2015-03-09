@@ -70,9 +70,10 @@ class SSLRedirect(object):
         protocol = secure and "https" or "http"
         newurl = "%s://%s%s" % (protocol, request.get_host(), request.get_full_path())
         if settings.DEBUG and request.method == 'POST':
-            raise RuntimeError, \
-        """Django can't perform a SSL redirect while maintaining POST data.
-           Please structure your views so that redirects only occur during GETs."""
+            raise RuntimeError(
+                "Django can't perform a SSL redirect while maintaining "
+                "POST data. Please structure your views so that redirects "
+                "only occur during GETs.")
         return HttpResponsePermanentRedirect(newurl)
 
 
@@ -93,42 +94,3 @@ class TimezoneMiddleware(object):
             return
         if profile.timezone:
             timezone.activate(profile.timezone)
-
-
-
-## Cache some metadata from Mailman about the logged in user
-#
-#from urllib2 import HTTPError
-#from uuid import UUID
-#from mailmanclient import MailmanConnectionError
-#from hyperkitty.lib.mailman import get_mailman_client
-#
-#class MailmanUserMetadata(object):
-#
-#    def process_view(self, request, view_func, view_args, view_kwargs):
-#        if not request.user.is_authenticated():
-#            return
-#        if not request.user.email:
-#            return # Can this really happen?
-#        #if "subscribed" in request.session and "user_id" in request.session:
-#        if "subscribed" in request.session:
-#            return # Already set
-#        client = get_mailman_client()
-#        try:
-#            user = client.get_user(request.user.email)
-#        except MailmanConnectionError:
-#            return
-#        except HTTPError, err:
-#            if err.code == 404:
-#                user = client.create_user(request.user.email, "")
-#            else:
-#                return
-#        #if user.user_id is not None:
-#        #    request.session["user_id"] = user.user_id
-#        request.session["subscribed"] = []
-#        for list_id in user.subscription_list_ids:
-#            try:
-#                ml = client.get_list(list_id)
-#                request.session["subscribed"].append(ml.fqdn_listname)
-#            except (MailmanConnectionError, HTTPError):
-#                continue

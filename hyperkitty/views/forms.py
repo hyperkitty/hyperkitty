@@ -30,8 +30,9 @@ from django.utils.translation import ugettext_lazy
 
 from hyperkitty.models import Profile, ThreadCategory
 
+# pylint: disable=too-few-public-methods
 
-def isValidUsername(username):
+def isValidUsername(username): # pylint: disable=invalid-name
     if User.objects.filter(username=username).exists():
         raise validators.ValidationError(
             'The username "%s" is already taken.' % username)

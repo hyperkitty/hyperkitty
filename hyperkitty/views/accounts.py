@@ -143,12 +143,12 @@ def user_registration(request):
     if request.POST:
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            u = DjangoUser.objects.create_user(
+            user_db = User.objects.create_user(
                 form.cleaned_data['username'],
                 form.cleaned_data['email'],
                 form.cleaned_data['password1'])
-            u.is_active = True
-            u.save()
+            user_db.is_active = True
+            user_db.save()
             user = authenticate(username=form.cleaned_data['username'],
                                 password=form.cleaned_data['password1'])
 

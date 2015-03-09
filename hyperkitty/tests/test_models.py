@@ -25,6 +25,7 @@ import string
 import random
 import uuid
 from email.message import Message
+from traceback import format_exc
 
 from mock import Mock
 from django.contrib.auth.models import User

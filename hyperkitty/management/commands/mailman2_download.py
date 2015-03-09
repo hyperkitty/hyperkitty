@@ -106,7 +106,7 @@ class Command(BaseCommand):
             if not os.path.exists(mbfile):
                 raise CommandError("No such file: %s" % mbfile)
         try:
-            options["start"] = range(int(options["start"]), date.today().year + 1)
+            options["start"] = range(1980, int(options["start"]), date.today().year + 1)
         except ValueError, e:
             raise CommandError("invalid value for '--start': %s" % e)
         options["verbosity"] = int(options.get("verbosity", "1"))
@@ -121,4 +121,4 @@ class Command(BaseCommand):
         logging.basicConfig(format='%(message)s', level=debuglevel)
 
         p = Pool(5)
-        p.map(_archive_downloader, itertools.product([options], years, MONTHS))
+        p.map(_archive_downloader, itertools.product([options], options["start"], MONTHS))

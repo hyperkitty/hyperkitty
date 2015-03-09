@@ -29,9 +29,9 @@ from __future__ import absolute_import, unicode_literals
 import os
 import sys
 try:
-    from urllib.parse import urljoin # PY3
+    from urllib.parse import urljoin # PY3  # pylint: disable=no-name-in-module
 except ImportError:
-    from urlparse import urljoin # PY2
+    from urlparse import urljoin # PY2      # pylint: disable=no-name-in-module
 
 from zope.interface import implements
 from mailman.interfaces.archiver import IArchiver
