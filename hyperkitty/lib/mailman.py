@@ -96,4 +96,4 @@ def sync_with_mailman():
                 lower_bound = upper_bound
                 upper_bound += buffer_size
         prev_count = count
-        logger.info("%d emails left to refresh" % count)
+        logger.info("%d emails left to refresh", count)

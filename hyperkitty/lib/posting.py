@@ -31,11 +31,13 @@ class PostingFailed(Exception):
     pass
 
 
-def post_to_list(request, mlist, subject, message, headers={},
+def post_to_list(request, mlist, subject, message, headers=None,
                  attachments=None):
     if not mlist:
         # Make sure the list exists to avoid posting to any email addess
         raise SuspiciousOperation("I don't know this mailing-list")
+    if headers is None:
+        headers = {}
     # Check that the user is subscribed
     try:
         mailman.subscribe(mlist.name, request.user)

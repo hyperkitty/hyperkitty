@@ -144,7 +144,7 @@ from collections import defaultdict
 LASTTIME = None
 TIMES = defaultdict(list)
 def timeit(name):
-    global LASTTIME, TIMES
+    global LASTTIME#, TIMES # pylint: disable=global-statement
     now = time.time()
     if LASTTIME is not None:
         spent = now - LASTTIME
@@ -152,7 +152,7 @@ def timeit(name):
         print("{}: {}".format(name, spent))
     LASTTIME = now
 def showtimes():
-    global TIMES
+    #global TIMES
     import numpy
     for name, values in TIMES.items():
         if not values:

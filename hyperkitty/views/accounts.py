@@ -70,17 +70,17 @@ def login_view(request, *args, **kwargs):
 def user_profile(request):
     if not request.user.is_authenticated():
         return redirect('hk_user_login')
-    user_profile = request.user.hyperkitty_profile
-    mm_user = user_profile.get_mailman_user()
+    profile = request.user.hyperkitty_profile
+    mm_user = profile.get_mailman_user()
 
     if request.method == 'POST':
         form = UserProfileForm(request.POST)
         if form.is_valid():
             request.user.first_name = form.cleaned_data["first_name"]
             request.user.last_name = form.cleaned_data["last_name"]
-            user_profile.timezone = form.cleaned_data["timezone"]
+            profile.timezone = form.cleaned_data["timezone"]
             request.user.save()
-            user_profile.save()
+            profile.save()
             # Now update the display name in Mailman
             if mm_user is not None:
                 mm_user.display_name = "%s %s" % (
@@ -100,7 +100,7 @@ def user_profile(request):
     favorites = Favorite.objects.filter(user=request.user)
 
     # Emails
-    other_addresses = user_profile.addresses[:]
+    other_addresses = profile.addresses[:]
     other_addresses.remove(request.user.email)
 
     # Flash messages
@@ -117,7 +117,7 @@ def user_profile(request):
     gravatar_shortname = '.'.join(gravatar_url.split('.')[-2:]).strip('/')
 
     context = {
-        'user_profile' : user_profile,
+        'user_profile' : profile,
         'form': form,
         'other_addresses': other_addresses,
         'favorites': favorites,
@@ -170,20 +170,20 @@ def user_registration(request):
 @login_required
 def last_views(request):
     # Last viewed threads
-    last_views = LastView.objects.filter(user=request.user
+    lviews = LastView.objects.filter(user=request.user
         ).order_by("-view_date")
-    last_views = paginate(last_views, request.GET.get('lvpage'))
+    lviews = paginate(lviews, request.GET.get('lvpage'))
     return render(request, 'hyperkitty/ajax/last_views.html', {
-                "last_views": last_views,
+                "last_views": lviews,
             })
 
 
 @login_required
 def votes(request):
-    votes = paginate(request.user.votes.all(),
+    all_votes = paginate(request.user.votes.all(),
                      request.GET.get('vpage'))
     return render(request, 'hyperkitty/ajax/votes.html', {
-                "votes": votes,
+                "votes": all_votes,
             })
 
 
@@ -194,7 +194,7 @@ def subscriptions(request):
     #                        content_type="text/plain", status=500)
     profile = request.user.hyperkitty_profile
     mm_user_id = profile.get_mailman_user_id()
-    subscriptions = []
+    subs = []
     for mlist_name in profile.get_subscriptions():
         try:
             mlist = MailingList.objects.get(name=mlist_name)
@@ -215,7 +215,7 @@ def subscriptions(request):
             likestatus = "likealot"
         elif likes - dislikes > 0:
             likestatus = "like"
-        subscriptions.append({
+        subs.append({
             "list_name": mlist_name,
             "mlist": mlist,
             "posts_count": posts_count,
@@ -226,7 +226,7 @@ def subscriptions(request):
             "all_posts_url": all_posts_url,
         })
     return render(request, 'hyperkitty/fragments/user_subscriptions.html', {
-                "subscriptions": subscriptions,
+                "subscriptions": subs,
             })
 
 
@@ -254,9 +254,9 @@ def public_profile(request, user_id):
     #XXX: don't list subscriptions, there's a privacy issue here.
     # # Subscriptions
     # subscriptions = get_subscriptions(mm_user, db_user)
-    votes = Vote.objects.filter(email__sender__mailman_id=user_id)
-    likes = votes.filter(value=1).count()
-    dislikes = votes.filter(value=-1).count()
+    all_votes = Vote.objects.filter(email__sender__mailman_id=user_id)
+    likes = all_votes.filter(value=1).count()
+    dislikes = all_votes.filter(value=-1).count()
     likestatus = "neutral"
     if likes - dislikes >= 10:
         likestatus = "likealot"

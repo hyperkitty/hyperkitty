@@ -72,19 +72,19 @@ def attachment(request, mlist_fqdn, message_id_hash, counter, filename):
     mlist = get_object_or_404(MailingList, name=mlist_fqdn)
     message = get_object_or_404(Email,
         mailinglist=mlist, message_id_hash=message_id_hash)
-    attachment = get_object_or_404(Attachment,
+    att = get_object_or_404(Attachment,
         email=message, counter=int(counter))
-    if attachment.name != filename:
+    if att.name != filename:
         raise Http404
     # http://djangosnippets.org/snippets/1710/
-    response = HttpResponse(attachment.content)
-    response['Content-Type'] = attachment.content_type
-    response['Content-Length'] = attachment.size
-    if attachment.encoding is not None:
-        response['Content-Encoding'] = attachment.encoding
+    response = HttpResponse(att.content)
+    response['Content-Type'] = att.content_type
+    response['Content-Length'] = att.size
+    if att.encoding is not None:
+        response['Content-Encoding'] = att.encoding
     # Follow RFC2231, browser support is sufficient nowadays (2012-09)
     response['Content-Disposition'] = 'attachment; filename*=UTF-8\'\'%s' \
-            % urllib.quote(attachment.name.encode('utf-8'))
+            % urllib.quote(att.name.encode('utf-8'))
     return response
 
 
@@ -150,14 +150,14 @@ def reply(request, mlist_fqdn, message_id_hash):
     if form.cleaned_data["newthread"]:
         html = None
     else:
-        reply = {
+        email_reply = {
             "sender_name": "%s %s" % (request.user.first_name,
                                       request.user.last_name),
             "content": form.cleaned_data["message"],
             "level": message.thread_depth, # no need to increment, level = thread_depth - 1
         }
         t = loader.get_template('hyperkitty/ajax/temp_message.html')
-        html = t.render(RequestContext(request, { 'email': reply }))
+        html = t.render(RequestContext(request, { 'email': email_reply }))
     result = {"result": "The reply has been sent successfully.",
               "message_html": html}
     return HttpResponse(json.dumps(result),

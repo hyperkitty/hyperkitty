@@ -16,8 +16,10 @@
 # You should have received a copy of the GNU General Public License along with
 # HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
 #
-# Author: Aamir Khan <syst3m.w0rm@gmail.com>
+# Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
+
+# pylint: disable=unnecessary-lambda
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -223,10 +225,10 @@ class ProfileTestCase(TestCase):
 
     def test_get_subscriptions(self):
         self.mailman_client.get_list.side_effect = lambda name: FakeMMList(name)
-        self.mm_user = Mock()
-        self.mailman_client.get_user.side_effect = lambda name: self.mm_user
-        self.mm_user.user_id = uuid.uuid1().int
-        self.mm_user.subscription_list_ids = ["test@example.com",]
+        mm_user = Mock()
+        self.mailman_client.get_user.side_effect = lambda name: mm_user
+        mm_user.user_id = uuid.uuid1().int
+        mm_user.subscription_list_ids = ["test@example.com",]
         MailingList.objects.create(name="test@example.com")
         try:
             subs = self.user.hyperkitty_profile.get_subscriptions()

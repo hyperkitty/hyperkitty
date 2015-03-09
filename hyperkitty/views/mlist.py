@@ -78,7 +78,7 @@ def archives(request, mlist_fqdn, year=None, month=None, day=None):
     return _thread_list(request, mlist, threads, extra_context=extra_context)
 
 
-def _thread_list(request, mlist, threads, template_name='hyperkitty/thread_list.html', extra_context={}):
+def _thread_list(request, mlist, threads, template_name='hyperkitty/thread_list.html', extra_context=None):
     categories = [ (c.name, c.name.upper())
                    for c in ThreadCategory.objects.all() ] \
                  + [("", "no category")]
@@ -110,7 +110,8 @@ def _thread_list(request, mlist, threads, template_name='hyperkitty/thread_list.
         'months_list': get_months(mlist),
         'flash_messages': flash_messages,
     }
-    context.update(extra_context)
+    if extra_context is not None:
+        context.update(extra_context)
     return render(request, template_name, context)
 
 

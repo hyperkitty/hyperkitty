@@ -19,6 +19,8 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+# pylint: disable=no-init,unnecessary-lambda
+
 from __future__ import absolute_import, unicode_literals, print_function
 
 import datetime
@@ -390,6 +392,7 @@ def Email_check_parent_id(sender, **kwargs):
             thread=instance.thread, parent_id__isnull=True
         ).values_list("id", flat=True)
     if len(starters) > 0 and list(starters) != [instance.id]:
+        # pylint: disable=nonstandard-exception
         raise IntegrityError("There can be only one email with "
                              "parent_id==None in the same thread")
 
@@ -399,7 +402,7 @@ def Email_reset_parent_id(sender, **kwargs):
     if email.parent_id is None:
         # not sure this is really useful. Does email.thread return the same
         # instance each time?
-        email.thread._starting_email_cache = None
+        email.thread._starting_email_cache = None # pylint: disable=protected-access
     children = email.children.order_by("date")
     if not children:
         return
@@ -587,6 +590,7 @@ def refresh_email_count_cache(sender, **kwargs):
                  % (email.mailinglist_id, email.date.year, email.date.month))
     # don't warm up the cache in batch mode (mass import)
     if not getattr(settings, "HYPERKITTY_BATCH_MODE", False):
+        # pylint: disable=pointless-statement
         try:
             email.thread.emails_count
             email.thread.participants_count
@@ -604,6 +608,7 @@ def refresh_thread_count_cache(sender, **kwargs):
     cache.delete("MailingList:%s:recent_threads" % thread.mailinglist_id)
     # don't warm up the cache in batch mode (mass import)
     if not getattr(settings, "HYPERKITTY_BATCH_MODE", False):
+        # pylint: disable=pointless-statement
         thread.mailinglist.recent_threads
 
 

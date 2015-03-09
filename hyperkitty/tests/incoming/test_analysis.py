@@ -142,7 +142,7 @@ class TestThreadOrderDepth(TestCase):
             msg = Email.objects.filter(
                 mailinglist=self.mlist, message_id="msg%d" % num).first()
             msgs.append(msg)
-        msg1, msg2, msg3, msg4 = msgs
+        msg1, msg2, msg3, msg4 = msgs # pylint: disable=unbalanced-tuple-unpacking
         self.assertEqual(msg1.thread_order, 0)
         self.assertEqual(msg1.thread_depth, 0)
         self.assertEqual(msg2.thread_order, 1)

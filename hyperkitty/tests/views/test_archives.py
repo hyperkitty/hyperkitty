@@ -20,6 +20,8 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+# pylint: disable=unnecessary-lambda
+
 from __future__ import absolute_import, print_function, unicode_literals
 
 import datetime
@@ -103,7 +105,9 @@ class PrivateArchivesTestCase(TestCase):
         self.client.logout()
 
 
-    def _do_test(self, url, query={}):
+    def _do_test(self, url, query=None):
+        if query is None:
+            query = {}
         response = self.client.get(url, query)
         self.assertEqual(response.status_code, 403)
         self.client.login(username='testuser', password='testPass')

@@ -265,15 +265,16 @@ def suggest_tags(request, mlist_fqdn, threadid):
             threads__thread_id=threadid
         ).values_list("name", flat=True)
     if term:
-        tags = Tag.objects.filter(
+        tags_db = Tag.objects.filter(
             threads__mailing_list__name=mlist_fqdn,
             name__istartswith=term)
     else:
-        tags = Tag.objects.all()
-    tags = [ t.encode("utf-8") for t in
-             tags.exclude(name__in=current_tags
+        tags_db = Tag.objects.all()
+    tag_names = [ t.encode("utf-8") for t in
+             tags_db.exclude(name__in=current_tags
                 ).values_list("name", flat=True)[:20] ]
-    return HttpResponse(json.dumps(tags), content_type='application/javascript')
+    return HttpResponse(json.dumps(tag_names),
+                        content_type='application/javascript')
 
 
 @check_mlist_private
@@ -337,7 +338,7 @@ def reattach(request, mlist_fqdn, threadid):
         parent_tid = request.POST.get("parent")
         if not parent_tid:
             parent_tid = request.POST.get("parent-manual")
-        if not parent_tid or not re.match("\w{32}", parent_tid):
+        if not parent_tid or not re.match(r"\w{32}", parent_tid):
             flash_messages.append({"type": "warning",
                                    "msg": "Invalid thread id, it should look "
                                           "like OUAASTM6GS4E5TEATD6R2VWMULG44NKJ."})

@@ -74,8 +74,8 @@ def arch_month_mbox(request, list_name, year, month_name):
                                               suffix=".mbox.gz")
     os.close(mboxfile)
     mbox = mailbox.mbox(mboxfilepath)
-    for message in messages:
-        mbox.add(message.full)
+    for msg in messages:
+        mbox.add(msg.full)
     mbox.close()
     content = StringIO()
     zipped_content = gzip.GzipFile(fileobj=content)
@@ -95,11 +95,11 @@ def arch_month_mbox(request, list_name, year, month_name):
 def message(request, list_name, year, month_name, msg_num):
     mlist = get_list_by_name(list_name, request.get_host())
     try:
-        message = Email.objects.filter(mailinglist=mlist
+        msg = Email.objects.filter(mailinglist=mlist
             ).order_by("archived_date")[msg_num]
     except IndexError:
         raise Http404("No such message in this mailing-list.")
     return redirect(reverse('hk_message_index', kwargs={
             'mlist_fqdn': mlist.name,
-            'message_id': message.message_id_hash,
+            'message_id': msg.message_id_hash,
             }))

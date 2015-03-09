@@ -27,7 +27,7 @@ import datetime
 from django.http import Http404
 from hyperkitty.models import MailingList
 
-PORT_IN_URL = re.compile(':\d+$')
+PORT_IN_URL = re.compile(r':\d+$')
 
 
 def get_list_by_name(list_name, domain):

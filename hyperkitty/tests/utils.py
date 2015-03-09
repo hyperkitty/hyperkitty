@@ -41,6 +41,7 @@ from hyperkitty.lib.cache import cache
 
 
 class TestCase(DjangoTestCase):
+    # pylint: disable=attribute-defined-outside-init
 
     override_settings = {
         "DEBUG": True,
@@ -65,7 +66,7 @@ class TestCase(DjangoTestCase):
         super(TestCase, self)._pre_setup()
         # Override settings
         self._old_settings = {}
-        for key, value in self.override_settings.iteritems():
+        for key, value in self.override_settings.items():
             self._old_settings[key] = getattr(settings, key, None)
             setattr(settings, key, value)
         #if DJANGO_VERSION[:2] < (1, 7):
@@ -83,7 +84,7 @@ class TestCase(DjangoTestCase):
     def _post_teardown(self):
         self._mm_client_patcher.stop()
         cache.clear()
-        for key, value in self._old_settings.iteritems():
+        for key, value in self._old_settings.items():
             if value is None:
                 delattr(settings, key)
             else:
@@ -94,6 +95,7 @@ class TestCase(DjangoTestCase):
 
 
 class SearchEnabledTestCase(TestCase):
+    # pylint: disable=attribute-defined-outside-init
 
     def _pre_setup(self):
         try:

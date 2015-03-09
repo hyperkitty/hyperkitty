@@ -19,6 +19,8 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+# pylint: disable=no-init
+
 from __future__ import absolute_import, unicode_literals
 
 #from rest_framework.reverse import reverse
@@ -27,14 +29,14 @@ from rest_framework import serializers
 
 class MLChildHyperlinkedRelatedField(serializers.HyperlinkedRelatedField):
 
-    def get_url(self, obj, view_name, request, format):
+    def get_url(self, obj, view_name, request, format): # pylint: disable=redefined-builtin
         lookup_value = getattr(obj, self.lookup_field)
         kwargs = {self.lookup_url_kwarg: lookup_value,
                   "mlist_fqdn": obj.mailinglist.name,}
         #print(obj, view_name, self.lookup_url_kwarg, lookup_value)
         return self.reverse(view_name, kwargs=kwargs, request=request, format=format)
 
-    def get_object(self, queryset, view_name, view_args, view_kwargs):
+    def get_object(self, view_name, view_args, view_kwargs):
         lookup_value = view_kwargs[self.lookup_url_kwarg]
         lookup_kwargs = {self.lookup_field: lookup_value,
                          "mailinglist__name": view_kwargs["mlist_fqdn"]}

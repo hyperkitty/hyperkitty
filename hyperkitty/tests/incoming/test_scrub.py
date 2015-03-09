@@ -121,7 +121,7 @@ class TestScrubber(unittest.TestCase):
         try:
             contents, attachments = scrubber.scrub()
         except LookupError, e:
-            import traceback;
+            import traceback
             print(traceback.format_exc())
             self.fail(e) # codec not found
         self.assertTrue(isinstance(contents, unicode))

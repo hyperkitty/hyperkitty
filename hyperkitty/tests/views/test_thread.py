@@ -259,7 +259,7 @@ class ThreadTestCase(TestCase):
     def test_reply_button(self):
         def check_mailto(link):
             self.assertTrue(link is not None)
-            link_mo = re.match('mailto:list@example.com\?(.+)', link["href"])
+            link_mo = re.match(r'mailto:list@example.com\?(.+)', link["href"])
             self.assertTrue(link_mo is not None)
             params = urlparse.parse_qs(link_mo.group(1))
             self.assertEqual(params, {u'In-Reply-To': [u'msgid'],

@@ -20,6 +20,8 @@
 #
 
 
+from __future__ import absolute_import, unicode_literals, division
+
 from django.http import Http404
 from django.core.paginator import (Paginator, EmptyPage, PageNotAnInteger,
     Page, InvalidPage)
@@ -51,7 +53,7 @@ def paginate(objects=None, page_num=1, max_page_range=10, paginator=None,
     # Calculate the displayed page range
     if paginator.num_pages > max_page_range:
         objects.page_range = [ 1 ]
-        subrange_lower = page_num - (max_page_range / 2 - 2)
+        subrange_lower = page_num - int(max_page_range / 2 - 2)
         if subrange_lower > 3:
             objects.page_range.append("...")
         else:
@@ -59,7 +61,7 @@ def paginate(objects=None, page_num=1, max_page_range=10, paginator=None,
         objects.page_range.extend(range(subrange_lower, page_num))
         if page_num != 1 and page_num != 100:
             objects.page_range.append(page_num)
-        subrange_upper = page_num + (max_page_range / 2 - 2)
+        subrange_upper = page_num + int(max_page_range / 2 - 2)
         if subrange_upper >= paginator.num_pages - 2:
             subrange_upper = paginator.num_pages - 1
         objects.page_range.extend(range(page_num+1, subrange_upper+1))

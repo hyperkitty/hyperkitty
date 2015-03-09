@@ -18,6 +18,7 @@
 #
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 
+# pylint: disable=unnecessary-lambda
 
 from __future__ import absolute_import, print_function, unicode_literals
 

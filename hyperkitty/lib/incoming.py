@@ -19,7 +19,7 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, unicode_literals, division
 
 
 import datetime
@@ -48,15 +48,14 @@ def add_to_list(list_name, message):
         mlist.update_from_mailman()
     mlist.save()
     if mlist.archive_policy == ArchivePolicy.never.value:
-        logger.info(
-            "Archiving disabled by list policy for {}".format(list_name))
+        logger.info("Archiving disabled by list policy for %s", list_name)
         return
     if not message.has_key("Message-Id"):
         raise ValueError("No 'Message-Id' header in email", message)
     #timeit("2 after ml, before checking email & sender")
     msg_id = get_message_id(message)
     if Email.objects.filter(mailinglist=mlist, message_id=msg_id).count() > 0:
-        logger.info("Duplicate email with message-id '{}'".format(msg_id))
+        logger.info("Duplicate email with message-id '%s'", msg_id)
         return get_message_id_hash(msg_id)
     email = Email(mailinglist=mlist, message_id=msg_id)
     email.in_reply_to = get_ref(message) # Find thread id
@@ -101,8 +100,8 @@ def add_to_list(list_name, message):
         email.timezone = 0
     else:
         # in minutes
-        email.timezone = ( (utcoffset.days * 24 * 60 * 60)
-                           + utcoffset.seconds) / 60
+        email.timezone = int(
+            ((utcoffset.days * 24 * 60 * 60) + utcoffset.seconds) / 60 )
 
     # Content
     scrubber = Scrubber(list_name, message)
@@ -188,4 +187,4 @@ def set_or_create_thread(email):
     #            "Signal 'new_thread' to {} raised an exception: {}".format(
     #            receiver.func_name, result))
     email.thread = thread
-# TODO: vérifier parmi les emails avec un in-reply-to qui ne pointe vers rien, si il ne faudraient pas en fait les rattacher à l'email en cours. Ca peut arriver si je reçois la réponse avant le message d'origine (pour cause de pb de serveur de mail par exemple). À désactiver lors d'import bulk.
+# TODO: check among the emails with an in_reply_to attribute non-empty but pointing to nothing if they should actually be attached to the current email (set their parent_id). This can happen if HK receives the reply before the original message (when a mail server in the chain has an issue, or in case of greylisting for example). To be disabled on bulk imports.

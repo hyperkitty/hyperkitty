@@ -23,7 +23,7 @@
 Import the content of a mbox file into the database.
 """
 
-from __future__ import absolute_import, print_function, unicode_literals
+from __future__ import absolute_import, print_function, unicode_literals, division
 
 import mailbox
 import os
@@ -53,7 +53,7 @@ from hyperkitty.models import Email, Attachment, Thread
 #from hyperkitty.lib.utils import timeit, showtimes
 
 
-PREFIX_RE = re.compile("^\[([\w\s_-]+)\] ")
+PREFIX_RE = re.compile(r"^\[([\w\s_-]+)\] ")
 
 ATTACHMENT_RE = re.compile(r"""
 --------------[ ]next[ ]part[ ]--------------\n
@@ -88,7 +88,7 @@ Name:[ ]([^\n]+)\n
 U(?:rl|RL)[ ]?:[ ]([^\s]+)\s*\n
 """, re.X | re.S)
 
-TEXTWRAP_RE = re.compile("\n\s*")
+TEXTWRAP_RE = re.compile(r"\n\s*")
 
 
 

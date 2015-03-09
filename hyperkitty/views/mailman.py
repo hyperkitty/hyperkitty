@@ -95,6 +95,7 @@ def archive(request):
     allowed_from = allowed_from.partition(":")[0]
     if request.META["REMOTE_ADDR"] != allowed_from and \
         request.META["REMOTE_HOST"] != allowed_from:
+        # pylint: disable=logging-format-interpolation
         logger.info("Access to the archiving API endpoint was forbidden from "
                     "IP {}, your MAILMAN_REST_SERVER setting may be "
                     "misconfigured".format(request.META["REMOTE_ADDR"]))

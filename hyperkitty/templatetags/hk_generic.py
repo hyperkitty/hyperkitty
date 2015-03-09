@@ -19,6 +19,8 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
+from __future__ import absolute_import, unicode_literals, print_function
+
 import datetime
 import re
 
@@ -34,11 +36,6 @@ import hyperkitty.lib.posting
 from hyperkitty.lib.utils import stripped_subject
 
 register = template.Library()
-
-
-@register.filter
-def trimString(str):
-    return re.sub('\s+', ' ', str)
 
 
 @register.filter(name='sort')
@@ -138,7 +135,7 @@ def date_with_senders_timezone(email):
     return email.date.astimezone(tz)
 
 
-SNIPPED_RE = re.compile("^(\s*&gt;).*$", re.M)
+SNIPPED_RE = re.compile(r"^(\s*&gt;).*$", re.M)
 @register.filter(needs_autoescape=True)
 def snip_quoted(content, quotemsg="...", autoescape=None):
     """Snip quoted text in messages"""

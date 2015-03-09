@@ -39,6 +39,7 @@ class Email(object):
         self.liked = 0
         self.author = ''
         self.avatar = None
+        self.age = '6 days'
 
 class Author(object):
     """ Author class containing the information needed to get the top
