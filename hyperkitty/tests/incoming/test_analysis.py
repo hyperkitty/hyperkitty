@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=R0904,C0103
-# - Too many public methods
-# - Invalid name XXX (should match YYY)
-#
+
 # Copyright (C) 2014-2015 by the Free Software Foundation, Inc.
 #
 # This file is part of HyperKitty.

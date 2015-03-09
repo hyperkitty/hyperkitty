@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=all
-# pylint: disable=R0904,C0103
-# - Too many public methods
-# - Invalid name XXX (should match YYY)
 
 from __future__ import absolute_import, print_function, unicode_literals
 
