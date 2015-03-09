@@ -237,7 +237,7 @@ def public_profile(request, user_id):
         addresses = []
         subscription_list_ids = []
         user_id = None
-    user_id_uuid = UUID(int=int(user_id))
+    #user_id_uuid = UUID(int=int(user_id))
     #db_user = User.objects.filter(mailman_id=str(user_id_uuid)).first()
     try:
         client = get_mailman_client()

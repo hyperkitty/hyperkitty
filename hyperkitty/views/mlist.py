@@ -120,7 +120,6 @@ def overview(request, mlist_fqdn=None):
     if not mlist_fqdn:
         return redirect('/')
     mlist = get_object_or_404(MailingList, name=mlist_fqdn)
-    begin_date, end_date = mlist.get_recent_dates()
     threads = []
     for thread_obj in mlist.recent_threads:
         thread_obj.category_widget = get_category_widget(

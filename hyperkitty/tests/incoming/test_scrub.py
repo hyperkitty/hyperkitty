@@ -98,7 +98,7 @@ class TestScrubber(unittest.TestCase):
         with open(get_test_file("html-email-2.txt")) as email_file:
             msg = message_from_file(email_file)
         scrubber = Scrubber("testlist@example.com", msg)
-        contents, attachments = scrubber.scrub()
+        contents = scrubber.scrub()[0]
         self.assertTrue(isinstance(contents, unicode),
             u"Scrubbed content should always be unicode")
 
@@ -108,7 +108,7 @@ class TestScrubber(unittest.TestCase):
             with open(get_test_file("payload-%s.txt" % enc)) as email_file:
                 msg = message_from_file(email_file)
             scrubber = Scrubber("testlist@example.com", msg)
-            contents, attachments = scrubber.scrub()
+            contents = scrubber.scrub()[0]
             self.assertTrue(isinstance(contents, unicode))
             self.assertEqual(contents, u'This message contains non-ascii '
                     u'characters:\n\xe9 \xe8 \xe7 \xe0 \xee \xef \xeb \u20ac\n')
@@ -119,7 +119,7 @@ class TestScrubber(unittest.TestCase):
             msg = message_from_file(email_file)
         scrubber = Scrubber("testlist@example.com", msg)
         try:
-            contents, attachments = scrubber.scrub()
+            contents = scrubber.scrub()[0]
         except LookupError, e:
             import traceback
             print(traceback.format_exc())
@@ -169,7 +169,7 @@ class TestScrubber(unittest.TestCase):
         msg.add_header(b'Content-Disposition', b'attachment', filename=b'non-ascii-\xb8\xb1\xb1\xbe.jpg')
         scrubber = Scrubber("testlist@example.com", msg)
         try:
-            contents, attachments = scrubber.scrub()
+            attachments = scrubber.scrub()[1]
         except UnicodeDecodeError:
             print(format_exc())
             self.fail("Could not decode the filename")
@@ -180,7 +180,7 @@ class TestScrubber(unittest.TestCase):
         with open(get_test_file("pipermail_nextpart.txt")) as email_file:
             msg = message_from_file(email_file)
         scrubber = Scrubber("testlist@example.com", msg)
-        contents, attachments = scrubber.scrub()
+        contents = scrubber.scrub()[0]
 
         self.failIf("-------------- next part --------------" in contents)
 
@@ -189,7 +189,7 @@ class TestScrubber(unittest.TestCase):
             with open(get_test_file("attachment-%d.txt" % num)) as email_file:
                 msg = message_from_file(email_file)
             scrubber = Scrubber("testlist@example.com", msg)
-            contents, attachments = scrubber.scrub()
+            attachments = scrubber.scrub()[1]
             for attachment in attachments:
                 name = attachment[1]
                 self.assertTrue(isinstance(name, unicode),

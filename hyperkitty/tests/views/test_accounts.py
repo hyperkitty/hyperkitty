@@ -70,7 +70,6 @@ class AccountViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_public_profile(self):
-        user_email = u"dummy@example.com"
         user_id = uuid.uuid1()
         self.client.login(username='testuser', password='testPass')
         response = self.client.get(reverse("hk_public_user_profile",
@@ -164,7 +163,7 @@ class LastViewsTestCase(TestCase):
             'testuser', 'test@example.com', 'testPass')
         self.client.login(username='testuser', password='testPass')
         # Create test data
-        ml = MailingList.objects.create(
+        MailingList.objects.create(
             name="list@example.com", subject_prefix="[example] ")
         # Create 3 threads
         messages = []

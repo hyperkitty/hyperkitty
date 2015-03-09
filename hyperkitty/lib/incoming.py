@@ -115,7 +115,8 @@ def add_to_list(list_name, message):
     email.save()
 
     # Signals
-    signal_results = new_email.send("Mailman", email=email)
+    new_email.send("Mailman", email=email)
+    #signal_results = new_email.send_robust("Mailman", email=email)
     #for receiver, result in signal_results:
     #    if isinstance(result, Exception):
     #        logger.warning(
@@ -179,8 +180,8 @@ def set_or_create_thread(email):
         thread_id=email.message_id_hash,
         starting_email=email,
         date_active=email.date)
+    new_thread.send("Mailman", thread=thread)
     #signal_results = new_thread.send_robust("Mailman", thread=thread)
-    signal_results = new_thread.send("Mailman", thread=thread)
     #for receiver, result in signal_results:
     #    if isinstance(result, Exception):
     #        logger.warning(

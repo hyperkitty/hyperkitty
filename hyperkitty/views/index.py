@@ -21,8 +21,6 @@
 
 from __future__ import absolute_import, unicode_literals
 
-import datetime
-
 from django.shortcuts import render
 from django.conf import settings
 from django.http import HttpResponse
@@ -32,7 +30,6 @@ from hyperkitty.models import MailingList
 
 
 def index(request):
-    now = datetime.datetime.now()
     lists = [
         ml for ml in MailingList.objects.all()
         if not settings.FILTER_VHOST or show_mlist(ml, request) ]

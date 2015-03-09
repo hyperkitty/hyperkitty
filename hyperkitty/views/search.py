@@ -38,9 +38,6 @@ from hyperkitty.lib.view_helpers import (
 
 def search(request):
     """ Returns messages corresponding to a query """
-    results_per_page = 10
-    load_all = True
-
     mlist_fqdn = request.GET.get("mlist")
     if mlist_fqdn is None:
         mlist = None
@@ -81,12 +78,12 @@ def search(request):
     # Handle data
     if request.GET.get('q'):
         form = SearchForm(
-            request.GET, searchqueryset=sqs, load_all=load_all)
+            request.GET, searchqueryset=sqs, load_all=True)
         if form.is_valid():
             query = form.cleaned_data['q']
             results = form.search()
     else:
-        form = SearchForm(searchqueryset=sqs, load_all=load_all)
+        form = SearchForm(searchqueryset=sqs, load_all=True)
 
     messages = paginate(results, page_num=request.GET.get('page'))
     for message in messages:

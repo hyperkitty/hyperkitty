@@ -63,7 +63,7 @@ class ReattachTestCase(SearchEnabledTestCase):
 
     def test_suggestions(self):
         threadid = self.messages[0]["Message-ID-Hash"]
-        msg2 = Email.objects.get(message_id="id2")
+        Email.objects.get(message_id="id2")
         response = self.client.get(reverse('hk_thread_reattach_suggest',
                                    args=["list@example.com", threadid]))
         other_threadid = self.messages[1]["Message-ID-Hash"]
@@ -212,7 +212,7 @@ class ThreadTestCase(TestCase):
     def test_same_tag_by_different_users(self):
         # If the same tag is added by different users, it must only show up once in the page
         # AND if the current user is one of the taggers, the tag must be removable
-        user_2 = User.objects.create_user('testuser_2', 'test2@example.com', 'testPass')
+        User.objects.create_user('testuser_2', 'test2@example.com', 'testPass')
         self.do_tag_post({ "tag": "testtag", "action": "add" })
         self.client.logout()
         self.client.login(username='testuser_2', password='testPass')
@@ -222,7 +222,7 @@ class ThreadTestCase(TestCase):
     def test_tag_removal_form(self):
         user_2 = User.objects.create_user('testuser_2', 'test2@example.com', 'testPass')
         user_3 = User.objects.create_user('testuser_3', 'test3@example.com', 'testPass')
-        user_4 = User.objects.create_user('testuser_4', 'test4@example.com', 'testPass')
+        _user4 = User.objects.create_user('testuser_4', 'test4@example.com', 'testPass')
         url = reverse('hk_thread', args=["list@example.com", self.threadid])
         thread = Thread.objects.get(thread_id=self.threadid)
         # Create tags

@@ -285,7 +285,7 @@ class MailingList(models.Model):
             mm_list = client.get_list(self.name)
         except MailmanConnectionError:
             return
-        except HTTPError, err:
+        except HTTPError:
             return # can't update at this time
         if not mm_list:
             return

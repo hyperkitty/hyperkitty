@@ -269,7 +269,7 @@ class TestAddToList(TestCase):
                 msg["Message-ID"] = "<%s_%s>" % (name, num)
                 msg.set_payload("Dummy message")
                 add_to_list("example-list", msg)
-        now = timezone.now()
+        #now = timezone.now()
         #yesterday = now - datetime.timedelta(days=1)
         mlist = MailingList.objects.get(name="example-list")
         result = [(p.name, p.address, p.count) for p in

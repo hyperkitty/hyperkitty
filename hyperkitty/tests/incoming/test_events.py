@@ -58,7 +58,7 @@ class EventsTestCase(TestCase):
         thread = Thread.objects.create(
             mailinglist=self.mlist, thread_id="dummy")
         sender = Sender.objects.create(address="dummy@example.com")
-        prev_email = Email.objects.create(
+        Email.objects.create(
             mailinglist=self.mlist, sender=sender, thread=thread,
             date=now(), timezone=0, message_id="dummy")
         msg = self._make_message(msg_id="dummy2")

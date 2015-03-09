@@ -126,7 +126,7 @@ class ThreadTestCase(TestCase):
         # We use random chars to build the subject, if we use a single repeated
         # char, the index will never be big enough.
         subject = [ random.choice(string.letters + string.digits + " ")
-                    for i in range(3000) ]
+                    for _i in range(3000) ]
         subject = "".join(subject)
         msg = Message()
         msg["From"] = "sender@example.com"
@@ -232,7 +232,7 @@ class ProfileTestCase(TestCase):
         MailingList.objects.create(name="test@example.com")
         try:
             subs = self.user.hyperkitty_profile.get_subscriptions()
-        except AttributeError, e:
+        except AttributeError:
             #print_exc()
             self.fail("Subscriptions should be available even if "
                       "the user has never voted yet\n%s" % format_exc())

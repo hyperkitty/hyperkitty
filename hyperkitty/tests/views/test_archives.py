@@ -82,7 +82,7 @@ class PrivateArchivesTestCase(TestCase):
         #self.client.defaults = {"kittystore.store": self.store,
         #                        "HTTP_USER_AGENT": "testbot",
         #                        }
-        ml = MailingList.objects.create(
+        MailingList.objects.create(
             name="list@example.com", subject_prefix="[example] ",
             archive_policy=ArchivePolicy.private.value)
         msg = Message()

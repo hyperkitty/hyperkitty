@@ -266,7 +266,7 @@ class DbImporter(object):
                 print("Downloading attachment from %s" % url)
             try:
                 content = urllib.urlopen(url).read()
-            except IOError, e:
+            except IOError:
                 content = None
         return content
 

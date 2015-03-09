@@ -34,7 +34,7 @@ from hyperkitty.tests.utils import TestCase
 class PrivateListTestCase(TestCase):
 
     def setUp(self):
-        ml = MailingList.objects.create(
+        MailingList.objects.create(
             name="list@example.com", subject_prefix="[example] ",
             archive_policy=ArchivePolicy.private.value)
         msg = Message()

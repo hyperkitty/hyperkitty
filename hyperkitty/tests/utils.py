@@ -99,7 +99,7 @@ class SearchEnabledTestCase(TestCase):
 
     def _pre_setup(self):
         try:
-            import whoosh
+            import whoosh # pylint: disable=unused-variable
         except ImportError:
             raise SkipTest("The Whoosh library is not available")
         self.tmpdir = tempfile.mkdtemp(prefix="hyperkitty-testing-")
