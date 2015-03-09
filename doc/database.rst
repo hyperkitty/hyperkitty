@@ -46,3 +46,13 @@ where:
   current archives. Make sure you remember to include the 'http://' in this string.
 * ``LIST_NAME`` is the name of the mailing-list without the domain (before the
   ``@`` sign)
+
+After importing your existing archives, you must add them to the fulltext
+search engine with the following command::
+
+    django-admin update_index --pythonpath hyperkitty_standalone --settings settings
+
+Refer to `the command's documentation`_ for available switches.
+
+.. _`the command's documentation`: http://django-haystack.readthedocs.org/en/latest/management_commands.html#update-index
+
