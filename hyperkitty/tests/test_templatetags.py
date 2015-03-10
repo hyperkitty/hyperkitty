@@ -24,6 +24,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 from hyperkitty.tests.utils import TestCase
 
 from hyperkitty.templatetags.hk_generic import snip_quoted
+from hyperkitty.templatetags.hk_haystack import nolongterms
 
 class SnipQuotedTestCase(TestCase):
 
@@ -43,3 +44,47 @@ On Fri, 09.11.12 11:27, Someone wrote:
 """ % self.quotemsg
         result = snip_quoted(contents, self.quotemsg)
         self.assertEqual(result, expected)
+
+
+class HaystackTestCase(TestCase):
+
+    def test_nolongterms_short(self):
+        short_terms = "dummy sentence with only short terms"
+        self.assertEqual(nolongterms(short_terms), short_terms)
+
+    def test_nolongterms_too_long(self):
+        long_term = "x" * 240
+        text = "dummy %s sentence" % long_term
+        self.assertEqual(nolongterms(text), "dummy sentence")
+
+    def test_nolongterms_xmlescape(self):
+        # the long term itself is < 240, but it's the XML-escaped value that counts
+        long_term = "x" * 237
+        text = "dummy <%s> sentence" % long_term
+        self.assertEqual(nolongterms(text), "dummy sentence")
+
+    def test_nolongterms_xmlescape_amperstand(self):
+        # the long term itself is < 240, but it's the XML-escaped value that counts
+        long_term = "&" * 60
+        text = "dummy %s sentence" % long_term
+        self.assertEqual(nolongterms(text), "dummy sentence")
+
+    def test_nolongterms_doublequotes(self):
+        # the long term itself is < 240, but the measured string is
+        # double-quote-escaped first
+        long_term = "x" * 237
+        text = 'dummy "%s" sentence' % long_term
+        self.assertEqual(nolongterms(text), "dummy sentence")
+
+    def test_nolongterms_singlequotes(self):
+        # the long term itself is < 240, but the measured string is
+        # quote-escaped first
+        long_term = "x" * 237
+        text = "dummy '%s' sentence" % long_term
+        self.assertEqual(nolongterms(text), "dummy sentence")
+
+    def test_nolongterms_encoding(self):
+        # the long term itself is < 240, but it's the utf8-encoded value that counts
+        long_term = "é" * 121
+        text = "dummy %s sentence" % long_term
+        self.assertEqual(nolongterms(text), "dummy sentence")

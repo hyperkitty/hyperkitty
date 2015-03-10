@@ -21,13 +21,20 @@
 
 from __future__ import absolute_import, unicode_literals, print_function
 
+from xml.sax.saxutils import escape
+
 from django import template
 register = template.Library()
 
 @register.filter
 def nolongterms(text):
     """
-    Remove terms longer than 255 chars, or Xapian will choke on them:
+    Remove terms longer than 245 chars, or Xapian will choke on them:
     https://github.com/notanumber/xapian-haystack/issues/77
+    The size check is done on the XML-escaped and quotes-escaped encoded
+    version of the term, with the XTEXT prefix (thus the '240' limit)
     """
-    return ' '.join(word for word in text.split() if len(word) < 255)
+    def _getlen(word):
+        return len(escape(word)
+            .replace('"', '&quot;').replace("'", "&#39;").encode("utf-8"))
+    return ' '.join(word for word in text.split() if _getlen(word) < 240)
