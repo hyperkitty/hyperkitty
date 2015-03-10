@@ -2,10 +2,14 @@ Setting up the databases
 ========================
 
 The HyperKitty database is configured using the ``DATABASE`` setting in
-Django's ``settings.py`` file, as usual. The database can be created with the
-following command::
+Django's ``settings.py`` file, as usual. If you're using Django 1.6, the
+database can be created with the following command::
 
     django-admin syncdb --migrate --pythonpath hyperkitty_standalone --settings settings
+
+If you're using Django 1.7 or later, the command is::
+
+    django-admin migrate --pythonpath hyperkitty_standalone --settings settings
 
 HyperKitty also uses a fulltext search engine. Thanks to the Django-Haystack
 library, the search engine backend is pluggable, refer to the Haystack

@@ -128,9 +128,13 @@ base and run the commands that will update the database schemas. Before
 updating any of those databases, it is recommended to shut down the webserver
 which serves HyperKitty (Apache HTTPd for example).
 
-To update the HyperKitty database, run::
+To update the HyperKitty database, if you're using Django 1.6, run::
 
-    django-admin syncdb  --migrate --pythonpath hyperkitty_standalone --settings settings
+    django-admin syncdb --migrate --pythonpath hyperkitty_standalone --settings settings
+
+If you're using Django 1.7 or later, the command is::
+
+    django-admin migrate --pythonpath hyperkitty_standalone --settings settings
 
 After this command complete, your database will be updated, you can start
 your webserver again.
