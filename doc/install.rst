@@ -105,7 +105,6 @@ After having made these changes, you must restart Mailman. Check its log files
 to make sure the emails are correctly archived. You should not see "``Broken
 archiver: hyperkitty``" messages.
 
-
 Initial setup
 =============
 

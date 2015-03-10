@@ -30,6 +30,11 @@ Then download the components of HyperKitty::
     cd ..
     git clone https://github.com/hyperkitty/hyperkitty_standalone.git
 
+You will also need to install Node.js and LESS (version >= 1.5) using your package
+manager or the project's installation documentation. If you are using Fedora 20, you
+can just run ``yum install nodejs-less``. If you are using an earlier version,
+you can install the correct version of LESS via rpm: http://pkgs.org/download/nodejs-less
+
 
 Configuration
 =============
@@ -55,7 +60,7 @@ and each time you change the static files::
 Normally, to generate compressor content, you'll need to set ``COMPRESS_ENABLED`` to ``TRUE``
 and ``COMPRESS_OFFLINE`` to ``TRUE`` in ``settings_local.py``. However, you can force the generation of
 compressor content by adding the ``--force`` switch to the ``django-admin compress`` command, which
-will run the compressor even if the ``COMPRESS`` settings are not ``TRUE``. 
+will run the compressor even if the ``COMPRESS`` settings are not ``TRUE``.
 
 But for development purposes, it's better to keep ``DEBUG = True``.
 

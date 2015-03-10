@@ -16,6 +16,10 @@ library, the search engine backend is pluggable, refer to the Haystack
 documentation on how to install and configure the fulltext search engine
 backend.
 
+HyperKitty's default configuration uses the `Whoosh`_ backend, so if you want to use that you just need to install the ``Whoosh`` Python library.
+
+.. _Whoosh: https://pythonhosted.org/Whoosh/
+
 
 Importing the current archives
 ==============================
