@@ -110,9 +110,12 @@ class ProgressMarker(object):
         else:
             msg = self.spinner_seq[self.count % len(self.spinner_seq)]
         if self.verbose:
-            print("%s (%d/%d, %s)" % (msgid, self.count, self.total, msg))
+            if self.total:
+                print("%s (%d/%d, %s)" % (msgid, self.count, self.total, msg))
+            else:
+                print("%s (%d, %s)" % (msgid, self.count, msg))
         else:
-            sys.stdout.write(r"\r%s" % msg)
+            sys.stdout.write("\r%s" % msg)
             sys.stdout.flush()
         self.count += 1
 
@@ -121,7 +124,7 @@ class ProgressMarker(object):
             print('  %s emails read' % self.count)
             print('  %s email added to the database' % self.count_imported)
         else:
-            sys.stdout.write(r"\r")
+            sys.stdout.write("\r")
             sys.stdout.flush()
 
 
@@ -146,9 +149,10 @@ class DbImporter(object):
         try:
             date = parse_date(date)
         except ValueError, e:
-            print("Can't parse date string in message %s: %s"
-                  % (message["message-id"], date.decode("ascii", "replace")))
-            print(e)
+            if self.verbose:
+                print("Can't parse date string in message %s: %s"
+                      % (message["message-id"], date.decode("ascii", "replace")))
+                print(e)
             return False
         if date.tzinfo is None:
             date = date.replace(tzinfo=utc)
@@ -180,7 +184,7 @@ class DbImporter(object):
             try:
                 add_to_list(self.list_address, message)
             except DuplicateMessage as e:
-                print("Duplicate email with message-id '%s'", e.args[0])
+                print("Duplicate email with message-id '%s'" % e.args[0])
                 continue
             except ValueError as e:
                 if len(e.args) != 2:
