@@ -27,4 +27,4 @@ developers, or ask any other questions about HyperKitty, you can hang out in the
 IRC channel: `#mailman on irc.freenode.net <https://webchat.freenode.net/?channels=mailman>`_.
 You can also subscribe to our `mailing list <https://lists.fedorahosted.org/mailman/listinfo/hyperkitty-devel>`_.
 
-To report bugs, please create `a GitHub issue <https://github.com/hyperkitty/hyperkitty/issues/new>`_ or contact us on IRC.
+To report bugs, please create `a ticket here <https://fedorahosted.org/hyperkitty/>`_ or contact us on IRC.
