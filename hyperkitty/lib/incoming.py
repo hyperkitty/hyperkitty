@@ -40,6 +40,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class DuplicateMessage(Exception):
+    """
+    The database already contains an email with the same Message-ID header.
+    """
+
+
 def add_to_list(list_name, message):
     #timeit("1 start")
     mlist = MailingList.objects.get_or_create(name=list_name)[0]
@@ -53,9 +59,8 @@ def add_to_list(list_name, message):
         raise ValueError("No 'Message-Id' header in email", message)
     #timeit("2 after ml, before checking email & sender")
     msg_id = get_message_id(message)
-    if Email.objects.filter(mailinglist=mlist, message_id=msg_id).count() > 0:
-        logger.info("Duplicate email with message-id '%s'", msg_id)
-        return get_message_id_hash(msg_id)
+    if Email.objects.filter(mailinglist=mlist, message_id=msg_id).exists():
+        raise DuplicateMessage(msg_id)
     email = Email(mailinglist=mlist, message_id=msg_id)
     email.in_reply_to = get_ref(message) # Find thread id
 

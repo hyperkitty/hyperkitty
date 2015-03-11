@@ -44,7 +44,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import Error as DatabaseError
 from django.utils.timezone import utc
 
-from hyperkitty.lib.incoming import add_to_list
+from hyperkitty.lib.incoming import add_to_list, DuplicateMessage
 from hyperkitty.lib.mailman import sync_with_mailman
 from hyperkitty.lib.analysis import compute_thread_order_and_depth
 from hyperkitty.lib.utils import get_message_id
@@ -112,7 +112,7 @@ class ProgressMarker(object):
         if self.verbose:
             print("%s (%d/%d, %s)" % (msgid, self.count, self.total, msg))
         else:
-            sys.stdout.write("\r%s" % msg)
+            sys.stdout.write(r"\r%s" % msg)
             sys.stdout.flush()
         self.count += 1
 
@@ -121,7 +121,8 @@ class ProgressMarker(object):
             print('  %s emails read' % self.count)
             print('  %s email added to the database' % self.count_imported)
         else:
-            print()
+            sys.stdout.write(r"\r")
+            sys.stdout.flush()
 
 
 class DbImporter(object):
@@ -178,7 +179,10 @@ class DbImporter(object):
             # Now insert the message
             try:
                 add_to_list(self.list_address, message)
-            except ValueError, e:
+            except DuplicateMessage as e:
+                print("Duplicate email with message-id '%s'", e.args[0])
+                continue
+            except ValueError as e:
                 if len(e.args) != 2:
                     raise # Regular ValueError exception
                 try:

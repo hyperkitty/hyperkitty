@@ -10,7 +10,7 @@ from django.utils import timezone
 from django.db import IntegrityError
 
 from hyperkitty.models import MailingList, Email, Thread, Attachment
-from hyperkitty.lib.incoming import add_to_list
+from hyperkitty.lib.incoming import add_to_list, DuplicateMessage
 from hyperkitty.lib.utils import get_message_id_hash
 from hyperkitty.tests.utils import TestCase, get_test_file
 
@@ -118,7 +118,7 @@ class TestAddToList(TestCase):
         mlist = MailingList.objects.get(name="example-list")
         self.assertEqual(mlist.emails.count(), 1)
         self.assertTrue(mlist.emails.filter(message_id="dummy").exists())
-        add_to_list("example-list", msg)
+        self.assertRaises(DuplicateMessage, add_to_list, "example-list", msg)
         self.assertEqual(mlist.emails.count(), 1)
 
     def test_non_ascii_email_address(self):
@@ -147,7 +147,7 @@ class TestAddToList(TestCase):
         self.assertTrue(mlist.emails.filter(message_id="dummy").exists())
         msg.replace_header("From", b"dummy-non-ascii\xc3\xa9@example.com")
         try:
-            add_to_list("example-list", msg)
+            self.assertRaises(DuplicateMessage, add_to_list, "example-list", msg)
         except UnicodeDecodeError, e:
             self.fail("Died on a non-ascii header message: %s" % unicode(e))
         self.assertEqual(mlist.emails.count(), 1)
