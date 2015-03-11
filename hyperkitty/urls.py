@@ -35,6 +35,7 @@ if DJANGO_VERSION[:2] < (1, 7):
 from hyperkitty import api
 
 
+# pylint: disable=invalid-name
 urlpatterns = patterns('hyperkitty.views',
     # Index
     url(r'^/?$', 'index.index', name='hk_root'),

@@ -59,7 +59,7 @@ def arch_month_mbox(request, list_name, year, month_name):
     The messages must be rebuilt before being added to the mbox file, including
     headers and the textual content, making sure to escape email addresses.
     """
-    # pylint: disable=unused-argument
+    # pylint: disable=unused-argument,unreachable
     return HttpResponse("Not implemented yet.",
                         content_type="text/plain", status=500)
     mlist = get_list_by_name(list_name, request.get_host())

@@ -23,7 +23,7 @@
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-import string
+import string # pylint: disable=deprecated-module
 import random
 import uuid
 from email.message import Message

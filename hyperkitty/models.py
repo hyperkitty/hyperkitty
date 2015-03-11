@@ -53,6 +53,7 @@ logger = logging.getLogger(__name__)
 
 
 class ArchivePolicy(Enum):
+    # pylint: disable=too-few-public-methods
     """
     Copy from mailman.interfaces.archiver.ArchivePolicy since we can't import
     mailman (PY3-only).

@@ -32,9 +32,9 @@ except ImportError:
     from urlparse import urljoin # PY2      # pylint: disable=no-name-in-module
 
 from zope.interface import implements
-from mailman.interfaces.archiver import IArchiver
-from mailman.config import config
-from mailman.config.config import external_configuration
+from mailman.interfaces.archiver import IArchiver # pylint: disable=import-error
+from mailman.config import config # pylint: disable=import-error
+from mailman.config.config import external_configuration # pylint: disable=import-error
 import requests
 
 import logging
