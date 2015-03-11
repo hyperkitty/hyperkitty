@@ -9,3 +9,6 @@ doc/_static
 /dist
 *.orig
 .tox
+
+^.idea/
+.DS_Store
