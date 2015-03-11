@@ -11,7 +11,7 @@ Links
 - Full documentation: https://hyperkitty.readthedocs.org
 - Project page and feedback: https://fedorahosted.org/hyperkitty/
 - Demo server: https://lists.stg.fedoraproject.org/
-
+- Local development setup: https://fedorahosted.org/hyperkitty/wiki/DevelopmentSetupGuide
 
 License
 =======
