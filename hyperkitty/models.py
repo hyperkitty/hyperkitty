@@ -335,7 +335,8 @@ class Email(models.Model):
     content = models.TextField()
     date = models.DateTimeField(db_index=True)
     timezone = models.SmallIntegerField()
-    in_reply_to = models.CharField(max_length=255, null=True, blank=True)
+    in_reply_to = models.CharField(
+        max_length=255, null=True, blank=True, db_index=True)
     parent = models.ForeignKey("self",
         blank=True, null=True, on_delete=models.SET_NULL,
         related_name="children")
