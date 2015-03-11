@@ -328,42 +328,51 @@ def reattach(request, mlist_fqdn, threadid):
     if not request.user.is_staff:
         return HttpResponse('You must be a staff member to reattach a thread',
                             content_type="text/plain", status=403)
-    flash_messages = []
     mlist = get_object_or_404(MailingList, name=mlist_fqdn)
     thread = get_object_or_404(Thread, mailinglist=mlist, thread_id=threadid)
+    context = {
+        'mlist': mlist,
+        'thread': thread,
+        'months_list': get_months(mlist),
+        'flash_messages': [],
+    }
+    template_name = "hyperkitty/reattach.html"
 
     if request.method == 'POST':
         parent_tid = request.POST.get("parent")
         if not parent_tid:
             parent_tid = request.POST.get("parent-manual")
         if not parent_tid or not re.match(r"\w{32}", parent_tid):
-            flash_messages.append({"type": "warning",
-                                   "msg": "Invalid thread id, it should look "
-                                          "like OUAASTM6GS4E5TEATD6R2VWMULG44NKJ."})
-        elif parent_tid == threadid:
-            flash_messages.append({"type": "warning",
-                                   "msg": "Can't re-attach a thread to "
-                                          "itself, check your thread ID."})
-        else:
-            try:
-                thread.attach_to(parent_tid)
-            except ValueError as e:
-                flash_messages.append({"type": "error", "msg": str(e)})
-            else:
-                return redirect(reverse(
-                        'hk_thread', kwargs={
-                            "mlist_fqdn": mlist_fqdn,
-                            'threadid': parent_tid,
-                        })+"?msg=attached-ok")
-
-
-    context = {
-        'mlist': mlist,
-        'thread': thread,
-        'months_list': get_months(mlist),
-        'flash_messages': flash_messages,
-    }
-    return render(request, "hyperkitty/reattach.html", context)
+            context["flash_messages"].append(
+                {"type": "warning",
+                 "msg": "Invalid thread id, it should look "
+                        "like OUAASTM6GS4E5TEATD6R2VWMULG44NKJ."})
+            return render(request, template_name, context)
+        if parent_tid == threadid:
+            context["flash_messages"].append(
+                {"type": "warning",
+                 "msg": "Can't re-attach a thread to "
+                        "itself, check your thread ID."})
+            return render(request, template_name, context)
+        try:
+            parent = Thread.objects.get(
+                mailinglist=thread.mailinglist, thread_id=parent_tid)
+        except Thread.DoesNotExist:
+            context["flash_messages"].append(
+                {"type": "warning",
+                 "msg": "Unknown thread, check your thread ID."})
+            return render(request, template_name, context)
+        try:
+            thread.starting_email.set_parent(parent.starting_email)
+        except ValueError as e:
+            context["flash_messages"].append({"type": "error", "msg": str(e)})
+            return render(request, template_name, context)
+        return redirect(reverse(
+                'hk_thread', kwargs={
+                    "mlist_fqdn": mlist_fqdn,
+                    'threadid': parent_tid,
+                })+"?msg=attached-ok")
+    return render(request, template_name, context)
 
 
 @check_mlist_private

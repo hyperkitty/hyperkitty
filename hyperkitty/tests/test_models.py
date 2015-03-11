@@ -141,6 +141,87 @@ class ThreadTestCase(TestCase):
                 "Very long subjects are not trimmed")
 
 
+class EmailSetParentTestCase(TestCase):
+    # pylint: disable=unbalanced-tuple-unpacking
+
+    def _create_tree(self, tree):
+        emails = []
+        for msgid in tree:
+            msg = Message()
+            msg["From"] = "sender@example.com"
+            msg["Message-ID"] = "<%s>" % msgid
+            parent_id = msgid.rpartition(".")[0]
+            if Email.objects.filter(message_id=parent_id).exists():
+                msg["In-Reply-To"] = "<%s>" % parent_id
+            msg.set_payload("dummy message")
+            add_to_list("example-list", msg)
+            emails.append(Email.objects.get(message_id=msgid))
+        return emails
+
+    def test_simple(self):
+        email1, email2 = self._create_tree(["msg1", "msg2"])
+        email2.set_parent(email1)
+        self.assertEqual(email2.parent_id, email1.id)
+        self.assertEqual(email2.thread_id, email1.thread_id)
+        self.assertEqual(Thread.objects.count(), 1)
+        thread = Thread.objects.first()
+        self.assertEqual(thread.id, email1.thread_id)
+        self.assertEqual(thread.emails.count(), 2)
+        self.assertEqual(
+            list(thread.emails.order_by("thread_order")
+                .values_list("message_id", flat=True)),
+            ["msg1", "msg2"])
+        self.assertEqual(thread.date_active, email2.date)
+
+    def test_subthread(self):
+        tree = ["msg1", "msg2", "msg2.1", "msg2.1.1", "msg2.1.1.1", "msg2.2"]
+        emails = self._create_tree(tree)
+        email1 = emails[0]
+        email2 = emails[1]
+        self.assertEqual(email2.thread.emails.count(), len(tree) - 1)
+        email2.set_parent(email1)
+        self.assertEqual(email2.parent_id, email1.id)
+        self.assertEqual(email2.thread_id, email1.thread_id)
+        self.assertEqual(Thread.objects.count(), 1)
+        thread = Thread.objects.first()
+        self.assertEqual(thread.id, email1.thread_id)
+        self.assertEqual(thread.emails.count(), len(tree))
+        for msgid in tree:
+            email = Email.objects.get(message_id=msgid)
+            self.assertEqual(email.thread_id, email1.thread_id)
+        self.assertEqual(tree,
+            list(thread.emails.order_by("thread_order")
+                .values_list("message_id", flat=True)))
+
+    def test_switch(self):
+        email1, email2 = self._create_tree(["msg1", "msg1.1"])
+        email1.set_parent(email2)
+        self.assertEqual(email1.parent, email2)
+        self.assertEqual(email2.parent, None)
+
+    def test_attach_to_child(self):
+        emails = self._create_tree(["msg1", "msg1.1", "msg1.1.1", "msg1.1.2"])
+        emails[1].set_parent(emails[2])
+        self.assertEqual(emails[2].parent_id, emails[0].id)
+        self.assertEqual(list(emails[0].thread.emails
+            .order_by("thread_order").values_list("message_id", flat=True)),
+            ["msg1", "msg1.1.1", "msg1.1", "msg1.1.2"])
+
+    def test_attach_to_grandchild(self):
+        emails = self._create_tree(
+            ["msg1", "msg1.1", "msg1.1.1", "msg1.1.2", "msg1.1.1.1"])
+        emails[1].set_parent(emails[-1])
+        self.assertEqual(emails[-1].parent_id, emails[0].id)
+        self.assertEqual(list(emails[0].thread.emails
+            .order_by("thread_order").values_list("message_id", flat=True)),
+            ["msg1", "msg1.1.1.1", "msg1.1", "msg1.1.1", "msg1.1.2"])
+
+    def test_attach_to_itself(self):
+        email1 = self._create_tree(["msg1"])[0]
+        self.assertRaises(ValueError, email1.set_parent, email1)
+
+
+
 def _create_email(num, reply_to=None):
     msg = Message()
     msg["From"] = "sender%d@example.com" % num

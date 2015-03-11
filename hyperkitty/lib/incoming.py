@@ -139,13 +139,6 @@ def add_to_list(list_name, message):
             email=email, counter=counter, name=name, content_type=content_type,
             encoding=encoding, content=content)
 
-    # search indexing
-    # do it after caching because we need some list properties (like
-    # archive_policy)
-    # TODO: add full-text-search
-    #if self.search_index is not None:
-    #    self.search_index.add(email)
-
     return email.message_id_hash
 
 
@@ -187,4 +180,7 @@ def set_or_create_thread(email):
     #            "Signal 'new_thread' to {} raised an exception: {}".format(
     #            receiver.func_name, result))
     email.thread = thread
-# TODO: check among the emails with an in_reply_to attribute non-empty but pointing to nothing if they should actually be attached to the current email (set their parent_id). This can happen if HK receives the reply before the original message (when a mail server in the chain has an issue, or in case of greylisting for example). To be disabled on bulk imports.
+
+# TODO: check among the emails with an in_reply_to attribute non-empty but
+# pointing to nothing if they should actually be attached to the current email
+# (set their parent_id). See the orphan_emails job for the use case.

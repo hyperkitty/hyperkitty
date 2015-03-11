@@ -127,23 +127,9 @@ class ReattachTestCase(SearchEnabledTestCase):
         self.assertEqual(Thread.objects.count(), 2)
         for thread in Thread.objects.all():
             self.assertEqual(thread.emails.count(), 1)
-        self.assertContains(response, '<div class="alert alert-error">',
+        self.assertContains(response, '<div class="alert alert-warning">',
                 count=1, status_code=200)
         self.assertContains(response, "Unknown thread")
-
-    def test_reattach_old_to_new(self):
-        threadid1 = self.messages[0]["Message-ID-Hash"]
-        threadid2 = self.messages[1]["Message-ID-Hash"]
-        response = self.client.post(reverse('hk_thread_reattach',
-                                    args=["list@example.com", threadid1]),
-                                    data={"parent": threadid2})
-        self.assertEqual(Thread.objects.count(), 2)
-        for thread in Thread.objects.all():
-            self.assertEqual(thread.emails.count(), 1)
-        self.assertContains(response, '<div class="alert alert-error">',
-                count=1, status_code=200)
-        self.assertContains(response, "Can&#39;t attach an older thread to a newer thread.",
-                count=1, status_code=200)
 
 
 

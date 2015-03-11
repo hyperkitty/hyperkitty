@@ -335,8 +335,7 @@ class Email(models.Model):
     content = models.TextField()
     date = models.DateTimeField(db_index=True)
     timezone = models.SmallIntegerField()
-    in_reply_to = models.CharField(
-        max_length=255, null=True, blank=True, db_index=True)
+    in_reply_to = models.CharField(max_length=255, null=True, blank=True)
     parent = models.ForeignKey("self",
         blank=True, null=True, on_delete=models.SET_NULL,
         related_name="children")
@@ -371,6 +370,44 @@ class Email(models.Model):
             # new vote
             vote = Vote(email=self, user=user, value=value)
             vote.save()
+
+    def set_parent(self, parent):
+        if self.id == parent.id:
+            raise ValueError("An email can't be its own parent")
+        # Compute the subthread
+        subthread = [self]
+        def _collect_children(current_email):
+            children = list(current_email.children.all())
+            if not children:
+                return
+            subthread.extend(children)
+            for child in children:
+                _collect_children(child)
+        _collect_children(self)
+        # now set my new parent value
+        old_parent_id = self.parent_id
+        self.parent = parent
+        self.save(update_fields=["parent_id"])
+        # If my future parent is in my current subthread, I need to set its
+        # parent to my current parent
+        if parent in subthread:
+            parent.parent_id = old_parent_id
+            parent.save(update_fields=["parent_id"])
+            # do it after setting the new parent_id to avoid having two
+            # parent_ids set to None at the same time (IntegrityError)
+        if self.thread_id != parent.thread_id:
+            # we changed the thread, reattach the subthread
+            former_thread = self.thread
+            for child in subthread:
+                child.thread = parent.thread
+                child.save(update_fields=["thread_id"])
+                if child.date > parent.thread.date_active:
+                    parent.thread.date_active = child.date
+            parent.thread.save()
+            # if we were the starting email, or former thread may be empty
+            if former_thread.emails.count() == 0:
+                former_thread.delete()
+        compute_thread_order_and_depth(parent.thread)
 
 
 @receiver([post_init, pre_save], sender=Email)
@@ -551,28 +588,6 @@ class Thread(models.Model):
             return True
         return self.date_active.replace(tzinfo=utc) > last_view.view_date
 
-    def attach_to(self, thread):
-        if not isinstance(thread, Thread):
-            thread = Thread.objects.filter(
-                mailinglist=self.mailinglist, thread_id=thread).first()
-            if thread is None:
-                raise ValueError("Unknown thread, check your thread ID.")
-        current_starter = self.starting_email
-        new_starter = thread.starting_email
-        if current_starter.date <= new_starter.date:
-            raise ValueError("Can't attach an older thread "
-                             "to a newer thread.")
-        current_starter.parent = new_starter
-        current_starter.save(update_fields=["parent_id"])
-        for email in self.emails.all():
-            email.thread = thread
-            email.save()
-            if email.date > thread.date_active:
-                thread.date_active = email.date
-        thread.save()
-        compute_thread_order_and_depth(thread)
-        assert self.emails.count() == 0
-        self.delete()
 
 @receiver([post_save, post_delete], sender=Email)
 def refresh_email_count_cache(sender, **kwargs):
