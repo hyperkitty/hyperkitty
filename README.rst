@@ -16,7 +16,7 @@ Links
 License
 =======
 
-HyperKitty is licensed under the `GPL v3.0<http://www.gnu.org/licenses/gpl-3.0.html>`_
+HyperKitty is licensed under the `GPL v3.0 <http://www.gnu.org/licenses/gpl-3.0.html>`_
 
 
 Help, Bugs, Feedback
@@ -24,7 +24,7 @@ Help, Bugs, Feedback
 
 If you need help with HyperKitty, want to keep up with progress, chat with
 developers, or ask any other questions about HyperKitty, you can hang out in the
-IRC channel: `#mailman on irc.freenode.net <https://webchat.freenode.net/?channels=mailman/>`_.
-You can also subscribe to our `mailing list<https://lists.fedorahosted.org/mailman/listinfo/hyperkitty-devel/>`_.
+IRC channel: `#mailman on irc.freenode.net <https://webchat.freenode.net/?channels=mailman>`_.
+You can also subscribe to our `mailing list <https://lists.fedorahosted.org/mailman/listinfo/hyperkitty-devel>`_.
 
-To report bugs, please create `a GitHub issue<https://github.com/hyperkitty/hyperkitty/issues/new/>`_ or contact us on IRC.
+To report bugs, please create `a GitHub issue <https://github.com/hyperkitty/hyperkitty/issues/new>`_ or contact us on IRC.
