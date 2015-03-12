@@ -2,6 +2,22 @@
 Development
 ===========
 
+Building documentation
+======================
+
+The full documentation is located in the "doc" subfolder. It can be generated
+in various formats thanks to `Sphinx`_. To generate the HTML documentation,
+run the following command::
+
+    make -C doc html
+
+The HTML files will be available in the ``doc/_build/html`` directory.
+
+The documentation can also be browsed online at:
+https://hyperkitty.readthedocs.org.
+
+.. _Sphinx: http://sphinx-doc.org
+
 
 Communication channels
 ======================
