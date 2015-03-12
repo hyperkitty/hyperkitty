@@ -17,4 +17,4 @@
 # HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
-# 
+#

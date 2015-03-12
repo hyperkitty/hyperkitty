@@ -25,7 +25,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 import re
 import email.utils
 from base64 import b32encode
-from hashlib import sha1 # pylint: disable-msg=E0611
+from hashlib import sha1
 from email.header import decode_header
 from datetime import timedelta
 

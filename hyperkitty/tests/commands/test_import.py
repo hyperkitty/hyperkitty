@@ -72,7 +72,7 @@ class CommandTestCase(TestCase):
         msg1["Message-ID"] = "<msg1>"
         msg1["Date"] = "2015-01-01 12:00:00"
         msg1.set_payload("msg1")
-        msg1_hash = add_to_list("list@example.com", msg1)
+        add_to_list("list@example.com", msg1)
         # new message in the imported mbox
         msg2 = Message()
         msg2["From"] = "dummy@example.com"

@@ -91,7 +91,8 @@ class TestThreadOrderDepth(TestCase):
         # Set up the reply tree
         msg1.save()
         msg2.parent = msg3.parent = msg1
-        msg2.save(); msg3.save()
+        msg2.save()
+        msg3.save()
         msg4.parent = msg2
         msg4.save()
         # Init with false values

@@ -19,6 +19,8 @@
 # Author: Aamir Khan <syst3m.w0rm@gmail.com>
 #
 
+# pylint: skip-file
+
 class Email(object):
     """ Email class containing the information needed to store and
     display email threads.

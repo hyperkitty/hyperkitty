@@ -20,7 +20,6 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-from django.conf import settings
 
 
 class PaginationMiddleware(object):
@@ -38,6 +37,7 @@ class PaginationMiddleware(object):
 
 # http://stackoverflow.com/questions/2799450/django-https-for-just-login-page
 
+from django.conf import settings
 from django.http import HttpResponsePermanentRedirect
 
 SSL = 'SSL'

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# pylint: disable=all
+# pylint: skip-file
 
 from __future__ import absolute_import, print_function, unicode_literals
 

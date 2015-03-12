@@ -29,8 +29,8 @@ from django.utils import timezone
 from mailmanclient import MailmanConnectionError
 
 from hyperkitty.lib.signals import new_email, new_thread
-from hyperkitty.lib.utils import (get_message_id_hash, get_ref, parseaddr,
-    parsedate, header_to_unicode, get_message_id)
+from hyperkitty.lib.utils import (get_ref, parseaddr, parsedate,
+    header_to_unicode, get_message_id)
 from hyperkitty.lib.scrub import Scrubber
 from hyperkitty.lib.analysis import compute_thread_order_and_depth
 from hyperkitty.models import (MailingList, Sender, Email, Attachment, Thread,

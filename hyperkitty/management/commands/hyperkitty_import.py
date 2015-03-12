@@ -30,7 +30,6 @@ import os
 import re
 import urllib
 import logging
-import sys
 from optparse import make_option
 from email.utils import unquote
 from traceback import print_exc
@@ -92,7 +91,8 @@ TEXTWRAP_RE = re.compile(r"\n\s*")
 
 
 
-class DownloadError(Exception): pass
+class DownloadError(Exception):
+    pass
 
 
 class ProgressMarker(object):
