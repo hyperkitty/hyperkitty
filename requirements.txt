@@ -2,7 +2,7 @@ Django>=1.6
 django-gravatar2
 django-social-auth>=0.7.1
 djangorestframework>=3.0.0
-South
+South>=1.0.0
 django-crispy-forms
 rjsmin
 cssmin
