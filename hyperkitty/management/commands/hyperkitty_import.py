@@ -97,12 +97,13 @@ class DownloadError(Exception): pass
 
 class ProgressMarker(object):
 
-    def __init__(self, verbose):
+    def __init__(self, verbose, stdout):
         self.verbose = verbose
         self.total = None
         self.count = 0
         self.count_imported = 0
         self.spinner_seq = ('|', '/', '-', '\\')
+        self.stdout = stdout
 
     def tick(self, msgid=None):
         if self.total:
@@ -111,21 +112,23 @@ class ProgressMarker(object):
             msg = self.spinner_seq[self.count % len(self.spinner_seq)]
         if self.verbose:
             if self.total:
-                print("%s (%d/%d, %s)" % (msgid, self.count, self.total, msg))
+                self.stdout.write("%s (%d/%d, %s)"
+                    % (msgid, self.count, self.total, msg))
             else:
-                print("%s (%d, %s)" % (msgid, self.count, msg))
+                self.stdout.write("%s (%d)" % (msgid, self.count))
         else:
-            sys.stdout.write("\r%s" % msg)
-            sys.stdout.flush()
+            self.stdout.write("\r%s" % msg, ending='')
+            self.stdout.flush()
         self.count += 1
 
     def finish(self):
         if self.verbose:
-            print('  %s emails read' % self.count)
-            print('  %s email added to the database' % self.count_imported)
+            self.stdout.write('  %s emails read' % self.count)
+            self.stdout.write('  %s email added to the database'
+                              % self.count_imported)
         else:
-            sys.stdout.write("\r")
-            sys.stdout.flush()
+            self.stdout.write("\r", ending='')
+            self.stdout.flush()
 
 
 class DbImporter(object):
@@ -133,12 +136,14 @@ class DbImporter(object):
     Import email messages into the KittyStore database using its API.
     """
 
-    def __init__(self, list_address, options):
+    def __init__(self, list_address, options, stdout, stderr):
         self.list_address = list_address
         self.no_download = options["no_download"]
         self.verbose = options["verbosity"] >= 2
         self.since = options.get("since")
         self.impacted_thread_ids = set()
+        self.stdout = stdout
+        self.stderr = stderr
 
     def _is_too_old(self, message):
         if not self.since:
@@ -150,9 +155,10 @@ class DbImporter(object):
             date = parse_date(date)
         except ValueError, e:
             if self.verbose:
-                print("Can't parse date string in message %s: %s"
-                      % (message["message-id"], date.decode("ascii", "replace")))
-                print(e)
+                self.stderr.write(
+                    "Can't parse date string in message {}: {}. "
+                    "The date string is: '{}'".format(
+                    message["message-id"], e, date.decode("ascii", "replace")))
             return False
         if date.tzinfo is None:
             date = date.replace(tzinfo=utc)
@@ -167,7 +173,7 @@ class DbImporter(object):
         # TODO: search index
         #self.store.search_index = make_delayed(self.store.search_index)
         mbox = mailbox.mbox(mbfile)
-        progress_marker = ProgressMarker(self.verbose)
+        progress_marker = ProgressMarker(self.verbose, self.stdout)
         if not self.since:
             progress_marker.total = len(mbox)
         for message in mbox:
@@ -184,21 +190,24 @@ class DbImporter(object):
             try:
                 add_to_list(self.list_address, message)
             except DuplicateMessage as e:
-                print("Duplicate email with message-id '%s'" % e.args[0])
+                if self.verbose:
+                    self.stderr.write(
+                        "Duplicate email with message-id '%s'" % e.args[0])
                 continue
             except ValueError as e:
                 if len(e.args) != 2:
                     raise # Regular ValueError exception
                 try:
-                    print("%s from %s about %s" % (e.args[0],
-                            e.args[1].get("From"), e.args[1].get("Subject")))
+                    self.stderr.write("%s from %s about %s"
+                        % (e.args[0], e.args[1].get("From"),
+                           e.args[1].get("Subject")))
                 except UnicodeDecodeError:
-                    print("%s with message-id %s" % (
-                            e.args[0], e.args[1].get("Message-ID")))
+                    self.stderr.write("%s with message-id %s"
+                        % (e.args[0], e.args[1].get("Message-ID")))
                 continue
             except DatabaseError:
-                print_exc()
-                print("Message %s failed to import, skipping"
+                print_exc(file=self.stderr)
+                self.stderr.write("Message %s failed to import, skipping"
                       % unquote(message["Message-Id"]))
                 #if not transaction.get_autocommit():
                 #    transaction.rollback()
@@ -267,11 +276,11 @@ class DbImporter(object):
         url = url.strip(" <>")
         if self.no_download:
             if self.verbose:
-                print("NOT downloading attachment from %s" % url)
+                self.stdout.write("NOT downloading attachment from %s" % url)
             content = None
         else:
             if self.verbose:
-                print("Downloading attachment from %s" % url)
+                self.stdout.write("Downloading attachment from %s" % url)
             try:
                 content = urllib.urlopen(url).read()
             except IOError:
@@ -346,7 +355,7 @@ class Command(BaseCommand):
         if options["since"] and options["verbosity"] >= 2:
             self.stdout.write("Only emails after %s will be imported"
                              % options["since"])
-        importer = DbImporter(list_address, options)
+        importer = DbImporter(list_address, options, self.stdout, self.stderr)
         # disable mailman client for now
         for mbfile in args:
             if options["verbosity"] >= 1:

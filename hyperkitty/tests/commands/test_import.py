@@ -17,7 +17,9 @@ class DbImporterTestCase(TestCase):
             "verbosity": 0,
             "since": None,
         }
-        self.importer = DbImporter("example-list", options)
+        self.output = StringIO()
+        self.importer = DbImporter(
+            "example-list", options, self.output, self.output)
 
     def test_empty_attachment(self):
         # Make sure the content of an attachment is not unicode when it hasn't
