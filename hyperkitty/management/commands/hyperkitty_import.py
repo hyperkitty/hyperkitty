@@ -371,7 +371,7 @@ class Command(BaseCommand):
             self.stdout.write("Computing thread structure")
         #timeit("start")
         for thread in Thread.objects.filter(
-            thread_id__in=importer.impacted_thread_ids):
+            id__in=importer.impacted_thread_ids):
             #timeit("before")
             compute_thread_order_and_depth(thread)
             #timeit("after")
