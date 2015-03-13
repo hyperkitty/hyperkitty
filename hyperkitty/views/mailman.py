@@ -22,12 +22,11 @@
 from __future__ import absolute_import, unicode_literals
 
 import json
-from urlparse import urlparse
 from email import message_from_file
 from functools import wraps
 
 from django.conf import settings
-from django.core.exceptions import SuspiciousOperation
+from django.core.exceptions import SuspiciousOperation, ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.utils.http import urlunquote
@@ -39,29 +38,30 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def basic_auth(func):
-    # Inspired by:
-    # https://djangosnippets.org/snippets/2468/
-    # https://djangosnippets.org/snippets/1304/*
-    # https://djangosnippets.org/snippets/243/
+def key_and_ip_auth(func):
     @wraps(func)
     def _decorator(request, *args, **kwargs):
-        if request.META.has_key('HTTP_AUTHORIZATION'):
-            authentication = request.META['HTTP_AUTHORIZATION']
-            (authmeth, auth) = authentication.split(' ',1)
-            if 'basic' == authmeth.lower():
-                auth = auth.strip().decode('base64')
-                username, password = auth.split(':', 1)
-                if username == settings.MAILMAN_ARCHIVER_API_USER \
-                    and password == settings.MAILMAN_ARCHIVER_API_PASS:
-                    return func(request, *args, **kwargs)
-        response = HttpResponse("""
-            <html><title>Auth required</title><body>
-            <h1>Authorization Required</h1></body></html>""",
-            content_type="text/html")
-        response['WWW-Authenticate'] = 'Basic realm="Mailman Archiver API"'
-        response.status_code = 401
-        return response
+        for attr in ('MAILMAN_ARCHIVER_KEY', 'MAILMAN_ARCHIVER_FROM'):
+            if not hasattr(settings, attr):
+                msg = "Missing setting: %s" % attr
+                logger.error(msg)
+                raise ImproperlyConfigured(msg)
+        if request.META.get("REMOTE_ADDR") not in settings.MAILMAN_ARCHIVER_FROM:
+            # pylint: disable=logging-format-interpolation
+            logger.error(
+                "Access to the archiving API endpoint was forbidden from "
+                "IP {}, your MAILMAN_ARCHIVER_FROM setting may be "
+                "misconfigured".format(request.META["REMOTE_ADDR"]))
+            return HttpResponse("""
+                <html><title>Forbidden</title><body>
+                <h1>Access is forbidden</h1></body></html>""",
+                content_type="text/html", status=403)
+        if request.GET.get("key") != settings.MAILMAN_ARCHIVER_KEY:
+            return HttpResponse("""
+                <html><title>Auth required</title><body>
+                <h1>Authorization Required</h1></body></html>""",
+                content_type="text/html", status=401)
+        return func(request, *args, **kwargs)
     return _decorator
 
 
@@ -82,29 +82,15 @@ def _get_url(mlist_fqdn, msg_id=None):
     return urlunquote(url)
 
 
-@basic_auth
+@key_and_ip_auth
 def urls(request):
     result = _get_url(request.GET["mlist"], request.GET.get("msgid"))
     return HttpResponse(json.dumps({"url": result}),
                         content_type='application/javascript')
 
 
-@basic_auth
+@key_and_ip_auth
 def archive(request):
-    allowed_from = urlparse(settings.MAILMAN_REST_SERVER).netloc
-    allowed_from = allowed_from.partition(":")[0]
-    if request.META["REMOTE_ADDR"] != allowed_from and \
-        request.META["REMOTE_HOST"] != allowed_from:
-        # pylint: disable=logging-format-interpolation
-        logger.info("Access to the archiving API endpoint was forbidden from "
-                    "IP {}, your MAILMAN_REST_SERVER setting may be "
-                    "misconfigured".format(request.META["REMOTE_ADDR"]))
-        response = HttpResponse("""
-            <html><title>Forbidden</title><body>
-            <h1>Access is forbidden</h1></body></html>""",
-            content_type="text/html")
-        response.status_code = 403
-        return response
     if request.method != 'POST':
         raise SuspiciousOperation
     mlist_fqdn = request.POST["mlist"]
