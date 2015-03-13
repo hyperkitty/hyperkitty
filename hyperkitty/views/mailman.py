@@ -30,6 +30,7 @@ from django.core.exceptions import SuspiciousOperation, ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.utils.http import urlunquote
+from django.views.decorators.csrf import csrf_exempt
 
 from hyperkitty.lib.incoming import add_to_list, DuplicateMessage
 from hyperkitty.lib.utils import get_message_id_hash
@@ -90,6 +91,7 @@ def urls(request):
 
 
 @key_and_ip_auth
+@csrf_exempt
 def archive(request):
     if request.method != 'POST':
         raise SuspiciousOperation
