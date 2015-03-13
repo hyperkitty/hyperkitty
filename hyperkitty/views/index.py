@@ -53,7 +53,7 @@ def index(request):
     if not sort_mode:
         sort_mode = "popular"
     if sort_mode == "name":
-        pass # already sorted by name
+        lists.sort(key=lambda l: l.name)
     elif sort_mode == "active":
         # Don't show private lists when sorted by activity, to avoid disclosing
         # info about the private list's activity
