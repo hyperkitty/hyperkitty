@@ -46,7 +46,7 @@ upgrades easier.
     Detailed information on how to use different database engines can be found
     in the `Django documentation`_.
 
-.. _Django documentation: https://docs.djangoproject.com/en/1.4/ref/settings/#databases
+.. _Django documentation: https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
 
 .. Setting up the databases
@@ -88,22 +88,28 @@ HyperKitty in your web browser.
 Connecting to Mailman
 =====================
 
-To receive incoming emails from Mailman, you must add the following lines to
-``mailman.cfg``::
+To receive incoming emails from Mailman, you must install the
+`mailman-hyperkitty`_ module available on PyPI in Mailman's virtualenv, and
+then add the following lines to ``mailman.cfg``::
 
     [archiver.hyperkitty]
-    class: hyperkitty.archiver.Archiver
+    class: mailman_hyperkitty.Archiver
     enable: yes
     configuration: /path/to/hyperkitty_standalone/hyperkitty.cfg
 
-And set the URL to your HyperKitty installation in the hyperkitty.cfg file.
-It is also recommanded, but not mandatory, to change the API password in this
-file and in the ``MAILMAN_ARCHIVER_API_PASS`` variable in ``settings.py`` (or
+An `example of the hyperkitty.cfg file`_ is shipped with the `mailman-hyperkitty`_ package.
+You must set the URL to your HyperKitty installation in that file.
+It is also highly recommanded to change the API secret key and in the
+``MAILMAN_ARCHIVER_KEY`` variable in ``settings.py`` (or
 ``settings_local.py``).
+
+.. _mailman-hyperkitty: http://pypi.python.org/pypi/mailman-hyperkitty
+.. _`example of the hyperkitty.cfg file`: https://github.com/hyperkitty/mailman-hyperkitty/blob/master/mailman-hyperkitty.cfg
 
 After having made these changes, you must restart Mailman. Check its log files
 to make sure the emails are correctly archived. You should not see "``Broken
 archiver: hyperkitty``" messages.
+
 
 Initial setup
 =============
