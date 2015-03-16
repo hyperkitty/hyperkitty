@@ -2,13 +2,14 @@
 News / Changelog
 ================
 
-0.9.5
+0.9.6
 =====
 (2015-03-16)
 
 * Adapt to the port of Mailman to Python3
 * Merge KittyStore into HyperKitty
 * Split off the Mailman archiver Plugin in its own module: mailman-hyperkitty
+* Compatibility with Django 1.7
 
 
 0.1.7
