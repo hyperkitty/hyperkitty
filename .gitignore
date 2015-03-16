@@ -1,7 +1,6 @@
 *pyc
 *.swp
 *~
-kittystore
 logs
 *.egg-info
 doc/_build
@@ -9,6 +8,9 @@ doc/_static
 /dist
 *.orig
 .tox
+.coverage
+coverage
+pylint.log
 
 ^.idea/
 .DS_Store

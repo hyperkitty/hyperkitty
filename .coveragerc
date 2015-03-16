@@ -1,0 +1,10 @@
+[run]
+source = hyperkitty
+omit =
+    hyperkitty/tests/*.py
+    hyperkitty/tests/*/*.py
+    hyperkitty/south_migrations/*.py
+    hyperkitty/migrations/*.py
+
+[html]
+directory = coverage
