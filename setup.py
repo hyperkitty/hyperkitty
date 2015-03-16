@@ -53,7 +53,7 @@ setup(
     license="GPLv3",
     classifiers=[
         "Framework :: Django",
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
         "Topic :: Communications :: Email :: Mailing List Servers",
         "Programming Language :: Python :: 2",

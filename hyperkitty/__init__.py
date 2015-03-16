@@ -19,4 +19,4 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-VERSION = "0.9.5"
+VERSION = "0.9.6"
