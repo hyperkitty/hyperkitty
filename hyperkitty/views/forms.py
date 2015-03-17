@@ -25,8 +25,11 @@ from __future__ import absolute_import
 from django import forms
 from django.core import validators
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import AuthenticationForm
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 
 from hyperkitty.models import Profile
 
@@ -60,6 +63,16 @@ class RegistrationForm(forms.Form):
             del cleaned_data["password2"]
         return cleaned_data
 
+
+class InternalAuthenticationForm(AuthenticationForm):
+
+    def __init__(self, *args, **kwargs):
+        super(InternalAuthenticationForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-sm-6 col-md-offset-2 col-md-4 col-lg-offset-4 col-lg-2'
+        self.helper.field_class = 'col-sm-6 col-md-4 col-lg-3'
+        self.helper.add_input(Submit('submit', 'Login', css_class="col-sm-offset-6"))
 
 
 class UserProfileForm(forms.Form):

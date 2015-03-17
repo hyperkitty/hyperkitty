@@ -41,7 +41,8 @@ import mailmanclient
 
 from hyperkitty.models import (Favorite, LastView, MailingList, Sender,
     Email, Vote)
-from hyperkitty.views.forms import RegistrationForm, UserProfileForm
+from hyperkitty.views.forms import (InternalAuthenticationForm,
+    RegistrationForm, UserProfileForm)
 from hyperkitty.lib.view_helpers import FLASH_MESSAGES, is_mlist_authorized
 from hyperkitty.lib.paginator import paginate
 from hyperkitty.lib.mailman import get_mailman_client
@@ -62,6 +63,7 @@ def login_view(request, *args, **kwargs):
         if not isinstance(backend, SocialAuthBackend):
             continue # It should be checked using duck-typing instead
         kwargs["extra_context"]["backends"].append(backend.name)
+    kwargs["authentication_form"] = InternalAuthenticationForm
     return django_login_view(request, *args, **kwargs)
 
 

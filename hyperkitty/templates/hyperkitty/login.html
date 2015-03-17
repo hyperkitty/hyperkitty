@@ -68,13 +68,7 @@
 
 <form action="{{ request.path }}?next={{ next|urlencode }}"
       method="post" class="form-horizontal">
-    {% csrf_token %}
-    {{ form|crispy }}
-    <div class="control-group">
-        <div class="controls">
-            <button type="submit" class="btn btn-primary">{% trans "Login" %}</button>
-        </div>
-    </div>
+    {% crispy form %}
 </form>
 {% endif %}
 
