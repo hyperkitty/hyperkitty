@@ -137,8 +137,6 @@ def user_registration(request):
     redirect_to = request.REQUEST.get("next", reverse("hk_root"))
     if not is_safe_url(url=redirect_to, host=request.get_host()):
         redirect_to = settings.LOGIN_REDIRECT_URL
-
-
     if request.user.is_authenticated():
         # Already registered, redirect back to index page
         return redirect(redirect_to)
@@ -146,20 +144,17 @@ def user_registration(request):
     if request.POST:
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            user_db = User.objects.create_user(
-                form.cleaned_data['username'],
-                form.cleaned_data['email'],
-                form.cleaned_data['password1'])
-            user_db.is_active = True
-            user_db.save()
-            user = authenticate(username=form.cleaned_data['username'],
-                                password=form.cleaned_data['password1'])
-
-            if user is not None:
-                logger.debug(user)
-                if user.is_active:
-                    login(request, user)
-                    return redirect(redirect_to)
+            user = form.save()
+            #user_db = User.objects.create_user(
+            #    form.cleaned_data['username'],
+            #    form.cleaned_data['email'],
+            #    form.cleaned_data['password1'])
+            #user_db.is_active = True
+            #user_db.save()
+            logger.info("New registered user: %s", user.username)
+            if user.is_active:
+                login(request, user)
+                return redirect(redirect_to)
     else:
         form = RegistrationForm()
 

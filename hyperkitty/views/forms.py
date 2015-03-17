@@ -25,9 +25,9 @@ from __future__ import absolute_import
 from django import forms
 from django.core import validators
 from django.contrib.auth.models import User
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy as _
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 
@@ -35,33 +35,39 @@ from hyperkitty.models import Profile
 
 # pylint: disable=too-few-public-methods
 
-def isValidUsername(username): # pylint: disable=invalid-name
-    if User.objects.filter(username=username).exists():
-        raise validators.ValidationError(
-            'The username "%s" is already taken.' % username)
 
-
-
-class RegistrationForm(forms.Form):
-
-    username =  forms.CharField(widget=forms.TextInput, required=True,
-                                validators=[isValidUsername])
+class RegistrationForm(UserCreationForm):
 
     email     = forms.EmailField(required=True)
 
-    password1 = forms.CharField(widget=forms.PasswordInput,
-                                required=True, label="Password")
+    class Meta:
+        model = User
+        fields = ("email", )
 
-    password2 = forms.CharField(widget=forms.PasswordInput,
-                                required=True, label="Confirm password")
+    def __init__(self, *args, **kwargs):
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+        self.error_messages["duplicate_email"] = _(
+            "A user with that email already exists.")
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-sm-4 col-md-offset-1 col-md-4 col-lg-offset-2 col-lg-3'
+        self.helper.field_class = 'col-sm-6 col-md-5 col-lg-4'
+        self.helper.add_input(Submit('submit', _('Register'), css_class="col-sm-offset-6"))
 
-    def clean(self):
-        cleaned_data = super(RegistrationForm, self).clean()
-        if cleaned_data.get("password1") != cleaned_data.get("password2"):
-            self._errors["password2"] = self.error_class(["Passwords do not match."])
-            del cleaned_data["password1"]
-            del cleaned_data["password2"]
-        return cleaned_data
+    def clean_username(self):
+        self.cleaned_data["username"] = self.cleaned_data["email"]
+        return super(RegistrationForm, self).clean_username()
+
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        try:
+            User._default_manager.get(email=email)
+        except User.DoesNotExist:
+            return email
+        raise forms.ValidationError(
+            self.error_messages['duplicate_email'],
+            code='duplicate_email',
+        )
 
 
 class InternalAuthenticationForm(AuthenticationForm):
@@ -70,9 +76,11 @@ class InternalAuthenticationForm(AuthenticationForm):
         super(InternalAuthenticationForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_class = 'form-horizontal'
-        self.helper.label_class = 'col-sm-6 col-md-offset-2 col-md-4 col-lg-offset-4 col-lg-2'
+        self.helper.label_class = \
+            'col-sm-6 col-md-offset-2 col-md-4 col-lg-offset-4 col-lg-2'
         self.helper.field_class = 'col-sm-6 col-md-4 col-lg-3'
-        self.helper.add_input(Submit('submit', 'Login', css_class="col-sm-offset-6"))
+        self.helper.add_input(Submit(
+            'submit', _('Login'), css_class="col-sm-offset-6"))
 
 
 class UserProfileForm(forms.Form):
@@ -117,9 +125,9 @@ class AddTagForm(forms.Form):
 
 
 class AttachmentFileInput(forms.FileInput):
-    attach_first_text = ugettext_lazy('Attach a file')
-    attach_another_text = ugettext_lazy('Attach another file')
-    rm_text = ugettext_lazy('Remove this file')
+    attach_first_text = _('Attach a file')
+    attach_another_text = _('Attach another file')
+    rm_text = _('Remove this file')
     template = """
 <span class="attach-files-template">
     %(input)s <a href="#" title="%(rm_text)s">(-)</a>
