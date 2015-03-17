@@ -133,7 +133,7 @@ class ProgressMarker(object):
 
 class DbImporter(object):
     """
-    Import email messages into the KittyStore database using its API.
+    Import email messages into the HyperKitty database using its API.
     """
 
     def __init__(self, list_address, options, stdout, stderr):
