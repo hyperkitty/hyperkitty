@@ -2,7 +2,7 @@
 #%%global prerel 1
 
 Name:           hyperkitty
-Version:        0.9.5
+Version:        0.9.7
 Release:        %{?prerel:0.}1%{?dist}
 Summary:        A web interface to access GNU Mailman v3 archives
 
