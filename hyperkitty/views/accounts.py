@@ -26,9 +26,8 @@ from urllib2 import HTTPError
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.core.exceptions import SuspiciousOperation
-from django.contrib.auth import authenticate, login, get_backends
+from django.contrib.auth import login, get_backends
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
 from django.contrib.auth.views import login as django_login_view
 from django.shortcuts import render, redirect
 from django.utils.http import is_safe_url
@@ -145,12 +144,6 @@ def user_registration(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            #user_db = User.objects.create_user(
-            #    form.cleaned_data['username'],
-            #    form.cleaned_data['email'],
-            #    form.cleaned_data['password1'])
-            #user_db.is_active = True
-            #user_db.save()
             logger.info("New registered user: %s", user.username)
             if user.is_active:
                 login(request, user)

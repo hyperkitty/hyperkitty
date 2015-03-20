@@ -23,7 +23,6 @@
 from __future__ import absolute_import
 
 from django import forms
-from django.core import validators
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.utils.safestring import mark_safe
@@ -40,7 +39,7 @@ class RegistrationForm(UserCreationForm):
 
     email     = forms.EmailField(required=True)
 
-    class Meta:
+    class Meta: # pylint: disable=no-init
         model = User
         fields = ("email", )
 
@@ -61,7 +60,7 @@ class RegistrationForm(UserCreationForm):
     def clean_email(self):
         email = self.cleaned_data["email"]
         try:
-            User._default_manager.get(email=email)
+            User.objects.get(email=email)
         except User.DoesNotExist:
             return email
         raise forms.ValidationError(
