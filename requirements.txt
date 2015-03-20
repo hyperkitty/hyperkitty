@@ -20,3 +20,4 @@ enum34
 django-haystack
 django-extensions
 lockfile
+numpy

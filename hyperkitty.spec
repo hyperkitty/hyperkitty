@@ -42,6 +42,7 @@ BuildRequires:  python-enum34
 BuildRequires:  python-django-haystack
 BuildRequires:  python-django-extensions
 BuildRequires:  python-lockfile
+BuildRequires:  numpy
 # Unit tests only
 BuildRequires:  python-beautifulsoup4
 BuildRequires:  python-mock
@@ -71,6 +72,7 @@ Requires:       python-enum34
 Requires:       python-django-haystack
 Requires:       python-django-extensions
 Requires:       python-lockfile
+Requires:       numpy
 
 
 %description
