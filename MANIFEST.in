@@ -1,4 +1,5 @@
-include AUTHORS.txt COPYING.txt pylintrc ez_setup.py requirements.txt hyperkitty.spec
+include AUTHORS.txt COPYING.txt ez_setup.py requirements.txt hyperkitty.spec
+include tox.ini *rc
 # http://bruno.im/2010/may/05/packaging-django-reusable-app/
 recursive-include hyperkitty *.py *.html *.js *.txt
 graft hyperkitty/static
