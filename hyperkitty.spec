@@ -139,6 +139,7 @@ cd -
 
 
 %install
+rm -rf %{buildroot}
 %{__python} setup.py install --skip-build --root %{buildroot}
 
 # Install the Django files
@@ -147,9 +148,6 @@ cp -p hyperkitty_standalone/{manage,settings,urls,wsgi}.py \
     %{buildroot}%{_sysconfdir}/%{name}/sites/default/
 touch --reference hyperkitty_standalone/manage.py \
     %{buildroot}%{_sysconfdir}/%{name}/sites/default/__init__.py
-# Mailman config file
-cp -p hyperkitty_standalone/hyperkitty.cfg \
-    %{buildroot}%{_sysconfdir}/%{name}/sites/default/hyperkitty.cfg
 # Apache HTTPd config file
 mkdir -p %{buildroot}/%{_sysconfdir}/httpd/conf.d/
 sed -e 's,/path/to/hyperkitty_standalone/static,%{_localstatedir}/lib/%{name}/sites/default/static,g' \
