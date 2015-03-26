@@ -6,7 +6,7 @@ Building documentation
 ======================
 
 The full documentation is located in the "doc" subfolder. It can be generated
-in various formats thanks to `Sphinx`_. To generate the HTML documentation,
+in various formats once you have installed `Sphinx`_. To generate the HTML documentation,
 run the following command::
 
     make -C doc html
@@ -66,7 +66,7 @@ content::
     USE_SSL = False
 
 It's also recommended to change the database access paths in the ``DATABASES``
-and ``HAYSTACK_CONNECTIONS`` variables.
+and ``HAYSTACK_CONNECTIONS`` variables. Absolute paths are required.
 
 If you ever want to turn the ``DEBUG`` variable to ``False`` (by removing it
 from ``settings_local.py``), you'll have to run two additional commands then
