@@ -198,6 +198,11 @@ class MailingList(models.Model):
         default=ArchivePolicy.public.value)
     created_at = models.DateTimeField(default=now)
 
+    MAILMAN_ATTRIBUTES = (
+        "display_name", "description", "subject_prefix",
+        "archive_policy", "created_at",
+    )
+
     @property
     def is_private(self):
         return self.archive_policy == ArchivePolicy.private.value
@@ -289,10 +294,9 @@ class MailingList(models.Model):
             return
         converters = {
             "created_at": dateutil.parser.parse,
-            "archive_policy": lambda p: getattr(ArchivePolicy, p).value,
+            "archive_policy": lambda p: ArchivePolicy[p].value,
         }
-        for propname in ("display_name", "description", "subject_prefix",
-                         "archive_policy", "created_at"):
+        for propname in self.MAILMAN_ATTRIBUTES:
             try:
                 value = getattr(mm_list, propname)
             except AttributeError:
@@ -336,7 +340,8 @@ class Email(models.Model):
     content = models.TextField()
     date = models.DateTimeField(db_index=True)
     timezone = models.SmallIntegerField()
-    in_reply_to = models.CharField(max_length=255, null=True, blank=True)
+    in_reply_to = models.CharField(
+        max_length=255, null=True, blank=True, db_index=True)
     parent = models.ForeignKey("self",
         blank=True, null=True, on_delete=models.SET_NULL,
         related_name="children")

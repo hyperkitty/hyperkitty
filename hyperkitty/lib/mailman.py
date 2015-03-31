@@ -67,6 +67,7 @@ class FakeMMList:
         self.subject_prefix = "[%s] " % self.display_name
         self.archive_policy = "public"
         self.created_at = now().isoformat()
+        self.settings = {}
 
 
 def sync_with_mailman():

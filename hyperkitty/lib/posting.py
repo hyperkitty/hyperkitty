@@ -65,6 +65,7 @@ def post_to_list(request, mlist, subject, message, headers=None,
             attachments = [attachments]
         for attach in attachments:
             msg.attach(attach.name, attach.read())
+    # XXX: Inject into the incoming queue instead?
     msg.send()
 
 
