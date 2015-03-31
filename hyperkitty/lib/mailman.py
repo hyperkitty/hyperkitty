@@ -44,6 +44,10 @@ def get_mailman_client():
 def subscribe(list_address, user):
     client = get_mailman_client()
     rest_list = client.get_list(list_address)
+    subscription_policy = rest_list.settings.get(
+        "subscription_policy", "moderate")
+    if subscription_policy in ("moderate", "confirm_then_moderate"):
+        return # We don't want to bypass moderation, don't subscribe
     try:
         member = rest_list.get_member(user.email)
     except ValueError:
