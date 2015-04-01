@@ -122,9 +122,7 @@ def vote(request, mlist_fqdn, message_id_hash):
 @login_required
 @check_mlist_private
 def reply(request, mlist_fqdn, message_id_hash):
-    """ Sends a reply to the list.
-    TODO: unit tests
-    """
+    """Sends a reply to the list."""
     if request.method != 'POST':
         raise SuspiciousOperation
     form = ReplyForm(request.POST)
@@ -146,7 +144,11 @@ def reply(request, mlist_fqdn, message_id_hash):
     except PostingFailed, e:
         return HttpResponse(str(e), content_type="text/plain", status=500)
 
-    # TODO: if newthread, don't insert the temp mail in the thread, redirect to the new thread. Should we insert the mail in the DB and flag it as "temporary", to be confirmed by a later reception from mailman?
+    # TODO: if newthread, don't insert the temp mail in the thread, redirect to
+    # the new thread. Should we insert the mail in the DB and flag it as
+    # "temporary", to be confirmed by a later reception from mailman? This
+    # looks complex, because the temp mail should only be visible by its
+    # sender.
 
     if form.cleaned_data["newthread"]:
         html = None
@@ -168,9 +170,7 @@ def reply(request, mlist_fqdn, message_id_hash):
 @login_required
 @check_mlist_private
 def new_message(request, mlist_fqdn):
-    """ Sends a new thread-starting message to the list.
-    TODO: unit tests
-    """
+    """ Sends a new thread-starting message to the list. """
     mlist = get_object_or_404(MailingList, name=mlist_fqdn)
     failure = None
     if request.method == 'POST':

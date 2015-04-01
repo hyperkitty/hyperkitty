@@ -146,6 +146,7 @@ class MessageViewsTestCase(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         #print(mail.outbox[0].message())
         self.assertEqual(mail.outbox[0].recipients(), ["list@example.com"])
+        self.assertEqual(mail.outbox[0].from_email, '"Django User" <test@example.com>')
         self.assertEqual(mail.outbox[0].subject, 'Re: Dummy Subject')
         self.assertEqual(mail.outbox[0].body, "dummy reply content")
         self.assertEqual(mail.outbox[0].message().get("references"), "<msg>")
@@ -165,7 +166,40 @@ class MessageViewsTestCase(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         #print(mail.outbox[0].message())
         self.assertEqual(mail.outbox[0].recipients(), ["list@example.com"])
+        self.assertEqual(mail.outbox[0].from_email, 'test@example.com')
         self.assertEqual(mail.outbox[0].subject, 'new subject')
         self.assertEqual(mail.outbox[0].body, "dummy reply content")
         self.assertNotIn("references", mail.outbox[0].message())
         self.assertNotIn("in-reply-to", mail.outbox[0].message())
+
+    def test_new_message_page(self):
+        url = reverse('hk_message_new', args=["list@example.com"])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 0)
+
+    def test_new_message_post(self):
+        self.user.first_name = "Django"
+        self.user.last_name = "User"
+        self.user.save()
+        url = reverse('hk_message_new', args=["list@example.com"])
+        with patch("hyperkitty.lib.posting.mailman.subscribe") as sub_fn:
+            response = self.client.post(url, {
+                "subject": "Test subject",
+                "message": "Test message content"})
+        self.assertTrue(sub_fn.called)
+        redirect_url = reverse(
+                'hk_archives_with_month', kwargs={
+                    "mlist_fqdn": "list@example.com",
+                    'year': timezone.now().year,
+                    'month': timezone.now().month})
+        redirect_url += "?msg=sent-ok"
+        self.assertRedirects(response, redirect_url)
+        self.assertEqual(len(mail.outbox), 1)
+        #print(mail.outbox[0].message())
+        self.assertEqual(mail.outbox[0].recipients(), ["list@example.com"])
+        self.assertEqual(mail.outbox[0].from_email, '"Django User" <test@example.com>')
+        self.assertEqual(mail.outbox[0].subject, 'Test subject')
+        self.assertEqual(mail.outbox[0].body, "Test message content")
+        self.assertIsNone(mail.outbox[0].message().get("references"))
+        self.assertIsNone(mail.outbox[0].message().get("in-reply-to"))
