@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 # Copyright (C) 2014-2015 by the Free Software Foundation, Inc.
 #
 # This file is part of HyperKitty.

@@ -1,4 +1,23 @@
 # -*- coding: utf-8 -*-
+# Copyright (C) 2014-2015 by the Free Software Foundation, Inc.
+#
+# This file is part of HyperKitty.
+#
+# HyperKitty is free software: you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free
+# Software Foundation, either version 3 of the License, or (at your option)
+# any later version.
+#
+# HyperKitty is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# HyperKitty.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Author: Aurelien Bompard <abompard@fedoraproject.org>
+#
 
 from __future__ import absolute_import, print_function, unicode_literals
 
@@ -15,45 +34,30 @@ from hyperkitty.lib.utils import get_message_id_hash
 from hyperkitty.tests.utils import TestCase, get_test_file
 
 
-class TestFetch(TestCase):
+class TestAddToList(TestCase):
 
-    def setUp(self):
-        self.mlist = MailingList.objects.create(
-            name="example-list",
-            display_name="name 1",
-            subject_prefix="[prefix 1]")
-        self.m_hash = self.add_fetch_data()
-
-    def add_fetch_data(self):
+    def test_basic(self):
         msg = Message()
         msg["From"] = "dummy@example.com"
         msg["Subject"] = "Fake Subject"
         msg["Message-ID"] = "<dummy>"
         msg["Date"] = "Fri, 02 Nov 2012 16:07:54"
         msg.set_payload("Fake Message")
-        return add_to_list("example-list", msg)
-
-    def test_get_message_by_id_from_list(self):
-        """Get a Message in a List by Message-ID """
+        m_hash = add_to_list("example-list", msg)
+        # Get the email by id
         try:
-            m = Email.objects.get(mailinglist=self.mlist, message_id="dummy")
+            m = Email.objects.get(message_id="dummy")
         except Email.DoesNotExist:
-            self.fail("No email found")
+            self.fail("No email found by id")
         self.assertEqual(m.sender_id, "dummy@example.com")
         self.assertEqual(m.sender.address, "dummy@example.com")
-
-    def test_get_thread(self):
-        """Get a Thread in a List by Thread-ID """
-        # Test assumes message_id_hash == thread_id
+        # Get the email by message_id_hash
         try:
-            m = Email.objects.get(mailinglist=self.mlist,
-                                  message_id_hash=self.m_hash)
+            m = Email.objects.get(message_id_hash=m_hash)
         except Email.DoesNotExist:
-            self.fail("No email found")
-        self.assertEqual(m.thread.thread_id, self.m_hash)
-
-
-class TestAddToList(TestCase):
+            self.fail("No email found by hash")
+        # The thread_id is created from the message_id_hash
+        self.assertEqual(m.thread.thread_id, m_hash)
 
     def test_no_message_id(self):
         msg = Message()
@@ -349,33 +353,3 @@ class TestAddToList(TestCase):
         orphan = Email.objects.get(id=orphan.id) # Refresh the instance
         parent = Email.objects.filter(message_id="msg1").first()
         self.assertEqual(orphan.parent_id, parent.id)
-
-
-#class TestStormStoreWithSearch(unittest.TestCase):
-#
-#    def setUp(self):
-#        self.tmpdir = mkdtemp(prefix="kittystore-testing-")
-#        settings = SettingsModule()
-#        settings.KITTYSTORE_SEARCH_INDEX = self.tmpdir
-#        search_index = _get_search_index(settings)
-#        self.store = get_sa_store(settings, search_index=search_index, auto_create=True)
-#        search_index.upgrade(self.store)
-#        kittystore.utils.MM_CLIENT = Mock()
-#
-#    def tearDown(self):
-#        self.store.close()
-#        rmtree(self.tmpdir)
-#        kittystore.utils.MM_CLIENT = None
-#
-#    def test_private_list(self):
-#        # emails on private lists must not be found by a search on all lists
-#        ml = FakeList("example-list")
-#        ml.archive_policy = "private"
-#        kittystore.utils.MM_CLIENT.get_list.side_effect = lambda n: ml
-#        msg = Message()
-#        msg["From"] = "dummy@example.com"
-#        msg["Message-ID"] = "<dummy>"
-#        msg.set_payload("Dummy message")
-#        self.store.add_to_list("example-list", msg)
-#        result = self.store.search("dummy")
-#        self.assertEqual(result["total"], 0)
