@@ -161,7 +161,7 @@ class Profile(models.Model):
                 sub_names.add(mlist_name)
             return list(sorted(sub_names))
         # TODO: how should this be invalidated? Subscribe to a signal in
-        # mailman when a new subscription occurs?
+        # mailman when a new subscription occurs? Or store in the session?
         return cache.get_or_set(
             "User:%s:subscriptions" % self.id,
             _get_value, 60 * 10) # 10 minutes
@@ -360,7 +360,6 @@ class Email(models.Model):
     def vote(self, value, user):
         # Checks if the user has already voted for this message.
         existing = self.votes.filter(user=user).first()
-        # TODO: make sure this is covered by unit tests
         if existing is not None and existing.value == value:
             return # Vote already recorded (should I raise an exception?)
         if value not in (0, 1, -1):

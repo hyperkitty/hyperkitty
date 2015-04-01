@@ -298,6 +298,29 @@ class VoteTestCase(TestCase):
             self.assertEqual(votes["likes"], 1)
             self.assertEqual(votes["dislikes"], 0)
 
+    def test_revote(self):
+        # Overwrite the existing vote
+        _create_email(1)
+        msg = Email.objects.get(message_id="msg1")
+        msg.vote(1, self.user)
+        msg.vote(-1, self.user)
+        votes = msg.get_votes()
+        self.assertEqual(votes["likes"], 0)
+        self.assertEqual(votes["dislikes"], 1)
+
+    def test_revote_identical(self):
+        # Voting in the same manner twice should not fail
+        _create_email(1)
+        msg = Email.objects.get(message_id="msg1")
+        msg.vote(1, self.user)
+        msg.vote(1, self.user)
+
+    def test_vote_invalid(self):
+        # Fail on invalid votes
+        _create_email(1)
+        msg = Email.objects.get(message_id="msg1")
+        self.assertRaises(ValueError, msg.vote, 2, self.user)
+
 
 class ProfileTestCase(TestCase):
 
