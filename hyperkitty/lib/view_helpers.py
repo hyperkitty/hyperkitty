@@ -29,7 +29,7 @@ from django.utils.timezone import utc
 from django.utils.decorators import available_attrs
 from django.shortcuts import render
 
-from hyperkitty.models import ThreadCategory, MailingList
+from hyperkitty.models import ThreadCategory, MailingList, Profile
 from hyperkitty.views.forms import CategoryForm
 from hyperkitty.lib.cache import cache
 
@@ -151,10 +151,19 @@ def check_mlist_private(func):
 
 
 def is_mlist_authorized(request, mlist):
-    # TODO: Create the profile if it does not exist. Use case: hyperkitty is
-    # added to an existing Django project with existing users
-    if mlist.is_private and not (
-            request.user.is_authenticated() and mlist.name in
-            request.user.hyperkitty_profile.get_subscriptions() ):
+    if not mlist.is_private:
+        return True
+    if not request.user.is_authenticated():
         return False
-    return True
+    # Private list and logged-in user: check subscriptions
+    try:
+        profile = Profile.objects.get(user_id=request.user.id)
+    except Profile.DoesNotExist:
+        # Create the profile if it does not exist. There's a signal receiver
+        # that creates it for new users, but HyperKitty may be added to an
+        # existing Django project with existing users.
+        profile = Profile.objects.create(user=request.user)
+    if mlist.name in profile.get_subscriptions():
+        return True
+    else:
+        return False

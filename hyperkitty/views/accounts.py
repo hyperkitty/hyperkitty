@@ -39,7 +39,7 @@ import dateutil.parser
 import mailmanclient
 
 from hyperkitty.models import (Favorite, LastView, MailingList, Sender,
-    Email, Vote)
+    Email, Vote, Profile)
 from hyperkitty.views.forms import (InternalAuthenticationForm,
     RegistrationForm, UserProfileForm)
 from hyperkitty.lib.view_helpers import FLASH_MESSAGES, is_mlist_authorized
@@ -70,9 +70,13 @@ def login_view(request, *args, **kwargs):
 def user_profile(request):
     if not request.user.is_authenticated():
         return redirect('hk_user_login')
-    profile = request.user.hyperkitty_profile
-    # TODO: Create the profile if it does not exist. Use case: hyperkitty is
-    # added to an existing Django project with existing users
+    try:
+        profile = Profile.objects.get(user=request.user)
+    except Profile.DoesNotExist:
+        # Create the profile if it does not exist. There's a signal receiver
+        # that creates it for new users, but HyperKitty may be added to an
+        # existing Django project with existing users.
+        profile = Profile.objects.create(user=request.user)
     mm_user = profile.get_mailman_user()
 
     if request.method == 'POST':
