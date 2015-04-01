@@ -170,7 +170,6 @@ class DbImporter(object):
 
         :arg mbfile: a mailbox file
         """
-        # TODO: search index
         #self.store.search_index = make_delayed(self.store.search_index)
         mbox = mailbox.mbox(mbfile)
         progress_marker = ProgressMarker(self.verbose, self.stdout)
@@ -367,9 +366,9 @@ class Command(BaseCommand):
                     mailinglist__name=list_address).count()
                 self.stdout.write('  %s emails are stored into the database'
                                   % total_in_list)
+        #timeit("start")
         if options["verbosity"] >= 1:
             self.stdout.write("Computing thread structure")
-        #timeit("start")
         for thread in Thread.objects.filter(
             id__in=importer.impacted_thread_ids):
             #timeit("before")
@@ -382,3 +381,8 @@ class Command(BaseCommand):
             sync_with_mailman()
             #if not transaction.get_autocommit():
             #    transaction.commit()
+        if options["verbosity"] >= 1:
+            self.stdout.write(
+                "The full-text search index will be updated every hour. Run "
+                "the 'manage.py runjob update_index' command to update it now."
+                )

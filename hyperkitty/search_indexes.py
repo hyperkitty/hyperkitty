@@ -22,6 +22,9 @@
 from __future__ import absolute_import, unicode_literals, print_function
 
 from haystack import indexes
+from haystack.query import SearchQuerySet
+from haystack.management.commands.update_index import \
+    Command as UpdateIndexCommand
 from hyperkitty.models import Email
 
 
@@ -43,3 +46,27 @@ class EmailIndex(indexes.SearchIndex, indexes.Indexable):
     def load_all_queryset(self):
         # Pull other objects related to the Email in search results.
         return self.get_model().objects.all().select_related("sender", "thread")
+
+
+def update_index():
+    """
+    Update the search index with the new emails since the last index update.
+    """
+    update_cmd = UpdateIndexCommand()
+    # Find the last email in the index:
+    try:
+        last_email = SearchQuerySet().latest('archived_date')
+    except IndexError:
+        update_cmd.start_date = None
+    else:
+        update_cmd.start_date = last_email.object.archived_date
+    # set defaults
+    update_cmd.verbosity = 0
+    update_cmd.batchsize = None
+    update_cmd.end_date = None
+    update_cmd.workers = 0
+    # Setting remove to True is extremely slow, it needs to scan the entire
+    # index and database. About 15 minutes on Fedora's lists, so not for a
+    # frequent operation.
+    update_cmd.remove = False
+    update_cmd.update_backend("hyperkitty", "default")
