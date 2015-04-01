@@ -25,6 +25,7 @@ from __future__ import absolute_import, unicode_literals, division
 import re
 
 from django.conf import settings
+from django.dispatch import receiver
 from django.utils import timezone
 from mailmanclient import MailmanConnectionError
 
@@ -186,6 +187,24 @@ def set_or_create_thread(email):
     #            receiver.func_name, result))
     email.thread = thread
 
-# TODO: check among the emails with an in_reply_to attribute non-empty but
-# pointing to nothing if they should actually be attached to the current email
-# (set their parent_id). See the orphan_emails job for the use case.
+
+@receiver(new_email)
+def check_orphans(sender, **kwargs):
+    # When a reply is received before its original message, it must be
+    # re-attached when the original message arrives.
+    if getattr(settings, "HYPERKITTY_BATCH_MODE", False):
+        return # For batch imports, let the cron job do the work
+    email = kwargs["email"]
+    orphans = Email.objects.filter(
+            mailinglist=email.mailinglist,
+            in_reply_to=email.message_id,
+            parent_id__isnull=True,
+        ).exclude(
+            # guard against emails with the in-reply-to header pointing to
+            # themselves
+            id=email.id
+        )
+    for orphan in orphans:
+        if orphan.id == email.id:
+            continue
+        orphan.set_parent(email)

@@ -328,6 +328,28 @@ class TestAddToList(TestCase):
         self.assertEqual(len(stored_msg.subject), 512)
 
 
+    def test_orphans(self):
+        # When a reply is received before the original message, it must be
+        # re-attached when the original message arrives
+        orphan_msg = Message()
+        orphan_msg["From"] = "person@example.com"
+        orphan_msg["Message-ID"] = "<msg2>"
+        orphan_msg["In-Reply-To"] = "<msg1>"
+        orphan_msg.set_payload("Second message")
+        add_to_list("example-list", orphan_msg)
+        self.assertEqual(Email.objects.count(), 1)
+        orphan = Email.objects.all()[0]
+        self.assertIsNone(orphan.parent_id)
+        parent_msg = Message()
+        parent_msg["From"] = "person@example.com"
+        parent_msg["Message-ID"] = "<msg1>"
+        parent_msg.set_payload("First message")
+        add_to_list("example-list", parent_msg)
+        self.assertEqual(Email.objects.count(), 2)
+        orphan = Email.objects.get(id=orphan.id) # Refresh the instance
+        parent = Email.objects.filter(message_id="msg1").first()
+        self.assertEqual(orphan.parent_id, parent.id)
+
 
 #class TestStormStoreWithSearch(unittest.TestCase):
 #
