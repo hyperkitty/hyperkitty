@@ -34,7 +34,7 @@ from django.utils.http import is_safe_url
 from django.utils.timezone import get_current_timezone
 from django.http import Http404, HttpResponse
 #from django.utils.translation import gettext as _
-from social_auth.backends import SocialAuthBackend
+from social.backends.base import BaseAuth as SocialAuthBackend
 import dateutil.parser
 import mailmanclient
 

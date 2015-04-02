@@ -147,7 +147,7 @@ urlpatterns = patterns('hyperkitty.views',
     url(r'^robots\.txt$', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
 
     # Social Auth
-    url(r'', include('social_auth.urls'), {"SSL": True}),
+    url(r'', include('social.apps.django_app.urls', namespace='social'), {"SSL": True}),
     # BrowserID
     url(r'', include('django_browserid.urls'), {"SSL": True}),
 

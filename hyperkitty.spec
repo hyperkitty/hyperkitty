@@ -24,7 +24,7 @@ BuildRequires:  python-sphinx
 # Unit tests in %%check
 BuildRequires:  django-gravatar2
 BuildRequires:  django-rest-framework >= 2.2.0
-BuildRequires:  django-social-auth >= 0.7.1
+BuildRequires:  python-social-auth
 BuildRequires:  django-crispy-forms
 BuildRequires:  python-django-compressor
 BuildRequires:  python-rjsmin
@@ -53,7 +53,7 @@ BuildRequires:  checkpolicy, selinux-policy-devel, /usr/share/selinux/devel/poli
 BuildRequires:  hardlink
 
 Requires:       django-gravatar2
-Requires:       django-social-auth >= 0.7.1
+Requires:       python-social-auth
 Requires:       django-rest-framework >= 2.2.0
 Requires:       django-crispy-forms
 Requires:       python-django-compressor

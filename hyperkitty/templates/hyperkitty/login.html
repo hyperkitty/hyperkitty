@@ -28,11 +28,11 @@
         {% browserid_login text='Login using Persona' color='blue' next=next %}
     </li>
     <!-- then other backends from social_auth -->
-    {% for backend in backends %}
+    {% for backend in backends.backends %}
         <li class="{{ backend }}">
         {% if backend == "browserid" %}
             <form method="post"
-                  action="{% url 'socialauth_complete' "browserid" %}?next={{ next }}">
+                  action="{% url 'social:complete' "browserid" %}?next={{ next }}">
                 {% csrf_token %}
                 <input type="hidden" name="assertion" value="" />
                 <a rel="nofollow" id="browserid" href="#" class="disabled"
@@ -44,7 +44,7 @@
             <a class="socialaccount_provider openid" title="OpenID" href="#"><img
                src="{{ STATIC_URL }}hyperkitty/img/login/openid.png" alt="OpenID" /></a>
             <form method="post" class="form-inline openid"
-                  action="{% url 'socialauth_begin' "openid" %}?next={{ next }}">
+                  action="{% url 'social:begin' "openid" %}?next={{ next }}">
                 {% csrf_token %}
                 <div class="input-append">
                 <input type="text" class="input-large" name="openid_identifier"
@@ -54,7 +54,7 @@
             </form>
         {% else %}
             <a title="{{ backend|title }}" class="socialaccount_provider {{ backend }}"
-               href="{% url 'socialauth_begin' backend=backend %}?next={{ next }}"><img
+               href="{% url 'social:begin' backend=backend %}?next={{ next }}"><img
                src="{{ STATIC_URL }}hyperkitty/img/login/{{ backend }}.png"
                alt="{{ backend|title }}" /></a>
         {% endif %}
