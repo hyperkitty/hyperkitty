@@ -121,7 +121,7 @@ class MessageViewsTestCase(TestCase):
         self.assertNotContains(response, "dummy@example.com")
         self.assertContains(response,
             get_gravatar_url("dummy@example.com", 40).replace("&", "&amp;"))
-        self.assertContains(response, "list@example.com", count=2)
+        self.assertContains(response, "list@example.com")
         self.assertContains(response, url)
         sender_time = '<span title="Sender\'s time: 2015-02-02 13:00:00">10:00:00</span>'
         self.assertIn(sender_time, response.content.decode("utf-8"))

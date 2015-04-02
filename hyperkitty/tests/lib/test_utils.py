@@ -26,7 +26,11 @@ from email.message import Message
 from email import message_from_file
 
 from django.utils import timezone
-from django.utils.tzinfo import FixedOffset
+try:
+    from django.utils.timezone import get_fixed_timezone
+except ImportError:
+    # Django < 1.7
+    from django.utils.tzinfo import FixedOffset as get_fixed_timezone
 
 from hyperkitty.lib import utils
 from hyperkitty.tests.utils import TestCase, get_test_file
@@ -141,9 +145,11 @@ class TestUtils(TestCase):
         """
         datestrings = [
             ("Wed, 1 Nov 2006 23:50:26 +1800",
-            datetime.datetime(2006, 11, 1, 23, 50, 26, tzinfo=FixedOffset(18*60))),
+            datetime.datetime(2006, 11, 1, 23, 50, 26,
+                              tzinfo=get_fixed_timezone(18*60))),
             ("Wed, 1 Nov 2006 23:50:26 -1800",
-            datetime.datetime(2006, 11, 1, 23, 50, 26, tzinfo=FixedOffset(-18*60))),
+            datetime.datetime(2006, 11, 1, 23, 50, 26,
+                              tzinfo=get_fixed_timezone(-18*60))),
             ]
         for datestring, expected in datestrings:
             parsed = utils.parsedate(datestring)

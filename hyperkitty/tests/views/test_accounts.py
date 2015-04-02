@@ -254,6 +254,4 @@ class SubscriptionsTestCase(TestCase):
                 'all_posts_url': "%s?list=test@example.com"
                         % reverse("hk_user_posts", args=[self.mm_user.user_id]),
             }])
-        # two instances in the page because we also generate output for mobiles
-        self.assertContains(
-            response, "test@example.com", count=2, status_code=200)
+        self.assertContains(response, "test@example.com", status_code=200)
