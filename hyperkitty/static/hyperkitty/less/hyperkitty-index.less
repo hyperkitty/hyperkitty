@@ -1,13 +1,7 @@
 // Index Page (List of lists)
 
-@rightMargin: 4em; // space for side menu of initials
-
 //=== TITLE
 .all-lists {
-    // allow space for alphabetical lookup on right side
-    .row {
-        margin-right: @rightMargin;
-    }
 
     p.hide-switches {
         margin: 0;
@@ -27,7 +21,6 @@
 
     hr {
         margin-top: 0;
-        margin-right: @rightMargin;
     }
 }
 
@@ -178,47 +171,6 @@
     }
 }
 
-//=== RIGHT SIDE MENU
-.all-lists .initials {
-    &:extend(.bordered);
-    border-right: 0;
-    right: 0;
-    right: -3em; /* there will be an animation to 0 */
-    position: absolute;
-    text-align: center;
-    margin-top: 35px;
-    background-color: @navbarColor;
-    h2 {
-        font-size: 18px;
-        margin-bottom: 0.2em;
-    }
-    ul {
-        margin: 0;
-        li {
-            margin: 0;
-        }
-        a {
-            display: block;
-            padding: 0 1em;
-            outline: none;
-            border-top: 1px solid @navbarColor;
-            border-bottom: 1px solid @navbarColor;
-            &:hover {
-                background-color: @linkHoverColor;
-                text-decoration: none;
-                border-top: 1px solid @linkHoverColor;
-                border-bottom: 1px solid @linkHoverColor;
-            }
-            &.active {
-                background-color: @linkHoverColor;
-                text-decoration: none;
-                border-top: 1px solid @rowBorderColor;
-                border-bottom: 1px solid @rowBorderColor;
-            }
-        }
-    }
-}
-
 .back-to-top {
     &:extend(.bordered);
     position: fixed;
@@ -237,13 +189,9 @@
 
 // at screens <= 610px, convert to a different layout
 // rows are too long, so only display some info (list name, list stats)
-// remove initials side menu
 @media (max-width: @screen-xs-max) {
     .all-lists .row {
         margin-right: 0;
-    }
-    .all-lists .initials {
-        .hidden();
     }
 }
 // force header onto 1 row by removing extra padding/gutter

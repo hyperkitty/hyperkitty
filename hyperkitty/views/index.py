@@ -33,7 +33,6 @@ def index(request):
     lists = [
         ml for ml in MailingList.objects.all()
         if not settings.FILTER_VHOST or show_mlist(ml, request) ]
-    initials = set()
     for mlist in lists:
         if not mlist.is_private:
             mlist.can_view = True
@@ -46,7 +45,6 @@ def index(request):
             mlist.recent_threads_count = mlist.recent_threads.count()
         else:
             mlist.recent_threads_count = None
-        initials.add(mlist.name[0])
 
     # sorting
     sort_mode = request.GET.get('sort')
@@ -73,7 +71,6 @@ def index(request):
     context = {
         'view_name': 'all_lists',
         'all_lists': lists,
-        'initials': sorted(list(initials)),
         'sort_mode': sort_mode,
         }
     return render(request, "hyperkitty/index.html", context)

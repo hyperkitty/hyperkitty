@@ -64,11 +64,6 @@ function setup_index(url_template) {
                     must_hide = true;
                 }
             }
-            // initial filter
-            var selected_initial = $(".initials input").val();
-            if (selected_initial && list_name[0].toLowerCase() != selected_initial) {
-                must_hide = true;
-            }
             // now apply the filters
             if (must_hide) {
                 $(this).hide();
@@ -90,23 +85,6 @@ function setup_index(url_template) {
 
     // Back to top link
     setup_back_to_top_link(220); // set offset to 220 for link to appear
-
-    // Initials
-    $(".initials").animate({ right: 0 }, {duration: 600});
-    // Override the scrolling because we have a fixed header
-    $(".initials a").click(function (e) {
-        e.preventDefault();
-        var initial = $(this).attr("href").substring(1);
-        if ($(this).hasClass("active")) {
-            $(".initials input").val("");
-            $(this).removeClass("active");
-        } else {
-            $(".initials input").val(initial);
-            $(".initials a").removeClass("active");
-            $(this).addClass("active");
-        }
-        filter_lists();
-    });
 
     // Update list graphs for visible lists
     $(".all-lists table.lists tr.list:visible").each(function() {

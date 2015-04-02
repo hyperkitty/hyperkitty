@@ -244,19 +244,6 @@
 
     </div> <!-- /container for table -->
 
-    {% if all_lists|length >= 10 %}
-    <div class="side-menu initials">
-        <input type="hidden" name="initial" value="" />
-        <h2>&#8628;</h2>
-        <ul class="list-unstyled">
-            {% for letter in initials %}
-            <li><a href="#{{ letter }}">{{ letter|upper }}</a></li>
-            {% endfor %}
-        </ul>
-        <a href="#" class="back-to-top"><span class="fa fa-arrow-up"></span></a>
-    </div> <!-- /side-menu, right -->
-    {% endif %}
-
 </div> <!-- /row, for lists -->
 
 <div class="row">
