@@ -113,7 +113,7 @@ class Profile(models.Model):
         addresses = set([self.user.email,])
         mm_user = self.get_mailman_user()
         if mm_user:
-            # TODO: caching
+            # TODO: caching?
             addresses.update(mm_user.addresses)
         return list(sorted(addresses))
 

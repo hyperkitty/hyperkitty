@@ -136,10 +136,11 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
 
     # TODO: eventually move to a middleware ?
     # http://djangosnippets.org/snippets/1865/
-    is_bot = True
     user_agent = request.META.get('HTTP_USER_AGENT', None)
     if user_agent:
         is_bot = robot_detection.is_robot(user_agent)
+    else:
+        is_bot = True
 
     context = {
         'mlist': mlist,

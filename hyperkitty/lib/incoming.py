@@ -190,8 +190,11 @@ def set_or_create_thread(email):
 
 @receiver(new_email)
 def check_orphans(sender, **kwargs):
-    # When a reply is received before its original message, it must be
-    # re-attached when the original message arrives.
+    """
+    When a reply is received before its original message, it must be
+    re-attached when the original message arrives.
+    """
+    # pylint: disable=unused-argument
     if getattr(settings, "HYPERKITTY_BATCH_MODE", False):
         return # For batch imports, let the cron job do the work
     email = kwargs["email"]
