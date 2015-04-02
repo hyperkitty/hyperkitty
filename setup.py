@@ -13,23 +13,6 @@ except ImportError:
 from setuptools import setup, find_packages
 
 
-def reqfile(filepath):
-    """Turns a text file into a list (one element per line)"""
-    result = []
-    import re
-    url_re = re.compile(".+:.+#egg=(.+)")
-    with open(filepath, "r") as f:
-        for line in f:
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue
-            mo = url_re.match(line)
-            if mo is not None:
-                line = mo.group(1)
-            result.append(line)
-    return result
-
-
 # extract the version number without importing the package
 with open('hyperkitty/__init__.py') as fp:
     for line in fp:
@@ -40,6 +23,38 @@ with open('hyperkitty/__init__.py') as fp:
     else:
         print('No version number found')
         sys.exit(1)
+
+
+# Requirements
+REQUIRES = [
+    "Django>=1.6",
+    "django-gravatar2",
+    "python-social-auth",
+    "djangorestframework>=3.0.0",
+    "django-crispy-forms",
+    "rjsmin",
+    "cssmin",
+    "robot-detection",
+    "pytz",
+    "django-paintstore",
+    "django-compressor",
+    "django-browserid>=0.10.1",
+    "mailmanclient",
+    "beautifulsoup4",
+    "python-dateutil < 2.0", # python-dateutil 2.0+ is for Python 3
+    "networkx",
+    "enum34",
+    "django-haystack",
+    "django-extensions",
+    "lockfile",
+    "numpy",
+]
+try:
+    import django
+    if django.VERSION[:2] < (1, 7):
+        REQUIRES.append("South>=1.0.0")
+except ImportError:
+    pass
 
 
 setup(
@@ -63,7 +78,7 @@ setup(
     #packages=find_packages(exclude=["*.test", "test", "*.test.*"]),
     packages=find_packages(),
     include_package_data=True,
-    install_requires=reqfile("requirements.txt"),
+    install_requires=REQUIRES,
     tests_require=[
         "mock",
         "Whoosh",
