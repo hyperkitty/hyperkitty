@@ -137,7 +137,13 @@ def user_profile(request):
 def user_registration(request):
     if not settings.USE_INTERNAL_AUTH:
         raise SuspiciousOperation
-    redirect_to = request.REQUEST.get("next", reverse("hk_root"))
+    try:
+        redirect_to = request.GET["next"]
+    except KeyError:
+        try:
+            redirect_to = request.POST["next"]
+        except KeyError:
+            redirect_to = reverse("hk_root")
     if not is_safe_url(url=redirect_to, host=request.get_host()):
         redirect_to = settings.LOGIN_REDIRECT_URL
     if request.user.is_authenticated():

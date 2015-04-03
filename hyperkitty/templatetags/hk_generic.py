@@ -23,11 +23,11 @@ from __future__ import absolute_import, unicode_literals, print_function
 
 import datetime
 import re
+from collections import OrderedDict
 
 import json
 from dateutil.tz import tzoffset
 from django import template
-from django.utils.datastructures import SortedDict
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 from django.utils.timezone import utc
@@ -41,7 +41,7 @@ register = template.Library()
 @register.filter(name='sort')
 def listsort(value):
     if isinstance(value, dict):
-        new_dict = SortedDict()
+        new_dict = OrderedDict()
         key_list = value.keys()
         key_list.sort()
         key_list.reverse()
