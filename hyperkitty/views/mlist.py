@@ -168,9 +168,9 @@ def overview(request, mlist_fqdn=None):
     if request.user.is_authenticated():
         favorites = [ f.thread for f in Favorite.objects.filter(
             thread__mailinglist=mlist, user=request.user) ]
-        mm_user_id = request.user.hyperkitty_profile.get_mailman_user_id
+        mm_user_id = request.user.hyperkitty_profile.get_mailman_user_id()
         threads_posted_to = mlist.threads.filter(
-            emails__sender__mailman_id=mm_user_id)
+            emails__sender__mailman_id=mm_user_id).distinct()
     else:
         favorites = []
         threads_posted_to = []

@@ -171,7 +171,7 @@ class LastViewsTestCase(TestCase):
             msg = Message()
             msg["From"] = "dummy@example.com"
             msg["Message-ID"] = "<id%d>" % (msgnum+1)
-            msg["Subject"] = "Dummy message"
+            msg["Subject"] = "Dummy message %d" % (msgnum+1)
             msg.set_payload("Dummy message")
             add_to_list("list@example.com", msg)
             messages.append(msg)
@@ -183,7 +183,7 @@ class LastViewsTestCase(TestCase):
         msg4 = Message()
         msg4["From"] = "dummy@example.com"
         msg4["Message-ID"] = "<id4>"
-        msg4["Subject"] = "Dummy message"
+        msg4["Subject"] = "Dummy message 4"
         msg4["In-Reply-To"] = "<id3>"
         msg4.set_payload("Dummy message")
         add_to_list("list@example.com", msg4)
@@ -193,12 +193,12 @@ class LastViewsTestCase(TestCase):
         self.assertContains(response, "<td>dummy@example.com</td>",
                             count=2, status_code=200, html=True)
         self.assertContains(response,
-            '<a href="{}">Dummy message</a>'.format(
+            '<a href="{}">Dummy message 2</a>'.format(
                 reverse("hk_thread", args=("list@example.com",
                                            get_message_id_hash("id2")))),
             count=2, status_code=200, html=True)
         self.assertContains(response,
-            '<a href="{}">Dummy message</a>'.format(
+            '<a href="{}">Dummy message 3</a>'.format(
                 reverse("hk_thread", args=("list@example.com",
                                            get_message_id_hash("id3")))),
             count=2, status_code=200, html=True)
@@ -224,8 +224,9 @@ class LastViewsTestCase(TestCase):
 
     def test_overview(self):
         response = self.client.get(reverse('hk_list_overview', args=["list@example.com"]))
+        # 2 in posted to, 2 in recently active, 2 in most active
         self.assertContains(response, "fa-envelope",
-                            count=4, status_code=200)
+                            count=6, status_code=200)
 
 
 
