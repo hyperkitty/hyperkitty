@@ -27,7 +27,7 @@
         {% browserid_login text='Login using Persona' color='blue' next=next %}
     </li>
     <!-- then other backends from social_auth -->
-    {% for backend in backends.backends %}
+    {% for backend in social_backends %}
         <li class="{{ backend }}">
         {% if backend == "browserid" %}
             <form method="post"

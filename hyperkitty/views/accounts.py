@@ -55,13 +55,13 @@ def login_view(request, *args, **kwargs):
     if "extra_context" not in kwargs:
         kwargs["extra_context"] = {}
     if "backends" not in kwargs["extra_context"]:
-        kwargs["extra_context"]["backends"] = []
+        kwargs["extra_context"]["social_backends"] = []
     # Note: sorry but I really find the .setdefault() method non-obvious and
     # harder to re-read that the lines above.
     for backend in get_backends():
         if not isinstance(backend, SocialAuthBackend):
             continue # It should be checked using duck-typing instead
-        kwargs["extra_context"]["backends"].append(backend.name)
+        kwargs["extra_context"]["social_backends"].append(backend.name)
     kwargs["authentication_form"] = InternalAuthenticationForm
     return django_login_view(request, *args, **kwargs)
 
