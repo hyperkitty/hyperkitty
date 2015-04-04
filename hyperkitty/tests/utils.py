@@ -32,6 +32,7 @@ from mock import Mock, patch
 #from django import VERSION as DJANGO_VERSION
 from django.test import TestCase as DjangoTestCase
 from django.conf import settings
+from django.core.management import call_command
 #from django.core.cache import get_cache
 
 from hyperkitty.lib.cache import cache
@@ -109,11 +110,13 @@ class SearchEnabledTestCase(TestCase):
         #self.override_settings["HAYSTACK_SIGNAL_PROCESSOR"] = \
         #    'haystack.signals.RealtimeSignalProcessor'
         super(SearchEnabledTestCase, self)._pre_setup()
-        # connect to the backend using the new settings
-        #reload(haystack)
+        # Connect to the backend using the new settings. Using the reload()
+        # method is not enough, because the settings are cached in the class
+        haystack.connections.connections_info = settings.HAYSTACK_CONNECTIONS
         haystack.connections.reload("default")
         haystack.signal_processor = haystack.signals.RealtimeSignalProcessor(
             haystack.connections, haystack.connection_router)
+        call_command('rebuild_index', interactive=False, verbosity=0)
 
     def _post_teardown(self):
         haystack.signal_processor.teardown()
