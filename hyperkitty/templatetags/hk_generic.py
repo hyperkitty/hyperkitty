@@ -65,24 +65,6 @@ def to_date(month, year):
     return datetime.date(year, month, 1)
 
 
-@register.filter
-def strip_page(value):
-    if not value:
-        return value
-    if value.endswith('/') and value[-3] == '/':
-        end_with_number = False
-        try:
-            if int(value[-2]) in range(0,10):
-                end_with_number = True
-            if end_with_number:
-                output = value.rsplit('/', 2)
-        except ValueError:
-            output = value.rsplit('/', 1)
-    else:
-        output = value.rsplit('/', 1)
-    return output[0]
-
-
 # From http://djangosnippets.org/snippets/1259/
 @register.filter
 def truncatesmart(value, limit=80):
