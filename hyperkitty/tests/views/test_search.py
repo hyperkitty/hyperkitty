@@ -66,7 +66,7 @@ class SearchViewsTestCase(SearchEnabledTestCase):
             archive_policy=ArchivePolicy.private.value
         )
         mm_mlist = FakeMMList("private@example.com")
-        mm_mlist.archive_policy = "private"
+        mm_mlist.settings["archive_policy"] = "private"
         self.mailman_client.get_list.side_effect = lambda name: mm_mlist
         self.mm_user.subscription_list_ids = ["private@example.com",]
         self._send_message(mlist)
@@ -96,8 +96,8 @@ class SearchViewsTestCase(SearchEnabledTestCase):
             "private@example.com": FakeMMList("private@example.com"),
             "private-sub@example.com": FakeMMList("private-sub@example.com"),
         }
-        mailman_lists["private@example.com"].archive_policy = "private"
-        mailman_lists["private-sub@example.com"].archive_policy = "private"
+        mailman_lists["private@example.com"].settings["archive_policy"] = "private"
+        mailman_lists["private-sub@example.com"].settings["archive_policy"] = "private"
         self.mailman_client.get_list.side_effect = lambda name: mailman_lists[name]
         # Subscribe the user to one of the private lists
         self.mm_user.subscription_list_ids = ["private-sub@example.com",]

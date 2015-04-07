@@ -63,11 +63,12 @@ class FakeMMList:
     def __init__(self, name):
         self.fqdn_listname = name
         self.display_name = name.partition("@")[0]
-        self.description = ""
-        self.subject_prefix = "[%s] " % self.display_name
-        self.archive_policy = "public"
-        self.created_at = now().isoformat()
-        self.settings = {}
+        self.settings = {
+            "description": "",
+            "subject_prefix": "[%s] " % self.display_name,
+            "created_at": now().isoformat(),
+            "archive_policy": "public",
+            }
 
 
 def sync_with_mailman():
