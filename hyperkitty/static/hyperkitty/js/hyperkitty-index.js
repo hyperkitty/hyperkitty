@@ -74,9 +74,11 @@ function setup_index(url_template) {
         });
     }
     $(".hide-switches input").click(filter_lists);
+    var _filter_timeout = null;
     $(".filter-lists input").change(function() {
+        clearTimeout(_filter_timeout)
         // reset status according to the "hide" checkboxes
-        filter_lists();
+        window.setTimeout(filter_lists, 500);
     }).keyup(function() {
         // fire the above change event after every letter
         $(this).change();
