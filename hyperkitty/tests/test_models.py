@@ -26,6 +26,7 @@ from __future__ import absolute_import, print_function, unicode_literals
 import string # pylint: disable=deprecated-module
 import random
 import uuid
+from datetime import datetime
 from email.message import Message
 from traceback import format_exc
 
@@ -34,7 +35,7 @@ from django.contrib.auth.models import User
 
 from hyperkitty.lib.incoming import add_to_list
 from hyperkitty.lib.mailman import FakeMMList
-from hyperkitty.models import MailingList, Email, Thread, Tag
+from hyperkitty.models import MailingList, Email, Thread, Tag, ArchivePolicy
 from hyperkitty.tests.utils import TestCase
 
 
@@ -353,3 +354,33 @@ class ProfileTestCase(TestCase):
         msg2.vote(-1, self.user)
         self.assertEqual( (1, 1),
             self.user.hyperkitty_profile.get_votes_in_list("example-list"))
+
+
+class MailingListTestCase(TestCase):
+
+    def setUp(self):
+        self.ml = MailingList.objects.create(name="list@example.com")
+        self.mailman_ml = FakeMMList("list@example.com")
+        self.mailman_client.get_list.side_effect = lambda n: self.mailman_ml
+
+    def test_update_from_mailman(self):
+        self.ml.display_name = "original-value"
+        self.ml.description = "original-value"
+        self.ml.subject_prefix = "original-value"
+        self.ml.created_at = datetime(2000, 1, 1, 0, 0, 0)
+        self.ml.archive_policy = ArchivePolicy.public.value
+        self.ml.save()
+
+        self.mailman_ml.display_name = "new-value"
+        self.mailman_ml.settings["description"] = "new-value"
+        self.mailman_ml.settings["subject_prefix"] = "new-value"
+        self.mailman_ml.settings["archive_policy"] = "private"
+        new_date = datetime(2010, 12, 31, 0, 0, 0)
+        self.mailman_ml.settings["created_at"] = new_date.isoformat()
+
+        self.ml.update_from_mailman()
+        self.assertEqual(self.ml.display_name, "new-value")
+        self.assertEqual(self.ml.description, "new-value")
+        self.assertEqual(self.ml.subject_prefix, "new-value")
+        self.assertEqual(self.ml.created_at, new_date)
+        self.assertEqual(self.ml.archive_policy, ArchivePolicy.private.value)
