@@ -73,3 +73,9 @@ class PaginateTestCase(TestCase):
                          [1, '...', 96, 97, 98, 99, 100])
         self.assertEqual(paginate(objects, 100).page_range,
                          [1, '...', 97, 98, 99, 100])
+
+    def test_default_page(self):
+        self.assertEqual(paginate(range(100), None).number, 1)
+
+    def test_last_page(self):
+        self.assertEqual(paginate(range(100), 1000).number, 10)
