@@ -79,6 +79,15 @@ class TestUtils(TestCase):
         ref_id = utils.get_ref(msg)
         self.assertEqual(ref_id, "ref-1")
 
+    def test_reference_no_brackets(self):
+        msg = Message()
+        msg["From"] = "dummy@example.com"
+        msg["Message-ID"] = "<dummy>"
+        msg["References"] = "ref-1"
+        msg.set_payload("Dummy message")
+        ref_id = utils.get_ref(msg)
+        self.assertEqual(ref_id, "ref-1")
+
     def test_multiple_reference(self):
         msg = Message()
         msg["From"] = "dummy@example.com"

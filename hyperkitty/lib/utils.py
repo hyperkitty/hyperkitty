@@ -69,12 +69,13 @@ def get_ref(message):
             # There can be multiple references, use the last one
             ref_id = ref_id.split()[-1].strip()
     if ref_id is not None:
-        ref_id = IN_BRACKETS_RE.match(ref_id)
-    if ref_id is None:
-        # Can't parse the reference
-        return None
-    ref_id = ref_id.group(1)
-    return ref_id[:254].decode("ascii")
+        if "<" in ref_id or ">" in ref_id:
+            ref_id = IN_BRACKETS_RE.match(ref_id)
+            if ref_id:
+                ref_id = ref_id.group(1)
+    if ref_id is not None:
+        ref_id = ref_id[:254].decode("ascii")
+    return ref_id
 
 
 def parseaddr(address):
