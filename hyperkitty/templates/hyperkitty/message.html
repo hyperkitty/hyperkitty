@@ -15,11 +15,16 @@
 
     <div class="col-md-7">
 
-        <div class="message-header">
-            <a class="thread-back"
-                href="{% url 'hk_thread' threadid=message.thread_id mlist_fqdn=mlist.name %}#{{message.message_id_hash}}">
-            </a> {# the background image will be a "back to thread" button #}
+        <div class="message-header row">
+        <div class="col-tn-2 message-back">
+            <a href="{% url 'hk_thread' threadid=message.thread_id mlist_fqdn=mlist.name %}#{{message.message_id_hash}}">
+                <span class="fa fa-chevron-left icon"></span>
+                <span class="hidden-tn hidden-xs">thread</span>
+            </a>
+        </div>
+        <div class="col-tn-10">
             <h1>{{ message.subject }}</h1>
+        </div>
         </div>
 
         <section id="thread-content">

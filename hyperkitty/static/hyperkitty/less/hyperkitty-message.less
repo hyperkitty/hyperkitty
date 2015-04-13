@@ -458,13 +458,28 @@
         .participant-name {
             margin-left: -20px;
         }
-    }   
+    }
 }
 // mid screens (<992px): adjust spacing between gravatar images
 @media (min-width: @screen-md-min) {
     #participants {
         img.gravatar {
             .square(32px);
+        }
+    }
+}
+
+
+//=== Message view ==/
+
+.message-header {
+    margin: 1em 0 2em 0;
+    .message-back {
+        a {
+            padding: 0.2em 0;
+            .icon {
+                font-size: 1.5em;
+            }
         }
     }
 }
