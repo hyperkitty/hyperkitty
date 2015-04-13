@@ -1,6 +1,7 @@
 {% load gravatar %}
 {% load hk_generic %}
 
+        {% with starting_email=thread.starting_email %}
         <div class="thread{% if thread|is_unread_by:request.user %} unread{% endif %}">
             <span class="thread-title">
                 <a name="{{thread.thread_id}}"
@@ -12,7 +13,7 @@
                     {% if thread|is_unread_by:request.user %}
                     <i class="fa fa-envelope" title="New messages in this thread"></i>
                     {% endif %}
-                    {{ thread.starting_email.subject|strip_subject:mlist }}
+                    {{ starting_email.subject|strip_subject:mlist }}
                 </a>
             </span>
             <span class="thread-date"
@@ -23,16 +24,16 @@
                 <div class="thread-content col-tn-12 col-xs-10 col-lg-11">
                     <div class="thread-email">
                         <span class="expander collapsed">
-                            {{ thread.starting_email.content|urlizetrunc:76|escapeemail }}
+                            {{ starting_email.content|urlizetrunc:76|escapeemail }}
                         </span>
                     </div>
                 </div>
                 <div class="gravatar col-tn-3 col-xs-2 col-lg-1">
-                    {% if thread.starting_email.sender.address %}
-                    {% gravatar thread.starting_email.sender.address 40 %}
+                    {% if starting_email.sender.address %}
+                    {% gravatar starting_email.sender.address 40 %}
                     <br />
                     {% endif %}
-                    {{ thread.starting_email.sender.name|escapeemail }}
+                    {{ starting_email.sender.name|escapeemail }}
                 </div>
                 <div class="thread-extras col-tn-9 col-xs-10 col-lg-11">
                     <div class="row">
@@ -40,7 +41,7 @@
                             {% include 'hyperkitty/threads/category.html' with category=thread.category_hk category_form=thread.category_form threadid=thread.thread_id %}
                         </div>
                         <div class="col-tn-12 col-xs-6 col-sm-4">
-                            {% include "hyperkitty/messages/like_form.html" with message_id_hash=thread.starting_email.message_id_hash object=thread %}
+                            {% include "hyperkitty/messages/like_form.html" with message_id_hash=starting_email.message_id_hash object=thread %}
                         </div>
                         <ul class="list-unstyled list-stats col-tn-12 col-sm-5">
                         <li>
@@ -70,3 +71,4 @@
                 <!--   class="btn btn-default thread-show">Show discussion</a>-->
             </div>
         </div>
+        {% endwith %}

@@ -78,13 +78,14 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     # pylint: disable=unused-argument
     mlist = get_object_or_404(MailingList, name=mlist_fqdn)
     thread = get_object_or_404(Thread, mailinglist=mlist, thread_id=threadid)
+    starting_email = thread.starting_email
 
     sort_mode = request.GET.get("sort", "thread")
     if request.user.is_authenticated():
-        thread.starting_email.myvote = thread.starting_email.votes.filter(
+        starting_email.myvote = starting_email.votes.filter(
             user=request.user).first()
     else:
-        thread.starting_email.myvote = None
+        starting_email.myvote = None
 
     # Tags
     tag_form = AddTagForm()
@@ -104,10 +105,10 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
 
     # Extract relative dates
     today = datetime.date.today()
-    days_old = today - thread.starting_email.date.date()
+    days_old = today - starting_email.date.date()
     days_inactive = today - thread.date_active.date()
 
-    subject = stripped_subject(mlist, thread.starting_email.subject)
+    subject = stripped_subject(mlist, starting_email.subject)
 
     # Last view
     last_view = None
@@ -145,6 +146,7 @@ def thread_index(request, mlist_fqdn, threadid, month=None, year=None):
     context = {
         'mlist': mlist,
         'thread': thread,
+        'starting_email': starting_email,
         'subject': subject,
         'addtag_form': tag_form,
         'month': thread.date_active,

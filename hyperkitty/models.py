@@ -511,14 +511,13 @@ class Thread(models.Model):
         # Also cache in the instance because we're going to use it a lot
         # It's not enough though, because Django's ORM returns different model
         # instances for each query, so use the regular cache too
-        def _get_email():
-            try:
-                return self.emails.select_related("sender").get(parent_id__isnull=True)
-            except Email.DoesNotExist:
-                return self.emails.select_related("sender").order_by("date").first()
         if self._starting_email_cache is None:
-            self._starting_email_cache = cache.get_or_set(
-                "Thread:%s:starting_email" % self.id, _get_email, None)
+            try:
+                self._starting_email_cache = self.emails.select_related(
+                    "sender").get(parent_id__isnull=True)
+            except Email.DoesNotExist:
+                self._starting_email_cache = self.emails.select_related(
+                    "sender").order_by("date").first()
         return self._starting_email_cache
 
     @property
@@ -634,7 +633,7 @@ def refresh_thread_count_cache(sender, **kwargs):
 def Thread_invalidate_starting_email_cache(sender, **kwargs):
     email = kwargs["instance"]
     if email.thread.starting_email == email:
-        cache.delete("Thread:%s:starting_email" % email.thread_id)
+        email.thread._starting_email_cache = None
 
 
 #@receiver(new_thread)
