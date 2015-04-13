@@ -63,12 +63,21 @@
 
 
 {% if use_internal_auth %}
+
 <h2>Login with username and password</h2>
 
 <form action="{{ request.path }}?next={{ next|urlencode }}"
       method="post" class="form-horizontal">
     {% crispy form %}
 </form>
+
+{% else %}
+
+<p class="text-center text-info">
+    Only external authentication sources are configured. To change your
+    password, use the corresponding source's facilities.
+</p>
+
 {% endif %}
 
 
