@@ -1,9 +1,11 @@
+{% load url from future %}
+{% load i18n %}
 
 <div class="thread-list">
     {% for thread in threads %}
         {% if forloop.counter == 6 %}
         <div class="bordered more-threads">
-        <a href="#">More...</a>
+        <a href="#">{% trans "More..." %}</a>
         {% endif %}
         {% include "hyperkitty/threads/summary_thread.html" with counter=forloop.counter %}
     {% empty %}

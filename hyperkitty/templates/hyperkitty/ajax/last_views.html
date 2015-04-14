@@ -14,19 +14,19 @@
                     <td>
                         {% with num_unread=lv.num_unread starting_email=lv.thread.starting_email %}
                         {% if num_unread %}
-                        <i class="unread icon-eye-close" title="New comments"></i>
+                        <i class="unread icon-eye-close" title="{% trans 'New comments' %}"></i>
                         {% endif %}
                         <a href="{% url 'hk_thread' mlist_fqdn=lv.thread.mailinglist.name threadid=lv.thread.thread_id %}"
                             >{{ starting_email.subject }}</a>
                         <br>
-                        Original author: {{ starting_email.sender.name }}
+                        {% trans "Original author:" %} {{ starting_email.sender.name }}
                         <br>
-                        Started on: {{ starting_email.date|date:"D, j M Y H:i" }}
+                        {% trans "Started on:" %} {{ starting_email.date|date:"D, j M Y H:i" }}
                         <br>
-                        Last activity: {{ lv.thread.date_active|timesince }}
+                        {% trans "Last activity:" %} {{ lv.thread.date_active|timesince }}
                         <br>
-                        Replies: {{ lv.thread|num_comments }}
-                        {% if num_unread %} / {{ num_unread }} new {% endif %}
+                        {% trans "Replies:" %} {{ lv.thread|num_comments }}
+                        {% if num_unread %} / {{ num_unread }} {% trans "new" %} {% endif %}
                         {% endwith %}
                     </td>
                 </tr>
@@ -37,12 +37,12 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>List</th>
-                    <th>Subject</th>
-                    <th>Original author</th>
-                    <th>Start date</th>
-                    <th>Last activity</th>
-                    <th>Replies</th>
+                    <th>{% trans "List" %}</th>
+                    <th>{% trans "Subject" %}</th>
+                    <th>{% trans "Original author" %}</th>
+                    <th>{% trans "Start date" %}</th>
+                    <th>{% trans "Last activity" %}</th>
+                    <th>{% trans "Replies" %}</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,7 +51,7 @@
                     {% with num_unread=lv.num_unread starting_email=lv.thread.starting_email %}
                     <td>
                         {% if num_unread %}
-                        <i class="unread icon-eye-close" title="New comments"></i>
+                        <i class="unread icon-eye-close" title="{% trans 'New comments' %}"></i>
                         {% endif %}
                     </td>
                     <td>
@@ -65,7 +65,7 @@
                     <td>{{ lv.thread.date_active|timesince }}</td>
                     <td>
                         {{ lv.thread|num_comments }}
-                        {% if num_unread %} / {{ num_unread }} new {% endif %}
+                        {% if num_unread %} / {{ num_unread }} {% trans "new" %} {% endif %}
                     </td>
                     {% endwith %}
                 </tr>
@@ -74,5 +74,5 @@
         </table>
         {% include "hyperkitty/paginator.html" with pager=last_views page_key="lvpage" %}
     {% else %}
-        <p>Nothing read yet.</p>
+        <p>{% trans "Nothing read yet." %}</p>
     {% endif %}

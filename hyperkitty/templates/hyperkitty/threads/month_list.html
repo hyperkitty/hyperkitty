@@ -1,7 +1,9 @@
+{% load url from future %}
+{% load i18n %}
 {% load hk_generic %}
 
 {% if show_dropdown %}
-<a href="" id="navbarMonthsListDrop" class="dropdown-toggle" data-toggle="dropdown">Go to <b class="caret"></b></a>
+<a href="" id="navbarMonthsListDrop" class="dropdown-toggle" data-toggle="dropdown">{% trans "Go to" %} <b class="caret"></b></a>
 <ul class="dropdown-menu right" role="menu" aria-labelledby="navbarMonthsListDrop">
     {% for year, months in months_list|sort %}
     <li role="presentation" class="dropdown-header disabled">
@@ -60,7 +62,7 @@
     <a href="{% url 'hk_list_overview' mlist_fqdn=mlist.name %}"
        class="btn btn-default btn-sm">
        <span class="fa fa-angle-double-left"></span>
-       List overview</a>
+       {% trans "List overview" %}</a>
 </div>
 {% endif %}
 

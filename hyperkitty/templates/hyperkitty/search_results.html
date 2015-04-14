@@ -1,10 +1,12 @@
 {% extends "hyperkitty/base.html" %}
+{% load url from future %}
+{% load i18n %}
 {% load gravatar %}
 {% load hk_generic %}
 
 
 {% block title %}
-Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:mlist.name|escapeemail }} {% endif %} - {{ app_name|title }}
+{% trans "Search results for" %} "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:mlist.name|escapeemail }} {% endif %} - {{ app_name|title }}
 {% endblock %}
 
 {% block content %}
@@ -26,11 +28,11 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
                         {{ mlist.name|until:"@" }}
                     {% endif %}
                 </a>
-                <small>search results</small>
+                <small>{% trans "search results" %}</small>
             {% else %}
-            <h1>Search results
+            <h1>{% trans "Search results" %}
             {% endif %}
-            <small>for query "{{ query }}"</small></h1>
+            <small>{% trans 'for query' %} "{{ query }}"</small></h1>
 
             {% if mlist.display_name %}
             <span class="list-address hidden-tn hidden-xs hidden-sm col-md-4">
@@ -40,7 +42,7 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
             <ul class="list-unstyled list-stats col-tn-12 col-sm-6 col-md-4">
                 <li>
                     <span class="icomoon discussion"></span>
-                    {{ messages.paginator.count }} messages
+                    {{ messages.paginator.count }} {% trans "messages" %}
                 </li>
             </ul>
 
@@ -53,15 +55,15 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
                 <select name="sort" id="sort-search" class="form-control">
                     <option value="score"
                         {% if sort_mode == "score" %}selected{% endif %}
-                        >sort by score</option>
+                        >{% trans "sort by score" %}</option>
                     <option value="date-desc"
                         {% if sort_mode == "date-desc" %}selected{% endif %}
-                        >sort by latest first</option>
+                        >{% trans "sort by latest first" %}</option>
                     <option value="date-asc"
                         {% if sort_mode == "date-asc" %}selected{% endif %}
-                        >sort by earliest first</option>
+                        >{% trans "sort by earliest first" %}</option>
                 </select>
-                <!--<button type="submit" class="btn btn-default btn-sm col-tn-3">Update</button>-->
+                <!--<button type="submit" class="btn btn-default btn-sm col-tn-3">{% trans "Update" %}</button>-->
             </form>
 
 
@@ -74,11 +76,11 @@ Search results for "{{ query }}"{% if mlist %} - {{ mlist.display_name|default:m
                 {% include "hyperkitty/messages/summary_message.html" with message=message.object %}
                 <!--</div>-->
             {% empty %}
-                <p>Sorry no email could be found for this query.</p>
+                <p>{% trans "Sorry no email could be found for this query." %}</p>
             {% endfor %}
         {% else %}
-            <p>Sorry but your query looks empty.</p>
-            <p style="font-style:italic;font-size:small;color:#ccc">these are not the messages you are looking for</p>
+            <p>{% trans "Sorry but your query looks empty." %}</p>
+            <p style="font-style:italic;font-size:small;color:#ccc">{% trans "these are not the messages you are looking for" %}</p>
         {% endif %}
 
         {% include "hyperkitty/paginator.html" with pager=messages notbydate=True %}

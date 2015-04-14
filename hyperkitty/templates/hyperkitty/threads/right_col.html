@@ -1,3 +1,5 @@
+{% load url from future %}
+{% load i18n %}
 {% load gravatar %}
 {% load hk_generic %}
 {% load cache %}
@@ -9,13 +11,13 @@
         <div class="col-tn-6">
             <span class="days-num">{{ days_inactive }}</span>
             <div class="days-text">
-                days inactive
+                {% trans "days inactive" %}
             </div>
         </div>
         <div class="col-tn-6">
             <span class="days-num">{{ days_old }}</span>
             <div class="days-text">
-                days old
+                {% trans "days old" %}
             </div>
         </div>
     </div> <!-- /Stats re: dates -->
@@ -37,36 +39,35 @@
     <p>
     <div>
         <i class="icomoon discussion"></i>
-        {{ num_comments }} comments
+        {{ num_comments }} {% trans "comments" %}
     </div>
     <div>
         <i class="icomoon participant"></i>
-        {{ thread.participants_count }} participants
+        {{ thread.participants_count }} {% trans "participants" %}
     </div>
     {% if user.is_authenticated %}
     <div>
-        <i class="fa fa-envelope"></i> {{ unread_count }} unread
-        <span class="hidden-sm"> messages</span>
+        <i class="fa fa-envelope"></i> {{ unread_count }} {% trans "unread" %}
+        <span class="hidden-sm"> {% trans "messages" %}</span>
     </div>
     {% endif %}
-    </p>
 
     <form id="fav_form" name="favorite" method="post" class="favorite"
           action="{% url 'hk_favorite' mlist_fqdn=mlist.name threadid=thread.thread_id %}">
         {% csrf_token %}
         <input type="hidden" name="action" value="{{ fav_action }}" />
         <p>
-            <a href="#AddFav" class="notsaved{% if not user.is_authenticated %} disabled" title="You must be logged-in to have favorites.{% endif %}">
-                <i class="fa fa-star"></i>Add to favorites</a>
+            <a href="#AddFav" class="notsaved{% if not user.is_authenticated %} disabled" title="{% trans 'You must be logged-in to have favorites.' %}{% endif %}">
+                <i class="fa fa-star"></i>{% trans "Add to favorites" %}</a>
             <a href="#RmFav" class="saved">
-                <i class="fa fa-star"></i>Remove from favorites</a>
+                <i class="fa fa-star"></i>{% trans "Remove from favorites" %}</a>
         </p>
     </form>
 
     {% if user.is_staff %}
     <p><i class="icon-resize-small"></i>
        <a href="{% url 'hk_thread_reattach' mlist_fqdn=mlist.name threadid=thread.thread_id %}"
-          >Reattach this thread</a>
+          >{% trans "Reattach this thread" %}</a>
     </p>
     {% endif %}
 
@@ -84,7 +85,7 @@
     </div>
     {% cache 86400 thread_participants thread.id %}
     <div id="participants">
-        <span id="participants_title">participants</span> ({{ thread.participants_count }})
+        <span id="participants_title">{% trans "participants" %}</span> ({{ thread.participants_count }})
         <ul class="list-unstyled">
             {% for participant in thread.participants|sort_by_name %}
             <li class="row">
@@ -100,10 +101,10 @@
 {% if user.is_authenticated %}
 <div id="unreadnavbar">
     <div>
-    Unreads: <span class="unreadindex">0</span>/{{unread_count}}
+    {% trans "Unreads:" %} <span class="unreadindex">0</span>/{{unread_count}}
     &nbsp;
-    Go to: <a href="#" class="nextunread" title="hotkey: j">next &darr;</a>
-         - <a href="#" class="prevunread" title="hotkey: k">prev &uarr;</a>
+    {% trans "Go to:" %} <a href="#" class="nextunread" title="hotkey: j">{% trans "next" %} &darr;</a>
+         - <a href="#" class="prevunread" title="hotkey: k">{% trans "prev" %} &uarr;</a>
     </div>
 </div>
 {% endif %}
