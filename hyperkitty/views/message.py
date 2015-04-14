@@ -161,7 +161,8 @@ def reply(request, mlist_fqdn, message_id_hash):
         }
         t = loader.get_template('hyperkitty/ajax/temp_message.html')
         html = t.render(RequestContext(request, { 'email': email_reply }))
-    result = {"result": "The reply has been sent successfully.",
+    # TODO: make the message below translatable.
+    result = {"result": "Your reply has been sent and is being processed.",
               "message_html": html}
     return HttpResponse(json.dumps(result),
                         content_type="application/javascript")
