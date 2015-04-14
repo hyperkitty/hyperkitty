@@ -27,6 +27,7 @@
 
 {% else %}
 <div class="hidden-tn hidden-xs col-sm-2">
+<div class="row">
     <div class="panel-group" id="months-list">
         {% for year, months in months_list|sort %}
         <div class="panel panel-default">
@@ -52,5 +53,16 @@
         </div>
         {% endfor %}
     </div>
+</div>
+
+{% if mlist and pagename != 'overview' %}
+<div class="row">
+    <a href="{% url 'hk_list_overview' mlist_fqdn=mlist.name %}"
+       class="btn btn-default btn-sm">
+       <span class="fa fa-angle-double-left"></span>
+       List overview</a>
+</div>
+{% endif %}
+
 </div>
 {% endif %}

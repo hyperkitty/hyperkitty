@@ -13,7 +13,7 @@
 
 <div class="row">
 
-{% include 'hyperkitty/threads/month_list.html' %}
+{% include 'hyperkitty/threads/month_list.html' with pagename='overview' %}
 
 <div class="overview col-tn-12 col-sm-10">
     <div class="row">
@@ -55,7 +55,7 @@
                 </ul>
             </li>
             <li class="dropdown">
-                {% include 'hyperkitty/threads/month_list.html' with show_dropdown='True' %}
+                {% include 'hyperkitty/threads/month_list.html' with show_dropdown='True' pagename='overview' %}
             </li>
         </ul>
 
