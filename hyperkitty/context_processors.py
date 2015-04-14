@@ -23,11 +23,14 @@
 # pylint: disable=unused-argument
 
 from django.conf import settings
+from hyperkitty import VERSION
 
 def export_settings(request):
     exports = ["APP_NAME", "USE_MOCKUPS", "USE_INTERNAL_AUTH"]
-    return dict( (name.lower(), getattr(settings, name))
-                 for name in exports)
+    extra_context = dict(
+        (name.lower(), getattr(settings, name)) for name in exports)
+    extra_context["HYPERKITTY_VERSION"] = VERSION
+    return extra_context
 
 
 from django.core.urlresolvers import reverse, NoReverseMatch
