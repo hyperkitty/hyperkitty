@@ -46,16 +46,20 @@
                 </a>
             </div>
             <div class="thread-titles">
+                <div class="hidden-tn hidden-xs col-sm-6">
                 {% if next_thread %}
-                <a class="hidden-tn hidden-xs col-sm-6"
-                   href="{% url 'hk_thread' threadid=next_thread.thread_id mlist_fqdn=mlist.name %}"
-                   title="{{ next_thread.subject|strip_subject:mlist|escape }}">{{ next_thread.subject|strip_subject:mlist|truncatesmart:"35" }}</a>
+                    <a href="{% url 'hk_thread' threadid=next_thread.thread_id mlist_fqdn=mlist.name %}"
+                       title="{{ next_thread.subject|strip_subject:mlist|escape }}"
+                       >{{ next_thread.subject|strip_subject:mlist|truncatesmart:"35" }}</a>
                 {% endif %}
+                </div>
+                <div class="right hidden-tn hidden-xs col-sm-6">
                 {% if prev_thread %}
-                <a class="right hidden-tn hidden-xs col-sm-6"
-                   href="{% url 'hk_thread' threadid=prev_thread.thread_id mlist_fqdn=mlist.name %}"
-                   title="{{ prev_thread.subject|strip_subject:mlist|escape }}">{{ prev_thread.subject|strip_subject:mlist|truncatesmart:"35" }}</a>
+                    <a href="{% url 'hk_thread' threadid=prev_thread.thread_id mlist_fqdn=mlist.name %}"
+                       title="{{ prev_thread.subject|strip_subject:mlist|escape }}"
+                       >{{ prev_thread.subject|strip_subject:mlist|truncatesmart:"35" }}</a>
                 {% endif %}
+                </div>
             </div>
             {% endwith %}
         </div> <!-- /thread-header -->
