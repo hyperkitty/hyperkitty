@@ -1,19 +1,21 @@
 {% extends "hyperkitty/base.html" %}
+{% load i18n %}
+{% load url from future %}
 {% load gravatar %}
 {% load hk_generic %}
 
 
 {% block title %}
-Not implemented yet - {{ app_name|title }}
+{% trans "Not implemented yet" %} - {{ app_name|title }}
 {% endblock %}
 
 {% block content %}
 
-<h1>Not implemented</h1>
+<h1>{% trans "Not implemented" %}</h1>
 <p class="">
-    This feature has not been implemented yet, sorry.
+    {% trans "This feature has not been implemented yet, sorry." %}
     {% if mockup %}
-    It will <a class="" href="{{ mockup }}">look like this</a>.
+    {% trans 'It will <a class="" href="{{ mockup }}">look like this</a>.' %}
     {% endif %}
 </p>
 

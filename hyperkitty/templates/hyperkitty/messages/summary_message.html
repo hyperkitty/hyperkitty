@@ -1,3 +1,5 @@
+{% load url from future %}
+{% load i18n %}
 {% load gravatar %}
 {% load hk_generic %}
 
@@ -20,7 +22,7 @@
                 <div class="gravatar col-tn-3 col-xs-2 col-lg-1">
                     {% if message.sender.mailman_id %}
                     <a href="{% url 'hk_public_user_profile' user_id=message.sender.mailman_id %}"
-                       title="See {{ message.sender.name|escapeemail|escape }}'s profile">
+                       title="{% trans 'See the profile for {{ message.sender.name|escapeemail|escape }}' %}">
                     {% endif %}
                     {% if message.sender.address %}
                     {% gravatar message.sender.address 40 %}
@@ -42,7 +44,7 @@
             </div>
             <div class="thread-info">
                 {% if message.tags|length %}
-                Tags:
+                {% trans "Tags:" %}
                 <ul class="list-unstyled tags">
                 {% for tag in message.tags %}
                     <li>

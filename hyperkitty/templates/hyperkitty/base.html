@@ -1,3 +1,5 @@
+{% load url from future %}
+{% load i18n %}
 {% load compress %}
 <!DOCTYPE HTML>
 <html>
@@ -18,7 +20,6 @@
         {% endcompress %}
         {% block additional_stylesheets %} {% endblock %}
     </head>
-    {% load i18n %}
 
     <body>
 
@@ -41,28 +42,28 @@
                         {% else %}
                         >
                         {% endif %}
-                        <a href="{% url 'hk_root' %}">Lists</a>
+                        <a href="{% url 'hk_root' %}">{% trans "Lists" %}</a>
                     </li>
                     <li {% if '/categories' in request.path %}
                         class="active">
                         {% else %}
                         >
                         {% endif %}
-                        <a href="{% url 'hk_categories_overview' %}">Categories</a>
+                        <a href="{% url 'hk_categories_overview' %}">{% trans "Categories" %}</a>
                     </li>
                     <li {% if '/tags' in request.path %}
                         class="active">
                         {% else %}
                         >
                         {% endif %}
-                        <a href="{% url 'hk_tags_overview' %}">Tags</a>
+                        <a href="{% url 'hk_tags_overview' %}">{% trans "Tags" %}</a>
                     </li>
                     <li {% if '/users' in request.path %}
                         class="active">
                         {% else %}
                         >
                         {% endif %}
-                        <a href="{% url 'hk_users_overview' %}">Users</a>
+                        <a href="{% url 'hk_users_overview' %}">{% trans "Users" %}</a>
                     </li>
                 </ul>
                 {% endif %}
@@ -79,10 +80,10 @@
                         <li role="presentation"><a role="menuitem" tabindex="-1" class="postorius" href="{{ postorius_installed }}">{% trans 'Manage lists' %}</a></li>
                         {% endif %}
                         {% if use_internal_auth %}
-                        <li role="presentation"><a role="menuitem" tabindex="-1" class="mm_user" href="{% url 'hk_user_login' %}?next={{next|default:request.path|urlencode}}">Login</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'hk_user_registration' %}?next={{next|default:request.path|urlencode}}"> Sign Up </a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" class="mm_user" href="{% url 'hk_user_login' %}?next={{next|default:request.path|urlencode}}">{% trans "Login" %}</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'hk_user_registration' %}?next={{next|default:request.path|urlencode}}">{% trans "Sign Up" %}</a></li>
                         {% else %}
-                        <li role="presentation"><a role="menuitem" tabindex="-1" class="mm_logout" href="{% url 'hk_user_logout' %}?next={% url 'hk_root' %}">Logout</a></li>
+                        <li role="presentation"><a role="menuitem" tabindex="-1" class="mm_logout" href="{% url 'hk_user_logout' %}?next={% url 'hk_root' %}">{% trans "Logout" %}</a></li>
                         <li role="presentation"><a role="menuitem" tabindex="-1" href="{% url 'hk_user_profile' %}">{{ user.username|truncatechars:"35" }}</a></li>
                         {% endif %}
                     </ul>
@@ -91,12 +92,12 @@
                 <!-- show regular list items for larger viewports (no dropdown)-->
                 <ul class="nav navbar-nav navbar-right auth">
                     {% if user.is_authenticated %}
-                        <li><a class="mm_logout hidden-sm" href="{% url 'hk_user_logout' %}?next={% url 'hk_root' %}">Logout</a></li>
+                        <li><a class="mm_logout hidden-sm" href="{% url 'hk_user_logout' %}?next={% url 'hk_root' %}">{% trans "Logout" %}</a></li>
                         <li><a class="hidden-sm" href="{% url 'hk_user_profile' %}">{{ user.username|truncatechars:"35" }}</a></li>
                     {% else %}
-                        <li><a class="mm_user {% if use_internal_auth %}hidden-sm{% endif %}" href="{% url 'hk_user_login' %}?next={{next|default:request.path|urlencode}}">Login</a></li>
+                        <li><a class="mm_user {% if use_internal_auth %}hidden-sm{% endif %}" href="{% url 'hk_user_login' %}?next={{next|default:request.path|urlencode}}">{% trans "Login" %}</a></li>
                         {% if use_internal_auth %}
-                        <li><a class="hidden-sm" href="{% url 'hk_user_registration' %}?next={{next|default:request.path|urlencode}}"> Sign Up </a></li>
+                        <li><a class="hidden-sm" href="{% url 'hk_user_registration' %}?next={{next|default:request.path|urlencode}}">{% trans "Sign Up" %}</a></li>
                         {% endif %}
                     {% endif %}
                 </ul>

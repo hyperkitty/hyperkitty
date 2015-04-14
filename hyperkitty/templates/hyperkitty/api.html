@@ -1,61 +1,63 @@
 {% extends "hyperkitty/base.html" %}
+{% load i18n %}
+{% load url from future %}
 
 {% block content %}
-    <h2>REST API</h2>
+    <h2>{% trans "REST API" %}</h2>
     <p>
-        HyperKitty comes with a small REST API allowing you to programatically retrieve 
-        emails and information.
+        {% trans "HyperKitty comes with a small REST API allowing you to programatically retrieve
+        emails and information." %}
     </p>
 
-    <h3>Formats</h3>
+    <h3>{% trans "Formats" %}</h3>
     <p>
-        This REST API can return the information into several formats.
-        The default format is html to allow human readibility.<br />
-        To change the format, just add
-        <em>?format=&lt;FORMAT&gt;</em> to the url
+        {% trans "This REST API can return the information into several formats.
+        The default format is html to allow human readibility." %}<br />
+        {% trans 'To change the format, just add
+        <em>?format=&lt;FORMAT&gt;</em> to the URL.' %}
     </p>
-    <p>The list of available formats is:</p>
+    <p>{% trans "The list of available formats is:" %}</p>
     <ul>
         <li>json <tt>(?format=json)</tt></li>
         <li>json-p <tt>(?format=json-p)</tt></li>
-        <li>txt <tt>(?format=txt)</tt></li>
+        <li>{% trans "Plain text" %} <tt>(?format=txt)</tt></li>
         <li>xml <tt>(?format=xml)</tt></li>
         <li>html <tt>(?format=html)</tt></li>
         <li>xhtml <tt>(?format=xhtml)</tt></li>
     </ul>
 
-    <h3>List of mailing-lists</h3>
-    <p>Endpoint: <tt>{% url 'hk_api_mailinglist_list' %}</tt></p>
+    <h3>{% trans "List of mailing-lists" %}</h3>
+    <p>{% trans "Endpoint:" %} <tt>{% url 'hk_api_mailinglist_list' %}</tt></p>
     <p>
-        Using this address you will be able to retrieve the information
-        known about all the mailing-lists.
+        {% trans "Using this address you will be able to retrieve the information
+        known about all the mailing lists." %}
     </p>
 
-    <h3>Threads in a mailing-list</h3>
-    <p>Endpoint: <tt>{% url 'hk_api_thread_list' mlist_fqdn='list-address@example.com' %}</tt></p>
+    <h3>{% trans "Threads in a mailing list" %}</h3>
+    <p>{% trans "Endpoint:" %} <tt>{% url 'hk_api_thread_list' mlist_fqdn='list-address@example.com' %}</tt></p>
     <p>
-        Using this address you will be able to retrieve information about
-        all the threads on the specified mailing-list.
+        {% trans "Using this address you will be able to retrieve information about
+        all the threads on the specified mailing list." %}
     </p>
 
-    <h3>Emails in a thread</h3>
-    <p>Endpoint: <tt>{% url 'hk_api_thread_email_list' mlist_fqdn='list-address@example.com' thread_id='THREAD-ID' %}</tt></p>
+    <h3>{% trans "Emails in a thread" %}</h3>
+    <p>{% trans "Endpoint:" %} <tt>{% url 'hk_api_thread_email_list' mlist_fqdn='list-address@example.com' thread_id='THREAD-ID' %}</tt></p>
     <p>
-        Using this address you will be able to retrieve the list of emails
-        in a mailing-list thread.
+        {% trans "Using this address you will be able to retrieve the list of emails
+        in a mailing list thread." %}
     </p>
 
-    <h3>An email in a mailing-list</h3>
-    <p>Endpoint: <tt>{% url 'hk_api_email_detail' mlist_fqdn='list-address@example.com' message_id_hash='MESSAGE-ID-HASH' %}</tt></p>
+    <h3>{% trans "An email in a mailing list" %}</h3>
+    <p>{% trans "Endpoint:" %} <tt>{% url 'hk_api_email_detail' mlist_fqdn='list-address@example.com' message_id_hash='MESSAGE-ID-HASH' %}</tt></p>
     <p>
-        Using this address you will be able to retrieve the information
-        known about a specific email on the specified mailing-list.
+        {% trans "Using this address you will be able to retrieve the information
+        known about a specific email on the specified mailing list." %}
     </p>
 
-    <h3>Tags</h3>
-    <p>Endpoint: <tt>{% url 'hk_api_tag_list' %}</tt></p>
+    <h3>{% trans "Tags" %}</h3>
+    <p>{% trans "Endpoint:" %} <tt>{% url 'hk_api_tag_list' %}</tt></p>
     <p>
-        Using this address you will be able to retrieve the list of tags.
+        {% trans "Using this address you will be able to retrieve the list of tags." %}
     </p>
 
 {% endblock %}

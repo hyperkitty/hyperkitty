@@ -5,14 +5,14 @@
 
 
 {% block title %}
-{% trans 'User Profile' %} for {{ fullname }} - {{ app_name|title }}
+{% trans 'User Profile' %} {% trans "for" %} {{ fullname }} - {{ app_name|title }}
 {% endblock %}
 
 {% block content %}
 
 <div class="user-profile user-public-profile">
 
-    <h1>User profile <small>for {{ fullname }}</small></h1>
+    <h1>{% trans "User profile" %} <small>{% trans "for" %} {{ fullname }}</small></h1>
 
     <table class="table table-bordered table-striped user-data">
         <tbody>

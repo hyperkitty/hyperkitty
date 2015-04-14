@@ -72,13 +72,13 @@
     <div class="col-tn-12 col-xs-7 col-md-8">
             {% if all_lists %}
             <p class="hide-switches">
-                <label><input type="checkbox" value="inactive" checked="checked" /> Hide inactive</label>
+                <label><input type="checkbox" value="inactive" checked="checked" />{% trans "Hide inactive" %}</label>
                 <label><input type="checkbox" value="private"
                         {% if sort_mode == "active" or sort_mode == "popular" %}
                         checked="checked" disabled="disabled"
-                        title="Private lists are always hidden in this sort mode"
+                        title="{% trans 'Private lists are always hidden in this sort mode' %}"
                         {% endif %}
-                        /> Hide private</label>
+                        />{% trans "Hide private" %}</label>
             </p>
             {% endif %}
     </div>
@@ -119,15 +119,15 @@
                              {% endif %}
                          </a>
                         {% if mlist.is_private %}
-                        <span class="list-tags">private</span>
+                        <span class="list-tags">{% trans "private" %}</span>
                         {% elif mlist.recent_threads_count == 0 %}
-                        <span class="list-tags">inactive</span>
+                        <span class="list-tags">{% trans "inactive" %}</span>
                         {% endif %}
                         <br />
                         <span class="list-description">{{ mlist.description|default_if_none:"" }}</span>
                         <span class="list-address hidden">{{ mlist.name }}</span>
                         <div class="chart">
-                            <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
+                            <img alt="{% trans 'Loading...' %}" class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
                         </div>
                         <ul class="list-stats list-unstyled">
                             <li>
@@ -155,7 +155,7 @@
             </tbody>
         </table> <!-- /table, main-content -->
         {% else %}
-        <p>No archived list yet.</p>
+        <p>{% trans "No archived list yet." %}</p>
         {% endif %}
     </div>
 </div> <!-- /row, for lists -->
@@ -196,9 +196,9 @@
                              {% endif %}
                          </a>
                         {% if mlist.is_private %}
-                        <span class="list-tags">private</span>
+                        <span class="list-tags">{% trans "private" %}</span>
                         {% elif mlist.recent_threads_count == 0 %}
-                        <span class="list-tags">inactive</span>
+                        <span class="list-tags">{% trans "inactive" %}</span>
                         {% endif %}
                         <br />
                         <span class="list-address">
@@ -210,7 +210,7 @@
                     </td>
                     <td class="activity">
                         <div class="chart">
-                            <img alt="Loading..." class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
+                            <img alt="{% trans 'Loading...' %}" class="ajaxloader" src="{{ STATIC_URL }}hyperkitty/img/ajax-loader.gif" />
                         </div>
                         <ul class="list-stats list-unstyled">
                             <li>
@@ -238,7 +238,7 @@
             </tbody>
         </table> <!-- /table, main-content -->
         {% else %}
-        <p>No archived list yet.</p>
+        <p>{% trans "No archived list yet." %}</p>
         {% endif %}
 
     </div> <!-- /container for table -->
