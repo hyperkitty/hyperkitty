@@ -39,7 +39,7 @@ REQUIRES = [
     "django-paintstore>=0.1.2",
     "django-compressor>=1.3",
     "django-browserid>=0.11.1",
-    "mailmanclient>=1.0.0",
+    "mailmanclient>=1.0.0b1",
     "python-dateutil < 2.0", # python-dateutil 2.0+ is for Python 3
     "networkx>=1.9.1",
     "enum34>=1.0",
