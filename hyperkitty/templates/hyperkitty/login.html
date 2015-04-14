@@ -24,7 +24,7 @@
     <!-- Persona first -->
     {% browserid_info %}
     <li class="browserid">
-        {% browserid_login text='{% trans "Login using Persona" %}' color='blue' next=next %}
+        {% browserid_login text="Login using Persona" color='blue' next=next %}
     </li>
     <!-- then other backends from social_auth -->
     {% for backend in social_backends %}

@@ -1,7 +1,6 @@
 {% extends "hyperkitty/base.html" %}
 
 {% load i18n %}
-{% load url from future %}
 {% load hk_generic %}
 {% load gravatar %}
 
@@ -84,11 +83,11 @@
     <div class="discussions pull-right col-tn-12 col-sm-8">
         <section id="flagged">
             <h3>{% trans "Discussions You've Flagged" %} ({{ flagged_threads|length }}) <i class="fa fa-caret-right"></i></h3>
-            {% include "hyperkitty/fragments/overview_threads.html" with threads=flagged_threads empty="{% trans 'You have not flagged any discussions (yet).' %}" %}
+            {% include "hyperkitty/fragments/overview_threads.html" with threads=flagged_threads empty=empty_messages.flagged %}
         </section>
         <section id="posted-to">
             <h3>{% trans "Discussions You've Posted to" %} ({{ threads_posted_to|length }}) <i class="fa fa-caret-right"></i></h3>
-            {% include "hyperkitty/fragments/overview_threads.html" with threads=threads_posted_to empty="{% trans 'You have not posted to this list (yet).' %}" %}
+            {% include "hyperkitty/fragments/overview_threads.html" with threads=threads_posted_to empty=empty_messages.posted %}
         </section>
     </div> <!-- /home, personalized threads lists -->
     {% endif %}
@@ -99,7 +98,7 @@
         </div>
         <section id="most-recent">
             <h3>{% trans "Recently active discussions" %}</h3>
-            {% include "hyperkitty/fragments/overview_threads.html" with threads=most_active_threads empty="{% trans 'No discussions this month (yet).' %}" %}
+            {% include "hyperkitty/fragments/overview_threads.html" with threads=most_active_threads empty=empty_messages.active %}
         </section>
 
         <div class="anchor-link">
@@ -107,7 +106,7 @@
         </div>
         <section id="most-popular">
             <h3>{% trans "Most popular discussions" %}</h3>
-            {% include "hyperkitty/fragments/overview_threads.html" with threads=pop_threads empty="{% trans 'No vote has been cast this month (yet).' %}" %}
+            {% include "hyperkitty/fragments/overview_threads.html" with threads=pop_threads empty=empty_messages.popular %}
         </section>
 
         <div class="anchor-link">
@@ -115,7 +114,7 @@
         </div>
         <section id="most-active">
             <h3>{% trans "Most active discussions" %}</h3>
-            {% include "hyperkitty/fragments/overview_threads.html" with threads=top_threads empty="{% trans 'No discussions this month (yet).' %}" %}
+            {% include "hyperkitty/fragments/overview_threads.html" with threads=top_threads empty=empty_messages.active %}
         </section>
 
         <div class="anchor-link">

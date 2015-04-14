@@ -148,7 +148,7 @@ class AccountViewsTestCase(TestCase):
             + "?list=list@example.com")
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Dummy content", count=1, html=False)
-        self.assertContains(response, "Dummy Sender", count=5, html=False)
+        self.assertContains(response, "Dummy Sender", count=3, html=False)
         self.assertContains(response,
             '<a name="{}" href="{}">Dummy message</a>'.format(msg_hash,
                 reverse("hk_message_index", args=("list@example.com", msg_hash)

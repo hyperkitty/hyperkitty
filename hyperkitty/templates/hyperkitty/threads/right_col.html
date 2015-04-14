@@ -1,4 +1,3 @@
-{% load url from future %}
 {% load i18n %}
 {% load gravatar %}
 {% load hk_generic %}
@@ -51,6 +50,7 @@
         <span class="hidden-sm"> {% trans "messages" %}</span>
     </div>
     {% endif %}
+    </p>
 
     <form id="fav_form" name="favorite" method="post" class="favorite"
           action="{% url 'hk_favorite' mlist_fqdn=mlist.name threadid=thread.thread_id %}">

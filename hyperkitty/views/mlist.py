@@ -174,6 +174,14 @@ def overview(request, mlist_fqdn=None):
         favorites = []
         threads_posted_to = []
 
+    # Empty messages # TODO: translate this
+    empty_messages = {
+        "flagged": 'You have not flagged any discussions (yet).',
+        "posted": 'You have not posted to this list (yet).',
+        "active": 'No discussions this month (yet).',
+        "popular": 'No vote has been cast this month (yet).',
+    }
+
     context = {
         'view_name': 'overview',
         'mlist' : mlist,
@@ -185,6 +193,7 @@ def overview(request, mlist_fqdn=None):
         'months_list': get_months(mlist),
         'flagged_threads': favorites,
         'threads_posted_to': threads_posted_to,
+        'empty_messages': empty_messages,
     }
     return render(request, "hyperkitty/overview.html", context)
 
