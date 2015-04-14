@@ -28,26 +28,25 @@ with open('hyperkitty/__init__.py') as fp:
 # Requirements
 REQUIRES = [
     "Django>=1.6",
-    "django-gravatar2",
-    "python-social-auth",
+    "django-gravatar2>=1.0.6",
+    "python-social-auth>=0.2.3",
     "djangorestframework>=3.0.0",
-    "django-crispy-forms",
-    "rjsmin",
-    "cssmin",
-    "robot-detection",
-    "pytz",
-    "django-paintstore",
-    "django-compressor",
-    "django-browserid>=0.10.1",
-    "mailmanclient",
-    "beautifulsoup4",
+    "django-crispy-forms>=1.4.0",
+    "rjsmin>=1.0.6",
+    "cssmin>=0.2.0",
+    "robot-detection>=0.3",
+    "pytz>=2012",
+    "django-paintstore>=0.1.2",
+    "django-compressor>=1.3",
+    "django-browserid>=0.11.1",
+    "mailmanclient>=1.0.0",
     "python-dateutil < 2.0", # python-dateutil 2.0+ is for Python 3
-    "networkx",
-    "enum34",
-    "django-haystack",
-    "django-extensions",
-    "lockfile",
-    "numpy",
+    "networkx>=1.9.1",
+    "enum34>=1.0",
+    "django-haystack>=2.1.0",
+    "django-extensions>=1.3.7",
+    "lockfile>=0.9.1",
+    "numpy>=1.8.2",
 ]
 try:
     import django
@@ -81,7 +80,7 @@ setup(
     install_requires=REQUIRES,
     tests_require=[
         "mock",
-        "Whoosh",
-        "BeautifulSoup",
+        "Whoosh>=2.5.7",
+        "beautifulsoup4>=4.3.2",
         ],
     )
