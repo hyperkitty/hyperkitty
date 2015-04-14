@@ -87,7 +87,7 @@
         </a>
         {% else %}
         <a class="reply reply-mailto" title="Login to reply online"
-           href="mailto:{{ email.mailinglist.name }}?Subject={{ email.subject|reply_subject|urlencode }}&amp;In-Reply-To={{ email.message_id|urlencode }}">
+           href="mailto:{{ email.mailinglist.name }}?Subject={{ email.subject|reply_subject|urlencode }}&amp;In-Reply-To=&lt;{{ email.message_id|urlencode }}&gt;">
             <i class="fa fa-reply"></i>
             Reply
         </a>
@@ -123,7 +123,7 @@
                     <a class="btn quote" href="#">Quote</a>
                     <label>{{ reply_form.newthread }} Create new thread</label>
                     <a class="reply-mailto"
-                       href="mailto:{{ email.mailinglist.name }}?Subject={{ email.subject|reply_subject|urlencode }}&amp;In-Reply-To={{ email.message_id|urlencode }}"
+                       href="mailto:{{ email.mailinglist.name }}?Subject={{ email.subject|reply_subject|urlencode }}&amp;In-Reply-To=&lt;{{ email.message_id|urlencode }}&gt;"
                        >Use email software</a>
                 </div>
                 {{ reply_form.non_field_errors }}

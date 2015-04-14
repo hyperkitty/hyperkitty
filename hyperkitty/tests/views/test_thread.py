@@ -245,7 +245,7 @@ class ThreadTestCase(TestCase):
             link_mo = re.match(r'mailto:list@example.com\?(.+)', link["href"])
             self.assertTrue(link_mo is not None)
             params = urlparse.parse_qs(link_mo.group(1))
-            self.assertEqual(params, {u'In-Reply-To': [u'msgid'],
+            self.assertEqual(params, {u'In-Reply-To': [u'<msgid>'],
                                       u'Subject':     [u'Re: Dummy message']})
         url = reverse('hk_thread', args=["list@example.com", self.threadid])
         # Authenticated request
