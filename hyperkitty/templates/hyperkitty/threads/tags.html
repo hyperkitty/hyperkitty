@@ -1,5 +1,6 @@
 
         <span id="tag-title">tags </span>({{thread.tags.distinct.count}})
+        {% if thread.tags.count %}
         <ul class="inline">
             {% for tag in thread.tags.distinct %}
             <li>
@@ -17,3 +18,4 @@
             </li>
             {% endfor %}
         </ul>
+        {% endif %}

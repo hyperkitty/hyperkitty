@@ -20,11 +20,11 @@
         </div>
     </div> <!-- /Stats re: dates -->
 
-    <div class="list-name">
+    <p class="list-name">
         <a href="{% url 'hk_list_overview' mlist_fqdn=mlist.name %}">
             {{ mlist.name }}
         </a>
-    </div>
+    </p>
 
     {% if postorius_installed %}
     <p>
@@ -34,6 +34,7 @@
     </p>
     {% endif %}
 
+    <p>
     <div>
         <i class="icomoon discussion"></i>
         {{ num_comments }} comments
@@ -42,11 +43,12 @@
         <i class="icomoon participant"></i>
         {{ thread.participants_count }} participants
     </div>
-    <p class="unread">
-        {% if user.is_authenticated %}
+    {% if user.is_authenticated %}
+    <div>
         <i class="fa fa-envelope"></i> {{ unread_count }} unread
         <span class="hidden-sm"> messages</span>
-        {% endif %}
+    </div>
+    {% endif %}
     </p>
 
     <form id="fav_form" name="favorite" method="post" class="favorite"
