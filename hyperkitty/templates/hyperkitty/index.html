@@ -12,34 +12,35 @@
 <div class="all-lists">
 
 <div class="row header">
+    {# This version of the sort-by options shows up on larger screens; hidden-xs and hidden-tn are Bootstrap options to hide it at tiny or small sizes. #}
     <nav class="right hidden-tn hidden-xs col-sm-6 col-sm-push-6 col-md-4 col-md-push-8">
         <ul class="list-unstyled list-inline">
             <li>
                {% if sort_mode == "popular" %}
                <span class="active">{% trans 'Most popular' %}</span>
                {% else %}
-                <a href="{% url 'hk_root' %}?sort=popular">{% trans 'Most popular' %}</a>
+                <a href="{% url 'hk_root' %}?sort=popular" title="{% trans 'Sort by number of recent participants' %}">{% trans 'Most popular' %}</a>
                {% endif %}
             </li>
             <li>
                {% if sort_mode == "active" %}
                <span class="active">{% trans 'Most active' %}</span>
                {% else %}
-               <a href="{% url 'hk_root' %}?sort=active">{% trans 'Most active' %}</a>
+               <a href="{% url 'hk_root' %}?sort=active" title="{% trans 'Sort by number of recent discussions' %}">{% trans 'Most active' %}</a>
                {% endif %}
             </li>
             <li>
                {% if sort_mode == "name" %}
                <span class="active">{% trans 'By name' %}</span>
                {% else %}
-               <a href="{% url 'hk_root' %}?sort=name">{% trans 'By name' %}</a>
+               <a href="{% url 'hk_root' %}?sort=name" title="{% trans 'Sort alphabetically' %}">{% trans 'By name' %}</a>
                {% endif %}
             </li>
             <li>
                {% if sort_mode == "creation" %}
                <span class="active">{% trans 'Newest' %}</span>
                {% else %}
-                <a href="{% url 'hk_root' %}?sort=creation">{% trans 'Newest' %}</a>
+                <a href="{% url 'hk_root' %}?sort=creation" title="{% trans 'Sort by list creation date' %}">{% trans 'Newest' %}</a>
                {% endif %}
             </li>
         </ul>
@@ -47,6 +48,7 @@
     <h1 class="col-tn-12 col-xs-5">
         {% trans 'Available lists' %}
     </h1>
+    {# This version of the sort-by options shows up on tablets/mobile phones. #}
     <div class="btn-group pull-right col-tn-5 col-xs-3 hidden-sm hidden-md hidden-lg">
         <button type="button" class="btn btn-sm btn-default dropdown-toggle pull-right" data-toggle="dropdown">
             {% trans 'Sort by' %} <span class="caret"></span>
