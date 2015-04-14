@@ -55,7 +55,14 @@
             (<a href="{% url 'hk_message_index' mlist_fqdn=email.mailinglist.name message_id_hash=email.message_id_hash %}"
                 title="{{ email.subject }}">permalink</a>)
         </div>
-    </div> <!-- /email-header: gravatar, author-info, date, peramlink -->
+
+        {% if email.changed_subject %}
+        <div class="subject">
+            New subject: {{ email.changed_subject }}
+        </div>
+        {% endif %}
+
+    </div> <!-- /email-header: gravatar, author-info, date, peramlink, changed_subject -->
 
     <div class="email-body">
         {{ email.content|snip_quoted|snip_pgp|wordwrap:90|urlizetrunc:76|escapeemail }}

@@ -56,6 +56,8 @@ def _get_thread_replies(request, thread, limit, offset=1):
     if sort_mode == "thread":
         sort_mode = "thread_order"
 
+    mlist = thread.mailinglist
+    initial_subject = stripped_subject(mlist, thread.starting_email.subject)
     emails = list(thread.emails.order_by(sort_mode)[offset:offset+limit])
     for email in emails:
         # Extract all the votes for this message
@@ -63,12 +65,21 @@ def _get_thread_replies(request, thread, limit, offset=1):
             email.myvote = email.votes.filter(user=request.user).first()
         else:
             email.myvote = None
+        # Threading position
         if sort_mode == "thread_order":
             email.level = email.thread_depth - 1 # replies start ragged left
             if email.level > 5:
                 email.level = 5
             elif email.level < 0:
                 email.level = 0
+        # Subject change
+        subject = stripped_subject(mlist, email.subject)
+        if subject.lower().startswith("re:"):
+            subject = subject[3:].strip()
+        if subject.strip() == initial_subject.strip():
+            email.changed_subject = False
+        else:
+            email.changed_subject = subject
     return emails
 
 
