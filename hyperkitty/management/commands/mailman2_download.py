@@ -99,11 +99,6 @@ class Command(BaseCommand):
             raise CommandError(
                 "The list name must be fully-qualified, including "
                 "the '@' symbol and the domain name.")
-        if not args:
-            raise CommandError("No mbox file selected.")
-        for mbfile in args:
-            if not os.path.exists(mbfile):
-                raise CommandError("No such file: %s" % mbfile)
         try:
             options["start"] = range(1980, int(options["start"]), date.today().year + 1)
         except ValueError, e:
