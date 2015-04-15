@@ -231,7 +231,8 @@ class MailingList(models.Model):
 
     def get_threads_between(self, begin_date, end_date):
         return self.threads.filter(
-                date_active__gte=begin_date, date_active__lt=end_date
+                starting_email__date__lt=end_date,
+                date_active__gte=begin_date
             ).order_by("-date_active")
 
     @property

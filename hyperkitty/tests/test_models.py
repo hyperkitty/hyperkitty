@@ -32,6 +32,7 @@ from traceback import format_exc
 
 from mock import Mock
 from django.contrib.auth.models import User
+from django.utils.timezone import utc
 
 from hyperkitty.lib.incoming import add_to_list
 from hyperkitty.lib.mailman import FakeMMList
@@ -367,7 +368,7 @@ class MailingListTestCase(TestCase):
         self.ml.display_name = "original-value"
         self.ml.description = "original-value"
         self.ml.subject_prefix = "original-value"
-        self.ml.created_at = datetime(2000, 1, 1, 0, 0, 0)
+        self.ml.created_at = datetime(2000, 1, 1, 0, 0, 0, tzinfo=utc)
         self.ml.archive_policy = ArchivePolicy.public.value
         self.ml.save()
 
@@ -375,7 +376,7 @@ class MailingListTestCase(TestCase):
         self.mailman_ml.settings["description"] = "new-value"
         self.mailman_ml.settings["subject_prefix"] = "new-value"
         self.mailman_ml.settings["archive_policy"] = "private"
-        new_date = datetime(2010, 12, 31, 0, 0, 0)
+        new_date = datetime(2010, 12, 31, 0, 0, 0, tzinfo=utc)
         self.mailman_ml.settings["created_at"] = new_date.isoformat()
 
         self.ml.update_from_mailman()
@@ -384,3 +385,98 @@ class MailingListTestCase(TestCase):
         self.assertEqual(self.ml.subject_prefix, "new-value")
         self.assertEqual(self.ml.created_at, new_date)
         self.assertEqual(self.ml.archive_policy, ArchivePolicy.private.value)
+
+    def test_get_threads_between(self):
+        # the get_threads_between method should return all threads that have
+        # been active between the two specified dates, including the threads
+        # started in between those dates but updated later
+        msg1 = Message()
+        msg1["From"] = "sender1@example.com"
+        msg1["Message-ID"] = "<msg1>"
+        msg1["Date"] = "2015-02-15 00:00:00 UTC"
+        msg1.set_payload("message 1")
+        add_to_list(self.ml.name, msg1)
+        # The thread started in Feb, it should show up in the Feb threads but
+        # not in the January or March threads.
+        self.assertEqual(Thread.objects.count(), 1)
+        jan_threads = self.ml.get_threads_between(
+            datetime(2015, 1, 1, 0, 0, 0, tzinfo=utc),
+            datetime(2015, 1, 31, 0, 0, 0, tzinfo=utc),
+            )
+        self.assertEqual(jan_threads.count(), 0)
+        feb_threads = self.ml.get_threads_between(
+            datetime(2015, 2, 1, 0, 0, 0, tzinfo=utc),
+            datetime(2015, 2, 28, 0, 0, 0, tzinfo=utc),
+            )
+        self.assertEqual(feb_threads.count(), 1)
+        march_threads = self.ml.get_threads_between(
+            datetime(2015, 3, 1, 0, 0, 0, tzinfo=utc),
+            datetime(2015, 3, 31, 0, 0, 0, tzinfo=utc),
+            )
+        self.assertEqual(march_threads.count(), 0)
+
+    def test_get_threads_between_across_months(self):
+        # the get_threads_between method should return all threads that have
+        # been active between the two specified dates, including the threads
+        # started in between those dates but updated later
+        msg1 = Message()
+        msg1["From"] = "sender1@example.com"
+        msg1["Message-ID"] = "<msg1>"
+        msg1["Date"] = "2015-02-15 00:00:00 UTC"
+        msg1.set_payload("message 1")
+        add_to_list(self.ml.name, msg1)
+        msg2 = Message()
+        msg2["From"] = "sender2@example.com"
+        msg2["Message-ID"] = "<msg2>"
+        msg2["In-Reply-To"] = "<msg1>"
+        msg2["Date"] = "2015-03-15 00:00:00 UTC"
+        msg2.set_payload("message 2")
+        add_to_list(self.ml.name, msg2)
+        # The thread started in Feb, was updated in March. It should show up in both the Feb threads and the March threads.
+        self.assertEqual(Thread.objects.count(), 1)
+        feb_threads = self.ml.get_threads_between(
+            datetime(2015, 2, 1, 0, 0, 0, tzinfo=utc),
+            datetime(2015, 2, 28, 0, 0, 0, tzinfo=utc),
+            )
+        self.assertEqual(feb_threads.count(), 1)
+        march_threads = self.ml.get_threads_between(
+            datetime(2015, 3, 1, 0, 0, 0, tzinfo=utc),
+            datetime(2015, 3, 31, 0, 0, 0, tzinfo=utc),
+            )
+        self.assertEqual(march_threads.count(), 1)
+
+    def test_get_threads_between_across_two_months(self):
+        # the get_threads_between method should return all threads that have
+        # been active between the two specified dates, including the threads
+        # started in between those dates but updated later
+        msg1 = Message()
+        msg1["From"] = "sender1@example.com"
+        msg1["Message-ID"] = "<msg1>"
+        msg1["Date"] = "2015-01-15 00:00:00 UTC"
+        msg1.set_payload("message 1")
+        add_to_list(self.ml.name, msg1)
+        msg2 = Message()
+        msg2["From"] = "sender2@example.com"
+        msg2["Message-ID"] = "<msg2>"
+        msg2["In-Reply-To"] = "<msg1>"
+        msg2["Date"] = "2015-03-15 00:00:00 UTC"
+        msg2.set_payload("message 2")
+        add_to_list(self.ml.name, msg2)
+        # The thread started in Jan, was updated in March. It should show up in
+        # the Jan, Feb and March threads.
+        self.assertEqual(Thread.objects.count(), 1)
+        jan_threads = self.ml.get_threads_between(
+            datetime(2015, 1, 1, 0, 0, 0, tzinfo=utc),
+            datetime(2015, 1, 31, 0, 0, 0, tzinfo=utc),
+            )
+        self.assertEqual(jan_threads.count(), 1)
+        feb_threads = self.ml.get_threads_between(
+            datetime(2015, 2, 1, 0, 0, 0, tzinfo=utc),
+            datetime(2015, 2, 28, 0, 0, 0, tzinfo=utc),
+            )
+        self.assertEqual(feb_threads.count(), 1)
+        march_threads = self.ml.get_threads_between(
+            datetime(2015, 3, 1, 0, 0, 0, tzinfo=utc),
+            datetime(2015, 3, 31, 0, 0, 0, tzinfo=utc),
+            )
+        self.assertEqual(march_threads.count(), 1)
