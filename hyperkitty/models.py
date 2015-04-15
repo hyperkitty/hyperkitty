@@ -501,24 +501,11 @@ class Thread(models.Model):
     thread_id = models.CharField(max_length=255, db_index=True)
     date_active = models.DateTimeField(db_index=True, default=now)
     category = models.ForeignKey("ThreadCategory", related_name="threads", null=True)
-    _starting_email_cache = None
+    starting_email = models.OneToOneField("Email",
+        related_name="started_thread", null=True)
 
     class Meta:
         unique_together = ("mailinglist", "thread_id")
-
-    @property
-    def starting_email(self):
-        # Also cache in the instance because we're going to use it a lot
-        # It's not enough though, because Django's ORM returns different model
-        # instances for each query, so use the regular cache too
-        if self._starting_email_cache is None:
-            try:
-                self._starting_email_cache = self.emails.select_related(
-                    "sender").get(parent_id__isnull=True)
-            except Email.DoesNotExist:
-                self._starting_email_cache = self.emails.select_related(
-                    "sender").order_by("date").first()
-        return self._starting_email_cache
 
     @property
     def participants(self):
@@ -591,6 +578,18 @@ class Thread(models.Model):
         except LastView.DoesNotExist:
             return True
         return self.date_active.replace(tzinfo=utc) > last_view.view_date
+
+
+#@receiver(pre_save, sender=Thread)
+#def Thread_find_starting_email(sender, **kwargs):
+#    """Find and set the staring email if it was not specified"""
+#    instance = kwargs["instance"]
+#    if instance.starting_email is not None:
+#        return
+#    try:
+#        instance.starting_email = instance.emails.get(parent_id__isnull=True)
+#    except Email.DoesNotExist:
+#        instance.starting_email = instance.emails.order_by("date").first()
 
 
 @receiver([post_save, post_delete], sender=Email)

@@ -116,8 +116,45 @@ def add_to_list(list_name, message):
 
     # TODO: detect category?
 
-    set_or_create_thread(email)
-    email.save()
+    # Set or create the Thread
+    if email.in_reply_to is not None:
+        try:
+            ref_msg = Email.objects.get(
+                mailinglist=email.mailinglist,
+                message_id=email.in_reply_to)
+        except Email.DoesNotExist:
+            # the parent may not be archived (on partial imports), create a new
+            # thread for now.
+            pass
+        else:
+            # re-use parent's thread-id
+            email.parent = ref_msg
+            email.thread_id = ref_msg.thread_id
+            ref_msg.thread.date_active = email.date
+            ref_msg.thread.save()
+
+    thread_created = False
+    if email.thread_id is None:
+        # Create the thread if not found
+        thread = Thread.objects.create(
+            mailinglist=email.mailinglist,
+            thread_id=email.message_id_hash,
+            date_active=email.date)
+        thread_created = True
+        email.thread = thread
+
+    email.save() # must save before setting the thread.starting_email
+
+    if thread_created:
+        thread.starting_email = email
+        thread.save()
+        new_thread.send("Mailman", thread=thread)
+        #signal_results = new_thread.send_robust("Mailman", thread=thread)
+        #for receiver, result in signal_results:
+        #    if isinstance(result, Exception):
+        #        logger.warning(
+        #            "Signal 'new_thread' to {} raised an exception: {}".format(
+        #            receiver.func_name, result))
 
     # Signals
     new_email.send("Mailman", email=email)
@@ -176,9 +213,7 @@ def set_or_create_thread(email):
     thread = Thread.objects.create(
         mailinglist=email.mailinglist,
         thread_id=email.message_id_hash,
-        starting_email=email,
         date_active=email.date)
-    new_thread.send("Mailman", thread=thread)
     #signal_results = new_thread.send_robust("Mailman", thread=thread)
     #for receiver, result in signal_results:
     #    if isinstance(result, Exception):

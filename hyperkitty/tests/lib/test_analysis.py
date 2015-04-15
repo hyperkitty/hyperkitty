@@ -63,6 +63,8 @@ class TestThreadOrderDepth(TestCase):
         msg1 = self.make_fake_email(1, thread=thread)
         msg1.thread_order = msg1.thread_depth = 42
         msg1.save()
+        thread.starting_email = msg1
+        thread.save()
         msg2 = self.make_fake_email(2, thread=thread)
         msg2.parent = msg1
         msg2.thread_order = msg2.thread_depth = 42
@@ -89,6 +91,8 @@ class TestThreadOrderDepth(TestCase):
         msg4 = self.make_fake_email(4, thread=thread)
         # Set up the reply tree
         msg1.save()
+        thread.starting_email = msg1
+        thread.save()
         msg2.parent = msg3.parent = msg1
         msg2.save()
         msg3.save()
@@ -154,6 +158,8 @@ class TestThreadOrderDepth(TestCase):
         thread = Thread.objects.create(mailinglist=self.mlist, thread_id="msg1")
         msg1 = self.make_fake_email(1)
         msg1.save()
+        thread.starting_email = msg1
+        thread.save()
         msg1.parent = msg1
         msg1.thread_order = msg1.thread_depth = 42
         msg1.save()
@@ -170,6 +176,8 @@ class TestThreadOrderDepth(TestCase):
         thread = Thread.objects.create(mailinglist=self.mlist, thread_id="msg1")
         msg1 = self.make_fake_email(1, thread=thread)
         msg1.save()
+        thread.starting_email = msg1
+        thread.save()
         msg2 = self.make_fake_email(2, thread=thread)
         msg2.parent = msg1
         msg2.save()

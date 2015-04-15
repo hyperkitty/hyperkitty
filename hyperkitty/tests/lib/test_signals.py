@@ -77,9 +77,11 @@ class EventsTestCase(TestCase):
         thread = Thread.objects.create(
             mailinglist=self.mlist, thread_id="dummy")
         sender = Sender.objects.create(address="dummy@example.com")
-        Email.objects.create(
+        email = Email.objects.create(
             mailinglist=self.mlist, sender=sender, thread=thread,
             date=now(), timezone=0, message_id="dummy")
+        thread.starting_email = email
+        thread.save()
         msg = self._make_message(msg_id="dummy2")
         msg["In-Reply-To"] = "<dummy>"
         add_to_list("example-list", msg)
