@@ -383,6 +383,6 @@ class Command(BaseCommand):
             #    transaction.commit()
         if options["verbosity"] >= 1:
             self.stdout.write(
-                "The full-text search index will be updated every hour. Run "
+                "The full-text search index will be updated every minute. Run "
                 "the 'manage.py runjob update_index' command to update it now."
                 )
