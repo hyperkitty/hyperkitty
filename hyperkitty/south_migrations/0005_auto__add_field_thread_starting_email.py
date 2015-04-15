@@ -17,7 +17,7 @@ class Migration(SchemaMigration):
             for thread in orm.Thread.objects.all():
                 try:
                     thread.starting_email = thread.emails.get(parent_id__isnull=True)
-                except Email.DoesNotExist:
+                except orm.Email.DoesNotExist:
                     thread.starting_email = thread.emails.order_by("date").first()
                 thread.save()
 
