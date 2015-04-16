@@ -347,10 +347,8 @@ class Command(BaseCommand):
         latest_email_date = Email.objects.filter(
                 mailinglist__name=list_address
             ).values("date").order_by("-date").first()
-        if latest_email_date:
-            if not options["since"] or \
-                options["since"] < latest_email_date["date"]:
-                options["since"] = latest_email_date["date"]
+        if latest_email_date and not options["since"]:
+            options["since"] = latest_email_date["date"]
         if options["since"] and options["verbosity"] >= 2:
             self.stdout.write("Only emails after %s will be imported"
                              % options["since"])

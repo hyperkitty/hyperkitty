@@ -9,9 +9,11 @@ from email.message import Message
 from shutil import rmtree
 from StringIO import StringIO
 from textwrap import dedent
+from datetime import datetime
 
-from mock import patch
+from mock import patch, Mock
 from django.conf import settings
+from django.utils.timezone import utc
 
 from hyperkitty.management.commands.hyperkitty_import import DbImporter
 from hyperkitty.management.commands.hyperkitty_import import Command
@@ -96,6 +98,55 @@ class CommandTestCase(TestCase):
         self.assertEqual(thread.emails.count(), 1)
         self.assertEqual(thread.starting_email.message_id, "msg2")
         #print(output.getvalue())
+
+    def test_since_auto(self):
+        # When there's mail already and the "since" option is not used, it
+        # defaults to the last email's date
+        msg1 = Message()
+        msg1["From"] = "dummy@example.com"
+        msg1["Message-ID"] = "<msg1>"
+        msg1["Date"] = "2015-01-01 12:00:00"
+        msg1.set_payload("msg1")
+        add_to_list("list@example.com", msg1)
+        mbox = mailbox.mbox(os.path.join(self.tmpdir, "test.mbox"))
+        # do the import
+        output = StringIO()
+        with patch("hyperkitty.management.commands.hyperkitty_import.DbImporter") as DbImporter:
+            instance = Mock()
+            instance.impacted_thread_ids = []
+            DbImporter.side_effect = lambda *a, **kw: instance
+            self.command.execute(os.path.join(self.tmpdir, "test.mbox"),
+                verbosity=2, stdout=output, stderr=output,
+                list_address="list@example.com",
+                since=None, no_download=True, no_sync_mailman=True,
+            )
+        self.assertEqual(DbImporter.call_args[0][1]["since"],
+                         datetime(2015, 1, 1, 12, 0, tzinfo=utc))
+
+    def test_since_override(self):
+        # When there's mail already and the "since" option is not used, it
+        # defaults to the last email's date
+        msg1 = Message()
+        msg1["From"] = "dummy@example.com"
+        msg1["Message-ID"] = "<msg1>"
+        msg1["Date"] = "2015-01-01 12:00:00"
+        msg1.set_payload("msg1")
+        add_to_list("list@example.com", msg1)
+        mbox = mailbox.mbox(os.path.join(self.tmpdir, "test.mbox"))
+        # do the import
+        output = StringIO()
+        with patch("hyperkitty.management.commands.hyperkitty_import.DbImporter") as DbImporter:
+            instance = Mock()
+            instance.impacted_thread_ids = []
+            DbImporter.side_effect = lambda *a, **kw: instance
+            self.command.execute(os.path.join(self.tmpdir, "test.mbox"),
+                verbosity=2, stdout=output, stderr=output,
+                list_address="list@example.com",
+                since="2010-01-01 00:00:00 UTC",
+                no_download=True, no_sync_mailman=True,
+            )
+        self.assertEqual(DbImporter.call_args[0][1]["since"],
+                         datetime(2010, 1, 1, tzinfo=utc))
 
     def test_lowercase_list_name(self):
         msg = Message()
