@@ -16,6 +16,7 @@ from django.conf import settings
 from hyperkitty.management.commands.hyperkitty_import import DbImporter
 from hyperkitty.management.commands.hyperkitty_import import Command
 from hyperkitty.lib.incoming import add_to_list
+from hyperkitty.models import MailingList
 from hyperkitty.tests.utils import TestCase
 
 
@@ -95,3 +96,22 @@ class CommandTestCase(TestCase):
         self.assertEqual(thread.emails.count(), 1)
         self.assertEqual(thread.starting_email.message_id, "msg2")
         #print(output.getvalue())
+
+    def test_lowercase_list_name(self):
+        msg = Message()
+        msg["From"] = "dummy@example.com"
+        msg["Message-ID"] = "<msg1>"
+        msg["Date"] = "2015-02-01 12:00:00"
+        msg.set_payload("msg1")
+        mbox = mailbox.mbox(os.path.join(self.tmpdir, "test.mbox"))
+        mbox.add(msg)
+        # do the import
+        output = StringIO()
+        self.command.execute(os.path.join(self.tmpdir, "test.mbox"),
+            verbosity=2, stdout=output, stderr=output,
+            list_address="LIST@example.com",
+            since=None, no_download=True, no_sync_mailman=True,
+        )
+        self.assertEqual(MailingList.objects.count(), 1)
+        ml = MailingList.objects.first()
+        self.assertEqual(ml.name, "list@example.com")

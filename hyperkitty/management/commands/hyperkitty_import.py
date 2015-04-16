@@ -337,7 +337,7 @@ class Command(BaseCommand):
             debuglevel = logging.INFO
         logging.basicConfig(format='%(message)s', level=debuglevel)
         # main
-        list_address = options["list_address"]
+        list_address = options["list_address"].lower()
         ## Keep autocommit on SQLite:
         ## https://docs.djangoproject.com/en/1.6/topics/db/transactions/#savepoints-in-sqlite
         #if settings.DATABASES["default"]["ENGINE"] != "django.db.backends.sqlite3":
