@@ -19,4 +19,4 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-VERSION = "0.9.8"
+VERSION = "1.0.0rc1"
