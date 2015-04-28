@@ -108,19 +108,20 @@ class CommandTestCase(TestCase):
         msg1["Date"] = "2015-01-01 12:00:00"
         msg1.set_payload("msg1")
         add_to_list("list@example.com", msg1)
-        mbox = mailbox.mbox(os.path.join(self.tmpdir, "test.mbox"))
+        mailbox.mbox(os.path.join(self.tmpdir, "test.mbox"))
         # do the import
         output = StringIO()
-        with patch("hyperkitty.management.commands.hyperkitty_import.DbImporter") as DbImporter:
+        with patch("hyperkitty.management.commands.hyperkitty_import.DbImporter"
+            ) as DbImporterMock:
             instance = Mock()
             instance.impacted_thread_ids = []
-            DbImporter.side_effect = lambda *a, **kw: instance
+            DbImporterMock.side_effect = lambda *a, **kw: instance
             self.command.execute(os.path.join(self.tmpdir, "test.mbox"),
                 verbosity=2, stdout=output, stderr=output,
                 list_address="list@example.com",
                 since=None, no_download=True, no_sync_mailman=True,
             )
-        self.assertEqual(DbImporter.call_args[0][1]["since"],
+        self.assertEqual(DbImporterMock.call_args[0][1]["since"],
                          datetime(2015, 1, 1, 12, 0, tzinfo=utc))
 
     def test_since_override(self):
@@ -132,20 +133,21 @@ class CommandTestCase(TestCase):
         msg1["Date"] = "2015-01-01 12:00:00"
         msg1.set_payload("msg1")
         add_to_list("list@example.com", msg1)
-        mbox = mailbox.mbox(os.path.join(self.tmpdir, "test.mbox"))
+        mailbox.mbox(os.path.join(self.tmpdir, "test.mbox"))
         # do the import
         output = StringIO()
-        with patch("hyperkitty.management.commands.hyperkitty_import.DbImporter") as DbImporter:
+        with patch("hyperkitty.management.commands.hyperkitty_import.DbImporter"
+            ) as DbImporterMock:
             instance = Mock()
             instance.impacted_thread_ids = []
-            DbImporter.side_effect = lambda *a, **kw: instance
+            DbImporterMock.side_effect = lambda *a, **kw: instance
             self.command.execute(os.path.join(self.tmpdir, "test.mbox"),
                 verbosity=2, stdout=output, stderr=output,
                 list_address="list@example.com",
                 since="2010-01-01 00:00:00 UTC",
                 no_download=True, no_sync_mailman=True,
             )
-        self.assertEqual(DbImporter.call_args[0][1]["since"],
+        self.assertEqual(DbImporterMock.call_args[0][1]["since"],
                          datetime(2010, 1, 1, tzinfo=utc))
 
     def test_lowercase_list_name(self):

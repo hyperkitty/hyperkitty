@@ -4,10 +4,11 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 
 
-def find_starting_email(apps, schema_editor):
+def find_starting_email(apps, schema_editor): # pylint: disable-msg=unused-argument
     # We can't import the Thread model directly as it may be a newer
     # version than this migration expects. We use the historical version.
     Thread = apps.get_model("hyperkitty", "Thread")
+    Email = apps.get_model("hyperkitty", "Email")
     for thread in Thread.objects.all():
         try:
             thread.starting_email = thread.emails.get(parent_id__isnull=True)

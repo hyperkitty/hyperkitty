@@ -633,7 +633,7 @@ def refresh_thread_count_cache(sender, **kwargs):
 def Thread_invalidate_starting_email_cache(sender, **kwargs):
     email = kwargs["instance"]
     if email.thread.starting_email == email:
-        email.thread._starting_email_cache = None
+        email.thread._starting_email_cache = None # pylint: disable=protected-access
 
 
 #@receiver(new_thread)

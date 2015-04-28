@@ -89,7 +89,7 @@ class Command(BaseCommand):
             help="first year to start looking for archives")
         )
 
-    def _check_options(self, args, options):
+    def _check_options(self, args, options): # pylint: disable-msg=unused-argument
         if not options.get("url"):
             raise CommandError("an URL must be provided")
         if not options.get("list_address"):

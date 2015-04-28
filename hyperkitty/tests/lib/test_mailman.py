@@ -22,7 +22,7 @@
 from __future__ import absolute_import, print_function, unicode_literals
 
 from django.contrib.auth.models import User
-from mock import Mock, patch
+from mock import Mock
 
 from hyperkitty.lib import mailman
 from hyperkitty.lib.cache import cache
