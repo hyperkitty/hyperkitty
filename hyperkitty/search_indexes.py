@@ -56,7 +56,8 @@ def update_index():
     # Find the last email in the index:
     try:
         last_email = SearchQuerySet().latest('archived_date')
-    except IndexError:
+    except Exception: # pylint: disable-msg=broad-except
+        # Different backends can raise different exceptions unfortunately
         update_cmd.start_date = None
     else:
         update_cmd.start_date = last_email.object.archived_date
