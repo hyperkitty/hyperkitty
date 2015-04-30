@@ -156,11 +156,12 @@ sed -e 's,/path/to/hyperkitty_standalone/static,%{_localstatedir}/lib/%{name}/si
      > %{buildroot}/%{_sysconfdir}/httpd/conf.d/hyperkitty.conf
 touch --reference hyperkitty_standalone/hyperkitty.apache.conf \
     %{buildroot}/%{_sysconfdir}/httpd/conf.d/hyperkitty.conf
-# SQLite databases directory and static files
+# SQLite databases directory, static files and fulltext_index
 mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/sites/default/static
 mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/sites/default/db
+mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}/sites/default/fulltext_index
 sed -i -e 's,/path/to/rw,%{_localstatedir}/lib/%{name}/sites/default/db,g' \
-       -e 's,^STATIC_ROOT = .*$,STATIC_ROOT = "%{_localstatedir}/lib/%{name}/sites/default/static/",g' \
+       -e 's,^BASE_DIR = .*$,BASE_DIR = "%{_localstatedir}/lib/%{name}/sites/default",g' \
     %{buildroot}%{_sysconfdir}/%{name}/sites/default/settings.py
 touch --reference hyperkitty_standalone/settings.py \
     %{buildroot}%{_sysconfdir}/%{name}/sites/default/settings.py
@@ -228,6 +229,7 @@ fi
 %dir %{_localstatedir}/lib/%{name}/sites/default
 %dir %{_localstatedir}/lib/%{name}/sites/default/static
 %attr(755,apache,apache) %{_localstatedir}/lib/%{name}/sites/default/db
+%attr(755,apache,apache) %{_localstatedir}/lib/%{name}/sites/default/fulltext_index
 
 %files selinux
 %defattr(-,root,root,0755)
