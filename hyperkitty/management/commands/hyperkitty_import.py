@@ -28,7 +28,6 @@ from __future__ import absolute_import, print_function, unicode_literals, divisi
 import mailbox
 import os
 import re
-import urllib
 import logging
 from optparse import make_option
 from email.utils import unquote
@@ -47,52 +46,10 @@ from hyperkitty.lib.incoming import add_to_list, DuplicateMessage
 from hyperkitty.lib.mailman import sync_with_mailman
 from hyperkitty.lib.analysis import compute_thread_order_and_depth
 from hyperkitty.lib.utils import get_message_id
-from hyperkitty.models import Email, Attachment, Thread
+from hyperkitty.models import Email, Thread
 
-#from hyperkitty.lib.utils import timeit, showtimes
-
-
-PREFIX_RE = re.compile(r"^\[([\w\s_-]+)\] ")
-
-ATTACHMENT_RE = re.compile(r"""
---------------[ ]next[ ]part[ ]--------------\n
-A[ ]non-text[ ]attachment[ ]was[ ]scrubbed\.\.\.\n
-Name:[ ]([^\n]+)\n
-Type:[ ]([^\n]+)\n
-Size:[ ]\d+[ ]bytes\n
-Desc:[ ].+?\n
-U(?:rl|RL)[ ]?:[ ]([^\s]+)\s*\n
-""", re.X | re.S)
-
-EMBEDDED_MSG_RE = re.compile(r"""
---------------[ ]next[ ]part[ ]--------------\n
-An[ ]embedded[ ]message[ ]was[ ]scrubbed\.\.\.\n
-From:[ ].+?\n
-Subject:[ ](.+?)\n
-Date:[ ][^\n]+\n
-Size:[ ]\d+\n
-U(?:rl|RL)[ ]?:[ ]([^\s]+)\s*\n
-""", re.X | re.S)
-
-HTML_ATTACH_RE = re.compile(r"""
---------------[ ]next[ ]part[ ]--------------\n
-An[ ]HTML[ ]attachment[ ]was[ ]scrubbed\.\.\.\n
-URL:[ ]([^\s]+)\s*\n
-""", re.X)
-
-TEXT_NO_CHARSET_RE = re.compile(r"""
---------------[ ]next[ ]part[ ]--------------\n
-An[ ]embedded[ ]and[ ]charset-unspecified[ ]text[ ]was[ ]scrubbed\.\.\.\n
-Name:[ ]([^\n]+)\n
-U(?:rl|RL)[ ]?:[ ]([^\s]+)\s*\n
-""", re.X | re.S)
 
 TEXTWRAP_RE = re.compile(r"\n\s*")
-
-
-
-class DownloadError(Exception):
-    pass
 
 
 class ProgressMarker(object):
@@ -138,7 +95,6 @@ class DbImporter(object):
 
     def __init__(self, list_address, options, stdout, stderr):
         self.list_address = list_address
-        self.no_download = options["no_download"]
         self.verbose = options["verbosity"] >= 2
         self.since = options.get("since")
         self.impacted_thread_ids = set()
@@ -183,8 +139,6 @@ class DbImporter(object):
             if message["subject"]:
                 message.replace_header("subject",
                         TEXTWRAP_RE.sub(" ", message["subject"]))
-            # Parse message to search for attachments
-            attachments = self.extract_attachments(message)
             # Now insert the message
             try:
                 add_to_list(self.list_address, message)
@@ -214,11 +168,6 @@ class DbImporter(object):
             email = Email.objects.get(
                 mailinglist__name=self.list_address,
                 message_id=get_message_id(message))
-            # And insert the attachments
-            for counter, att in enumerate(attachments):
-                att["counter"] = counter
-                att["email"] = email
-                Attachment.objects.create(**att)
             ## Commit every time to be able to rollback on error
             #if not transaction.get_autocommit():
             #    transaction.commit()
@@ -229,63 +178,6 @@ class DbImporter(object):
         #self.store.search_index.flush() # Now commit to the search index
         progress_marker.finish()
 
-    def extract_attachments(self, message):
-        """Parse message to search for attachments"""
-        all_attachments = []
-        message_text = message.as_string()
-        #has_attach = False
-        #if "-------------- next part --------------" in message_text:
-        #    has_attach = True
-        # Regular attachments
-        attachments = ATTACHMENT_RE.findall(message_text)
-        for att in attachments:
-            all_attachments.append(self.get_attachment(
-                att[0], att[1], att[2]))
-        # Embedded messages
-        embedded = EMBEDDED_MSG_RE.findall(message_text)
-        for att in embedded:
-            all_attachments.append(self.get_attachment(
-                att[0], "message/rfc822", att[1]))
-        # HTML attachments
-        html_attachments = HTML_ATTACH_RE.findall(message_text)
-        for att in html_attachments:
-            url = att.strip("<>")
-            all_attachments.append(self.get_attachment(
-                os.path.basename(url), "message/rfc822", url))
-        # Text without charset
-        text_no_charset = TEXT_NO_CHARSET_RE.findall(message_text)
-        for att in text_no_charset:
-            all_attachments.append(self.get_attachment(
-                att[0], "text/plain", att[1]))
-        ## Other, probably inline text/plain
-        #if has_attach and not (attachments or embedded
-        #                       or html_attachments or text_no_charset):
-        #    print message_text
-        return all_attachments
-
-    def get_attachment(self, name, content_type, url):
-        content = self.download_attachment(url)
-        if not content:
-            content_type = "text/plain"
-            content = b"not available"
-        return {"name": name, "content_type": content_type,
-                "content": content, }
-
-    def download_attachment(self, url):
-        url = url.strip(" <>")
-        if self.no_download:
-            if self.verbose:
-                self.stdout.write("NOT downloading attachment from %s" % url)
-            content = None
-        else:
-            if self.verbose:
-                self.stdout.write("Downloading attachment from %s" % url)
-            try:
-                content = urllib.urlopen(url).read()
-            except IOError:
-                content = None
-        return content
-
 
 
 class Command(BaseCommand):
@@ -294,9 +186,6 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('-l', '--list-address',
             help="the full list address the mailbox will be imported to"),
-        make_option('--no-download',
-            action='store_true', default=False,
-            help="do not download attachments"),
         make_option('--no-sync-mailman',
             action='store_true', default=False,
             help="do not sync properties with Mailman (faster, useful "
