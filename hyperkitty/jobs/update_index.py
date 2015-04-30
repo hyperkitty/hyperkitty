@@ -26,13 +26,15 @@ Update the full-text index
 from __future__ import absolute_import, print_function, unicode_literals
 
 import os.path
-import sys
 from tempfile import gettempdir
 
 from django.conf import settings
 from django_extensions.management.jobs import BaseJob
 from lockfile import LockFile, AlreadyLocked, LockFailed
 from hyperkitty.search_indexes import update_index
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 class Job(BaseJob):
@@ -46,13 +48,15 @@ class Job(BaseJob):
         try:
             lock.acquire(timeout=0)
         except AlreadyLocked:
-            print("The job 'update_index' is already running", file=sys.stderr)
+            logger.warning("The job 'update_index' is already running")
             return
         except LockFailed as e:
-            print("Could not obtain a lock for the 'update_index' job "
-                  "({})".format(e), file=sys.stderr)
+            logger.warning("Could not obtain a lock for the 'update_index' "
+                           "job (%s)", e)
             return
         try:
             update_index()
+        except Exception as e: # pylint: disable-msg=broad-except
+            logger.exception("Failed to update the fulltext index: %s", e)
         finally:
             lock.release()
