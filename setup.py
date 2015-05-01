@@ -46,7 +46,6 @@ REQUIRES = [
     "django-haystack>=2.1.0",
     "django-extensions>=1.3.7",
     "lockfile>=0.9.1",
-    "numpy>=1.8.2",
 ]
 try:
     import django

@@ -152,14 +152,3 @@ def timeit(name):
         TIMES[name].append(spent)
         print("{}: {}".format(name, spent))
     LASTTIME = now
-def showtimes():
-    #global TIMES
-    import numpy
-    for name, values in TIMES.items():
-        if not values:
-            continue
-        values = numpy.array(values)
-        print("{} stats:".format(name))
-        print("- min: {}\n- max: {}\n- avg: {}\n- std: {}".format(
-            numpy.amin(values), numpy.amax(values),
-            numpy.mean(values), numpy.std(values) ))
