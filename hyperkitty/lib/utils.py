@@ -63,6 +63,8 @@ def get_ref(message):
             and not message.has_key("In-Reply-To")):
         return None
     ref_id = message.get("In-Reply-To")
+    if ref_id is not None:
+        ref_id = ref_id.decode('ascii', 'ignore')
     if ref_id is None or not ref_id.strip():
         ref_id = message.get("References")
         if ref_id is not None and ref_id.strip():

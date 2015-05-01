@@ -199,3 +199,16 @@ class TestUtils(TestCase):
         msg = Message()
         msg["Message-Id"] = '<%s>' % ('x' * 300)
         self.assertEqual(utils.get_message_id(msg), 'x' * 254)
+
+    def test_non_ascii_ref(self):
+        msg = Message()
+        msg["From"] = "dummy@example.com"
+        msg["Message-ID"] = "<dummy>"
+        msg["In-Reply-To"] = u"<ref-\xed>".encode('utf-8')
+        msg.set_payload("Dummy message")
+        try:
+            ref_id = utils.get_ref(msg)
+        except UnicodeEncodeError as e:
+            raise
+            self.fail(e)
+        self.assertEqual(ref_id, "ref-")
