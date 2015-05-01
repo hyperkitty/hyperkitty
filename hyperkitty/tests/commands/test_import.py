@@ -8,53 +8,16 @@ import tempfile
 from email.message import Message
 from shutil import rmtree
 from StringIO import StringIO
-from textwrap import dedent
 from datetime import datetime
 
 from mock import patch, Mock
 from django.conf import settings
 from django.utils.timezone import utc
 
-from hyperkitty.management.commands.hyperkitty_import import DbImporter
 from hyperkitty.management.commands.hyperkitty_import import Command
 from hyperkitty.lib.incoming import add_to_list
 from hyperkitty.models import MailingList
 from hyperkitty.tests.utils import TestCase
-
-
-class DbImporterTestCase(TestCase):
-
-    def setUp(self):
-        options = {
-            "no_download": True,
-            "verbosity": 0,
-            "since": None,
-        }
-        self.output = StringIO()
-        self.importer = DbImporter(
-            "example-list", options, self.output, self.output)
-
-    def test_empty_attachment(self):
-        # Make sure the content of an attachment is not unicode when it hasn't
-        # been downloaded
-        msg = Message()
-        msg["From"] = "dummy@example.com"
-        msg["Message-ID"] = "<dummy>"
-        msg.set_payload(dedent("""
-        Dummy message
-        -------------- next part --------------
-        A non-text attachment was scrubbed...
-        Name: signature
-        Type: application/pgp-signature
-        Size: 189 bytes
-        Desc: digital signature
-        Url : /some/place/in/the/archives/attachment.bin
-        
-        ------------------------------
-        """))
-        attachments = self.importer.extract_attachments(msg)
-        self.assertEqual(len(attachments), 1)
-        self.assertFalse(isinstance(attachments[0]["content"], unicode))
 
 
 
