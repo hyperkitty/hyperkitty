@@ -37,11 +37,13 @@ from hyperkitty.models import Profile
 
 class RegistrationForm(UserCreationForm):
 
-    email     = forms.EmailField(required=True)
+    username = forms.CharField(required=False, widget=forms.HiddenInput())
+    email    = forms.EmailField(required=True)
 
     class Meta: # pylint: disable=no-init
         model = User
-        fields = ("email", )
+        fields  = ["email"]
+        exclude = ["username"]
 
     def __init__(self, *args, **kwargs):
         super(RegistrationForm, self).__init__(*args, **kwargs)
@@ -53,10 +55,6 @@ class RegistrationForm(UserCreationForm):
         self.helper.field_class = 'col-sm-6 col-md-5 col-lg-4'
         self.helper.add_input(Submit('submit', _('Register'), css_class="col-sm-offset-6"))
 
-    def clean_username(self):
-        self.cleaned_data["username"] = self.cleaned_data["email"]
-        return super(RegistrationForm, self).clean_username()
-
     def clean_email(self):
         email = self.cleaned_data["email"]
         try:
@@ -67,6 +65,14 @@ class RegistrationForm(UserCreationForm):
             self.error_messages['duplicate_email'],
             code='duplicate_email',
         )
+
+    def save(self, commit=True):
+        # Use the email as username
+        user = super(RegistrationForm, self).save(commit=False)
+        user.username = self.cleaned_data["email"]
+        if commit:
+            user.save()
+        return user
 
 
 class InternalAuthenticationForm(AuthenticationForm):

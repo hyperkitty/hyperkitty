@@ -154,6 +154,7 @@ def user_registration(request):
         form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            user.backend = "django.contrib.auth.backends.ModelBackend"
             logger.info("New registered user: %s", user.username)
             if user.is_active:
                 login(request, user)

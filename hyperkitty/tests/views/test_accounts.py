@@ -77,7 +77,7 @@ class AccountViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
 
     @override_settings(USE_INTERNAL_AUTH=True)
-    def test_registration(self):
+    def test_registration_redirect(self):
         self.client.login(username='testuser', password='testPass')
         # If the user if already logged in, redirect to index page...
         # Don't let him register again
@@ -89,7 +89,17 @@ class AccountViewsTestCase(TestCase):
         self.client.logout()
         response = self.client.get(reverse('hk_user_registration'))
         self.assertEqual(response.status_code, 200)
-        # @TODO: Try to register a user and verify its working
+
+    @override_settings(USE_INTERNAL_AUTH=True)
+    def test_registration(self):
+        response = self.client.get(reverse('hk_user_registration'))
+        self.assertEqual(response.status_code, 200)
+        response = self.client.post(reverse("hk_user_registration"),
+            {"email": "newtestuser@example.com",
+             "password1": "test", "password2": "test"})
+        self.assertRedirects(response, reverse('hk_root'))
+        response = self.client.get(reverse('hk_root'))
+        self.assertContains(response, "newtestuser@example.com")
 
     def test_votes(self):
         self.client.login(username='testuser', password='testPass')
