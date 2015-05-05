@@ -209,6 +209,5 @@ class TestUtils(TestCase):
         try:
             ref_id = utils.get_ref(msg)
         except UnicodeEncodeError as e:
-            raise
             self.fail(e)
         self.assertEqual(ref_id, "ref-")
