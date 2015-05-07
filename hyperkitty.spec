@@ -7,11 +7,11 @@ Release:        %{?prerel:0.}1%{?dist}
 Summary:        A web interface to access GNU Mailman v3 archives
 
 License:        GPLv3
-URL:            https://fedorahosted.org/hyperkitty/
+URL:            https://gitlab.com/mailman/hyperkitty
 Source0:        http://pypi.python.org/packages/source/H/%{pypi_name}/%{pypi_name}-%{version}%{?prerel:dev}.tar.gz
 
 # To get SOURCE1:
-#   git clone https://github.com/hyperkitty/hyperkitty_standalone.git
+#   git clone https://gitlab.com/mailman/hyperkitty_standalone.git
 #   make sdist -C hyperkitty_standalone
 #   mv hyperkitty_standalone/dist/hyperkitty_standalone-%{version}.tar.gz .
 Source1:        hyperkitty_standalone-%{version}%{?prerel:dev}.tar.gz
@@ -77,7 +77,7 @@ Requires:       numpy
 %description
 HyperKitty is an open source Django application under development. It aims at
 providing a web interface to access GNU Mailman archives.
-The code is available from: https://github.com/hyperkitty/hyperkitty .
+The code is available from: https://gitlab.com/mailman/hyperkitty .
 The documentation can be browsed online at https://hyperkitty.readthedocs.org .
 
 

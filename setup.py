@@ -62,7 +62,7 @@ setup(
     long_description=open('README.rst').read(),
     author='HyperKitty Developers',
     author_email='hyperkitty-devel@lists.fedorahosted.org',
-    url="https://fedorahosted.org/hyperkitty/",
+    url="https://gitlab.com/mailman/hyperkitty",
     license="GPLv3",
     classifiers=[
         "Framework :: Django",

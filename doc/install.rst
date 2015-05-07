@@ -34,7 +34,7 @@ Django site (project).
 
 First, get the project directory from the source code management system::
 
-    git clone https://github.com/hyperkitty/hyperkitty_standalone.git
+    git clone https://gitlab.com/mailman/hyperkitty_standalone.git
 
 Second, change the database setting in ``hyperkitty_standalone/settings.py`` to
 your preferred database. Edit this file to reflect the correct database
@@ -108,7 +108,7 @@ It is also highly recommanded to change the API secret key and in the
 ``settings_local.py``).
 
 .. _mailman-hyperkitty: http://pypi.python.org/pypi/mailman-hyperkitty
-.. _`example of the hyperkitty.cfg file`: https://github.com/hyperkitty/mailman-hyperkitty/blob/master/mailman-hyperkitty.cfg
+.. _`example of the hyperkitty.cfg file`: https://gitlab.com/mailman/mailman-hyperkitty/blob/master/mailman-hyperkitty.cfg
 
 After having made these changes, you must restart Mailman. Check its log files
 to make sure the emails are correctly archived. You should not see "``Broken

@@ -42,11 +42,11 @@ First, create the virtualenv and activate it::
 
 Then download the components of HyperKitty::
 
-    git clone https://github.com/hyperkitty/hyperkitty.git
+    git clone https://gitlab.com/mailman/hyperkitty.git
     cd hyperkitty
     python setup.py develop
     cd ..
-    git clone https://github.com/hyperkitty/hyperkitty_standalone.git
+    git clone https://gitlab.com/mailman/hyperkitty_standalone.git
 
 You will also need to install Node.js and LESS (version >= 1.5) using your package
 manager or the project's installation documentation. If you are using Fedora 20, you

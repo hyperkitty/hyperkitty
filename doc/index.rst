@@ -5,8 +5,7 @@ HyperKitty, the next-generation mailing-list archiver
 HyperKitty is a Django-based application providing a web interface to access
 GNU Mailman v3 archives, and interact with the lists.
 
-The project page is https://fedorahosted.org/hyperkitty/ and the code is
-available from https://github.com/hyperkitty .
+The project page is https://gitlab.com/mailman/hyperkitty.
 
 There is a `demo server`_ available, but it's also a development server, so it
 may be broken at the time you access it. It's usually OK though.
