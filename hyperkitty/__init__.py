@@ -19,4 +19,4 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-VERSION = "1.0.1"
+VERSION = "1.0.2"
