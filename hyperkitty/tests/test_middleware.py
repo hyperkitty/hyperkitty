@@ -87,6 +87,14 @@ class SSLRedirectTestCase(TestCase):
         self.assertIsNone(result)
 
     @override_settings(USE_SSL=True)
+    def test_noredirect_back(self):
+        # Requests in HTTPS to normal pages must not be redirected back to HTTP
+        request = self.rf.get("/", HTTP_X_FORWARDED_SSL="on")
+        request.user = AnonymousUser()
+        result = self.mw.process_view(request, None, [], {})
+        self.assertIsNone(result)
+
+    @override_settings(USE_SSL=True)
     def test_redirect_authenticated_http(self):
         # Requests in HTTP with authenticated users must be redirected to HTTPS
         request = self.rf.get("/")

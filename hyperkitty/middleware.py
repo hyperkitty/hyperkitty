@@ -50,10 +50,13 @@ class SSLRedirect(object):
         if not settings.USE_SSL: # User-disabled (e.g: development server)
             return # but after having removed the 'SSL' kwarg
 
+        if self._is_secure(request):
+            return # Already in HTTPS, never redirect back to HTTP
+
         if request.user.is_authenticated():
             want_secure = True
 
-        if not want_secure == self._is_secure(request):
+        if want_secure:
             return self._redirect(request, want_secure)
 
     def _is_secure(self, request):
@@ -67,6 +70,8 @@ class SSLRedirect(object):
         return False
 
     def _redirect(self, request, secure):
+        # Note: this method is also capable of redirecting to HTTP, but we
+        # don't use this feature.
         protocol = secure and "https" or "http"
         newurl = "%s://%s%s" % (protocol, request.get_host(), request.get_full_path())
         if settings.DEBUG and request.method == 'POST':
