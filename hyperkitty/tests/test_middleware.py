@@ -19,15 +19,15 @@
 # Author: Aurelien Bompard <abompard@fedoraproject.org>
 #
 
-# pylint: disable=unnecessary-lambda
+# pylint: disable=unnecessary-lambda,protected-access
 
 from __future__ import absolute_import, print_function, unicode_literals
 
-from mock import Mock
-from django.core.urlresolvers import reverse
+from unittest import skipIf
+
+from django import VERSION as DJANGO_VERSION
 from django.contrib.auth.models import AnonymousUser, User
 from django.test.client import RequestFactory
-from django.test.utils import override_settings
 
 from hyperkitty.middleware import SSLRedirect
 from hyperkitty.tests.utils import TestCase
@@ -35,6 +35,7 @@ from hyperkitty.tests.utils import TestCase
 
 class SSLRedirectTestCase(TestCase):
 
+    override_settings = {"USE_SSL": True}
 
     def setUp(self):
         self.mw = SSLRedirect()
@@ -43,6 +44,12 @@ class SSLRedirectTestCase(TestCase):
     def test_is_secure_false(self):
         request = self.rf.get("/")
         self.assertFalse(self.mw._is_secure(request))
+
+    @skipIf(DJANGO_VERSION[:2] < (1, 7), "only works on Django 1.7+")
+    def test_is_secure_true(self):
+        request = self.rf.get("/", secure=True)
+        self.assertTrue(request.is_secure(), "This test is wrong")
+        self.assertTrue(self.mw._is_secure(request))
 
     def test_is_secure_headers(self):
         request = self.rf.get("/", HTTP_X_FORWARDED_SSL="on")
@@ -60,16 +67,15 @@ class SSLRedirectTestCase(TestCase):
         self.assertEqual(result.status_code, 301)
         self.assertTrue(result.url.startswith("http://"))
 
-    @override_settings(USE_SSL=True)
     def test_login_redirect(self):
         # Requests to the login page must be redirected to HTTPS
         request = self.rf.get("/")
         request.user = AnonymousUser()
         result = self.mw.process_view(request, None, [], {"SSL": True})
+        self.assertIsNotNone(result)
         self.assertEqual(result.status_code, 301)
         self.assertTrue(result.url.startswith("https://"))
 
-    @override_settings(USE_SSL=True)
     def test_login_already_https(self):
         # Requests to the login page must not be redirected if they already are
         # in HTTPS
@@ -78,7 +84,6 @@ class SSLRedirectTestCase(TestCase):
         result = self.mw.process_view(request, None, [], {"SSL": True})
         self.assertIsNone(result)
 
-    @override_settings(USE_SSL=True)
     def test_noredirect(self):
         # Requests to normal pages must not be redirected
         request = self.rf.get("/")
@@ -86,7 +91,6 @@ class SSLRedirectTestCase(TestCase):
         result = self.mw.process_view(request, None, [], {})
         self.assertIsNone(result)
 
-    @override_settings(USE_SSL=True)
     def test_noredirect_back(self):
         # Requests in HTTPS to normal pages must not be redirected back to HTTP
         request = self.rf.get("/", HTTP_X_FORWARDED_SSL="on")
@@ -94,17 +98,16 @@ class SSLRedirectTestCase(TestCase):
         result = self.mw.process_view(request, None, [], {})
         self.assertIsNone(result)
 
-    @override_settings(USE_SSL=True)
     def test_redirect_authenticated_http(self):
         # Requests in HTTP with authenticated users must be redirected to HTTPS
         request = self.rf.get("/")
         request.user = User.objects.create_user(
             'testuser', 'test@example.com', 'testPass')
         result = self.mw.process_view(request, None, [], {})
+        self.assertIsNotNone(result)
         self.assertEqual(result.status_code, 301)
         self.assertTrue(result.url.startswith("https://"))
 
-    @override_settings(USE_SSL=True)
     def test_redirect_authenticated_https(self):
         # Requests in HTTPS with authenticated users must stay in HTTPS
         request = self.rf.get("/", HTTP_X_FORWARDED_SSL="on")

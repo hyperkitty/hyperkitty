@@ -41,7 +41,7 @@ from hyperkitty.lib.cache import cache
 class TestCase(DjangoTestCase):
     # pylint: disable=attribute-defined-outside-init
 
-    override_settings = {
+    _override_settings = {
         "DEBUG": True,
         "TEMPLATE_DEBUG": True,
         "USE_SSL": False,
@@ -59,12 +59,16 @@ class TestCase(DjangoTestCase):
         #},
     }
 
+    # Testcase classes can use this variable to add more overrides:
+    override_settings = {}
+
 
     def _pre_setup(self):
         super(TestCase, self)._pre_setup()
         # Override settings
         self._old_settings = {}
-        for key, value in self.override_settings.items():
+        self._override_settings.update(self.override_settings)
+        for key, value in self._override_settings.items():
             self._old_settings[key] = getattr(settings, key, None)
             setattr(settings, key, value)
         #if DJANGO_VERSION[:2] < (1, 7):
