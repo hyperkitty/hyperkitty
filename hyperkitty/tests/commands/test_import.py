@@ -6,18 +6,21 @@ import os.path
 import mailbox
 import tempfile
 from email.message import Message
+from email import message_from_file
 from shutil import rmtree
 from StringIO import StringIO
 from datetime import datetime
+from unittest import SkipTest
 
 from mock import patch, Mock
 from django.conf import settings
 from django.utils.timezone import utc
+from django.db import DEFAULT_DB_ALIAS
 
 from hyperkitty.management.commands.hyperkitty_import import Command
 from hyperkitty.lib.incoming import add_to_list
-from hyperkitty.models import MailingList
-from hyperkitty.tests.utils import TestCase
+from hyperkitty.models import MailingList, Email
+from hyperkitty.tests.utils import TestCase, get_test_file
 
 
 
@@ -131,3 +134,33 @@ class CommandTestCase(TestCase):
         self.assertEqual(MailingList.objects.count(), 1)
         ml = MailingList.objects.first()
         self.assertEqual(ml.name, "list@example.com")
+
+    def test_wrong_encoding(self):
+        """badly encoded message, only fails on PostgreSQL"""
+        db_engine = settings.DATABASES[DEFAULT_DB_ALIAS]["ENGINE"]
+        if db_engine == "django.db.backends.sqlite3":
+            raise SkipTest # SQLite will accept anything
+        with open(get_test_file("payload-utf8-wrong.txt")) as email_file:
+            msg = message_from_file(email_file)
+        mbox = mailbox.mbox(os.path.join(self.tmpdir, "test.mbox"))
+        mbox.add(msg)
+        # Second message
+        msg = Message()
+        msg["From"] = "dummy@example.com"
+        msg["Message-ID"] = "<msg1>"
+        msg["Date"] = "2015-02-01 12:00:00"
+        msg.set_payload("msg1")
+        mbox.add(msg)
+        # do the import
+        output = StringIO()
+        self.command.execute(os.path.join(self.tmpdir, "test.mbox"),
+            verbosity=2, stdout=output, stderr=output,
+            list_address="list@example.com",
+            since=None, no_download=True, no_sync_mailman=True,
+        )
+        # Message 1 must have been rejected, but no crash
+        self.assertIn("Message wrong.encoding failed to import, skipping",
+                      output.getvalue())
+        # Message 2 must have been accepted
+        self.assertEqual(MailingList.objects.count(), 1)
+        self.assertEqual(Email.objects.count(), 1)

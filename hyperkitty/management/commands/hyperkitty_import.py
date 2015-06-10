@@ -39,7 +39,7 @@ from dateutil.parser import parse as parse_date
 from dateutil import tz
 from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
-from django.db import Error as DatabaseError
+from django.db import transaction, Error as DatabaseError
 from django.utils.timezone import utc
 
 from hyperkitty.lib.incoming import add_to_list, DuplicateMessage
@@ -141,7 +141,8 @@ class DbImporter(object):
                         TEXTWRAP_RE.sub(" ", message["subject"]))
             # Now insert the message
             try:
-                add_to_list(self.list_address, message)
+                with transaction.atomic():
+                    add_to_list(self.list_address, message)
             except DuplicateMessage as e:
                 if self.verbose:
                     self.stderr.write(
@@ -159,11 +160,12 @@ class DbImporter(object):
                         % (e.args[0], e.args[1].get("Message-ID")))
                 continue
             except DatabaseError:
-                print_exc(file=self.stderr)
+                try:
+                    print_exc(file=self.stderr)
+                except UnicodeError:
+                    pass
                 self.stderr.write("Message %s failed to import, skipping"
                       % unquote(message["Message-Id"]))
-                #if not transaction.get_autocommit():
-                #    transaction.rollback()
                 continue
             email = Email.objects.get(
                 mailinglist__name=self.list_address,
