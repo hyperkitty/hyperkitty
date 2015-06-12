@@ -28,9 +28,6 @@ function setup_index(url_template) {
 
     // Helper to load the graph
     function show_ajax_chart(listelem) {
-        if (!listelem.is(":visible")) {
-            return;
-        }
         var listname = $.trim(listelem.find(".list-address").text());
         url_template = url_template.replace(/@/, "%40"); // Django 1.5 compatibility, it did not escape the url tag
         var url = url_template.replace(/PLACEHOLDER%40PLACEHOLDER/, listname);
@@ -88,8 +85,8 @@ function setup_index(url_template) {
     // Back to top link
     setup_back_to_top_link(220); // set offset to 220 for link to appear
 
-    // Update list graphs for visible lists
-    $(".all-lists table.lists tr.list:visible").each(function() {
+    // Update list graphs for all lists
+    $(".all-lists table.lists tr.list").each(function() {
         show_ajax_chart($(this));
     });
 }
