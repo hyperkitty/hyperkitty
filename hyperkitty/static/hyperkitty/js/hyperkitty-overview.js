@@ -23,8 +23,9 @@
 
 function setup_overview(recent_activity_url) {
     function redraw_chart() {
-        var chartDivWidth =  $(".stats .chart").width();
-        ajax_chart(".stats .chart", recent_activity_url, {width: chartDivWidth});
+        var element = $(".stats .chart"),
+            chartDivWidth = element.width();
+        ajax_chart(recent_activity_url, element, {width: chartDivWidth});
     }
     $(window).resize(redraw_chart);
     redraw_chart();

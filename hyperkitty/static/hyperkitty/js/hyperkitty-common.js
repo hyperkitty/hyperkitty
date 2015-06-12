@@ -185,9 +185,11 @@ function chart(elem_id, data, default_props) {
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    // Convert dates if necessary
     data.forEach(function(d) {
-        d.date = format_in.parse(d.date);
-        d.count = parseInt(d.count);
+        if (typeof d.date === "string") {
+            d.date = format_in.parse(d.date);
+        }
     });
 
     x.domain(d3.extent(data, function(d) { return d.date; }));
@@ -247,30 +249,32 @@ function chart(elem_id, data, default_props) {
 }
 
 
-function ajax_chart(elem, url, props) {
-    elem = $(elem);
-    if (elem.data("chart_loading") || elem.find("img.ajaxloader").length == 0) {
+function ajax_chart(url, elements, props) {
+    elements = $(elements);
+    if (elements.data("chart_loading") || elements.find("img.ajaxloader").length == 0) {
         return; // already loaded or being loaded
     }
-    elem.data("chart_loading", true);
+    elements.data("chart_loading", true);
     // if there's already a chart drawn, remove it and then redraw
     // this would occur when resizing the browser
-    if (elem.find("svg.chart-data")) {
-        elem.find("svg.chart-data").remove();
+    if (elements.find("svg.chart-data")) {
+        elements.find("svg.chart-data").remove();
     }
     $.ajax({
         dataType: "json",
         url: url,
         success: function(data) {
-            chart(elem.get(0), data.evolution, props);
+            elements.each(function(index, elem) {
+                chart($(this).get(0), data.evolution, props);
+            });
         },
         error: function(jqXHR, textStatus, errorThrown) {
             //alert(jqXHR.responseText);
         },
         complete: function(jqXHR, textStatus) {
             // if the list is private we have no info, remove the img anyway
-            elem.find("img.ajaxloader").remove();
-            elem.removeData("chart_loading");
+            elements.find("img.ajaxloader").remove();
+            elements.removeData("chart_loading");
         }
     });
 }

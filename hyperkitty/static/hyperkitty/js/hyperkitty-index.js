@@ -22,16 +22,26 @@
 
 
 function setup_index(url_template) {
+
+    var list_names = [];
+    // Collect list names
+    $(".all-lists table.lists tr.list").each(function() {
+        var listname = $(this).attr("data-list-name");
+        if (list_names.indexOf(listname) === -1) {
+            list_names.push(listname);
+        }
+    });
+
+    // Redirect clicks on the whole table row
     $("table.lists tr.list").click(function(e) {
         document.location.href = $(this).find("a.list-name").attr("href");
     });
 
     // Helper to load the graph
-    function show_ajax_chart(listelem) {
-        var listname = $.trim(listelem.find(".list-address").text());
-        url_template = url_template.replace(/@/, "%40"); // Django 1.5 compatibility, it did not escape the url tag
-        var url = url_template.replace(/PLACEHOLDER%40PLACEHOLDER/, listname);
-        ajax_chart(listelem.find("div.chart"), url, {height: 30});
+    function show_ajax_chart(listrows) {
+        var listname = listrows.first().attr("data-list-name");
+        var url = url_template.replace(/PLACEHOLDER@PLACEHOLDER/, listname);
+        ajax_chart(url, listrows.find("div.chart"), {height: 30});
     }
 
     // Filter
@@ -48,7 +58,7 @@ function setup_index(url_template) {
         }
         $("table.lists tr.list").each(function() {
             var list_name = $.trim($(this).find("a.list-name").text());
-            var list_addr = $.trim($(this).find("a.list-address").text());
+            var list_addr = $(this).attr("data-list-name");
             var must_hide = false;
             // name filter
             if (filter && list_name.indexOf(filter) === -1
@@ -66,7 +76,6 @@ function setup_index(url_template) {
                 $(this).hide();
             } else {
                 $(this).show();
-                show_ajax_chart($(this));
             }
         });
     }
@@ -86,7 +95,8 @@ function setup_index(url_template) {
     setup_back_to_top_link(220); // set offset to 220 for link to appear
 
     // Update list graphs for all lists
-    $(".all-lists table.lists tr.list").each(function() {
-        show_ajax_chart($(this));
+    var list_rows = $(".all-lists table.lists tr.list");
+    $.each(list_names, function(index, list_name) {
+        show_ajax_chart(list_rows.filter('[data-list-name="' + list_name + '"]'));
     });
 }

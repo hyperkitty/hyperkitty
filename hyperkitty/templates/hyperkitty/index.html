@@ -106,7 +106,8 @@
                    {% elif mlist.recent_threads_count == 0 %}
                    inactive
                    {% endif %}
-                   ">
+                   "
+                   data-list-name="{{ mlist.name }}">
                     <td>
                         {% ifchanged mlist.name|first %}<a name="{{ mlist.name|first }}" />{% endifchanged %}
                         {% if mlist.is_new %}
@@ -182,7 +183,8 @@
                    {% elif mlist.recent_threads_count == 0 %}
                    inactive
                    {% endif %}
-                   ">
+                   "
+                   data-list-name="{{ mlist.name }}">
                     <!-- tiny/xsmall screens have 1 column, small screens have 2 columns, med/large screen have 3 columns -->
                     <td>
                         {% ifchanged mlist.name|first %}<a name="{{ mlist.name|first }}" />{% endifchanged %}
