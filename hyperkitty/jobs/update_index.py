@@ -25,12 +25,14 @@ Update the full-text index
 
 from __future__ import absolute_import, print_function, unicode_literals
 
+import errno
 import os.path
 from tempfile import gettempdir
 
 from django.conf import settings
 from django_extensions.management.jobs import BaseJob
-from lockfile import LockFile, AlreadyLocked, LockFailed
+from lockfile import AlreadyLocked, LockFailed
+from lockfile.pidlockfile import PIDLockFile
 from hyperkitty.search_indexes import update_index
 
 import logging
@@ -42,14 +44,18 @@ class Job(BaseJob):
     when = "minutely"
 
     def execute(self):
-        lock = LockFile(getattr(
+        lock = PIDLockFile(getattr(
             settings, "HYPERKITTY_JOBS_UPDATE_INDEX_LOCKFILE",
             os.path.join(gettempdir(), "hyperkitty-jobs-update-index.lock")))
         try:
-            lock.acquire(timeout=0)
+            lock.acquire(timeout=-1)
         except AlreadyLocked:
-            logger.warning("The job 'update_index' is already running")
-            return
+            if check_pid(lock.read_pid()):
+                logger.warning("The job 'update_index' is already running")
+                return
+            else:
+                lock.break_lock()
+                lock.acquire(timeout=-1)
         except LockFailed as e:
             logger.warning("Could not obtain a lock for the 'update_index' "
                            "job (%s)", e)
@@ -60,3 +66,14 @@ class Job(BaseJob):
             logger.exception("Failed to update the fulltext index: %s", e)
         finally:
             lock.release()
+
+
+def check_pid(pid):
+    """ Check For the existence of a unix pid. """
+    try:
+        os.kill(pid, 0)
+    except OSError as e:
+        if e.errno == errno.ESRCH:
+            # if errno !=3, we may just not be allowed to send the signal
+            return False
+    return True
