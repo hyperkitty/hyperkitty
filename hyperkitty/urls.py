@@ -146,11 +146,6 @@ urlpatterns = patterns('hyperkitty.views',
     # Robots.txt
     url(r'^robots\.txt$', TemplateView.as_view(template_name="robots.txt", content_type="text/plain")),
 
-    # Social Auth
-    url(r'', include('social.apps.django_app.urls', namespace='social'), {"SSL": True}),
-    # BrowserID
-    url(r'', include('django_browserid.urls'), {"SSL": True}),
-
     # Mailman 2.X compatibility
     url(r'^listinfo/?$', 'compat.summary'),
     url(r'^listinfo/(?P<list_name>[^/]+)/?$', 'compat.summary'),
