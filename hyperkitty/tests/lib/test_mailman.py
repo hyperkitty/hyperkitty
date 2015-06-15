@@ -54,10 +54,11 @@ class MailmanSubscribeTestCase(TestCase):
             save = Mock()
         member = Mock()
         member.preferences = Prefs()
-        self.ml.subscribe.side_effect = lambda *a: member
+        self.ml.subscribe.side_effect = lambda *a, **kw: member
         mailman.subscribe("list@example.com", self.user)
         self.assertTrue(self.ml.get_member.called)
-        self.assertTrue(self.ml.subscribe.called)
+        self.ml.subscribe.assert_called_with(
+            'test@example.com', ' ', pre_verified=True, pre_confirmed=True)
         self.assertEqual(member.preferences["delivery_status"], "by_user")
         self.assertTrue(member.preferences.save.called)
         self.assertEqual(cache.get("User:%s:subscriptions" % self.user.id),

@@ -53,7 +53,8 @@ def subscribe(list_address, user):
     except ValueError:
         # not subscribed yet, subscribe the user without email delivery
         member = rest_list.subscribe(user.email,
-                "%s %s" % (user.first_name, user.last_name))
+                "%s %s" % (user.first_name, user.last_name),
+                pre_verified=True, pre_confirmed=True)
         member.preferences["delivery_status"] = "by_user"
         member.preferences.save()
         cache.delete("User:%s:subscriptions" % user.id)
