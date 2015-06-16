@@ -246,10 +246,16 @@ class MailingList(models.Model):
     @property
     def recent_threads(self):
         begin_date, end_date = self.get_recent_dates()
-        return cache.get_or_set(
-            "MailingList:%s:recent_threads" % self.name,
-            lambda: self.get_threads_between(begin_date, end_date),
-            3600 * 6) # 6 hours
+        # Only cache the list of thread ids, or it may go over memcached's size
+        # limit (1MB)
+        cache_key = "MailingList:%s:recent_threads" % self.name
+        thread_ids = cache.get(cache_key)
+        if thread_ids is None:
+            threads = self.get_threads_between(begin_date, end_date)
+            cache.set(cache_key, [t.id for t in threads], 3600 * 6) # 6 hours
+        else:
+            threads = Thread.objects.filter(id__in=thread_ids)
+        return threads
 
     def get_participants_count_for_month(self, year, month):
         def _get_value():
