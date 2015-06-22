@@ -29,6 +29,10 @@ class CommandTestCase(TestCase):
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp(prefix="hyperkitty-testing-")
         self.command = Command()
+        self.common_cmd_args = dict(
+            verbosity=2, list_address="list@example.com",
+            since=None, no_sync_mailman=True, ignore_mtime=False,
+        )
 
     def tearDown(self):
         rmtree(self.tmpdir)
@@ -53,11 +57,9 @@ class CommandTestCase(TestCase):
         # do the import
         output = StringIO()
         with patch("hyperkitty.management.commands.hyperkitty_import.compute_thread_order_and_depth") as mock_compute:
-            self.command.execute(os.path.join(self.tmpdir, "test.mbox"),
-                verbosity=2, stdout=output, stderr=output,
-                list_address="list@example.com",
-                since=None, no_download=True, no_sync_mailman=True,
-            )
+            kw = self.common_cmd_args.copy()
+            kw["stdout"] = kw["stderr"] = output
+            self.command.execute(os.path.join(self.tmpdir, "test.mbox"), **kw)
         #print(mock_compute.call_args_list)
         self.assertEqual(mock_compute.call_count, 1)
         thread = mock_compute.call_args[0][0]
@@ -82,11 +84,9 @@ class CommandTestCase(TestCase):
             instance = Mock()
             instance.impacted_thread_ids = []
             DbImporterMock.side_effect = lambda *a, **kw: instance
-            self.command.execute(os.path.join(self.tmpdir, "test.mbox"),
-                verbosity=2, stdout=output, stderr=output,
-                list_address="list@example.com",
-                since=None, no_download=True, no_sync_mailman=True,
-            )
+            kw = self.common_cmd_args.copy()
+            kw["stdout"] = kw["stderr"] = output
+            self.command.execute(os.path.join(self.tmpdir, "test.mbox"), **kw)
         self.assertEqual(DbImporterMock.call_args[0][1]["since"],
                          datetime(2015, 1, 1, 12, 0, tzinfo=utc))
 
@@ -107,12 +107,10 @@ class CommandTestCase(TestCase):
             instance = Mock()
             instance.impacted_thread_ids = []
             DbImporterMock.side_effect = lambda *a, **kw: instance
-            self.command.execute(os.path.join(self.tmpdir, "test.mbox"),
-                verbosity=2, stdout=output, stderr=output,
-                list_address="list@example.com",
-                since="2010-01-01 00:00:00 UTC",
-                no_download=True, no_sync_mailman=True,
-            )
+            kw = self.common_cmd_args.copy()
+            kw["stdout"] = kw["stderr"] = output
+            kw["since"] = "2010-01-01 00:00:00 UTC"
+            self.command.execute(os.path.join(self.tmpdir, "test.mbox"), **kw)
         self.assertEqual(DbImporterMock.call_args[0][1]["since"],
                          datetime(2010, 1, 1, tzinfo=utc))
 
@@ -126,11 +124,10 @@ class CommandTestCase(TestCase):
         mbox.add(msg)
         # do the import
         output = StringIO()
-        self.command.execute(os.path.join(self.tmpdir, "test.mbox"),
-            verbosity=2, stdout=output, stderr=output,
-            list_address="LIST@example.com",
-            since=None, no_download=True, no_sync_mailman=True,
-        )
+        kw = self.common_cmd_args.copy()
+        kw["stdout"] = kw["stderr"] = output
+        kw["list_address"] = "LIST@example.com"
+        self.command.execute(os.path.join(self.tmpdir, "test.mbox"), **kw)
         self.assertEqual(MailingList.objects.count(), 1)
         ml = MailingList.objects.first()
         self.assertEqual(ml.name, "list@example.com")
@@ -153,11 +150,9 @@ class CommandTestCase(TestCase):
         mbox.add(msg)
         # do the import
         output = StringIO()
-        self.command.execute(os.path.join(self.tmpdir, "test.mbox"),
-            verbosity=2, stdout=output, stderr=output,
-            list_address="list@example.com",
-            since=None, no_download=True, no_sync_mailman=True,
-        )
+        kw = self.common_cmd_args.copy()
+        kw["stdout"] = kw["stderr"] = output
+        self.command.execute(os.path.join(self.tmpdir, "test.mbox"), **kw)
         # Message 1 must have been rejected, but no crash
         self.assertIn("Message wrong.encoding failed to import, skipping",
                       output.getvalue())

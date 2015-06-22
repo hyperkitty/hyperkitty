@@ -29,6 +29,7 @@ import mailbox
 import os
 import re
 import logging
+from datetime import datetime
 from optparse import make_option
 from email.utils import unquote
 from traceback import print_exc
@@ -193,7 +194,10 @@ class Command(BaseCommand):
             help="do not sync properties with Mailman (faster, useful "
                  "for batch imports)"),
         make_option('--since',
-            help="only import emails later than this date")
+            help="only import emails later than this date"),
+        make_option('--ignore-mtime',
+            action='store_true', default=False,
+            help="do not check mbox mtimes (slower)"),
         )
 
     def _check_options(self, args, options):
@@ -249,6 +253,14 @@ class Command(BaseCommand):
             if options["verbosity"] >= 1:
                 self.stdout.write("Importing from mbox file %s to %s"
                                   % (mbfile, list_address))
+            if not options["ignore_mtime"] and options["since"] is not None:
+                mtime = datetime.fromtimestamp(
+                    os.path.getmtime(mbfile), tz.tzlocal())
+                if mtime <= options["since"]:
+                    if options["verbosity"] >= 2:
+                        self.stdout.write('Mailbox file for %s is too old'
+                                          % list_address)
+                    continue
             importer.from_mbox(mbfile)
             if options["verbosity"] >= 2:
                 total_in_list = Email.objects.filter(
