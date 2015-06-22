@@ -50,7 +50,7 @@ def arch_month(request, list_name, year, month_name, summary_type="thread"):
     return redirect(reverse('hk_archives_with_month', kwargs={
             'mlist_fqdn': mlist.name,
             'year': year,
-            'month': str(month_name_to_num(month_name)).rjust(2, "0"),
+            'month': str(month_name_to_num(month_name)).rjust(2, b"0"),
             }))
 
 
@@ -97,6 +97,7 @@ def arch_month_mbox(request, list_name, year, month_name):
 def message(request, list_name, year, month_name, msg_num):
     # pylint: disable=unused-argument
     mlist = get_list_by_name(list_name, request.get_host())
+    msg_num = int(msg_num) - 1 # pipermail starts at 1, not 0
     try:
         msg = Email.objects.filter(mailinglist=mlist
             ).order_by("archived_date")[msg_num]
@@ -104,5 +105,5 @@ def message(request, list_name, year, month_name, msg_num):
         raise Http404("No such message in this mailing-list.")
     return redirect(reverse('hk_message_index', kwargs={
             'mlist_fqdn': mlist.name,
-            'message_id': msg.message_id_hash,
+            'message_id_hash': msg.message_id_hash,
             }))

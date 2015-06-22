@@ -154,6 +154,8 @@ urlpatterns = patterns('hyperkitty.views',
     url(r'^pipermail/(?P<list_name>[^/]+)/(?P<year>\d\d\d\d)-(?P<month_name>\w+)/(?P<summary_type>[a-z]+)\.html$', 'compat.arch_month'),
     url(r'^pipermail/(?P<list_name>[^/]+)/(?P<year>\d\d\d\d)-(?P<month_name>\w+)\.txt.gz', 'compat.arch_month_mbox'),
     url(r'^pipermail/(?P<list_name>[^/]+)/(?P<year>\d\d\d\d)-(?P<month_name>\w+)/(?P<msg_num>\d+)\.html$', 'compat.message'),
+    url(r'^list/(?P<list_name>[^@]+)@[^/]+/(?P<year>\d\d\d\d)-(?P<month_name>\w+)/?$', 'compat.arch_month'),
+    url(r'^list/(?P<list_name>[^@]+)@[^/]+/(?P<year>\d\d\d\d)-(?P<month_name>\w+)/(?P<msg_num>\d+)\.html$', 'compat.message'),
 
 )
 #) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
